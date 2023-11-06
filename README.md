@@ -15,7 +15,7 @@ tournaments.
 ## Technos Utilisées
 
 -	**Front End**: 
- -	Html
+	-	Html
 	-	Css
 	-	JavaScript
 -	**Back End**:
