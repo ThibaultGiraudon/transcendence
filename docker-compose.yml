@@ -1,0 +1,14 @@
+version: '3'
+
+
+services:
+  nginx-html:
+    build:
+      context: FrontEnd/
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./FrontEnd/html:/var/www/html
+    restart: on-failure
