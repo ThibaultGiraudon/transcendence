@@ -1,5 +1,17 @@
 version: '3'
 
+networks:
+  transcendence:
+    name: transcendence
+
+volumes:
+  html:
+    driver: local
+    name: html
+    driver_opts:
+      type: none
+      o: bind
+      device: ./FrontEnd/html/
 
 services:
   nginx-html:
@@ -10,5 +22,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./FrontEnd/html:/var/www/html
+      - html:/var/www/html
+    networks:
+      - transcendence
     restart: on-failure
