@@ -1,13 +1,14 @@
-FROM	nginx:latest
+# Utilisez l'image Nginx officielle en tant qu'image de base
+FROM nginx:latest
 
-EXPOSE	80
-EXPOSE	443
+# Copiez votre fichier de certificat SSL et votre clé privée (remplacez ces fichiers par les vôtres)
+COPY ssl/server.crt /etc/ssl/certs/
+COPY ssl/server.key /etc/ssl/private/
 
-COPY	./html /usr/share/nginx/html
+# Copiez votre fichier de configuration Nginx (remplacez-le par le vôtre)
+COPY ./conf/nginx.conf /etc/nginx/conf.d/default.conf
 
-RUN		mkdir -p /etc/nginx/ssl
-RUN		openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-		-keyout /etc/nginx/ssl/nginx.key -out /etc/nginx/ssl/nginx.crt \
-		-subj "/C=FR/L=Lyon/O=42/OU=ezanotti/CN=ezanotti.42.fr"
-
-CMD		["nginx", "-g", "daemon off;"]
+# openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl/server.key -out ssl/server.crt -subj "/C=FR/L=Lyon/O=42/OU=ezanotti/CN=ezanotti.42.fr"
+# Exposez les ports HTTP (80) et HTTPS (443)
+EXPOSE 80
+EXPOSE 443
