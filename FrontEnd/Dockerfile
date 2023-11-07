@@ -1,14 +1,17 @@
-# Utilisez l'image Nginx officielle en tant qu'image de base
-FROM nginx:latest
+FROM	nginx:latest
 
-# Copiez votre fichier de certificat SSL et votre clé privée (remplacez ces fichiers par les vôtres)
-COPY ssl/server.crt /etc/ssl/certs/
-COPY ssl/server.key /etc/ssl/private/
+# SSL certificate
+RUN		openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+		-keyout etc/ssl/private/server.key -out etc/ssl/certs/server.crt \
+		-subj "/C=FR/L=Lyon/O=42/OU=ezanotti/CN=ezanotti.42.fr"
 
-# Copiez votre fichier de configuration Nginx (remplacez-le par le vôtre)
-COPY ./conf/nginx.conf /etc/nginx/conf.d/default.conf
+# Copy index.html file
+RUN		rm -rf /var/www/html
+RUN		mkdir -p /var/www/html
+COPY	./html/index.html /var/www/html/
 
-# openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl/server.key -out ssl/server.crt -subj "/C=FR/L=Lyon/O=42/OU=ezanotti/CN=ezanotti.42.fr"
-# Exposez les ports HTTP (80) et HTTPS (443)
-EXPOSE 80
-EXPOSE 443
+# Copy nginx.conf file
+COPY	./conf/nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE	80
+EXPOSE	443
