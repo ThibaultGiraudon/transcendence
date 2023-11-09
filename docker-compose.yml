@@ -11,18 +11,29 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: ./FrontEnd/html/
+      device: ./front_end/html/
 
 services:
-  nginx-html:
+  nginx:
     build:
-      context: FrontEnd/
+      context: front_end/
       dockerfile: Dockerfile
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - html:/var/www/html
+    networks:
+      - transcendence
+    restart: on-failure
+#TODO add $FRONT_END_FOLDER (env variable)
+
+  django:
+    build:
+      context: back_end/
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
     networks:
       - transcendence
     restart: on-failure
