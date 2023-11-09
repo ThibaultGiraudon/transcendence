@@ -11,13 +11,14 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: ./front_end/html/
+      device: ./${FRONT_END_FOLDER}/html/
 
 services:
   nginx:
     build:
-      context: front_end/
+      context: ${FRONT_END_FOLDER}/
       dockerfile: Dockerfile
+    env_file: .env
     ports:
       - "80:80"
       - "443:443"
@@ -26,12 +27,12 @@ services:
     networks:
       - transcendence
     restart: on-failure
-#TODO add $FRONT_END_FOLDER (env variable)
 
   django:
     build:
-      context: back_end/
+      context: ${BACK_END_FOLDER}/
       dockerfile: Dockerfile
+    env_file: .env
     ports:
       - "8000:8000"
     networks:
