@@ -12,4 +12,5 @@ RUN		pip install --no-cache -r requirements.txt
 COPY	./ ./
 
 # Run the project
-CMD ["pipenv", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD		["python", "pong_game/manage.py", "runserver", "0.0.0.0:8000"]
+#TODO :     ...n", "$PONG_DIR/manag...
