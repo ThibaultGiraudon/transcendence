@@ -11,6 +11,7 @@ tournaments.
 -	**Major module**: Live chat.
 -	**Major module**: Introduce an AI Opponent.
 -	**Major module**: Remote players.
+-	(server side game)
 
 ## Technos Utilisées
 
@@ -22,3 +23,7 @@ tournaments.
 	-	Django
 -	**Database**:
 	-	PostgreSQL
+
+## Features (to do list)
+
+-	Premier jeu fonctionnel (creer la base du jeu fonctionnel dabord sans DB avec JS)
