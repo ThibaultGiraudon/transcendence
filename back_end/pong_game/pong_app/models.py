@@ -1,3 +1,9 @@
 from django.db import models
 
-# Create your models here.
+Class	PongBall(models.Model):
+	x = models.IntegerField()
+	y = models.IntegerField()
+
+Class	PongPaddle(models.Model):
+	x = models.IntegerField()
+	y = models.IntegerField()
