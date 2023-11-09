@@ -13,4 +13,3 @@ COPY	./ ./
 
 # Run the project
 CMD		["python", "pong_game/manage.py", "runserver", "0.0.0.0:8000"]
-#TODO :     ...n", "$PONG_DIR/manag...
