@@ -1,1 +1,17 @@
 game_env/
+# Ignore les fichiers de configuration spécifiques à l'environnement
+*.pyc
+*.pyo
+__pycache__/
+*.sqlite3
+
+# Ignore les fichiers générés par l'IDE
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.db
+
+# Ignore les fichiers spécifiques à l'environnement virtuel
+venv/
+env/
