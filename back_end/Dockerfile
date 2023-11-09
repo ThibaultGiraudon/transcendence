@@ -1,4 +1,5 @@
 FROM	python:3.8
+EXPOSE	8000
 
 # Set the working directory
 WORKDIR	/usr/src/app/
@@ -10,4 +11,5 @@ RUN		pip install --no-cache -r requirements.txt
 # Copy the project
 COPY	./ ./
 
-EXPOSE	8000
+# Run the project
+CMD ["pipenv", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]
