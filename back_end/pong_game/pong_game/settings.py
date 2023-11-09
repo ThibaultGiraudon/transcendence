@@ -69,14 +69,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'pong_game.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
+#TODO change to env var
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'transcendence_db',
+        'USER': 'transcendence_user',
+        'PASSWORD': 'transcendence_password',
+        'HOST': 'postgres',
+        'PORT': '5432',
     }
 }
 
