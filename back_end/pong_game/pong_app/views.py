@@ -1,11 +1,14 @@
 from django.shortcuts import render
-from django.http import JsonResponse
-from .models import Ball, Paddle
+from django.db import connection
 
-def	updatePosition(request):
-	new_x = request.GET.get('x') + 10;
-	new_y = request.GET.get('y') + 10;
-
-	return JsonResponse({
-		'ball': {'x': new_x, 'y': new_y},
-		'paddle': {'x': new_x, 'y': new_y}})
+def test_connection(request):
+    try:
+        # Tentative de connexion à la base de données
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+        connection.close()
+        return render(request, 'success.html')
+    except Exception as e:
+        # En cas d'échec de connexion, définissez un message d'erreur
+        error_message = str(e)
+        return render(request, 'error.html')
