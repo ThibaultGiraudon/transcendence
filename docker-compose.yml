@@ -12,6 +12,13 @@ volumes:
       type: none
       o: bind
       device: ./${FRONT_END_FOLDER}/html/
+  postgres_data:
+    driver: local
+    # name: postgres_data
+    # driver_opts:
+      # type: none
+      # o: bind
+      # device: ./${DB_FOLDER}/postgres_data/
 
 services:
   nginx:
@@ -38,3 +45,26 @@ services:
     networks:
       - transcendence
     restart: on-failure
+
+  postgres:
+    image: postgres:latest
+    env_file: .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    networks:
+      - transcendence
+    restart: on-failure
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - transcendence

@@ -12,6 +12,7 @@ tournaments.
 -	**Major module**: Introduce an AI Opponent.
 -	**Major module**: Remote players.
 -	(server side game)
+-	minor (database with PostgreSQL)
 
 ## Technos Utilisées
 
