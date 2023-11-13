@@ -11,7 +11,7 @@ volumes:
 services:
   nginx:
     build:
-      context: ${FRONT_END_FOLDER}/
+      context: ${NGINX_FOLDER}/
       dockerfile: Dockerfile
     env_file: .env
     ports:
