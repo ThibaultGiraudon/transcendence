@@ -4,6 +4,9 @@ from django.db import connection
 def homePage(request):
     return render(request, 'homePage.html')
 
+def pongGame(request):
+    return render(request, 'pong_elements/pong_game.html')
+
 def test_connection(request):
     try:
         with connection.cursor() as cursor:
