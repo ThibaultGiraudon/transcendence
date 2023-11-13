@@ -7,7 +7,7 @@ def homePage(request):
 def pongGame(request):
     return render(request, 'pong_elements/pong_game.html')
 
-def test_connection(request):
+def testDBConnection(request):
     try:
         with connection.cursor() as cursor:
             cursor.execute("SELECT 1")
