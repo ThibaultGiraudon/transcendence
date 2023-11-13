@@ -10,6 +10,9 @@ RUN		pip install --no-cache -r requirements.txt
 
 # Copy the project
 COPY	./ ./
+# TODO : fix this : 
+# RUN		python pong_game/manage.py makemigrations --noinput
+# RUN		python pong_game/manage.py migrate --noinput
 
 # Run the project
 CMD		["python", "pong_game/manage.py", "runserver", "0.0.0.0:8000"]
