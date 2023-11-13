@@ -37,7 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'pong_app',
+    'channels',
 ]
+
+ASGI_APPLICATION = 'pong_game.asgi.application'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
