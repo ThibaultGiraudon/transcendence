@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Home</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong Game</title>
 </head>
 <body>
-    <h1>Welcome to Pong Game</h1>
-    <a href="{% url 'pong' %}">Play Pong</a>
+    <!-- Affichez la position actuelle de la raquette -->
+    <div style="position: absolute; top: {{ game_state.paddle_position }}px; width: 20px; height: 100px; background-color: #000;"></div>
+
+    <!-- Ajoutez des boutons pour déplacer la raquette -->
+    <form method="post" action="{% url 'pong' %}">
+        {% csrf_token %}
+        <button type="submit" name="up">Move Up</button>
+        <button type="submit" name="down">Move Down</button>
+    </form>
 </body>
 </html>
