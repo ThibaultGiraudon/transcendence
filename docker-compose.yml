@@ -21,13 +21,52 @@ services:
       - transcendence
     restart: on-failure
 
+  # django:
+  #   build:
+  #     context: ${BACK_END_FOLDER}/
+  #     dockerfile: Dockerfile
+  #   env_file: .env
+  #   ports:
+  #     - "8000:8000"
+  #   networks:
+  #     - transcendence
+  #   restart: on-failure
+
+  # channels:
+  #   build: ./${BACK_END_FOLDER}/
+  #   env_file: .env
+  #   working_dir: /usr/src/app/
+  #   command: daphne -u /tmp/daphne.sock pong_game.pong_game.asgi:application
+  #   ports:
+  #     - "8001:8001"
+  #   depends_on:
+  #     - django
+  #   networks:
+  #     - transcendence
+  #   restart: on-failure
+
   django:
     build:
-      context: ${BACK_END_FOLDER}/
+      context: ./${BACK_END_FOLDER}/
       dockerfile: Dockerfile
     env_file: .env
     ports:
       - "8000:8000"
+    depends_on:
+      - postgres
+    networks:
+      - transcendence
+    restart: on-failure
+
+  channels:
+    build:
+      context: ./${BACK_END_FOLDER}/
+      dockerfile: Dockerfile
+    env_file: .env
+    ports:
+      - "8001:8001"
+    depends_on:
+      - django
     networks:
       - transcendence
     restart: on-failure
