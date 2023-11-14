@@ -2,10 +2,13 @@ FROM python:3.8
 
 WORKDIR /usr/src/app
 
-COPY requirements.txt .
+COPY ./requirements.txt ./
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache -r requirements.txt
 
-COPY ./pong_game/ ./
+COPY . .
 
-CMD ["daphne", "-u", "/tmp/daphne.sock", "pong_game.asgi:application", "-p", "8000"]
+EXPOSE 8001
+
+# TODO peutetre pong_app
+CMD ["daphne", "-u", "daphne.sock", "pong_game.asgi:application"]
