@@ -9,22 +9,10 @@ volumes:
     driver: local
 
 services:
-  nginx:
-    build:
-      context: ${NGINX_FOLDER}/
-      dockerfile: Dockerfile
-    env_file: .env
-    ports:
-      - "80:80"
-      - "443:443"
-    networks:
-      - transcendence
-    restart: on-failure
-
   django:
     build:
       context: ./${BACK_END_FOLDER}/
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-django
     env_file: .env
     ports:
       - "8000:8000"
@@ -34,10 +22,10 @@ services:
       - transcendence
     restart: on-failure
 
-  channels:
+  daphne:
     build:
       context: ./${BACK_END_FOLDER}/
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-daphne
     env_file: .env
     ports:
       - "8001:8001"
