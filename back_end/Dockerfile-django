@@ -2,10 +2,15 @@ FROM python:3.8
 
 WORKDIR /usr/src/app
 
-COPY requirements.txt .
+COPY ./requirements.txt ./
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache -r requirements.txt
 
-COPY ./pong_game/ ./
+COPY . .
 
-CMD ["daphne", "-u", "/tmp/daphne.sock", "pong_game.asgi:application", "-p", "8000"]
+RUN python manage.py makemigrations --noinput
+# RUN python manage.py migrate --noinput
+
+EXPOSE 8000
+
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
