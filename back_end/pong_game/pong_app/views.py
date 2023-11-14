@@ -19,7 +19,7 @@ def pongGame(request):
         # Enregistrez la nouvelle position de la raquette dans la base de données
         game_state.save()
 
-    return render(request, 'pong_elements/pong_game.html', {'game_state': game_state})
+    return render(request, 'pong_elements/index.html', {'game_state': game_state})
 
 def testDBConnection(request):
     try:
