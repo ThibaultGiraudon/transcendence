@@ -8,7 +8,8 @@ RUN pip install --no-cache -r requirements.txt
 
 COPY . .
 
-RUN python manage.py makemigrations --noinput
+# TODO a fix
+# RUN python manage.py makemigrations --noinput
 # RUN python manage.py migrate --noinput
 
 EXPOSE 8000
