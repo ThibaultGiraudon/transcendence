@@ -1,7 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-class YourConsumer(AsyncWebsocketConsumer):
+class SimpleConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
 
@@ -9,8 +9,8 @@ class YourConsumer(AsyncWebsocketConsumer):
         pass
 
     async def receive(self, text_data):
-        data = json.loads(text_data)
-        action = data.get('action')
-
-        if action == 'move_paddle':
-            pass
+        message = json.loads(text_data)
+        await self.send(text_data=json.dumps({
+            'type': 'echo',
+            'message': message['message'],
+        }))
