@@ -5,6 +5,9 @@ from pong_app.models import PongGameState
 def homePage(request):
     return render(request, 'homePage.html')
 
+def login(request):
+    return render(request, 'login.html')
+
 def pongGame(request):
     game_state, created = PongGameState.objects.get_or_create(pk=1)
 
