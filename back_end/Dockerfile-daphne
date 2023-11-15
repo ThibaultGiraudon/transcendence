@@ -2,8 +2,10 @@ FROM	python:3.8
 EXPOSE	8001
 WORKDIR	/usr/src/app
 
+# TODO pour opti copy uniquement requirements.txt
 COPY	./ ./
 
+# TODO faire en sorte de ne pas reinstall a chaque fois
 RUN		pip install --no-cache -r requirements.txt
 
 CMD		["daphne", "-u", "daphne.sock", "pong_game.asgi:application"]
