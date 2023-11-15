@@ -34,7 +34,7 @@ services:
     networks:
       - transcendence
     restart: on-failure
-  
+
   nginx:
     build:
       context: ./${NGINX_FOLDER}/
