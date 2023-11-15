@@ -4,6 +4,7 @@ const context = canvas.getContext("2d");
 console.log("OK");
 
 // const socket = new WebSocket("ws://" + window.location.host + "/ws/some_path/");
+// const socket = new WebSocket("ws://" + window.location.host + ":8000/ws/some_path/");
 
 // document.addEventListener("keydown", handleKeyDown);
 
