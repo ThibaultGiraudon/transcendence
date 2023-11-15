@@ -14,6 +14,13 @@ volumes:
       type: none
       o: bind
       device: ./${DJANGO_FOLDER}/pong_app/static
+  templates_volume:
+    driver: local
+    name: templates_volume
+    driver_opts:
+      type: none
+      o: bind
+      device: ./${DJANGO_FOLDER}/pong_app/templates
 
 services:
   django:
@@ -30,6 +37,7 @@ services:
     restart: on-failure
     volumes:
       - static_volume:/usr/src/app/pong_app/static
+      - templates_volume:/usr/src/app/pong_app/templates
 
   daphne:
     build:
@@ -45,6 +53,7 @@ services:
     restart: on-failure
     volumes:
       - static_volume:/usr/src/app/pong_game/static 
+      - templates_volume:/usr/src/app/pong_game/templates
 
   nginx:
     build:
