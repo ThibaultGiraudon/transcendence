@@ -1,7 +1,37 @@
 const canvas = document.getElementById("pongCanvas");
-const context = canvas.getContext("2d");
+const ctx = canvas.getContext("2d");
+const startPaddle = canvas.height / 2 - 75
 
-console.log("OK");
+function darwPaddle() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath()
+    ctx.fillStyle = "purple"
+    ctx.fill()
+    ctx.fillRect(5, startPaddle + deltaY, 20, 150);
+    ctx.closePath();
+}
+
+document.addEventListener('keydown', move, false);
+
+var deltaY = 0
+
+function move(e) {
+    switch(e.key) {
+        case 'w':
+            if ((startPaddle + deltaY - 10) > 0)
+            deltaY -= 10
+        break;
+        case 's':
+            if ((startPaddle + deltaY + 10) < canvas.height - 150)
+                deltaY += 10
+            break;
+    }
+    e.preventDefault();
+
+    darwPaddle()
+}
 
 // const socket = new WebSocket("ws://" + window.location.host + "/ws/some_path/");
 
