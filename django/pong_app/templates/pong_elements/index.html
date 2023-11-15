@@ -10,14 +10,14 @@
     <h1>WebSocket Test</h1>
     <script>
         // TODO maybe fix some_path
-        const socket = new WebSocket("ws://" + window.location.host + ":8000/ws/some_path/");
+        const testSocket = new WebSocket("wss://" + window.location.host + "/ws/some_path/");
 
-        socket.addEventListener("open", (event) => {
+        testSocket.addEventListener("open", (event) => {
             console.log("WebSocket ouvert !");
-            socket.send(JSON.stringify({ message: "Hello, WebSocket!" }));
+            testSocket.send(JSON.stringify({ message: "Hello, WebSocket!" }));
         });
 
-        socket.addEventListener("message", (event) => {
+        testSocket.addEventListener("message", (event) => {
             const message = JSON.parse(event.data);
             console.log("Message reçu:", message);
         });
