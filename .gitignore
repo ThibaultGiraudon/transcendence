@@ -1,4 +1,5 @@
 maquette.svg
+migrations
 # Ignore les fichiers de configuration spécifiques à l'environnement
 *.pyc
 *.pyo
