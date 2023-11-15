@@ -13,12 +13,19 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: ./${BACK_END_FOLDER}/pong_app/static
+      device: ./${DJANGO_FOLDER}/pong_app/static
+  templates_volume:
+    driver: local
+    name: templates_volume
+    driver_opts:
+      type: none
+      o: bind
+      device: ./${DJANGO_FOLDER}/pong_app/templates
 
 services:
   django:
     build:
-      context: ./${BACK_END_FOLDER}/
+      context: ./${DJANGO_FOLDER}/
       dockerfile: Dockerfile-django
     env_file: .env
     ports:
@@ -30,10 +37,11 @@ services:
     restart: on-failure
     volumes:
       - static_volume:/usr/src/app/pong_app/static
+      - templates_volume:/usr/src/app/pong_app/templates
 
   daphne:
     build:
-      context: ./${BACK_END_FOLDER}/
+      context: ./${DJANGO_FOLDER}/
       dockerfile: Dockerfile-daphne
     env_file: .env
     ports:
@@ -45,6 +53,7 @@ services:
     restart: on-failure
     volumes:
       - static_volume:/usr/src/app/pong_game/static 
+      - templates_volume:/usr/src/app/pong_game/templates
 
   nginx:
     build:
