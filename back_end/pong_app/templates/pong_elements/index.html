@@ -4,10 +4,23 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pong Game</title>
+    <title>WebSocket Test</title>
 </head>
 <body>
-    <h1>OK</h1>
+    <h1>WebSocket Test</h1>
+    <script>
+        const socket = new WebSocket("wss://" + window.location.host + "/ws/some_path/");
+
+        socket.addEventListener("open", (event) => {
+            console.log("WebSocket ouvert !");
+            socket.send(JSON.stringify({ message: "Hello, WebSocket!" }));
+        });
+
+        socket.addEventListener("message", (event) => {
+            const message = JSON.parse(event.data);
+            console.log("Message reçu:", message);
+        });
+    </script>
     <canvas id="pongCanvas" width="800" height="600"></canvas>
     {% load static %}
     <script src="{% static 'pong_app/js/main.js' %}"></script>
