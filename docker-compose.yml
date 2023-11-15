@@ -7,6 +7,13 @@ networks:
 volumes:
   postgres_data:
     driver: local
+  static_volume:
+    driver: local
+    name: static_volume
+    driver_opts:
+      type: none
+      o: bind
+      device: ./${BACK_END_FOLDER}/pong_app/static
 
 services:
   django:
@@ -21,6 +28,8 @@ services:
     networks:
       - transcendence
     restart: on-failure
+    volumes:
+      - static_volume:/usr/src/app/pong_app/static
 
   daphne:
     build:
@@ -34,6 +43,8 @@ services:
     networks:
       - transcendence
     restart: on-failure
+    volumes:
+      - static_volume:/usr/src/app/pong_game/static 
 
   nginx:
     build:
