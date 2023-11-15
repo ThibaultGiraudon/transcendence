@@ -2,36 +2,64 @@ const canvas = document.getElementById("pongCanvas");
 const ctx = canvas.getContext("2d");
 const startPaddle = canvas.height / 2 - 75
 
-function darwPaddle() {
+const ball = {
+    x: canvas.width / 2,
+    y: canvas.height / 2
+};
+
+const velocity = 3;
+const startingAngle = 70;
+const rad = 20;
+let moveX = Math.cos(Math.PI / 180 * startingAngle) * velocity;
+let moveY = Math.sin(Math.PI / 180 * startingAngle) * velocity;
+
+const drawMe = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.beginPath()
-    ctx.fillStyle = "purple"
-    ctx.fill()
-    ctx.fillRect(5, startPaddle + deltaY, 20, 150);
+    if (ball.x > canvas.width - rad || ball.x < rad) 
+        moveX = -moveX;
+    if (ball.y > canvas.height - rad || ball.y < rad)
+        moveY = -moveY; ball.x += moveX;
+    ball.y += moveY; ctx.beginPath();
+    ctx.fillStyle = 'green';
+    ctx.arc(ball.x, ball.y, rad, 0, Math.PI * 2);
+    ctx.fill();
     ctx.closePath();
 }
 
-document.addEventListener('keydown', move, false);
+// function darwPaddle() {
+//     ctx.clearRect(0, 0, canvas.width, canvas.height);
+//     ctx.fillStyle = "black";
+//     ctx.fillRect(0, 0, canvas.width, canvas.height);
+//     ctx.beginPath()
+//     ctx.fillStyle = "purple"
+//     ctx.fill()
+//     ctx.fillRect(5, startPaddle + deltaY, 20, 150);
+//     ctx.closePath();
+// }
 
-var deltaY = 0
+// document.addEventListener('keydown', move, false);
 
-function move(e) {
-    switch(e.key) {
-        case 'w':
-            if ((startPaddle + deltaY - 10) > 0)
-            deltaY -= 10
-        break;
-        case 's':
-            if ((startPaddle + deltaY + 10) < canvas.height - 150)
-                deltaY += 10
-            break;
-    }
-    e.preventDefault();
+// var deltaY = 0
+setInterval(drawMe, 10);
+// darwPaddle()
 
-    darwPaddle()
-}
+// function move(e) {
+//     switch(e.key) {
+//         case 'w':
+//             if ((startPaddle + deltaY - 10) > 0)
+//             deltaY -= 10
+//         break;
+//         case 's':
+//             if ((startPaddle + deltaY + 10) < canvas.height - 150)
+//                 deltaY += 10
+//             break;
+//     }
+//     e.preventDefault();
+
+//     darwPaddle()
+// }
+
+
 
 // const socket = new WebSocket("ws://" + window.location.host + "/ws/some_path/");
 
