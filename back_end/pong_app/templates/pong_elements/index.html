@@ -9,7 +9,8 @@
 <body>
     <h1>WebSocket Test</h1>
     <script>
-        const socket = new WebSocket("wss://" + window.location.host + "/ws/some_path/");
+        // TODO maybe fix
+        const socket = new WebSocket("ws://" + window.location.host + "/ws/some_path/");
 
         socket.addEventListener("open", (event) => {
             console.log("WebSocket ouvert !");
