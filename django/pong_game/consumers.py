@@ -1,7 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-class SimpleConsumer(AsyncWebsocketConsumer):
+class PongConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
 
