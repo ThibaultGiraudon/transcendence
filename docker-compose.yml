@@ -21,6 +21,13 @@ volumes:
       type: none
       o: bind
       device: ./${DJANGO_FOLDER}/pong_app/templates
+  ssl_certificates:
+    driver: local
+    name: ssl_certificates
+    driver_opts:
+      type: none
+      o: bind
+      device: ./ssl
 
 services:
   django:
@@ -54,6 +61,7 @@ services:
     volumes:
       - static_volume:/usr/src/app/pong_game/static 
       - templates_volume:/usr/src/app/pong_game/templates
+      - ssl_certificates:/etc/ssl
 
   nginx:
     build:
@@ -68,6 +76,8 @@ services:
     networks:
       - transcendence
     restart: on-failure
+    volumes:
+      - ssl_certificates:/etc/ssl
 
   postgres:
     image: postgres:latest
