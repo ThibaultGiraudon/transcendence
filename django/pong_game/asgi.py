@@ -16,6 +16,10 @@ from pong_game.routing import websocket_urlpatterns
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pong_game.settings')
 
 application = ProtocolTypeRouter({
-  'https': get_asgi_application(),
-  'websocket': AuthMiddlewareStack(URLRouter(websocket_urlpatterns))
+    "http": get_asgi_application(),
+    "websocket": AuthMiddlewareStack(
+        URLRouter(
+            websocket_urlpatterns
+        )
+    ),
 })
