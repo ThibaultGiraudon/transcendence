@@ -18,7 +18,6 @@ def sign_in(request):
             if user:
                 login(request, user)
                 messages.success(request,f'Hi {username.title()}, welcome back!')
-                return redirect('posts')
         
         # form is not valid or user is not authenticated
         messages.error(request,f'Invalid username or password')

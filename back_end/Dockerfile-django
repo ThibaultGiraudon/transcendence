@@ -12,4 +12,4 @@ RUN		pip install --no-cache -r requirements.txt
 
 RUN		python manage.py makemigrations --noinput
 
-CMD 	["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+CMD 	["sh", "-c", "DJANGO_SUPERUSER_PASSWORD=1234 python manage.py migrate && python manage.py createsuperuser --username=super --noinput && python manage.py runserver 0.0.0.0:8000"]
