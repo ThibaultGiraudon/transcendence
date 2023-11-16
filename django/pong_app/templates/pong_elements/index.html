@@ -9,8 +9,10 @@
 <body>
     <h1>WebSocket Test</h1>
     <script>
-        const protocol = window.location.protocol === 'https:' ? ':8000' : '';
-        const testSocket = new WebSocket(`ws://${window.location.host}${protocol}/ws/some_path/`);
+        let websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        let websocketPort = window.location.protocol === 'https:' ? ':8001' : '';
+        
+        const testSocket = new WebSocket(`${websocketProtocol}//${window.location.host}${websocketPort}/ws/some_path/`);
 
         testSocket.addEventListener("open", (event) => {
             console.log("WebSocket ouvert !");
