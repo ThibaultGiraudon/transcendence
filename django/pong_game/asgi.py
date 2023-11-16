@@ -23,11 +23,11 @@ websocket_urlpatterns = [
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
-    'websocket': URLRouter(websocket_urlpatterns),
+    # 'websocket': URLRouter(websocket_urlpatterns),
     # TODO voir si cest utile
-    # "websocket": AuthMiddlewareStack(
-        # URLRouter(
-            # websocket_urlpatterns
-        # )
-    # ),
+    "websocket": AuthMiddlewareStack(
+        URLRouter(
+            websocket_urlpatterns
+        )
+    ),
 })
