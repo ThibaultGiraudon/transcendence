@@ -1,5 +1,5 @@
-import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+import json
 
 class PongConsumer(AsyncWebsocketConsumer):
     async def connect(self):
