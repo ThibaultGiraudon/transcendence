@@ -15,6 +15,7 @@
         
         // Construisez l'URL WebSocket en utilisant le protocole approprié
         const testSocket = new WebSocket(`${protocol}//${window.location.host}/ws/some_path/`);
+        // const testSocket = new WebSocket(`${protocol}//localhost/ws/some_path/`);
 
         testSocket.addEventListener("open", (event) => {
             console.log("WebSocket ouvert !");
