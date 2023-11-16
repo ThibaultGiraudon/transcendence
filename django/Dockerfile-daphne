@@ -8,9 +8,4 @@ RUN		pip install --no-cache -r requirements.txt
 
 COPY	./ ./
 
-# RUN openssl genpkey -algorithm RSA -out privkey.pem
-# RUN openssl req -new -key privkey.pem -out cert.csr -subj "/C=FR/L=Lyon/O=42/OU=ezanotti/CN=ezanotti.42.fr"
-# RUN openssl x509 -req -days 365 -in cert.csr -signkey privkey.pem -out cert.pem
-
-# CMD 	["daphne", "-u", "daphne", "-e", "ssl:8001:privateKey=privkey.pem:certKey=cert.pem", "pong_game.asgi:application"]
 CMD 	["daphne", "-e", "ssl:8001:privateKey=/etc/ssl/private/server.key:certKey=/etc/ssl/certs/server.crt", "pong_game.asgi:application"]
