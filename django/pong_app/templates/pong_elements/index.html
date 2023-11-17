@@ -2,30 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!-- TODO change X-UA (se renseigner sur quoi mettre) -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebSocket Test</title>
+    <title>Pong Game</title>
 </head>
 <body>
-    <h1>WebSocket Test</h1>
-    <script>
-        let websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        let websocketPort = window.location.protocol === 'https:' ? ':8001' : '';
-        
-        const testSocket = new WebSocket(`${websocketProtocol}//${window.location.host}${websocketPort}/ws/some_path/`);
-
-        testSocket.addEventListener("open", (event) => {
-            console.log("WebSocket ouvert !");
-            testSocket.send(JSON.stringify({ message: "Hello, WebSocket!" }));
-        });
-
-        testSocket.addEventListener("message", (event) => {
-            const message = JSON.parse(event.data);
-            console.log("Message reçu:", message);
-        });
-    </script>
+    <h1>Pong Game</h1>
     <canvas id="pongCanvas" width="800" height="600"></canvas>
+</body>
+<foot>
     {% load static %}
     <script src="{% static 'pong_app/js/main.js' %}"></script>
-</body>
+</foot>
 </html>
