@@ -62,6 +62,8 @@ services:
       - static_volume:/usr/src/app/pong_game/static 
       - templates_volume:/usr/src/app/pong_game/templates
       - ssl_certificates:/etc/ssl
+    # TODO remove this (enable it for logs directy in console) (for the print in python)
+    tty: true
 
   nginx:
     build:
