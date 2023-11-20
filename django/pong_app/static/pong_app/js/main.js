@@ -1,25 +1,25 @@
-let websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-let websocketPort = window.location.protocol === 'https:' ? ':8001' : '';
-const socketUrl = websocketProtocol + '//' + window.location.host + websocketPort + '/ws/some_path/';
-const socket = new WebSocket(socketUrl);
+let     websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+let     websocketPort = window.location.protocol === 'https:' ? ':8001' : '';
+const   socketUrl = websocketProtocol + '//' + window.location.host + websocketPort + '/ws/some_path/';
+const   socket = new WebSocket(socketUrl);
 
 document.addEventListener('DOMContentLoaded', function() {
-    function    sendPaddlePosition() {
+    function    sendPaddlePosition(key) {
         const message = {
-            type: 'update_paddle',
-            position: 10,
-            content: 'Hello, WebSocket!',
+            type: 'paddle_move',
+            direction: key,
         };
         socket.send(JSON.stringify(message));
     }
 
     document.addEventListener('keydown', function(event) {
-        if (event.key === 'ArrowUp') {
-            sendPaddlePosition();
+        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            sendPaddlePosition(event.key);
         }
     });
 });
 
+// TODO voir p5 pour les canvas
 
 
 
@@ -34,9 +34,46 @@ socket.addEventListener('open', (event) => {
     socket.send(JSON.stringify(message));
 });
 
+
+
+
+const PLAYER_WIDTH = 20
+const PLAYER_HEIGHT = 150
+
+const canvas = document.getElementById("pongCanvas");
+const ctx = canvas.getContext("2d");
+var game;
+const startPaddle = canvas.height / 2 - 75
+
+function drawBackground() {
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.strokeStyle = 'white';
+    ctx.beginPath();
+    ctx.moveTo(canvas.width / 2, 0);
+    ctx.lineTo(canvas.width / 2, canvas.height);
+    ctx.stroke();
+    ctx.closePath();
+}
+
+function drawPaddles(position) {
+    console.log('drawPaddles', position);
+    drawBackground();
+    ctx.fillStyle = 'white';
+    ctx.fillRect(5, position, PLAYER_WIDTH, PLAYER_HEIGHT);
+    // ctx.fillRect(canvas.width - PLAYER_WIDTH - 5, game.computer.y, PLAYER_WIDTH, PLAYER_HEIGHT);
+}
+
 socket.addEventListener('message', (event) => {
-    const message = JSON.parse(event.data);
+    let message = JSON.parse(event.data);
     console.log('Message reçu:', message);
+
+    if (message.type === 'update_paddle_position') {
+        console.log('update_paddle_position');
+        const newPosition = parseFloat(message.position);
+        drawPaddles(newPosition);
+    }
 });
 
 // Exécuté lorsque la connexion WebSocket est fermée
@@ -49,20 +86,13 @@ socket.addEventListener('error', (event) => {
     console.error('Erreur WebSocket:', event);
 });
 
-// const PLAYER_WIDTH = 20
-// const PLAYER_HEIGHT = 150
-
-// const canvas = document.getElementById("pongCanvas");
-// const ctx = canvas.getContext("2d");
-// var game;
-// const startPaddle = canvas.height / 2 - 75
 
 
 // function draw() {
 //     drawBackground()
 //     drawScore()
 //     drawBall()
-//     darwPaddles()
+//     drawPaddles()
 // }
 
 // function drawScore() {
@@ -72,23 +102,13 @@ socket.addEventListener('error', (event) => {
 //     ctx.fillText(game.player.score, canvas.width - 75, 55)
 // }
 
-// function darwPaddles() {
+// function drawPaddles() {
 //     ctx.fillStyle = 'white';
 //     ctx.fillRect(5, game.player.y , PLAYER_WIDTH, PLAYER_HEIGHT);
 //     ctx.fillRect(canvas.width - PLAYER_WIDTH - 5, game.computer.y, PLAYER_WIDTH, PLAYER_HEIGHT);
 // }
 
-// function drawBackground() {
-//     ctx.fillStyle = "black";
-//     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-//     ctx.strokeStyle = 'white';
-//     ctx.beginPath();
-//     ctx.moveTo(canvas.width / 2, 0);
-//     ctx.lineTo(canvas.width / 2, canvas.height);
-//     ctx.stroke();
-//     ctx.closePath();
-// }
+
 
 // function drawBall() {
 //     ctx.beginPath();
