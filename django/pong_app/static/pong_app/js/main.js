@@ -5,30 +5,27 @@ const   socket = new WebSocket(socketUrl);
 
 document.addEventListener('DOMContentLoaded', function() {
     let isKeyDown = false;
-    let intervalId;
-
-    function    sendPaddlePosition(key) {
-        const message = {
-            type: 'paddle_move',
-            direction: key,
-        };
-        socket.send(JSON.stringify(message));
-    }
 
     document.addEventListener('keydown', function(event) {
         if (!isKeyDown && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
             isKeyDown = true;
-            intervalId = setInterval(function() {
-                sendPaddlePosition(event.key);
-            }, 20); // almost 30 fps
+            const message = {
+                type: 'paddle_move',
+                key: 'keydown',
+                direction: event.key,
+            };
+            socket.send(JSON.stringify(message));
         }
     });
 
     document.addEventListener('keyup', function(event) {
-        // TODO au lieu denvoyer 5000 ws envoie un quand on presse et un quand on relache
         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
             isKeyDown = false;
-            clearInterval(intervalId);
+            const message = {
+                type: 'paddle_move',
+                key: 'keyup',
+            };
+            socket.send(JSON.stringify(message));
         }
     });
 
