@@ -4,6 +4,9 @@ const   socketUrl = websocketProtocol + '//' + window.location.host + websocketP
 const   socket = new WebSocket(socketUrl);
 
 document.addEventListener('DOMContentLoaded', function() {
+    let isKeyDown = false;
+    let intervalId;
+
     function    sendPaddlePosition(key) {
         const message = {
             type: 'paddle_move',
@@ -13,25 +16,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     document.addEventListener('keydown', function(event) {
-        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-            sendPaddlePosition(event.key);
+        if (!isKeyDown && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
+            isKeyDown = true;
+            intervalId = setInterval(function() {
+                sendPaddlePosition(event.key);
+            }, 20); // almost 30 fps
         }
+    });
+
+    document.addEventListener('keyup', function(event) {
+        // TODO au lieu denvoyer 5000 ws envoie un quand on presse et un quand on relache
+        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            isKeyDown = false;
+            clearInterval(intervalId);
+        }
+    });
+
+    socket.addEventListener('open', (event) => {
+        const message = {
+            type: 'init_game',
+            canvas_width: canvas.width,
+            canvas_height: canvas.height,
+        };
+        socket.send(JSON.stringify(message));
     });
 });
 
+
+
+
+
 // TODO voir p5 pour les canvas
 
-
-
-
-socket.addEventListener('open', (event) => {
-    const message = {
-        type: 'init_game',
-        canvas_width: canvas.width,
-        canvas_height: canvas.height,
-    };
-    socket.send(JSON.stringify(message));
-});
 
 
 
