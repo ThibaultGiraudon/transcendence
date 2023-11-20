@@ -1,4 +1,5 @@
 from    channels.generic.websocket import AsyncWebsocketConsumer
+from    .handlers.handler_paddle_move import *
 import  json
 import  asyncio
 
@@ -16,10 +17,11 @@ class PongConsumer(AsyncWebsocketConsumer):
         print(f"Message reçu: {message}")
 
         if (message['type'] == 'paddle_move'):
-            direction = message['direction']
-            if (direction == 'ArrowUp'):
-                position = 0
-                await self.send(json.dumps({'type': 'update_paddle_position', 'position': position}))
-            elif (direction == 'ArrowDown'):
-                position = 400
-                await self.send(json.dumps({'type': 'update_paddle_position', 'position': position}))
+            await handle_paddle_move(message, self)
+            # direction = message['direction']
+            # if (direction == 'ArrowUp'):
+                # position = 0
+                # await self.send(json.dumps({'type': 'update_paddle_position', 'position': position}))
+            # elif (direction == 'ArrowDown'):
+                # position = 400
+                # await self.send(json.dumps({'type': 'update_paddle_position', 'position': position}))
