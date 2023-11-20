@@ -25,11 +25,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 socket.addEventListener('open', (event) => {
-    console.log('WebSocket ouvert !');
-    
     const message = {
-        type: 'chat.message',
-        content: 'Hello, WebSocket!'
+        type: 'init_game',
+        canvas_width: canvas.width,
+        canvas_height: canvas.height,
     };
     socket.send(JSON.stringify(message));
 });
