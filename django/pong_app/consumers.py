@@ -8,12 +8,15 @@ class PongConsumer(AsyncWebsocketConsumer):
     paddlePosition = 0
     moving_up = False;
     moving_down = False;
-    moving_up_task = None;
-    moving_down_task = None;
     # keyState = {
     #     'ArrowUp': False,
     #     'ArrowDown': False,
     # }
+
+    tasksAsyncio = {
+        'ArrowUp': None,
+        'ArrowDown': None,
+    }
 
     async def connect(self):
         await self.accept()

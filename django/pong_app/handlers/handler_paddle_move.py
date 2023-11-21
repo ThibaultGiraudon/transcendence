@@ -19,22 +19,23 @@ async def keydown_loop(direction, consumer):
 		await asyncio.sleep(0.01) # TODO change to fps
 
 async def handle_paddle_move(message, consumer):
+	direction = message['direction']
 	if (message['key'] == 'keydown'):
-		if (message['direction'] == 'ArrowUp'):
+		if (direction == 'ArrowUp'):
 			consumer.moving_up = True;
-			consumer.moving_up_task = asyncio.create_task(keydown_loop(message['direction'], consumer))
+			consumer.tasksAsyncio[direction] = asyncio.create_task(keydown_loop(direction, consumer))
 
-		elif (message['direction'] == 'ArrowDown'):
+		elif (direction == 'ArrowDown'):
 			consumer.moving_down = True;
-			consumer.moving_down_task = asyncio.create_task(keydown_loop(message['direction'], consumer))
+			consumer.tasksAsyncio[direction] = asyncio.create_task(keydown_loop(direction, consumer))
 
 	elif (message['key'] == 'keyup'):
-		if (message['direction'] == 'ArrowUp'):
+		if (direction == 'ArrowUp'):
 			consumer.moving_up = False;
-			if consumer.moving_up_task:
-				consumer.moving_up_task.cancel()
+			if (consumer.tasksAsyncio[direction]):
+				consumer.tasksAsyncio[direction].cancel()
 
-		elif (message['direction'] == 'ArrowDown'):
+		elif (direction == 'ArrowDown'):
 			consumer.moving_down = False;
-			if consumer.moving_down_task:
-				consumer.moving_down_task.cancel()
+			if (consumer.tasksAsyncio[direction]):
+				consumer.tasksAsyncio[direction].cancel()
