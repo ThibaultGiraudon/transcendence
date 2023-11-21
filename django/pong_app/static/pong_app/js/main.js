@@ -7,16 +7,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const keyState = {
         ArrowUp: false,
         ArrowDown: false,
+        w: false,
+        s: false,
     };
 
     document.addEventListener('keydown', function(event) {
-        if (!keyState[event.key] && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
+        if (!keyState[event.key] && (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'w' || event.key === 's')) {
             keyState[event.key] = true;
             const message = {
                 type: 'paddle_move',
                 key: 'keydown',
                 direction: getPaddleDirection(event.key),
-                paddle: 'left',
+                paddle: getPaddle(event.key),
                 // TODO get paddle position qui renvoie en fonction de event.key
             };
             socket.send(JSON.stringify(message));
@@ -24,13 +26,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.addEventListener('keyup', function(event) {
-        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+        if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'w' || event.key === 's') {
             keyState[event.key] = false;
             const message = {
                 type: 'paddle_move',
                 key: 'keyup',
                 direction: getPaddleDirection(event.key),
-                paddle: 'left',
+                paddle: getPaddle(event.key),
                 // TODO get paddle position qui renvoie en fonction de event.key
             };
             socket.send(JSON.stringify(message));
@@ -64,6 +66,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+function getPaddle(key) {
+    if (key === 'ArrowUp' || key === 'ArrowDown') {
+        return 'left';
+    } else if (key === 'w' || key === 's') {
+        return 'right';
+    }
+}
+
 function getPaddleDirection(key) {
     if (key === 'ArrowUp' || key === 'w') {
         return 'up';
@@ -85,7 +95,7 @@ function drawLeftPaddles(position) {
 }
 
 function drawRightPaddle(position) {
-    // drawBackground();
+    drawBackground();
     ctx.fillStyle = 'white';
     ctx.fillRect(canvas.width - PLAYER_WIDTH - 5, position, PLAYER_WIDTH, PLAYER_HEIGHT);
 }
