@@ -23,21 +23,16 @@ async def handle_paddle_move(message, consumer):
 	if (message['key'] == 'keydown'):
 		if (direction == 'ArrowUp'):
 			consumer.keyState[direction] = True;
-			consumer.tasksAsyncio[direction] = asyncio.create_task(keydown_loop(direction, consumer))
-
 		elif (direction == 'ArrowDown'):
 			consumer.keyState[direction] = True;
-			consumer.tasksAsyncio[direction] = asyncio.create_task(keydown_loop(direction, consumer))
-			#TODO essaie de mettre un seul task =  a la fin pour les deux directions
+
+		consumer.tasksAsyncio[direction] = asyncio.create_task(keydown_loop(direction, consumer))
 
 	elif (message['key'] == 'keyup'):
 		if (direction == 'ArrowUp'):
 			consumer.keyState[direction] = False;
-			if (consumer.tasksAsyncio[direction]):
-				consumer.tasksAsyncio[direction].cancel()
-
 		elif (direction == 'ArrowDown'):
 			consumer.keyState[direction] = False;
-			if (consumer.tasksAsyncio[direction]):
-				consumer.tasksAsyncio[direction].cancel()
-			#TODO essaie de mettre un seul if a la fin pour les deux directions
+
+		if (consumer.tasksAsyncio[direction]):
+			consumer.tasksAsyncio[direction].cancel()
