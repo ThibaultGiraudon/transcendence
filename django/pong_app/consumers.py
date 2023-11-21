@@ -5,13 +5,29 @@ import  json
 
 class PongConsumer(AsyncWebsocketConsumer):
     paddlePosition = 0
+    # keyState = {
+        # 'ArrowUp': False,
+        # 'ArrowDown': False,
+    # }
     keyState = {
-        'ArrowUp': False,
-        'ArrowDown': False,
+        'left': {
+            'up': False,
+            'down': False,
+        },
+        'right': {
+            'up': False,
+            'down': False,
+        },
     }
     tasksAsyncio = {
-        'ArrowUp': None,
-        'ArrowDown': None,
+        'left': {
+            'up': None,
+            'down': None,
+        },
+        'right': {
+            'up': None,
+            'down': None,
+        },
     }
 
     async def connect(self):

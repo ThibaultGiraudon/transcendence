@@ -5,8 +5,8 @@ const   socket = new WebSocket(socketUrl);
 
 document.addEventListener('DOMContentLoaded', function() {
     const keyState = {
-    ArrowUp: false,
-    ArrowDown: false,
+        ArrowUp: false,
+        ArrowDown: false,
     };
 
     document.addEventListener('keydown', function(event) {
@@ -15,7 +15,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const message = {
                 type: 'paddle_move',
                 key: 'keydown',
-                direction: event.key,
+                direction: getPaddleDirection(event.key),
+                paddle: 'left',
+                // TODO get paddle position qui renvoie en fonction de event.key
             };
             socket.send(JSON.stringify(message));
         }
@@ -27,7 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const message = {
                 type: 'paddle_move',
                 key: 'keyup',
-                direction: event.key,
+                direction: getPaddleDirection(event.key),
+                paddle: 'left',
+                // TODO get paddle position qui renvoie en fonction de event.key
             };
             socket.send(JSON.stringify(message));
         }
@@ -41,18 +45,55 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         socket.send(JSON.stringify(message));
     });
+
+    socket.addEventListener('message', (event) => {
+        // console.log('Message reçu:', message);
+
+        let message = JSON.parse(event.data);
+        if (message.type === 'update_paddle_position') {
+
+            console.log('update_paddle_position');
+            if (message.paddle === 'left') {
+                const newPosition = parseFloat(message.position);
+                drawLeftPaddles(newPosition);
+            } else if (message.paddle === 'right') {
+                const newPosition = parseFloat(message.position);
+                drawRightPaddle(newPosition);
+            }
+        }
+    });
 });
 
+function getPaddleDirection(key) {
+    if (key === 'ArrowUp' || key === 'w') {
+        return 'up';
+    } else if (key === 'ArrowDown' || key === 's') {
+        return 'down';
+    }
+}
+
+const PLAYER_WIDTH = 20
+const PLAYER_HEIGHT = 150
+const canvas = document.getElementById("pongCanvas");
+const ctx = canvas.getContext("2d");
+var game;
+
+function drawLeftPaddles(position) {
+    drawBackground();
+    ctx.fillStyle = 'white';
+    ctx.fillRect(5, position, PLAYER_WIDTH, PLAYER_HEIGHT);
+}
+
+function drawRightPaddle(position) {
+    // drawBackground();
+    ctx.fillStyle = 'white';
+    ctx.fillRect(canvas.width - PLAYER_WIDTH - 5, position, PLAYER_WIDTH, PLAYER_HEIGHT);
+}
 
 // TODO voir p5 pour les canvas
 
 
-const PLAYER_WIDTH = 20
-const PLAYER_HEIGHT = 150
 
-const canvas = document.getElementById("pongCanvas");
-const ctx = canvas.getContext("2d");
-var game;
 const startPaddle = canvas.height / 2 - 75
 
 function drawBackground() {
@@ -67,24 +108,8 @@ function drawBackground() {
     ctx.closePath();
 }
 
-function drawPaddles(position) {
-    console.log('drawPaddles', position);
-    drawBackground();
-    ctx.fillStyle = 'white';
-    ctx.fillRect(5, position, PLAYER_WIDTH, PLAYER_HEIGHT);
-    // ctx.fillRect(canvas.width - PLAYER_WIDTH - 5, game.computer.y, PLAYER_WIDTH, PLAYER_HEIGHT);
-}
 
-socket.addEventListener('message', (event) => {
-    let message = JSON.parse(event.data);
-    console.log('Message reçu:', message);
 
-    if (message.type === 'update_paddle_position') {
-        console.log('update_paddle_position');
-        const newPosition = parseFloat(message.position);
-        drawPaddles(newPosition);
-    }
-});
 
 // Exécuté lorsque la connexion WebSocket est fermée
 socket.addEventListener('close', (event) => {
