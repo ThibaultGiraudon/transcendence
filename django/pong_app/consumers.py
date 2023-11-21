@@ -4,7 +4,10 @@ from    .handlers.handler_init_game import handle_init_game
 import  json
 
 class PongConsumer(AsyncWebsocketConsumer):
-    paddlePosition = 0
+    paddlePosition = {
+        'left': 0,
+        'right': 0,
+    }
     # keyState = {
         # 'ArrowUp': False,
         # 'ArrowDown': False,
