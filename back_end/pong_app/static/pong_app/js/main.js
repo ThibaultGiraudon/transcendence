@@ -1,11 +1,11 @@
-const PLAYER_WIDTH = 20
-const PLAYER_HEIGHT = 150
 
 const canvas = document.getElementById("pongCanvas");
 const ctx = canvas.getContext("2d");
 var game;
 const startPaddle = canvas.height / 2 - 75
 
+const PLAYER_WIDTH = canvas.width / 100
+const PLAYER_HEIGHT = canvas.height / 5
 
 function draw() {
     drawBackground()
@@ -61,11 +61,11 @@ document.addEventListener('keydown', playerTwoMove, false);
 function playerOneMove(e) {
     switch(e.key) {
         case 'w':
-            if ((game.player.y - 10) > 0)
+            if ((game.player.y) > 0)
             game.player.y -= 10
         break;
         case 's':
-            if ((game.player.y + 10) < canvas.height - 150)
+            if ((game.player.y) < canvas.height - PLAYER_HEIGHT)
                 game.player.y += 10
             break;
     }
@@ -75,11 +75,11 @@ function playerOneMove(e) {
 function playerTwoMove(e) {
     switch(e.key) {
         case 'ArrowUp':
-            if ((game.computer.y - 10) > 0)
+            if ((game.computer.y) > 0)
             game.computer.y -= 10
         break;
         case 'ArrowDown':
-            if ((game.computer.y + 10) < canvas.height - 150)
+            if ((game.computer.y) < canvas.height - PLAYER_HEIGHT)
                 game.computer.y += 10
             break;
     }
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ball: {
             x: canvas.width / 2,
             y: canvas.height / 2,
-            r: 10,
+            r: canvas.height / 50,
             speed: {
                 x: -2,
                 y: 2

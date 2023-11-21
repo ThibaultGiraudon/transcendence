@@ -22,7 +22,13 @@
             console.log("Message reçu:", message);
         });
     </script>
-    <canvas id="pongCanvas" width="800" height="600"></canvas>
+    <style>
+        #pongCanvas {
+            width: 100%;
+            height: 80%;
+        }
+    </style>
+    <canvas id="pongCanvas"></canvas>
     {% load static %}
     <script src="{% static 'pong_app/js/main.js' %}"></script>
 </body>
