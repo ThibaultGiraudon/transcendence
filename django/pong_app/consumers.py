@@ -2,17 +2,13 @@ from    channels.generic.websocket import AsyncWebsocketConsumer
 from    .handlers.handler_paddle_move import handle_paddle_move
 from    .handlers.handler_init_game import handle_init_game
 import  json
-import  asyncio
 
 class PongConsumer(AsyncWebsocketConsumer):
     paddlePosition = 0
-    moving_up = False;
-    moving_down = False;
-    # keyState = {
-    #     'ArrowUp': False,
-    #     'ArrowDown': False,
-    # }
-
+    keyState = {
+        'ArrowUp': False,
+        'ArrowDown': False,
+    }
     tasksAsyncio = {
         'ArrowUp': None,
         'ArrowDown': None,
