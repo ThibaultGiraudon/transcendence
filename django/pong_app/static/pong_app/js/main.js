@@ -11,6 +11,12 @@ document.addEventListener('DOMContentLoaded', function() {
         s: false,
     };
 
+    const paddlePosition = {
+        left: 0,
+        right: 0,
+        // TODO get paddle positon au debart
+    };
+
     document.addEventListener('keydown', function(event) {
         if (!keyState[event.key] && (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'w' || event.key === 's')) {
             keyState[event.key] = true;
@@ -35,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 paddle: getPaddle(event.key),
                 // TODO get paddle position qui renvoie en fonction de event.key
             };
+            console.log(message);
             socket.send(JSON.stringify(message));
         }
     });
@@ -52,15 +59,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // console.log('Message reçu:', message);
 
         let message = JSON.parse(event.data);
+        console.log("receive", message);
         if (message.type === 'update_paddle_position') {
-
-            console.log('update_paddle_position');
             if (message.paddle === 'left') {
-                const newPosition = parseFloat(message.position);
-                drawLeftPaddles(newPosition);
+                paddlePosition.left = parseFloat(message.position);
+                drawPaddles(paddlePosition.left, paddlePosition.right);
             } else if (message.paddle === 'right') {
-                const newPosition = parseFloat(message.position);
-                drawRightPaddle(newPosition);
+                paddlePosition.right = parseFloat(message.position);
+                drawPaddles(paddlePosition.left, paddlePosition.right);
             }
         }
     });
@@ -68,9 +74,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function getPaddle(key) {
     if (key === 'ArrowUp' || key === 'ArrowDown') {
-        return 'left';
-    } else if (key === 'w' || key === 's') {
         return 'right';
+    } else if (key === 'w' || key === 's') {
+        return 'left';
     }
 }
 
@@ -88,10 +94,12 @@ const canvas = document.getElementById("pongCanvas");
 const ctx = canvas.getContext("2d");
 var game;
 
-function drawLeftPaddles(position) {
+function drawPaddles(left, right) {
     drawBackground();
     ctx.fillStyle = 'white';
-    ctx.fillRect(5, position, PLAYER_WIDTH, PLAYER_HEIGHT);
+    console.log(left, right);
+    ctx.fillRect(5, left, PLAYER_WIDTH, PLAYER_HEIGHT);
+    ctx.fillRect(canvas.width - PLAYER_WIDTH - 5, right, PLAYER_WIDTH, PLAYER_HEIGHT);
 }
 
 function drawRightPaddle(position) {
