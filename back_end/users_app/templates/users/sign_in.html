@@ -1,0 +1,31 @@
+{% block content %}
+
+{% if request.user.is_authenticated %}
+
+<p>You are already connected, please logout before login.</p>
+<a href="/sign_out">
+	<button>Log out</button>
+</a>
+
+{% else %}
+
+<form method="POST" novalidate>
+	{% csrf_token %}
+
+	<h2>Sign in</h2>
+	{{form.as_p}}
+	
+	{% for message in messages %}
+	<div>
+	
+		<a data-dismiss="alert">⚠️</a>
+		{{ message }}
+	</div>
+	{% endfor %}
+	
+	<input type="submit" value="Login"/>
+</form>
+
+{% endif %}
+	
+{% endblock content%}

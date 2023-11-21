@@ -1,0 +1,17 @@
+{% block content %}
+<form method="POST" novalidate>
+	{% csrf_token %}
+	<h2>Sign up</h2>
+	{{form.as_p}}
+
+	{% for message in messages %}
+	<div>
+		<a data-dismiss="alert">×</a>
+			{{ message }}
+	</div>
+	{% endfor %}
+
+	<input type="submit" value="Sign up" />
+</form>
+
+{% endblock content%}
