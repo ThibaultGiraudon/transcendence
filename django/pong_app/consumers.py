@@ -5,8 +5,13 @@ import  json
 import  asyncio
 
 class PongConsumer(AsyncWebsocketConsumer):
-    paddle_position = 0
-    moving = False;
+    paddlePosition = 0
+    moving_up = False;
+    moving_down = False;
+    # keyState = {
+    #     'ArrowUp': False,
+    #     'ArrowDown': False,
+    # }
 
     async def connect(self):
         await self.accept()

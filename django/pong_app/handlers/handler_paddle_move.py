@@ -4,7 +4,12 @@ import asyncio
 async def keydown_loop(direction, consumer):
 	step = 10;
 
-	while (consumer.moving):
+	# if (direction == 'ArrowUp'):
+		# consumer.moving_down = False;
+	# elif (direction == 'ArrowDown'):
+		# consumer.moving_up = False;
+	print(f"keydown_loop direction: {direction}")
+	while (consumer.moving_up or consumer.moving_down):
 		if (direction == 'ArrowUp' and consumer.paddle_position > 0):
 			consumer.paddle_position = consumer.paddle_position - step;
 			await consumer.send(json.dumps({'type': 'update_paddle_position', 'position': consumer.paddle_position}))
@@ -15,7 +20,13 @@ async def keydown_loop(direction, consumer):
 
 async def handle_paddle_move(message, consumer):
 	if (message['key'] == 'keydown'):
-		consumer.moving = True;
+		if (message['direction'] == 'ArrowUp'):
+			consumer.moving_up = True;
+		elif (message['direction'] == 'ArrowDown'):
+			consumer.moving_down = True;
 		asyncio.create_task(keydown_loop(message['direction'], consumer))
 	elif (message['key'] == 'keyup'):
-		consumer.moving = False;
+		if (message['direction'] == 'ArrowUp'):
+			consumer.moving_up = False;
+		elif (message['direction'] == 'ArrowDown'):
+			consumer.moving_down = False;
