@@ -9,6 +9,10 @@ def pong(request):
 	# Check if the user is already connected
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
+
+	# Check arguments
+	if request.method == 'GET' and 'error' in request.GET:
+		return redirect('sign_in')
 	
 	game_state, created = PongGameState.objects.get_or_create(pk=1)
 
