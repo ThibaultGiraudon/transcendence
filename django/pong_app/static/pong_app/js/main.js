@@ -4,11 +4,14 @@ const   socketUrl = websocketProtocol + '//' + window.location.host + websocketP
 const   socket = new WebSocket(socketUrl);
 
 document.addEventListener('DOMContentLoaded', function() {
-    let isKeyDown = false;
+    const keyState = {
+    ArrowUp: false,
+    ArrowDown: false,
+    };
 
     document.addEventListener('keydown', function(event) {
-        if (!isKeyDown && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
-            isKeyDown = true;
+        if (!keyState[event.key] && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
+            keyState[event.key] = true;
             const message = {
                 type: 'paddle_move',
                 key: 'keydown',
@@ -20,10 +23,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.addEventListener('keyup', function(event) {
         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-            isKeyDown = false;
+            keyState[event.key] = false;
             const message = {
                 type: 'paddle_move',
                 key: 'keyup',
+                direction: event.key,
             };
             socket.send(JSON.stringify(message));
         }
@@ -40,13 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-
-
-
 // TODO voir p5 pour les canvas
-
-
-
 
 
 const PLAYER_WIDTH = 20
