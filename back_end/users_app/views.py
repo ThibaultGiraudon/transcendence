@@ -8,6 +8,8 @@ from .forms import LoginForm, SignUpForm
 from django.views.decorators.csrf import csrf_protect
 
 API_URL = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fcheck_authorize%2F&response_type=code"
+API_USER = 'https://api.intra.42.fr/v2/me'
+token = 'a1b97fc8bf0022f53985629338161709e5e06e69f04a1f192bb6f82c42d4fe44'
 
 @csrf_protect
 def sign_in(request):
@@ -69,17 +71,22 @@ def	check_authorize(request):
 		return redirect('sign_in')
 	if request.method == 'GET' and 'code' in request.GET:
 		code = request.GET['code']
-	response_data = make_api_request_with_token(api_url, code)
-	logging.info(response_data)
-	logging.info('---------------------')
-	response_data = make_api_request_with_token(api_url, token)
+	logging.info('---------------------\nURL')
+	logging.info(request)
+	logging.info('\n\n')
+	logging.info('---------------------\nCODE')
+	logging.info(code)
+	logging.info('\n\n')
+	response_token = handle_42_callback(code)
+	logging.info('---------------------\nRESPONSE TOKEN')
+	logging.info(response_token)
+	response_data = make_api_request_with_token(API_USER, response_token)
+	logging.info("---------------------\nUSER INFO")
 	logging.info(response_data)
 	user1 = authenticate(request,username="guest", password="guest")
 	if user1:
 		login(request, user1)
 	return redirect('pong')
-
-import requests
 
 def make_api_request_with_token(api_url, token):
     # Définir l'en-tête avec le token d'authentification
@@ -107,8 +114,33 @@ def make_api_request_with_token(api_url, token):
         logging.error(f"Erreur de requête API: {e}")
         return None
 
-# Exemple d'utilisation
-api_url = 'https://api.intra.42.fr/v2/me'
-token = 'a1b97fc8bf0022f53985629338161709e5e06e69f04a1f192bb6f82c42d4fe44'
 
-tmp_token = 'https://api.intra.42.fr/oauth/token?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&client_secret=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&code=INSERT_CODE_HERE&redirect_uri=http://localhost/pong'
+def handle_42_callback(code):
+    # Récupérer le code d'autorisation de l'URL
+    # Échanger le code d'autorisation contre un token d'accès
+    token_url = "https://api.intra.42.fr/oauth/token"
+    token_params = {
+        'grant_type': 'authorization_code',
+        'client_id': 'u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c',
+        'client_secret': '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',
+        'code': code,
+		'redirect_uri': 'http://localhost:8000/check_authorize'
+    }
+
+    # Faire une demande POST pour obtenir le token d'accès
+    response = requests.post(token_url, data=token_params)
+
+    if response.status_code == 200:
+        # L'exemple suppose que la réponse est en format JSON
+        token_data = response.json()
+
+        # Utiliser le token d'accès pour authentifier l'utilisateur
+        access_token = token_data['access_token']
+
+        # Effectuer des opérations d'authentification avec Django
+        # ...
+
+        return access_token  # Rediriger vers la page d'accueil après l'authentification
+    else:
+        # Gérer les erreurs d'authentification
+        return None
