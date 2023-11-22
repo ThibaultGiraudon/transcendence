@@ -10,6 +10,14 @@ def keyup_reset(direction, paddle, consumer):
 	if (consumer.tasksAsyncio[paddle][direction]):
 		consumer.tasksAsyncio[paddle][direction].cancel()
 
+async def sendUpdateMessage(consumer, paddle):
+	message = {
+		'type': 'update_paddle_position',
+		'position': consumer.paddlePosition[paddle],
+		'paddle': paddle
+	}
+	await consumer.send(json.dumps(message))
+
 async def keydown_loop(direction, paddle, consumer):
 	step = 10;
 
@@ -24,12 +32,7 @@ async def keydown_loop(direction, paddle, consumer):
 		elif (consumer.keyState[paddle][direction] and direction == 'down' and consumer.paddlePosition[paddle] < consumer.canvasInfo['height'] - 100):
 			consumer.paddlePosition[paddle] = consumer.paddlePosition[paddle] + step;
 
-		message = {
-			'type': 'update_paddle_position',
-			'position': consumer.paddlePosition[paddle],
-			'paddle': paddle
-		}
-		await consumer.send(json.dumps(message))
+		await sendUpdateMessage(consumer, paddle)
 		await asyncio.sleep(0.01) # TODO change to fps
 
 async def handle_paddle_move(message, consumer):
