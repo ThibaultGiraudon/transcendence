@@ -167,9 +167,8 @@ var config = {
     }
 };
 
-var game = new Phaser.Game(config);
+var phaserGame = new Phaser.Game(config);
 
-// Chargement des ressources
 function preload() {
     // this.load.image('paddle', 'test.jpg');
 }
@@ -178,16 +177,20 @@ var paddles;
 
 // Initialisation du jeu
 function create() {
-    paddles = this.physics.add.group({
-        key: 'paddle',
-        repeat: 1,
-        setXY: { x: 400, y: [100, 500], stepY: 400 }
-    });
+    paddles = this.physics.add.group();
+
+    // Ajouter un rectangle à la position (400, 100)
+    var paddle1 = this.add.rectangle(10, paddlePosition.left + 50, 10, 100, 0xffffff); // x, y, largeur, hauteur, couleur
+    paddles.add(paddle1);
+
+    // Ajouter un rectangle à la position (400, 500)
+    var paddle2 = this.add.rectangle(config.width - 10, paddlePosition.right + 50, 10, 100, 0xffffff); // x, y, largeur, hauteur, couleur
+    paddles.add(paddle2);
 
     paddles.children.iterate(function (paddle) {
         paddle.setOrigin(0.5, 0.5);
-        paddle.setCollideWorldBounds(true);
-        paddle.setBounceY(1);
+        // paddle.setCollideWorldBounds(true);
+        // paddle.setBounceY(1);
     });
 }
 
