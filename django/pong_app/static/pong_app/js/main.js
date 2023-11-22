@@ -21,7 +21,6 @@ const   keyState = {
 const   paddlePosition = {
     left: 0,
     right: 0,
-    // TODO get paddle positon au debart
 };
 
 const   ballPosition = {
@@ -49,6 +48,14 @@ function drawPaddles(paddlePosition) {
     context.fillStyle = 'white';
     context.fillRect(5, paddlePosition.left, PLAYER_WIDTH, PLAYER_HEIGHT);
     context.fillRect(canvas.width - PLAYER_WIDTH - 5, paddlePosition.right, PLAYER_WIDTH, PLAYER_HEIGHT);
+}
+
+function drawBall(ballPosition) {
+    context.beginPath();
+    context.fillStyle = 'white';
+    context.arc(ballPosition.x, ballPosition.y, 16, 0, Math.PI * 2, false);
+    // TODO 16 est le rayon
+    context.fill();
 }
 
 // EVENTS
@@ -96,6 +103,15 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     socket.addEventListener('open', (event) => {
+
+        socket.send(JSON.stringify({
+            type: 'ball_move',
+        }));
+        socket.send(JSON.stringify({
+            type: 'ball_move',
+        }));
+
+
         const message = {
             type: 'init_game',
             canvas_width: canvas.width,
@@ -113,6 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
             ballPosition.x = message.ballPosition.x;
             ballPosition.y = message.ballPosition.y;
             drawPaddles(paddlePosition)
+            drawBall(ballPosition)
         }
 
         if (message.type === 'update_paddle_position') {
@@ -123,6 +140,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 paddlePosition.right = parseFloat(message.position);
                 drawPaddles(paddlePosition);
             }
+        }
+
+        if (message.type === 'update_ball_position') {
+            ballPosition.x = parseFloat(message.position.x);
+            ballPosition.y = parseFloat(message.position.y);
+            drawBall(ballPosition);
         }
     });
 });
@@ -157,15 +180,6 @@ document.addEventListener('DOMContentLoaded', function() {
 //     context.fillStyle = 'white';
 //     context.fillRect(5, game.player.y , PLAYER_WIDTH, PLAYER_HEIGHT);
 //     context.fillRect(canvas.width - PLAYER_WIDTH - 5, game.computer.y, PLAYER_WIDTH, PLAYER_HEIGHT);
-// }
-
-
-
-// function drawBall() {
-//     context.beginPath();
-//     context.fillStyle = 'white';
-//     context.arc(game.ball.x, game.ball.y, game.ball.r, 0, Math.PI * 2, false);
-//     context.fill();
 // }
 
 // function play() {
