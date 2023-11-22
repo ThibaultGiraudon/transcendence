@@ -16,6 +16,9 @@ class PongConsumer(AsyncWebsocketConsumer):
     ballPosition = {
         'x': 100,
         'y': 100,
+        'speed': 10,
+        'direction': 'right',
+        'angle': 1,
     }
     keyState = {
         'left': {
