@@ -29,6 +29,12 @@
         }
     </style>
     <canvas id="pongCanvas"></canvas>
+    {% if request.user.is_authenticated %}
+        <h1>{{ request.user.username }}</h1>
+        <a href="/profile">
+            <button>Profil</button>
+        </a>
+    {% endif %}
     {% load static %}
     <script src="{% static 'pong_app/js/main.js' %}"></script>
 </body>
