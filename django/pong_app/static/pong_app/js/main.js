@@ -18,30 +18,27 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     document.addEventListener('keydown', function(event) {
-        if (!keyState[event.key] && (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'w' || event.key === 's')) {
+        if (!keyState[event.key] && keyState.hasOwnProperty(event.key)) {
             keyState[event.key] = true;
             const message = {
                 type: 'paddle_move',
                 key: 'keydown',
                 direction: getPaddleDirection(event.key),
                 paddle: getPaddle(event.key),
-                // TODO get paddle position qui renvoie en fonction de event.key
             };
             socket.send(JSON.stringify(message));
         }
     });
 
     document.addEventListener('keyup', function(event) {
-        if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'w' || event.key === 's') {
+        if (keyState.hasOwnProperty(event.key)) {
             keyState[event.key] = false;
             const message = {
                 type: 'paddle_move',
                 key: 'keyup',
                 direction: getPaddleDirection(event.key),
                 paddle: getPaddle(event.key),
-                // TODO get paddle position qui renvoie en fonction de event.key
             };
-            console.log(message);
             socket.send(JSON.stringify(message));
         }
     });
@@ -56,17 +53,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     socket.addEventListener('message', (event) => {
-        // console.log('Message reçu:', message);
-
         let message = JSON.parse(event.data);
-        console.log("receive", message);
         if (message.type === 'update_paddle_position') {
             if (message.paddle === 'left') {
                 paddlePosition.left = parseFloat(message.position);
-                drawPaddles(paddlePosition.left, paddlePosition.right);
+                drawPaddles(paddlePosition);
             } else if (message.paddle === 'right') {
                 paddlePosition.right = parseFloat(message.position);
-                drawPaddles(paddlePosition.left, paddlePosition.right);
+                drawPaddles(paddlePosition);
             }
         }
     });
@@ -94,12 +88,11 @@ const canvas = document.getElementById("pongCanvas");
 const ctx = canvas.getContext("2d");
 var game;
 
-function drawPaddles(left, right) {
+function drawPaddles(paddlePosition) {
     drawBackground();
     ctx.fillStyle = 'white';
-    console.log(left, right);
-    ctx.fillRect(5, left, PLAYER_WIDTH, PLAYER_HEIGHT);
-    ctx.fillRect(canvas.width - PLAYER_WIDTH - 5, right, PLAYER_WIDTH, PLAYER_HEIGHT);
+    ctx.fillRect(5, paddlePosition.left, PLAYER_WIDTH, PLAYER_HEIGHT);
+    ctx.fillRect(canvas.width - PLAYER_WIDTH - 5, paddlePosition.right, PLAYER_WIDTH, PLAYER_HEIGHT);
 }
 
 function drawRightPaddle(position) {
@@ -129,15 +122,11 @@ function drawBackground() {
 
 
 
-// Exécuté lorsque la connexion WebSocket est fermée
-socket.addEventListener('close', (event) => {
-    console.log('WebSocket fermé !');
-});
 
-// Exécuté en cas d'erreur WebSocket
-socket.addEventListener('error', (event) => {
-    console.error('Erreur WebSocket:', event);
-});
+
+
+
+
 
 
 
