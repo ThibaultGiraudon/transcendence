@@ -132,10 +132,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (message.type === 'update_paddle_position') {
             if (message.paddle === 'left') {
                 paddlePosition.left = parseFloat(message.position);
-                drawPaddles(paddlePosition);
+                // drawPaddles(paddlePosition);
+                updatePaddlePosition('left')
             } else if (message.paddle === 'right') {
                 paddlePosition.right = parseFloat(message.position);
-                drawPaddles(paddlePosition);
+                // drawPaddles(paddlePosition);
+                updatePaddlePosition('right')
             }
         }
 
@@ -174,27 +176,35 @@ function preload() {
 }
 
 var paddles;
+const allPaddles = {
+    left: null,
+    right: null,
+};
 
-// Initialisation du jeu
+function updatePaddlePosition(paddle) {
+    allPaddles[paddle].destroy();
+
+    var newPaddle = paddles.create(10, paddlePosition[paddle], 'paddle');  // Utiliser la méthode create de paddles
+    allPaddles[paddle] = newPaddle;
+
+    newPaddle.setOrigin(0.5, 0.5);
+}
+
 function create() {
     paddles = this.physics.add.group();
 
-    // Ajouter un rectangle à la position (400, 100)
-    var paddle1 = this.add.rectangle(10, paddlePosition.left + 50, 10, 100, 0xffffff); // x, y, largeur, hauteur, couleur
-    paddles.add(paddle1);
-
-    // Ajouter un rectangle à la position (400, 500)
-    var paddle2 = this.add.rectangle(config.width - 10, paddlePosition.right + 50, 10, 100, 0xffffff); // x, y, largeur, hauteur, couleur
-    paddles.add(paddle2);
+    allPaddles.left = paddles.create(10, paddlePosition.left + 50, 'paddle');
+    allPaddles.right = paddles.create(config.width - 10, paddlePosition.right + 50, 'paddle');
 
     paddles.children.iterate(function (paddle) {
         paddle.setOrigin(0.5, 0.5);
-        // paddle.setCollideWorldBounds(true);
-        // paddle.setBounceY(1);
     });
 }
 
-// Mise à jour du jeu
+
+
+
+
 function update() {
     // Logique de mise à jour ici
 }
