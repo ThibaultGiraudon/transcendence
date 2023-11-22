@@ -63,30 +63,39 @@ def sign_out(request):
 	
 	return redirect('sign_in')
 
+
 def ft_api(request):
 	return redirect(API_URL)
+
 
 def	check_authorize(request):
 	if request.method == 'GET' and 'error' in request.GET:
 		return redirect('sign_in')
 	if request.method == 'GET' and 'code' in request.GET:
 		code = request.GET['code']
-	logging.info('---------------------\nURL')
-	logging.info(request)
-	logging.info('---------------------\nCODE')
-	logging.info(code)
 	response_token = handle_42_callback(code)
-	logging.info('---------------------\nRESPONSE TOKEN')
-	logging.info(response_token)
-	logging.info("---------------------\nUSER INFO")
 	response_data = make_api_request_with_token(API_USER, response_token)
-	logging.info(response_data)
-	logging.info("---------------------\nTGIRAUDO INFO")
-	response_data = make_api_request_with_token(API_USER, token)
-	logging.info(response_data)
-	user1 = authenticate(request,username="guest", password="guest")
-	if user1:
-		login(request, user1)
+	# logging.info("----------------------")
+	# logging.info(response_data['login'])
+	# user = authenticate(request, username=response_data['login'])
+	# if user:
+	# 	logging.info("----------------------")
+	# 	logging.info("User logged\n")
+	# 	login(request, user)
+	# else :
+	# 	logging.info("----------------------")
+	# 	logging.info("Try Create User")
+	# 	user = User.objects.create(
+    #   				username=response_data['login'],
+    #       			email=response_data['email'])
+	# 	user.save()
+	# 	logging.info("----------------------")
+	# 	logging.info("User created")
+	# 	user = authenticate(request, username=response_data['login'])
+	# 	if user:
+	# 		login(request, user)
+	# 		logging.info("----------------------")
+	# 		logging.info("User logged")
 	return redirect('pong')
 
 def make_api_request_with_token(api_url, token):
@@ -140,10 +149,12 @@ def handle_42_callback(code):
 
 		# Effectuer des opérations d'authentification avec Django
 		# ...
-		logging.info("genre la cest bon ?")
 		return access_token  # Rediriger vers la page d'accueil après l'authentification
 	else:
 		# Gérer les erreurs d'authentification
 		logging.info(f" error: {response.status_code}")
 		logging.info(f" error: {response.text}")
 		return None
+
+# def user_profile(request):
+    
