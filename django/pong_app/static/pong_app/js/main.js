@@ -96,12 +96,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     socket.addEventListener('open', (event) => {
-        // const message = {
-        //     type: 'init_game',
-        //     canvas_width: canvas.width,
-        //     canvas_height: canvas.height,
-        // };
-        // socket.send(JSON.stringify(message));
+        const message = {
+            type: 'init_game',
+            canvas_width: canvas.width,
+            canvas_height: canvas.height,
+        };
+        socket.send(JSON.stringify(message));
     });
 
     socket.addEventListener('message', (event) => {

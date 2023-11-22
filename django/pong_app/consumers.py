@@ -50,8 +50,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         message = json.loads(text_data)
         print(f"Message reçu: {message}")
 
-        # if (message['type'] == 'init_game'):
-            # await handle_init_game(message, self)
+        if (message['type'] == 'init_game'):
+            await handle_init_game(message, self)
 
         if (message['type'] == 'paddle_move'):
             await handle_paddle_move(message, self)
