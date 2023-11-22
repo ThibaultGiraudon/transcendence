@@ -2,7 +2,7 @@ import requests
 import logging
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.models import User
+from users_app.models import CustomUser
 from django.contrib.auth import login, logout, authenticate
 from .forms import LoginForm, SignUpForm
 from django.views.decorators.csrf import csrf_protect
@@ -44,12 +44,18 @@ def sign_up(request):
 	elif request.method == 'POST':
 		form = SignUpForm(request.POST)
 		
+		logging.info("-----------------")
+		logging.info("Create user")
 		if form.is_valid():
-			user = User.objects.create_user(
+			user = CustomUser.objects.create_user(
 					username=form.cleaned_data['username'],
 					email=form.cleaned_data['email'],
 					password=form.cleaned_data['password'])
+			logging.info("-----------------")
+			logging.info("User created")
 			user.save()
+			logging.info("-----------------")
+			logging.info("User saved")
 			return redirect('sign_in')
 	
 	messages.error(request, "Form error")
