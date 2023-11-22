@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_protect
 
 API_URL = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fcheck_authorize%2F&response_type=code"
 API_USER = 'https://api.intra.42.fr/v2/me'
-token = '0b29a6403c261ca12f1bffd6077a6c146992b43864982a2b4e4ac82738013938'
+token = '4b05a7f238c5c1f4191d856d2f001d1ded53ac5a13b77b197bb4f8150ac2efea'
 
 @csrf_protect
 def sign_in(request):
