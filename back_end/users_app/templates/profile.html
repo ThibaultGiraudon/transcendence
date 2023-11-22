@@ -1,0 +1,8 @@
+{% block content%}
+{% csrf_token %}
+
+{% comment %} <title>{{ request.user.username }}</title> {% endcomment %}
+<h1>{{ request.user.username }}</h1>
+<h1>{{ request.user.email}}</h1>
+
+{% endblock content%}

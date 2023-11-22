@@ -15,6 +15,15 @@ token = '690c107e335181f7039f3792799aebb1fa4d55b320bd232dd68877c0cc13545d'
 
 @csrf_protect
 def sign_in(request):
+	"""
+	Try to login in the user
+ 
+	Arguments:
+		????request: a url request????
+	Returns:
+		pong page : the credential are good
+		sign_in page : the credential are wrong
+	"""
 	if request.method == 'GET':
 		form = LoginForm()
 		return render(request, 'users/sign_in.html', {'form': form})
@@ -39,6 +48,15 @@ def sign_in(request):
 
 @csrf_protect
 def sign_up(request):
+	"""
+	Create a new user
+ 
+	Arguments:
+		????request: an url request????
+	Returns:
+		sign_in page : all fields are filled
+		sign_up page : an error occured
+	"""
 	if request.method == 'GET':
 		form = SignUpForm()
 		return render(request, 'users/sign_up.html', {'form': form})
@@ -65,7 +83,14 @@ def sign_up(request):
 
 
 def sign_out(request):
-	# Logout the current user
+	"""
+	Logout the user
+ 
+	Arguments:
+		request: the user who should be delogged
+	Returns:
+		sign_in page
+	"""
 	if request.user.is_authenticated:
 		logout(request)
 	
@@ -77,12 +102,34 @@ def ft_api(request):
 
 
 def	check_authorize(request):
+	"""
+	Check if the user authorize the 42's connection or not
+ 
+	Arguments:
+		????request: an url request????
+	Returns:
+		pong page : the user authorize the connection
+		sign_in page : the user refuse the connection
+	"""
 	if request.method == 'GET' and 'error' in request.GET:
 		return redirect('sign_in')
 	if request.method == 'GET' and 'code' in request.GET:
 		code = request.GET['code']
 	response_token = handle_42_callback(code)
 	response_data = make_api_request_with_token(API_USER, response_token)
+	connect_42_user(request, response_data)
+	return redirect('pong')
+
+
+def	connect_42_user(request, response_data):
+	"""
+	Create user if the user connect for the first time
+	Connect user
+
+	Arguments:
+		request : ????
+		response_data : json data
+	"""	
 	logging.info("----------------------")
 	logging.info(response_data['login'])
 	user = authenticate_custom_user(email=response_data['email'], username=response_data['login'])
@@ -94,8 +141,8 @@ def	check_authorize(request):
 		logging.info("----------------------")
 		logging.info("Try Create User")
 		user = CustomUser.objects.create(
-      				username=response_data['login'],
-          			email=response_data['email'])
+	  				username=response_data['login'],
+		  			email=response_data['email'])
 		user.save()
 		logging.info("----------------------")
 		logging.info("User created")
@@ -104,38 +151,49 @@ def	check_authorize(request):
 			login(request, user)
 			logging.info("----------------------")
 			logging.info("User logged")
-	return redirect('pong')
+
 
 def make_api_request_with_token(api_url, token):
-	# Définir l'en-tête avec le token d'authentification
+	"""
+	Request for 42 api
+ 
+	Arguments:
+		api_url : the api url request
+		token : token to access the api
+
+	Returns:
+		None : the request faild
+		json data : the request succeed
+	"""
 	headers = {
 		'Authorization': f'Bearer {token}',
-		# 'Content-Type': 'application/json',  # Adapté selon les besoins de l'API
 	}
 
 	try:
-		# Effectuer la requête GET (ou POST, PUT, etc.) avec l'en-tête
 		response = requests.get(api_url, headers=headers)
 
-		# Vérifier si la requête a réussi (statut 200)
 		if response.status_code == 200:
-			# Traitement de la réponse JSON, si nécessaire
 			data = response.json()
 			return data
 		else:
-			# Gérer les erreurs de requête ici
 			logging.error(f"Erreur de requête API: {response.status_code}")
 			logging.error(response.text)
 			return None
 	except requests.RequestException as e:
-		# Gérer les erreurs d'exception ici
 		logging.error(f"Erreur de requête API: {e}")
 		return None
 
 
 def handle_42_callback(code):
-	# Récupérer le code d'autorisation de l'URL
-	# Échanger le code d'autorisation contre un token d'accès
+	"""
+	Ask 42 api for token thanks to the code replied after the redirection
+ 
+	Arguments:
+		code : the replied code from 42 redirection
+	Returns:
+		None : the request failed
+		token : the requet succeed
+	"""
 	token_url = "https://api.intra.42.fr/oauth/token"
 	token_params = {
 		'grant_type': 'authorization_code',
@@ -145,31 +203,40 @@ def handle_42_callback(code):
 		'redirect_uri': 'http://localhost:8000/check_authorize/'
 	}
 
-	# Faire une demande POST pour obtenir le token d'accès
 	response = requests.post(token_url, data=token_params)
 
 	if response.status_code == 200:
-		# L'exemple suppose que la réponse est en format JSON
 		token_data = response.json()
 
-		# Utiliser le token d'accès pour authentifier l'utilisateur
 		access_token = token_data['access_token']
 
-		# Effectuer des opérations d'authentification avec Django
-		# ...
-		return access_token  # Rediriger vers la page d'accueil après l'authentification
+		return access_token 
 	else:
-		# Gérer les erreurs d'authentification
 		logging.info(f" error: {response.status_code}")
 		logging.info(f" error: {response.text}")
 		return None
 
 
 def authenticate_custom_user(email, username):
-    UserModel = get_user_model()
+	"""
+	Authenticate function without password
+ 
+	Arguments:
+		email : the email of the user who want to connect
+		username : the username of the user who want to connect
 
-    try:
-        user = UserModel.objects.get(email=email, username=username)
-        return user
-    except UserModel.DoesNotExist:
-        return None
+	Returns:
+		None : the user isn't registered
+		user : the user exist
+	"""
+	UserModel = get_user_model()
+
+	try:
+		user = UserModel.objects.get(email=email, username=username)
+		return user
+	except UserModel.DoesNotExist:
+		return None
+
+
+def profile(request):
+    return render(request, 'profile.html')
