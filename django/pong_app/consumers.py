@@ -5,9 +5,13 @@ from    .handlers.handler_ball_move import handle_ball_move
 import  json
 
 class PongConsumer(AsyncWebsocketConsumer):
+    canvasInfo = {
+        'width': 600,
+        'height': 800,
+    }
     paddlePosition = {
-        'left': 0,
-        'right': 0,
+        'left': 100,
+        'right': 200,
     }
     ballPosition = {
         'x': 100,

@@ -21,7 +21,7 @@ async def keydown_loop(direction, paddle, consumer):
 	while (consumer.keyState[paddle][direction] or consumer.keyState[paddle][direction]):
 		if (consumer.keyState[paddle][direction] and direction == 'up' and consumer.paddlePosition[paddle] > 0):
 			consumer.paddlePosition[paddle] = consumer.paddlePosition[paddle] - step;
-		elif (consumer.keyState[paddle][direction] and direction == 'down' and consumer.paddlePosition[paddle] < consumer.canvas_height - 100):
+		elif (consumer.keyState[paddle][direction] and direction == 'down' and consumer.paddlePosition[paddle] < consumer.canvasInfo['height'] - 100):
 			consumer.paddlePosition[paddle] = consumer.paddlePosition[paddle] + step;
 
 		message = {
