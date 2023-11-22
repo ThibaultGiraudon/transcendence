@@ -6,8 +6,8 @@ import  json
 
 class PongConsumer(AsyncWebsocketConsumer):
     canvasInfo = {
-        'width': 600,
-        'height': 800,
+        'width': None,
+        'height': None,
     }
     paddlePosition = {
         'left': 100,

@@ -30,7 +30,6 @@ async def keydown_loop(direction, paddle, consumer):
 			'paddle': paddle
 		}
 		await consumer.send(json.dumps(message))
-		# await consumer.send(json.dumps({'type': 'update_paddle_position', 'position': consumer.paddlePosition[paddle], 'paddle': paddle}))
 		await asyncio.sleep(0.01) # TODO change to fps
 
 async def handle_paddle_move(message, consumer):
