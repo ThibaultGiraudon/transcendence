@@ -37,9 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'pong_app',
-    'users_app.apps.UsersAppConfig',
+    'users_app',
     'channels',
 ]
+
+AUTH_USER_MODEL = 'users_app.CustomUser'
 
 LOGGING = {
     "version": 1,
