@@ -1,6 +1,7 @@
 from    channels.generic.websocket import AsyncWebsocketConsumer
-from    .handlers.handler_paddle_move import handle_paddle_move
 from    .handlers.handler_init_game import handle_init_game
+from    .handlers.handler_paddle_move import handle_paddle_move
+from    .handlers.handler_ball_move import handle_ball_move
 import  json
 
 class PongConsumer(AsyncWebsocketConsumer):
@@ -8,10 +9,10 @@ class PongConsumer(AsyncWebsocketConsumer):
         'left': 0,
         'right': 0,
     }
-    # keyState = {
-        # 'ArrowUp': False,
-        # 'ArrowDown': False,
-    # }
+    ballPosition = {
+        'x': 100,
+        'y': 100,
+    }
     keyState = {
         'left': {
             'up': False,
@@ -35,6 +36,12 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         await self.accept()
+        message = {
+            'type': 'init_game',
+            'paddlePosition': self.paddlePosition,
+            'ballPosition': self.ballPosition,
+        }
+        await self.send(json.dumps(message))
 
     async def disconnect(self, close_code):
         pass
@@ -43,8 +50,11 @@ class PongConsumer(AsyncWebsocketConsumer):
         message = json.loads(text_data)
         print(f"Message reçu: {message}")
 
-        if (message['type'] == 'init_game'):
-            await handle_init_game(message, self)
+        # if (message['type'] == 'init_game'):
+            # await handle_init_game(message, self)
 
         if (message['type'] == 'paddle_move'):
             await handle_paddle_move(message, self)
+
+        if (message['type'] == 'ball_move'):
+            await handle_ball_move(message, self)
