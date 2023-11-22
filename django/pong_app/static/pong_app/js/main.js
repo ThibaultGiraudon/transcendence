@@ -103,15 +103,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     socket.addEventListener('open', (event) => {
-
-        socket.send(JSON.stringify({
-            type: 'ball_move',
-        }));
-        socket.send(JSON.stringify({
-            type: 'ball_move',
-        }));
-
-
         const message = {
             type: 'init_game',
             canvas_width: canvas.width,
@@ -128,6 +119,12 @@ document.addEventListener('DOMContentLoaded', function() {
             paddlePosition.right = message.paddlePosition.right;
             ballPosition.x = message.ballPosition.x;
             ballPosition.y = message.ballPosition.y;
+
+            // TODO a deplacer
+            socket.send(JSON.stringify({
+                type: 'ball_move',
+            }));
+
             drawPaddles(paddlePosition)
             drawBall(ballPosition)
         }
