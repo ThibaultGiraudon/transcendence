@@ -112,7 +112,6 @@ document.addEventListener('DOMContentLoaded', function() {
             paddlePosition.right = message.paddlePosition.right;
             ballPosition.x = message.ballPosition.x;
             ballPosition.y = message.ballPosition.y;
-            // drawBackground();
             drawPaddles(paddlePosition)
         }
 
