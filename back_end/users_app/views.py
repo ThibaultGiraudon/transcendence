@@ -5,12 +5,13 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from users_app.models import CustomUser
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import get_user_model
 from .forms import LoginForm, SignUpForm
 from django.views.decorators.csrf import csrf_protect
 
 API_URL = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fcheck_authorize%2F&response_type=code"
 API_USER = 'https://api.intra.42.fr/v2/me'
-token = '4b05a7f238c5c1f4191d856d2f001d1ded53ac5a13b77b197bb4f8150ac2efea'
+token = '690c107e335181f7039f3792799aebb1fa4d55b320bd232dd68877c0cc13545d'
 
 @csrf_protect
 def sign_in(request):
@@ -82,27 +83,27 @@ def	check_authorize(request):
 		code = request.GET['code']
 	response_token = handle_42_callback(code)
 	response_data = make_api_request_with_token(API_USER, response_token)
-	# logging.info("----------------------")
-	# logging.info(response_data['login'])
-	# user = authenticate(request, username=response_data['login'])
-	# if user:
-	# 	logging.info("----------------------")
-	# 	logging.info("User logged\n")
-	# 	login(request, user)
-	# else :
-	# 	logging.info("----------------------")
-	# 	logging.info("Try Create User")
-	# 	user = User.objects.create(
-    #   				username=response_data['login'],
-    #       			email=response_data['email'])
-	# 	user.save()
-	# 	logging.info("----------------------")
-	# 	logging.info("User created")
-	# 	user = authenticate(request, username=response_data['login'])
-	# 	if user:
-	# 		login(request, user)
-	# 		logging.info("----------------------")
-	# 		logging.info("User logged")
+	logging.info("----------------------")
+	logging.info(response_data['login'])
+	user = authenticate_custom_user(email=response_data['email'], username=response_data['login'])
+	if user:
+		logging.info("----------------------")
+		logging.info("User logged\n")
+		login(request, user)
+	else :
+		logging.info("----------------------")
+		logging.info("Try Create User")
+		user = CustomUser.objects.create(
+      				username=response_data['login'],
+          			email=response_data['email'])
+		user.save()
+		logging.info("----------------------")
+		logging.info("User created")
+		user = authenticate_custom_user(email=response_data['email'], username=response_data['login'])
+		if user:
+			login(request, user)
+			logging.info("----------------------")
+			logging.info("User logged")
 	return redirect('pong')
 
 def make_api_request_with_token(api_url, token):
@@ -163,5 +164,12 @@ def handle_42_callback(code):
 		logging.info(f" error: {response.text}")
 		return None
 
-# def user_profile(request):
-    
+
+def authenticate_custom_user(email, username):
+    UserModel = get_user_model()
+
+    try:
+        user = UserModel.objects.get(email=email, username=username)
+        return user
+    except UserModel.DoesNotExist:
+        return None
