@@ -1,7 +1,7 @@
 import json
 import asyncio
 
-def keyup_reset(direction, paddle, consumer):
+def keyupReset(direction, paddle, consumer):
 	if (direction == 'up'):
 		consumer.keyState[paddle][direction] = False;
 	elif (direction == 'down'):
@@ -18,7 +18,7 @@ async def sendUpdateMessage(consumer, paddle):
 	}
 	await consumer.send(json.dumps(message))
 
-async def keydown_loop(direction, paddle, consumer):
+async def keydownLoop(direction, paddle, consumer):
 	step = 10;
 
 	if (direction == 'up'):
@@ -43,7 +43,7 @@ async def handle_paddle_move(message, consumer):
 			consumer.keyState[paddle][direction] = True;
 		elif (direction == 'down'):
 			consumer.keyState[paddle][direction] = True;
-		consumer.tasksAsyncio[paddle][direction] = asyncio.create_task(keydown_loop(direction, paddle ,consumer))
+		consumer.tasksAsyncio[paddle][direction] = asyncio.create_task(keydownLoop(direction, paddle ,consumer))
 
 	elif (message['key'] == 'keyup'):
-		keyup_reset(direction, paddle, consumer)
+		keyupReset(direction, paddle, consumer)
