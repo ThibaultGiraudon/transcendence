@@ -148,13 +148,53 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+// Initialisation de Phaser
+var config = {
+    type: Phaser.AUTO,
+    width: 800,
+    height: 600,
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 0 },
+            debug: false
+        }
+    },
+    scene: {
+        preload: preload,
+        create: create,
+        update: update
+    }
+};
 
+var game = new Phaser.Game(config);
 
+// Chargement des ressources
+function preload() {
+    // this.load.image('paddle', 'test.jpg');
+}
 
+var paddles;
 
+// Initialisation du jeu
+function create() {
+    paddles = this.physics.add.group({
+        key: 'paddle',
+        repeat: 1,
+        setXY: { x: 400, y: [100, 500], stepY: 400 }
+    });
 
+    paddles.children.iterate(function (paddle) {
+        paddle.setOrigin(0.5, 0.5);
+        paddle.setCollideWorldBounds(true);
+        paddle.setBounceY(1);
+    });
+}
 
-
+// Mise à jour du jeu
+function update() {
+    // Logique de mise à jour ici
+}
 
 
 
