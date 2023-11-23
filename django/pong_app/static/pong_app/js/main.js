@@ -6,10 +6,10 @@ let     websocketPort = window.location.protocol === 'https:' ? ':8001' : '';
 const   socketUrl = websocketProtocol + '//' + window.location.host + websocketPort + '/ws/some_path/';
 const   socket = new WebSocket(socketUrl);
 
-const   PLAYER_WIDTH = 20
-const   PLAYER_HEIGHT = 150
-const   canvas = document.getElementById("pongCanvas");
-const   context = canvas.getContext("2d");
+// const   PLAYER_WIDTH = 20
+// const   PLAYER_HEIGHT = 150
+// const   canvas = document.getElementById("pongCanvas");
+// const   context = canvas.getContext("2d");
 
 const   keyState = {
     ArrowUp: false,
@@ -27,36 +27,6 @@ const   ballPosition = {
     x: 0,
     y: 0,
 };
-
-// FUNCTIONS
-function drawBackground() {
-    context.fillStyle = "black";
-    context.fillRect(0, 0, canvas.width, canvas.height);
-    
-    context.strokeStyle = 'white';
-    context.beginPath();
-    context.moveTo(canvas.width / 2, 0);
-    context.lineTo(canvas.width / 2, canvas.height);
-    context.stroke();
-    context.closePath();
-}
-
-function drawPaddles(paddlePosition) {
-    drawBackground();
-
-    console.log(ballPosition, " -> ", paddlePosition);
-    context.fillStyle = 'white';
-    context.fillRect(5, paddlePosition.left, PLAYER_WIDTH, PLAYER_HEIGHT);
-    context.fillRect(canvas.width - PLAYER_WIDTH - 5, paddlePosition.right, PLAYER_WIDTH, PLAYER_HEIGHT);
-}
-
-function drawBall(ballPosition) {
-    context.beginPath();
-    context.fillStyle = 'white';
-    context.arc(ballPosition.x, ballPosition.y, 16, 0, Math.PI * 2, false);
-    // TODO 16 est le rayon
-    context.fill();
-}
 
 // EVENTS
 document.addEventListener('DOMContentLoaded', function() {
@@ -105,8 +75,9 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.addEventListener('open', (event) => {
         const message = {
             type: 'init_game',
-            canvas_width: canvas.width,
-            canvas_height: canvas.height,
+            // TODO change to config size
+            canvas_width: 800,
+            canvas_height: 600,
         };
         socket.send(JSON.stringify(message));
     });
@@ -121,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
             ballPosition.y = message.ballPosition.y;
 
 
-            drawPaddles(paddlePosition)
+            // drawPaddles(paddlePosition)
             // TODO a deplacer
             // socket.send(JSON.stringify({
                 // type: 'ball_move',
@@ -132,25 +103,24 @@ document.addEventListener('DOMContentLoaded', function() {
         if (message.type === 'update_paddle_position') {
             if (message.paddle === 'left') {
                 paddlePosition.left = parseFloat(message.position);
-                // drawPaddles(paddlePosition);
-                updatePaddlePosition('left')
+                updatePaddlePosition()
             } else if (message.paddle === 'right') {
                 paddlePosition.right = parseFloat(message.position);
-                // drawPaddles(paddlePosition);
-                updatePaddlePosition('right')
+                updatePaddlePosition()
             }
         }
 
-        // if (message.type === 'update_ball_position') {
-        //     ballPosition.x = parseFloat(message.position.x);
-        //     ballPosition.y = parseFloat(message.position.y);
-        //     drawBall(ballPosition);
-        // }
+        if (message.type === 'update_ball_position') {
+            ballPosition.x = parseFloat(message.position.x);
+            ballPosition.y = parseFloat(message.position.y);
+            updatePaddlePosition()
+            // drawBall(ballPosition);
+        }
     });
 });
 
 
-// Initialisation de Phaser
+var phaserGame;
 var config = {
     type: Phaser.AUTO,
     width: 800,
@@ -165,172 +135,42 @@ var config = {
     scene: {
         preload: preload,
         create: create,
-        update: update
+        update: update,
+        updatePaddlePosition: updatePaddlePosition,
     }
 };
 
-var phaserGame = new Phaser.Game(config);
+phaserGame = new Phaser.Game(config);
+// var paddles;
+const allPaddles = {
+    left: null,
+    right: null,
+};
+var ball = null;
 
 function preload() {
     // this.load.image('paddle', 'test.jpg');
 }
 
-var paddles;
-const allPaddles = {
-    left: null,
-    right: null,
-};
-
-function updatePaddlePosition(paddle) {
-    allPaddles[paddle].destroy();
-
-    var newPaddle = paddles.create(10, paddlePosition[paddle], 'paddle');  // Utiliser la méthode create de paddles
-    allPaddles[paddle] = newPaddle;
-
-    newPaddle.setOrigin(0.5, 0.5);
-}
-
 function create() {
-    paddles = this.physics.add.group();
+    // var rect = new Phaser.Geom.Rectangle(400, 300, 100, 100);
+    allPaddles.left = this.add.rectangle(10, paddlePosition.left + 50, 10, 100, 0xffffff);
+    allPaddles.right = this.add.rectangle(config.width - 10, paddlePosition.right + 50, 10, 100, 0xffffff);
 
-    allPaddles.left = paddles.create(10, paddlePosition.left + 50, 'paddle');
-    allPaddles.right = paddles.create(config.width - 10, paddlePosition.right + 50, 'paddle');
-
-    paddles.children.iterate(function (paddle) {
-        paddle.setOrigin(0.5, 0.5);
-    });
+    ball = this.add.circle(ballPosition.x, ballPosition.y, 16, 0xffffff);
 }
-
-
-
-
 
 function update() {
-    // Logique de mise à jour ici
+    // allPaddles.left.y = paddlePosition.left;
+    // allPaddles.right.y = paddlePosition.right;
 }
 
+function updatePaddlePosition() {
+    allPaddles.left.y = paddlePosition.left;
+    allPaddles.right.y = paddlePosition.right;
+}
 
-
-
-// function draw() {
-//     drawBackground()
-//     drawScore()
-//     drawBall()
-//     drawPaddles()
-// }
-
-// function drawScore() {
-//     context.fillStyle = 'white'
-//     context.font = "50px serif"
-//     context.fillText(game.computer.score, 50, 55)
-//     context.fillText(game.player.score, canvas.width - 75, 55)
-// }
-
-// function drawPaddles() {
-//     context.fillStyle = 'white';
-//     context.fillRect(5, game.player.y , PLAYER_WIDTH, PLAYER_HEIGHT);
-//     context.fillRect(canvas.width - PLAYER_WIDTH - 5, game.computer.y, PLAYER_WIDTH, PLAYER_HEIGHT);
-// }
-
-// function play() {
-//     draw();
-    
-//     // computerMove();
-//     ballMove();
-//     requestAnimationFrame(play);
-// }
-
-// document.addEventListener('keydown', playerOneMove, false);
-// document.addEventListener('keydown', playerTwoMove, false);
-
-
-// function playerOneMove(e) {
-//     switch(e.key) {
-//         case 'w':
-//             if ((game.player.y - 10) > 0)
-//             game.player.y -= 10
-//         break;
-//         case 's':
-//             if ((game.player.y + 10) < canvas.height - 150)
-//                 game.player.y += 10
-//             break;
-//     }
-//     e.preventDefault();
-// }
-
-// function playerTwoMove(e) {
-//     switch(e.key) {
-//         case 'ArrowUp':
-//             if ((game.computer.y - 10) > 0)
-//             game.computer.y -= 10
-//         break;
-//         case 'ArrowDown':
-//             if ((game.computer.y + 10) < canvas.height - 150)
-//                 game.computer.y += 10
-//             break;
-//     }
-//     e.preventDefault();
-// }
-
-// function computerMove() {
-//         game.computer.y += game.ball.speed.y * 0.85;
-// }
-
-// function ballMove() {
-//     if (game.ball.y + game.ball.r > canvas.height || game.ball.y - game.ball.r < 0) {
-//         game.ball.speed.y *= -1;
-//     }
-
-//     if (game.ball.x + game.ball.r > canvas.width - PLAYER_WIDTH - 5) {
-//         collide(game.computer);
-//     } else if (game.ball.x - game.ball.r < PLAYER_WIDTH + 5) {
-//         collide(game.player);
-//     }
-
-//     game.ball.x += game.ball.speed.x;
-//     game.ball.y += game.ball.speed.y;
-// }
-
-// function collide(player) {
-//     // The player does not hit the ball
-//     if (game.ball.y < player.y || game.ball.y > player.y + PLAYER_HEIGHT) {
-//         // Set ball and players to the center
-//         game.ball.x = canvas.width / 2;
-//         game.ball.y = canvas.height / 2;
-//         game.computer.y = canvas.height / 2 - PLAYER_HEIGHT / 2;
-//         player.score++
-//         // Reset speed
-//         if (game.ball.speed.x > 0)
-//             game.ball.speed.x = 2;
-//         else 
-//             game.ball.speed.x = -2
-//     } else {
-//         // Increase speed and change direction
-//         game.ball.speed.x *= -1.2;
-//     }
-// }
-
-// document.addEventListener('DOMContentLoaded', function () {
-//     game = {
-//         player: {
-//             y: canvas.height / 2 - PLAYER_HEIGHT / 2,
-//             score: 0
-//         },
-//         computer: {
-//             y: canvas.height / 2 - PLAYER_HEIGHT / 2,
-//             score: 0
-//         },
-//         ball: {
-//             x: canvas.width / 2,
-//             y: canvas.height / 2,
-//             r: 10,
-//             speed: {
-//                 x: -2,
-//                 y: 2
-//             }
-//         }
-//     }
-
-//     draw();
-//     play()
-// })
+function updateBallPosition() {
+    ball.y = ballPosition.x;
+    ball.y = ballPosition.y;
+}
