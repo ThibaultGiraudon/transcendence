@@ -95,12 +95,13 @@ document.addEventListener('DOMContentLoaded', function() {
             // drawPaddles(paddlePosition)
             // TODO a deplacer
             // socket.send(JSON.stringify({
-                // type: 'ball_move',
+            //     type: 'ball_move',
             // }));
             // drawBall(ballPosition)
         }
 
         if (message.type === 'update_paddle_position') {
+            console.log(message);
             if (message.paddle === 'left') {
                 paddlePosition.left = parseFloat(message.position);
                 updatePaddlePosition()
@@ -113,8 +114,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (message.type === 'update_ball_position') {
             ballPosition.x = parseFloat(message.position.x);
             ballPosition.y = parseFloat(message.position.y);
-            updatePaddlePosition()
-            // drawBall(ballPosition);
+            console.log(ballPosition);
+            updateBallPosition()
         }
     });
 });
@@ -137,6 +138,7 @@ var config = {
         create: create,
         update: update,
         updatePaddlePosition: updatePaddlePosition,
+        updateBallPosition: updateBallPosition,
     }
 };
 
@@ -163,6 +165,8 @@ function create() {
 function update() {
     // allPaddles.left.y = paddlePosition.left;
     // allPaddles.right.y = paddlePosition.right;
+    // ball.x = ballPosition.x;
+    // ball.y = ballPosition.y;
 }
 
 function updatePaddlePosition() {
@@ -171,6 +175,6 @@ function updatePaddlePosition() {
 }
 
 function updateBallPosition() {
-    ball.y = ballPosition.x;
+    ball.x = ballPosition.x;
     ball.y = ballPosition.y;
 }
