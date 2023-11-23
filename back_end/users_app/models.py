@@ -2,11 +2,11 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, email, username, password=None, **extra_fields):
+    def create_user(self, email, username, password=None, photo_url="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png", **extra_fields):
         if not email:
             raise ValueError('The Email field must be set')
         email = self.normalize_email(email)
-        user = self.model(email=email, username=username, **extra_fields)
+        user = self.model(email=email, username=username, photo_url=photo_url, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -33,4 +33,6 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
-    
+
+def save(self, *args, **kwargs):
+    super().save()
