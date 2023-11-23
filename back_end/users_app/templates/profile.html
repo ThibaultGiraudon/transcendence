@@ -5,6 +5,17 @@
 <img src={{ request.user.photo_url }} alt="photo de profile" width="100" height="100">
 <p>{{ request.user.username }}</p>
 <p>{{ request.user.email}}</p>
+<h1>All users</h1>
+<ul>
+  {% for x in all_users %}
+    {% if x.username != request.user.username%}
+      <li>
+        <img src={{ x.photo_url }} alt="photo de profile" width="25" height="25">
+        {{ x.username }}
+      </li>
+    {% endif %}
+  {% endfor %}
+</ul>
 <style>
     img {
         border-radius: 50%;
