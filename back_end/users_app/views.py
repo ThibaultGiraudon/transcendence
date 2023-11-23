@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from users_app.models import CustomUser
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth import get_user_model
-from .forms import LoginForm, SignUpForm
+from .forms import LoginForm, SignUpForm, EditProfileForm
 from django.views.decorators.csrf import csrf_protect
 
 API_URL = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fcheck_authorize%2F&response_type=code"
@@ -247,5 +247,19 @@ def authenticate_custom_user(email, username):
 def profile(request):
 	User = get_user_model()
 	all_users = User.objects.all()
-	context = {'all_users':all_users}
+	if request.method == 'GET':
+		form = EditProfileForm(instance=request.user)
+		context = {	'all_users':all_users,
+					'form':form}
+		return render(request, 'profile.html', context)
+	elif request.method == 'POST':
+		form = EditProfileForm(request.POST, instance=request.user)
+		context = {	'all_users':all_users,
+					'form':form}
+		if form.is_valid():
+			form.save()
+			messages.success(request, 'Your username is updated successfuly')
+			return render(request, 'profile.html', context)
+		messages.error(request, "Form error, you need to provide all fields")
+		return redirect('profile')
 	return render(request, 'profile.html', context)

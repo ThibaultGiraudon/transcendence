@@ -5,6 +5,22 @@
 <img src={{ request.user.photo_url }} alt="photo de profile" width="100" height="100">
 <p>{{ request.user.username }}</p>
 <p>{{ request.user.email}}</p>
+<form method="POST" novalidate>
+	{% csrf_token %}
+
+	<h2>Edit username</h2>
+	{{form.as_p}}
+	
+	{% for message in messages %}
+	<div>
+	
+		<a data-dismiss="alert">⚠️</a>
+		{{ message }}
+	</div>
+	{% endfor %}
+	
+	<input type="submit" value="Edit"/>
+</form>
 <h1>All users</h1>
 <ul>
   {% for x in all_users %}
