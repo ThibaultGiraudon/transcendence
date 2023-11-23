@@ -1,8 +1,13 @@
 {% block content%}
 {% csrf_token %}
 
-{% comment %} <title>{{ request.user.username }}</title> {% endcomment %}
-<h1>{{ request.user.username }}</h1>
-<h1>{{ request.user.email}}</h1>
-
+<title>{{ request.user.username }}</title>
+<img src={{ request.user.photo_url }} alt="photo de profile" width="100" height="100">
+<p>{{ request.user.username }}</p>
+<p>{{ request.user.email}}</p>
+<style>
+    img {
+        border-radius: 50%;
+      }
+</style>
 {% endblock content%}

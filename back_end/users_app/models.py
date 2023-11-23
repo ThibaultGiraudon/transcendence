@@ -20,6 +20,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=150, unique=True)
+    photo_url = models.CharField(max_length=200)
 
     # Utilise le gestionnaire d'utilisateurs personnalisé
     objects = CustomUserManager()

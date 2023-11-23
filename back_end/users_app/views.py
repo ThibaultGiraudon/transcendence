@@ -132,7 +132,9 @@ def	connect_42_user(request, response_data):
 	"""	
 	logging.info("----------------------")
 	logging.info(response_data['login'])
-	user = authenticate_custom_user(email=response_data['email'], username=response_data['login'])
+	user = authenticate_custom_user(
+     			email=response_data['email'], 
+        		username=response_data['login'])
 	if user:
 		logging.info("----------------------")
 		logging.info("User logged\n")
@@ -142,11 +144,15 @@ def	connect_42_user(request, response_data):
 		logging.info("Try Create User")
 		user = CustomUser.objects.create(
 	  				username=response_data['login'],
-		  			email=response_data['email'])
+		  			email=response_data['email'],
+       				photo_url=response_data['image']['link'])
 		user.save()
 		logging.info("----------------------")
 		logging.info("User created")
-		user = authenticate_custom_user(email=response_data['email'], username=response_data['login'])
+		user = authenticate_custom_user(
+      				email=response_data['email'], 
+                    username=response_data['login'],
+                    )
 		if user:
 			login(request, user)
 			logging.info("----------------------")
