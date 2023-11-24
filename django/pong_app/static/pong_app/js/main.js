@@ -94,14 +94,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // drawPaddles(paddlePosition)
             // TODO a deplacer
-            // socket.send(JSON.stringify({
-            //     type: 'ball_move',
-            // }));
+            socket.send(JSON.stringify({
+                type: 'ball_move',
+            }));
             // drawBall(ballPosition)
         }
 
         if (message.type === 'update_paddle_position') {
-            console.log(message);
             if (message.paddle === 'left') {
                 paddlePosition.left = parseFloat(message.position);
                 updatePaddlePosition()
