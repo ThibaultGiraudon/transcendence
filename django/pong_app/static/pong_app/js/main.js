@@ -6,11 +6,6 @@ let     websocketPort = window.location.protocol === 'https:' ? ':8001' : '';
 const   socketUrl = websocketProtocol + '//' + window.location.host + websocketPort + '/ws/some_path/';
 const   socket = new WebSocket(socketUrl);
 
-// const   PLAYER_WIDTH = 20
-// const   PLAYER_HEIGHT = 150
-// const   canvas = document.getElementById("pongCanvas");
-// const   context = canvas.getContext("2d");
-
 const   keyState = {
     ArrowUp: false,
     ArrowDown: false,
@@ -91,13 +86,10 @@ document.addEventListener('DOMContentLoaded', function() {
             ballPosition.x = message.ballPosition.x;
             ballPosition.y = message.ballPosition.y;
 
-
-            // drawPaddles(paddlePosition)
             // TODO a deplacer
             socket.send(JSON.stringify({
                 type: 'ball_move',
             }));
-            // drawBall(ballPosition)
         }
 
         if (message.type === 'update_paddle_position') {
@@ -113,7 +105,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (message.type === 'update_ball_position') {
             ballPosition.x = parseFloat(message.position.x);
             ballPosition.y = parseFloat(message.position.y);
-            console.log(ballPosition);
             updateBallPosition()
         }
     });
@@ -142,12 +133,13 @@ var config = {
 };
 
 phaserGame = new Phaser.Game(config);
-// var paddles;
-const allPaddles = {
-    left: null,
-    right: null,
+const elements = {
+    paddles: {
+        left: null,
+        right: null,
+    },
+    ball: null,
 };
-var ball = null;
 
 function preload() {
     // this.load.image('paddle', 'test.jpg');
@@ -155,25 +147,25 @@ function preload() {
 
 function create() {
     // var rect = new Phaser.Geom.Rectangle(400, 300, 100, 100);
-    allPaddles.left = this.add.rectangle(10, paddlePosition.left + 50, 10, 100, 0xffffff);
-    allPaddles.right = this.add.rectangle(config.width - 10, paddlePosition.right + 50, 10, 100, 0xffffff);
+    elements.paddles.left = this.add.rectangle(10, paddlePosition.left + 50, 10, 100, 0xffffff);
+    elements.paddles.right = this.add.rectangle(config.width - 10, paddlePosition.right + 50, 10, 100, 0xffffff);
 
-    ball = this.add.circle(ballPosition.x, ballPosition.y, 8, 0xffffff);
+    elements.ball = this.add.circle(ballPosition.x, ballPosition.y, 8, 0xffffff);
 }
 
 function update() {
-    // allPaddles.left.y = paddlePosition.left;
-    // allPaddles.right.y = paddlePosition.right;
-    ball.x = ballPosition.x;
-    ball.y = ballPosition.y;
+    // elements.paddles.left.y = paddlePosition.left;
+    // elements.paddles.right.y = paddlePosition.right;
+    // elements.ball.x = ballPosition.x;
+    // elements.ball.y = ballPosition.y;
 }
 
 function updatePaddlePosition() {
-    allPaddles.left.y = paddlePosition.left;
-    allPaddles.right.y = paddlePosition.right;
+    elements.paddles.left.y = paddlePosition.left + 50;
+    elements.paddles.right.y = paddlePosition.right + 50;
 }
 
 function updateBallPosition() {
-    // ball.x = ballPosition.x;
-    // ball.y = ballPosition.y;
+    elements.ball.x = ballPosition.x;
+    elements.ball.y = ballPosition.y;
 }
