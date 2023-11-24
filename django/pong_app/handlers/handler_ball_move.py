@@ -9,7 +9,7 @@ async def sendUpdateMessage(consumer):
 	}
 	await consumer.send(json.dumps(message))
 
-async def handle_ball_move(message, consumer):
+async def handle_ball_move(consumer):
 	while (True):
 		delta_x = consumer.ballPosition['speed'] * math.cos(consumer.ballPosition['angle'])
 		delta_y = consumer.ballPosition['speed'] * math.sin(consumer.ballPosition['angle'])
@@ -21,5 +21,5 @@ async def handle_ball_move(message, consumer):
 		if (consumer.ballPosition['y'] <= 0) or (consumer.ballPosition['y'] >= consumer.canvasInfo['height']):
 			consumer.ballPosition['angle'] = -consumer.ballPosition['angle']
 
-		await asyncio.sleep(0.01)
+		await asyncio.sleep(0.02)
 		await sendUpdateMessage(consumer)

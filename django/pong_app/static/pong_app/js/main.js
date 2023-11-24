@@ -158,14 +158,14 @@ function create() {
     allPaddles.left = this.add.rectangle(10, paddlePosition.left + 50, 10, 100, 0xffffff);
     allPaddles.right = this.add.rectangle(config.width - 10, paddlePosition.right + 50, 10, 100, 0xffffff);
 
-    ball = this.add.circle(ballPosition.x, ballPosition.y, 16, 0xffffff);
+    ball = this.add.circle(ballPosition.x, ballPosition.y, 8, 0xffffff);
 }
 
 function update() {
     // allPaddles.left.y = paddlePosition.left;
     // allPaddles.right.y = paddlePosition.right;
-    // ball.x = ballPosition.x;
-    // ball.y = ballPosition.y;
+    ball.x = ballPosition.x;
+    ball.y = ballPosition.y;
 }
 
 function updatePaddlePosition() {
@@ -174,6 +174,6 @@ function updatePaddlePosition() {
 }
 
 function updateBallPosition() {
-    ball.x = ballPosition.x;
-    ball.y = ballPosition.y;
+    // ball.x = ballPosition.x;
+    // ball.y = ballPosition.y;
 }
