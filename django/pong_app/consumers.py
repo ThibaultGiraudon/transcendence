@@ -3,6 +3,7 @@ from    .handlers.handler_init_game import handle_init_game
 from    .handlers.handler_paddle_move import handle_paddle_move
 from    .handlers.handler_ball_move import handle_ball_move
 import  json
+import  asyncio
 
 class PongConsumer(AsyncWebsocketConsumer):
     canvasInfo = {
@@ -14,11 +15,11 @@ class PongConsumer(AsyncWebsocketConsumer):
         'right': 200,
     }
     ballPosition = {
-        'x': 100,
-        'y': 100,
+        'x': 100.0,
+        'y': 100.0,
         'speed': 10,
         'direction': 'right',
-        'angle': 1,
+        'angle': 1.0,
     }
     keyState = {
         'left': {
@@ -64,4 +65,4 @@ class PongConsumer(AsyncWebsocketConsumer):
             await handle_paddle_move(message, self)
 
         if (message['type'] == 'ball_move'):
-            await handle_ball_move(message, self)
+            asyncio.create_task(handle_ball_move(message, self))
