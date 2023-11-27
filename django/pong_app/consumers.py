@@ -11,6 +11,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         'height': None,
     }
     paddlePosition = {
+        'speed': 20,
         'left': 100,
         'right': 200,
     }
