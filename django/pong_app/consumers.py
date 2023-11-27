@@ -19,9 +19,9 @@ class PongConsumer(AsyncWebsocketConsumer):
     ballPosition = {
         'x': 100.0,
         'y': 100.0,
-        'speed': 10,
-        'direction': 'right',
-        'angle': 1.0,
+        # 'speed': 10,
+        # 'direction': 'right',
+        # 'angle': 1.0,
     }
     keyState = {
         'left': {
@@ -45,6 +45,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         },
     }
 
+    ball = Ball()
     leftPaddle = Paddle('left')
     rightPaddle = Paddle('right')
 
@@ -52,14 +53,15 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.accept()
         message = {
             'type': 'init_game',
+            # TODO change self.paddlePosition to self.paddle ...
             'paddlePosition': self.paddlePosition,
             'ballPosition': self.ballPosition,
         }
         await self.send(json.dumps(message))
 
     async def disconnect(self, close_code):
-        if self.tasksAsyncio['ball']:
-            self.tasksAsyncio['ball'].cancel()
+        if (self.ball.task):
+            self.ball.task.cancel()
 
     async def receive(self, text_data):
         message = json.loads(text_data)
@@ -72,4 +74,4 @@ class PongConsumer(AsyncWebsocketConsumer):
             await handle_paddle_move(message, self)
 
         if (message['type'] == 'ball_move'):
-            self.tasksAsyncio['ball'] = asyncio.create_task(handle_ball_move(self))
+            self.ball.task = asyncio.create_task(handle_ball_move(self))

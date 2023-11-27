@@ -19,12 +19,13 @@ class Paddle:
     #     self.y += step
 
 
-# class Ball:
-#     def __init__(self, x, y, speed, angle):
-#         self.x = x
-#         self.y = y
-#         self.speed = speed
-#         self.angle = angle
+class Ball:
+    def __init__(self):
+        self.x = 100.0
+        self.y = 100.0
+        self.speed = 10
+        self.angle = 1.0
+        self.task = None
 
 #     def move(self):
 #         delta_x = self.speed * math.cos(self.angle)
