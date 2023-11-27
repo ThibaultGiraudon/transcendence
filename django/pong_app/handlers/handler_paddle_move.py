@@ -1,47 +1,52 @@
 import json
 import asyncio
 
-def keyupReset(direction, paddle, consumer):
+def keyupReset(direction, paddle):
 	if (direction == 'up'):
-		consumer.keyState[paddle][direction] = False;
+		paddle.keyState[direction] = False;
 	elif (direction == 'down'):
-		consumer.keyState[paddle][direction] = False;
+		paddle.keyState[direction] = False;
 
-	if (consumer.tasksAsyncio[paddle][direction]):
-		consumer.tasksAsyncio[paddle][direction].cancel()
+	if (paddle.taskAsyncio[direction]):
+		paddle.taskAsyncio[direction].cancel()
 
 async def sendUpdateMessage(consumer, paddle):
 	message = {
 		'type': 'update_paddle_position',
-		'position': consumer.paddlePosition[paddle],
-		'paddle': paddle
+		'position': paddle.position,
+		'paddle': paddle.name
 	}
 	await consumer.send(json.dumps(message))
 
 async def keydownLoop(direction, paddle, consumer):
 	if (direction == 'up'):
-		consumer.keyState[paddle]['down'] = False;
+		paddle.keyState['down'] = False;
 	elif (direction == 'down'):
-		consumer.keyState[paddle]['up'] = False;
+		paddle.keyState['up'] = False;
 
-	while (consumer.keyState[paddle][direction] or consumer.keyState[paddle][direction]):
-		if (consumer.keyState[paddle][direction] and direction == 'up' and consumer.paddlePosition[paddle] > 0):
-			consumer.paddlePosition[paddle] = consumer.paddlePosition[paddle] - consumer.paddlePosition['speed'];
-		elif (consumer.keyState[paddle][direction] and direction == 'down' and consumer.paddlePosition[paddle] < consumer.canvasInfo['height'] - 100):
-			consumer.paddlePosition[paddle] = consumer.paddlePosition[paddle] + consumer.paddlePosition['speed'];
+	while (paddle.keyState[direction] or paddle.keyState[direction]):
+		if (paddle.keyState[direction] and direction == 'up' and paddle.position > 0):
+			paddle.position = paddle.position - paddle.speed;
+		elif (paddle.keyState[direction] and direction == 'down' and paddle.position < consumer.canvasInfo['height'] - 100):
+			paddle.position = paddle.position + paddle.speed;
 
 		await sendUpdateMessage(consumer, paddle)
 		await asyncio.sleep(0.03) # TODO change to global var for speed
 
 async def handle_paddle_move(message, consumer):
 	direction = message['direction']
-	paddle = message['paddle']
+
+	if (message['paddle'] == 'left'):
+		paddle = consumer.leftPaddle
+	elif (message['paddle'] == 'right'):
+		paddle = consumer.rightPaddle
+
 	if (message['key'] == 'keydown'):
 		if (direction == 'up'):
-			consumer.keyState[paddle][direction] = True;
+			paddle.keyState[direction] = True;
 		elif (direction == 'down'):
-			consumer.keyState[paddle][direction] = True;
-		consumer.tasksAsyncio[paddle][direction] = asyncio.create_task(keydownLoop(direction, paddle ,consumer))
+			paddle.keyState[direction] = True;
+		paddle.taskAsyncio[direction] = asyncio.create_task(keydownLoop(direction, paddle ,consumer))
 
 	elif (message['key'] == 'keyup'):
-		keyupReset(direction, paddle, consumer)
+		keyupReset(direction, paddle)
