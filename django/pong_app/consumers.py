@@ -2,6 +2,7 @@ from    channels.generic.websocket import AsyncWebsocketConsumer
 from    .handlers.handler_init_game import handle_init_game
 from    .handlers.handler_paddle_move import handle_paddle_move
 from    .handlers.handler_ball_move import handle_ball_move
+from    .gameObjects import *
 import  json
 import  asyncio
 
@@ -43,6 +44,9 @@ class PongConsumer(AsyncWebsocketConsumer):
             'down': None,
         },
     }
+
+    leftPaddle = Paddle('left')
+    rightPaddle = Paddle('right')
 
     async def connect(self):
         await self.accept()
