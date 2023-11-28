@@ -8,7 +8,6 @@ async def sendUpdateMessage(consumer):
 		'x': consumer.ball.x,
 		'y': consumer.ball.y,
 	}
-	print(message)
 	await consumer.send(json.dumps(message))
 
 async def handle_ball_move(consumer):
