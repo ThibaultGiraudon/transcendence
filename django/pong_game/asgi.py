@@ -17,7 +17,7 @@ from    pong_app.consumers import *
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pong_game.settings')
 
-# TODO change port
+# TODO change name of url
 websocket_urlpatterns = [
     re_path(r'ws/some_path/$', PongConsumer.as_asgi()),
 ]
