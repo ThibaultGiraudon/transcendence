@@ -12,6 +12,7 @@ class Paddle:
             'down': None,
         }
 
+    # TODO maybe change to one method move who check collide
     def moveUp(self):
         self.position -= self.speed
     
