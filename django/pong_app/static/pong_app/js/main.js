@@ -110,8 +110,8 @@ var config = {
 phaserGame = new Phaser.Game(config);
 const elements = {
     paddles: {
-        left: null,
-        right: null,
+        id0: null,
+        id1: null,
     },
     ball: null,
 };
@@ -122,22 +122,22 @@ function preload() {
 
 function create() {
     // var rect = new Phaser.Geom.Rectangle(400, 300, 100, 100);
-    elements.paddles.left = this.add.rectangle(10, paddlePosition.id1 + 50, 10, 100, 0xffffff);
-    elements.paddles.right = this.add.rectangle(config.width - 10, paddlePosition.id1 + 50, 10, 100, 0xffffff);
+    elements.paddles.id0 = this.add.rectangle(10, paddlePosition.id1 + 50, 10, 100, 0xffffff);
+    elements.paddles.id1 = this.add.rectangle(config.width - 10, paddlePosition.id1 + 50, 10, 100, 0xffffff);
 
     elements.ball = this.add.circle(ballPosition.x, ballPosition.y, 8, 0xffffff);
 }
 
 function update() {
-    // elements.paddles.left.y = paddlePosition.left;
-    // elements.paddles.right.y = paddlePosition.right;
+    // elements.paddles.id0.y = paddlePosition.left;
+    // elements.paddles.id1.y = paddlePosition.right;
     // elements.ball.x = ballPosition.x;
     // elements.ball.y = ballPosition.y;
 }
 
 function updatePaddlePosition() {
-    elements.paddles.left.y = paddlePosition.id0 + 50;
-    elements.paddles.right.y = paddlePosition.id1 + 50;
+    elements.paddles.id0.y = paddlePosition.id0 + 50;
+    elements.paddles.id1.y = paddlePosition.id1 + 50;
 }
 
 function updateBallPosition() {
