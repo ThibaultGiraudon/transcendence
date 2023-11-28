@@ -68,10 +68,10 @@ document.addEventListener('DOMContentLoaded', function() {
         let message = JSON.parse(event.data);
 
         if (message.type === 'update_paddle_position') {
-            if (message.id === '0') {
+            if (message.id === 0) {
                 paddlePosition.id0 = parseFloat(message.position);
                 updatePaddlePosition()
-            } else if (message.id === '1') {
+            } else if (message.id == 1) {
                 paddlePosition.id1 = parseFloat(message.position);
                 updatePaddlePosition()
             }
