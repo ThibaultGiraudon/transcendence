@@ -11,8 +11,8 @@ class PongConsumer(AsyncWebsocketConsumer):
     }
 
     ball = Ball()
-    paddle1 = Paddle('left')
-    paddle2 = Paddle('right')
+    paddle1 = Paddle('0')
+    paddle2 = Paddle('1')
 
     async def connect(self):
         await self.accept()

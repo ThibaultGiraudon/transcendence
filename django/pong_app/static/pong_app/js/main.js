@@ -56,10 +56,10 @@ document.addEventListener('DOMContentLoaded', function() {
             type: 'init_game',
             canvasWidth: config.width,
             canvasHeight: config.height,
-            paddlePositionLeft: paddlePosition.id0,
-            paddlePositionRight: paddlePosition.id1,
-            ballPositionX: ballPosition.x,
-            ballPositionY: ballPosition.y,
+            // paddlePositionLeft: paddlePosition.id0,
+            // paddlePositionRight: paddlePosition.id1,
+            // ballPositionX: ballPosition.x,
+            // ballPositionY: ballPosition.y,
         };
         socket.send(JSON.stringify(message));
     });
@@ -68,10 +68,10 @@ document.addEventListener('DOMContentLoaded', function() {
         let message = JSON.parse(event.data);
 
         if (message.type === 'update_paddle_position') {
-            if (message.id === 'left') {
+            if (message.id === '0') {
                 paddlePosition.id0 = parseFloat(message.position);
                 updatePaddlePosition()
-            } else if (message.id === 'right') {
+            } else if (message.id === '1') {
                 paddlePosition.id1 = parseFloat(message.position);
                 updatePaddlePosition()
             }

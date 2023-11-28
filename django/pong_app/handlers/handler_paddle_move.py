@@ -38,9 +38,9 @@ async def keydownLoop(direction, paddle, consumer):
 async def handle_paddle_move(message, consumer):
 	direction = message['direction']
 
-	if (message['id'] == 'left'):
+	if (message['id'] == '0'):
 		paddle = consumer.paddle1
-	elif (message['id'] == 'right'):
+	elif (message['id'] == '1'):
 		paddle = consumer.paddle2
 
 	if (message['key'] == 'keydown'):
