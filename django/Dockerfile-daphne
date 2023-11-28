@@ -8,4 +8,4 @@ RUN		pip install --no-cache -r requirements.txt
 
 COPY	./ ./
 
-CMD 	["daphne", "-e", "ssl:8001:privateKey=/etc/ssl/private/server.key:certKey=/etc/ssl/certs/server.crt", "pong_game.asgi:application"]
+CMD 	["daphne", "-e", "ssl:8001:privateKey=/etc/ssl/private/server.key:certKey=/etc/ssl/certs/server.crt", "main.asgi:application"]
