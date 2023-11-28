@@ -129,10 +129,7 @@ function create() {
 }
 
 function update() {
-    // elements.paddles.id0.y = paddlePosition.left;
-    // elements.paddles.id1.y = paddlePosition.right;
-    // elements.ball.x = ballPosition.x;
-    // elements.ball.y = ballPosition.y;
+    // pass
 }
 
 function updatePaddlePosition() {

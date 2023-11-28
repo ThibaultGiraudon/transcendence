@@ -18,10 +18,10 @@ async def handle_ball_move(consumer):
 		consumer.ball.x += delta_x
 		consumer.ball.y += delta_y
 
-		if (consumer.ball.x <= 0) or (consumer.ball.x >= consumer.canvasInfo['width']):
+		if (consumer.ball.x <= 0) or (consumer.ball.x >= consumer.gameSettings.gameWidth):
 			consumer.ball.angle = math.pi - consumer.ball.angle
 
-		if (consumer.ball.y <= 0) or (consumer.ball.y >= consumer.canvasInfo['height']):
+		if (consumer.ball.y <= 0) or (consumer.ball.y >= consumer.gameSettings.gameHeight):
 			consumer.ball.angle = -consumer.ball.angle
 
 		# TODO change to global var for fps
@@ -29,8 +29,8 @@ async def handle_ball_move(consumer):
 		await sendUpdateMessage(consumer)
 
 async def handle_init_game(message, consumer):
-	consumer.canvasInfo['width'] = message['canvasWidth']
-	consumer.canvasInfo['height'] = message['canvasHeight']
+	consumer.gameSettings.gameWidth = message['canvasWidth']
+	consumer.gameSettings.gameHeight = message['canvasHeight']
 	# consumer.paddle1.position = message['paddlePositionLeft']
 	# consumer.paddle2.position = message['paddlePositionRight']
 	# consumer.ball.x = message['ballPositionX']

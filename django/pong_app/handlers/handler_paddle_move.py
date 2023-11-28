@@ -28,7 +28,7 @@ async def keydownLoop(direction, paddle, consumer):
 		if (paddle.keyState[direction] and direction == 'up' and paddle.position > 0):
 			paddle.moveUp()
 			# paddle.position = paddle.position - paddle.speed;
-		elif (paddle.keyState[direction] and direction == 'down' and paddle.position < consumer.canvasInfo['height'] - 100):
+		elif (paddle.keyState[direction] and direction == 'down' and paddle.position < consumer.gameSettings.gameHeight - 100):
 			paddle.moveDown()
 			# paddle.position = paddle.position + paddle.speed;
 
