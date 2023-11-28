@@ -78,8 +78,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (message.type === 'update_ball_position') {
-            ballPosition.x = parseFloat(message.position.x);
-            ballPosition.y = parseFloat(message.position.y);
+            ballPosition.x = parseFloat(message.x);
+            ballPosition.y = parseFloat(message.y);
             updateBallPosition()
         }
     });

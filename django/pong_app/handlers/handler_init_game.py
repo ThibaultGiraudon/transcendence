@@ -3,14 +3,10 @@ import	asyncio
 import	math
 
 async def sendUpdateMessage(consumer):
-	ballPosition = {
-		'x': consumer.ball.x,
-		'y': consumer.ball.y,
-	}
 	message = {
 		'type': 'update_ball_position',
-		# TODO change message format
-		'position': ballPosition,
+		'x': consumer.ball.x,
+		'y': consumer.ball.y,
 	}
 	print(message)
 	await consumer.send(json.dumps(message))
