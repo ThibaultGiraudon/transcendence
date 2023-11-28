@@ -14,7 +14,7 @@ async def sendUpdateMessage(consumer, paddle):
 	message = {
 		'type': 'update_paddle_position',
 		'position': paddle.position,
-		'paddle': paddle.name
+		'paddleName': paddle.name
 	}
 	await consumer.send(json.dumps(message))
 
@@ -36,9 +36,9 @@ async def keydownLoop(direction, paddle, consumer):
 async def handle_paddle_move(message, consumer):
 	direction = message['direction']
 
-	if (message['paddle'] == 'left'):
+	if (message['paddleID'] == 'left'):
 		paddle = consumer.leftPaddle
-	elif (message['paddle'] == 'right'):
+	elif (message['paddleID'] == 'right'):
 		paddle = consumer.rightPaddle
 
 	if (message['key'] == 'keydown'):
