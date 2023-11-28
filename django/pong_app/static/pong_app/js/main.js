@@ -1,4 +1,5 @@
-// VARIABLES
+import * as utils from './utils.js';
+
 let     websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 let     websocketPort = window.location.protocol === 'https:' ? ':8001' : '';
 const   socketUrl = websocketProtocol + '//' + window.location.host + websocketPort + '/ws/some_path/';
@@ -24,30 +25,14 @@ const   ballPosition = {
 
 // EVENTS
 document.addEventListener('DOMContentLoaded', function() {
-    function getPaddleID(key) {
-        if (key === 'ArrowUp' || key === 'ArrowDown') {
-            return 'right';
-        } else if (key === 'w' || key === 's') {
-            return 'left';
-        }
-    }
-
-    function getPaddleDirection(key) {
-        if (key === 'ArrowUp' || key === 'w') {
-            return 'up';
-        } else if (key === 'ArrowDown' || key === 's') {
-            return 'down';
-        }
-    }
-
     document.addEventListener('keydown', function(event) {
         if (!keyState[event.key] && keyState.hasOwnProperty(event.key)) {
             keyState[event.key] = true;
             const message = {
                 type: 'paddle_move',
                 key: 'keydown',
-                direction: getPaddleDirection(event.key),
-                paddleID: getPaddleID(event.key),
+                direction: utils.getPaddleDirection(event.key),
+                id: utils.getPaddleID(event.key),
             };
             socket.send(JSON.stringify(message));
         }
@@ -59,8 +44,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const message = {
                 type: 'paddle_move',
                 key: 'keyup',
-                direction: getPaddleDirection(event.key),
-                paddleID: getPaddleID(event.key),
+                direction: utils.getPaddleDirection(event.key),
+                id: utils.getPaddleID(event.key),
             };
             socket.send(JSON.stringify(message));
         }
