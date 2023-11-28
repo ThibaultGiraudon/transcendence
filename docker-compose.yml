@@ -13,7 +13,7 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: ./${BACK_END_FOLDER}/pong_app/static
+      device: ./${DJANGO_FOLDER}/pong_app/static
   media_volume:
     driver: local
     name: media_volume
@@ -21,7 +21,7 @@ volumes:
 services:
   django:
     build:
-      context: ./${BACK_END_FOLDER}/
+      context: ./${DJANGO_FOLDER}/
       dockerfile: Dockerfile-django
     env_file: .env
     ports:
@@ -37,7 +37,7 @@ services:
 
   daphne:
     build:
-      context: ./${BACK_END_FOLDER}/
+      context: ./${DJANGO_FOLDER}/
       dockerfile: Dockerfile-daphne
     env_file: .env
     ports:
