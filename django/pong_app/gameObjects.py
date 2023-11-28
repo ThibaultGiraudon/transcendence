@@ -12,7 +12,7 @@ class GameSettings:
 class Paddle:
     def __init__(self, id):
         self.id = id
-        self.position = 0
+        self.position = 100
         self.speed = 20
         self.keyState = {
             'up': False,
