@@ -26,9 +26,11 @@ async def keydownLoop(direction, paddle, consumer):
 
 	while (paddle.keyState[direction] or paddle.keyState[direction]):
 		if (paddle.keyState[direction] and direction == 'up' and paddle.position > 0):
-			paddle.position = paddle.position - paddle.speed;
+			paddle.moveUp()
+			# paddle.position = paddle.position - paddle.speed;
 		elif (paddle.keyState[direction] and direction == 'down' and paddle.position < consumer.canvasInfo['height'] - 100):
-			paddle.position = paddle.position + paddle.speed;
+			paddle.moveDown()
+			# paddle.position = paddle.position + paddle.speed;
 
 		await sendUpdateMessage(consumer, paddle)
 		await asyncio.sleep(0.03) # TODO change to global var for speed
