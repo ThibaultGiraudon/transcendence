@@ -1,8 +1,8 @@
 export function getPaddleID(key) {
 	if (key === 'ArrowUp' || key === 'ArrowDown') {
-		return 'right';
+		return '1';
 	} else if (key === 'w' || key === 's') {
-		return 'left';
+		return '0';
 	}
 }
 
