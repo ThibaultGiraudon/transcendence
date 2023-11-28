@@ -28,7 +28,7 @@ def sign_in(request):
 	Try to login in the user
  
 	Arguments:
-		????request: a url request????
+		request: ???
 	Returns:
 		pong page : the credential are good
 		sign_in page : the credential are wrong
@@ -62,7 +62,7 @@ def sign_up(request):
 	Create a new user
  
 	Arguments:
-		????request: an url request????
+		request: ???
 	Returns:
 		sign_in page : all fields are filled
 		sign_up page : an error occured
@@ -271,7 +271,7 @@ def authenticate_42_user(email):
 def profile(request):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
-		
+	photo_name = request.user.photo.name
 	User = get_user_model()
 	all_users = User.objects.all()
 
@@ -287,7 +287,9 @@ def profile(request):
 					'form':form}
 		
 		if form.is_valid():
-			if request.user.photo and request.user.photo.name != 'profile_pics/default.jpg':
+			logging.info("---------------")
+			logging.info(request.user.photo.name)
+			if request.user.photo and request.user.photo.name != photo_name:
 				default_storage.delete(request.user.photo.path)
 	
 			form.save()
