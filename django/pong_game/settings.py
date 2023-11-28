@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'pong_app',
-    'users_app.apps.UsersAppConfig',
     'channels',
 ]
 
