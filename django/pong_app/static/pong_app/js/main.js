@@ -16,16 +16,17 @@ const   keyState = {
 const   paddlePosition = {
     left: 0,
     right: 0,
+    // TODO add top and bottom
 };
 
 const   ballPosition = {
-    x: 0,
-    y: 0,
+    x: 10,
+    y: 10,
 };
 
 // EVENTS
 document.addEventListener('DOMContentLoaded', function() {
-    function getPaddle(key) {
+    function getPaddleID(key) {
         if (key === 'ArrowUp' || key === 'ArrowDown') {
             return 'right';
         } else if (key === 'w' || key === 's') {
@@ -48,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 type: 'paddle_move',
                 key: 'keydown',
                 direction: getPaddleDirection(event.key),
-                paddle: getPaddle(event.key),
+                paddleID: getPaddleID(event.key),
             };
             socket.send(JSON.stringify(message));
         }
@@ -61,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 type: 'paddle_move',
                 key: 'keyup',
                 direction: getPaddleDirection(event.key),
-                paddle: getPaddle(event.key),
+                paddleID: getPaddleID(event.key),
             };
             socket.send(JSON.stringify(message));
         }
@@ -70,9 +71,12 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.addEventListener('open', (event) => {
         const message = {
             type: 'init_game',
-            // TODO change to config size
-            canvas_width: 800,
-            canvas_height: 600,
+            canvasWidth: config.width,
+            canvasHeight: config.height,
+            paddlePositionLeft: paddlePosition.left,
+            paddlePositionRight: paddlePosition.right,
+            ballPositionX: ballPosition.x,
+            ballPositionY: ballPosition.y,
         };
         socket.send(JSON.stringify(message));
     });
@@ -80,23 +84,11 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.addEventListener('message', (event) => {
         let message = JSON.parse(event.data);
 
-        if (message.type === 'init_game') {
-            paddlePosition.left = message.paddlePosition.left;
-            paddlePosition.right = message.paddlePosition.right;
-            ballPosition.x = message.ballPosition.x;
-            ballPosition.y = message.ballPosition.y;
-
-            // TODO a deplacer
-            socket.send(JSON.stringify({
-                type: 'ball_move',
-            }));
-        }
-
         if (message.type === 'update_paddle_position') {
-            if (message.paddle === 'left') {
+            if (message.paddleName === 'left') {
                 paddlePosition.left = parseFloat(message.position);
                 updatePaddlePosition()
-            } else if (message.paddle === 'right') {
+            } else if (message.paddleName === 'right') {
                 paddlePosition.right = parseFloat(message.position);
                 updatePaddlePosition()
             }
