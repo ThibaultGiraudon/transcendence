@@ -63,8 +63,8 @@ services:
       - transcendence
     restart: on-failure
     volumes:
-      - static_volume:/usr/src/app/pong_game/static 
-      - templates_volume:/usr/src/app/pong_game/templates
+      - static_volume:/usr/src/app/main/static 
+      - templates_volume:/usr/src/app/main/templates
       - ssl_certificates:/etc/ssl
     # TODO remove this (enable it for logs directy in console) (for the print in python)
     tty: true

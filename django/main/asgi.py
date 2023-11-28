@@ -1,5 +1,5 @@
 """
-ASGI config for pong_game project.
+ASGI config for main project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -15,7 +15,7 @@ from    channels.auth import AuthMiddlewareStack
 from    django.urls import re_path
 from    pong_app.consumers import *
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pong_game.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'main.settings')
 
 # TODO change name of url
 websocket_urlpatterns = [
