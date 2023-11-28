@@ -10,7 +10,7 @@ class CustomUserManager(BaseUserManager):
 		email = self.normalize_email(email)
 		
 		user = self.model(email=email, username=username, **extra_fields)
-		
+
 		if photo is None:
 			default_image_path = '/usr/src/app/users_app/profile_pics/default.jpg'
 			with open(default_image_path, 'rb') as default_image_file:
@@ -32,7 +32,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
 	email = models.EmailField(unique=True)
 	username = models.CharField(max_length=150, unique=True)
-	photo = models.ImageField(upload_to='profile_pics/')
+	photo = models.ImageField(upload_to='users_app/profile_pics', default='default.jpg')
 
 	# Use the custom manager
 	objects = CustomUserManager()

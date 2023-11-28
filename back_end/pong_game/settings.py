@@ -17,8 +17,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Media files
+MEDIA_ROOT = '/usr/src/app/users_app/profile_pics'
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'users_app', 'profile_pics')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
