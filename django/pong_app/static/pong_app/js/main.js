@@ -1,5 +1,3 @@
-// TODO voir p5 pour les canvas
-
 // VARIABLES
 let     websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 let     websocketPort = window.location.protocol === 'https:' ? ':8001' : '';
