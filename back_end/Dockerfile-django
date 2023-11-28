@@ -5,12 +5,13 @@ WORKDIR	/usr/src/app
 COPY	./requirements.txt ./
 
 RUN     pip install --upgrade pip
-
 RUN		pip install --no-cache -r requirements.txt
 
 COPY	./ ./
 
-RUN		pip install --no-cache -r requirements.txt
+# Profile pics
+RUN     mkdir -p ./users_app/profile_pics
+COPY   ./users_app/profile_pics/default.jpg ./users_app/profile_pics/default.jpg
 
 RUN     pip install requests
 

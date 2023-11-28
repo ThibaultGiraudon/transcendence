@@ -1,15 +1,21 @@
 {% block content%}
-{% csrf_token %}
 
-<title>{{ request.user.username }}</title>
-<img src={{ request.user.photo_url }} alt="photo de profile" width="100" height="100">
+<title>{{ request.user.username }} profile</title>
+<img src={{ request.user.photo.url }} alt="profile picture" width="100" height="100">
 <p>{{ request.user.username }}</p>
 <p>{{ request.user.email}}</p>
-<form method="POST" novalidate>
+<form method="POST" enctype="multipart/form-data" novalidate>
 	{% csrf_token %}
 
-	<h2>Edit username</h2>
-	{{form.as_p}}
+	<h2>Edit informations</h2>
+
+  <h4>Change username</h4>
+	{{form.username}}
+
+  <h4>Change profile picture</h4>
+  {{form.photo}}
+
+  </br>
 	
 	{% for message in messages %}
 	<div>
@@ -19,14 +25,15 @@
 	</div>
 	{% endfor %}
 	
-	<input type="submit" value="Edit"/>
+	<input type="submit" value="Accept modifications"/>
 </form>
+
 <h1>All users</h1>
 <ul>
   {% for x in all_users %}
     {% if x.username != request.user.username%}
       <li>
-        <img src={{ x.photo_url }} alt="photo de profile" width="25" height="25">
+        <img src={{ x.photo.url }} alt="profile picture" width="25" height="25">
         {{ x.username }}
       </li>
     {% endif %}
@@ -37,4 +44,5 @@
         border-radius: 50%;
       }
 </style>
+
 {% endblock content%}
