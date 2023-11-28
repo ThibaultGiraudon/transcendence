@@ -5,10 +5,12 @@ from    .gameObjects import *
 import  json
 
 class PongConsumer(AsyncWebsocketConsumer):
-    canvasInfo = {
-        'width': None,
-        'height': None,
-    }
+    # canvasInfo = {
+    #     'width': None,
+    #     'height': None,
+    # }
+
+    gameSettings = GameSettings(2)
 
     ball = Ball()
     paddle1 = Paddle('0')
