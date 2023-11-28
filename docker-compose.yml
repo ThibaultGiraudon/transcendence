@@ -28,6 +28,9 @@ volumes:
       type: none
       o: bind
       device: ./ssl
+  media_volume:
+    driver: local
+    name: media_volume
 
 services:
   django:
@@ -45,6 +48,7 @@ services:
     volumes:
       - static_volume:/usr/src/app/pong_app/static
       - templates_volume:/usr/src/app/pong_app/templates
+      - media_volume:/usr/src/app/users_app/profile_pics
 
   daphne:
     build:
