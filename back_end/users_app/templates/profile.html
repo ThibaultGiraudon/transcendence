@@ -1,9 +1,13 @@
 {% block content%}
 
-<title>{{ request.user.username }} profile</title>
-<img src={{ request.user.photo.url }} alt="profile picture" width="100" height="100">
-<p>{{ request.user.username }}</p>
-<p>{{ request.user.email}}</p>
+<title>{{ user.username }} profile</title>
+<img src={{ user.photo.url }} alt="profile picture" width="100" height="100">
+<p>User: {{ user.username }}</p>
+<p>Request: {{ request.user.username }}</p>
+<p>{{ user.email}}</p>
+
+{% if user.username == request.user.username %}
+
 <form method="POST" enctype="multipart/form-data" novalidate>
 	{% csrf_token %}
 
@@ -28,21 +32,6 @@
 	<input type="submit" value="Accept modifications"/>
 </form>
 
-<h1>All users</h1>
-<ul>
-  {% for x in all_users %}
-    {% if x.username != request.user.username%}
-      <li>
-        <img src={{ x.photo.url }} alt="profile picture" width="25" height="25">
-        {{ x.username }}
-      </li>
-    {% endif %}
-  {% endfor %}
-</ul>
-<style>
-    img {
-        border-radius: 50%;
-      }
-</style>
+{% endif %}
 
 {% endblock content%}

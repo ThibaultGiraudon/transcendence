@@ -9,7 +9,8 @@ urlpatterns = [
     path('sign_out/', views.sign_out, name='sign_out'),
     path('ft_api/', views.ft_api, name="ft_api"),
     path('check_authorize/', views.check_authorize, name="check_authorize"),
-    path('profile/', views.profile, name="profile"),
+    path('profile/<str:username>', views.profile, name="profile"),
+    path('users/', views.users, name="users"),
 ]
 
 if settings.DEBUG:

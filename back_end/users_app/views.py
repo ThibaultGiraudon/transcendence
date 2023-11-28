@@ -265,30 +265,32 @@ def authenticate_42_user(email):
 		return user
 	except User.DoesNotExist:
 		return None
-
+	
 
 @csrf_protect
-def profile(request):
+def profile(request, username):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
 	photo_name = request.user.photo.name
 	User = get_user_model()
-	all_users = User.objects.all()
+
+	try:
+		user = User.objects.get(username=username)
+	except User.DoesNotExist:
+		return redirect('users')
 
 	if request.method == 'GET':
 		form = EditProfileForm(instance=request.user)
-		context = {	'all_users':all_users,
-					'form':form}
+		context = {	'form':form,
+					'user':user}
 		return render(request, 'profile.html', context)
 	
 	elif request.method == 'POST':
 		form = EditProfileForm(request.POST, request.FILES, instance=request.user)
-		context = {	'all_users':all_users,
-					'form':form}
+		context = {	'form':form,
+					'user':user}
 		
 		if form.is_valid():
-			logging.info("---------------")
-			logging.info(request.user.photo.name)
 			if request.user.photo and request.user.photo.name != photo_name:
 				default_storage.delete(request.user.photo.path)
 	
@@ -296,10 +298,26 @@ def profile(request):
 			messages.success(request, 'Your informations have been updated')
 			return redirect('profile')
 		else:
-			if User.objects.filter(username=request.POST['username']).exists():
+			if 'photo' in form.errors:
+				messages.error(request, 'Please enter a valid picture')
+			elif User.objects.filter(username=request.POST['username']).exists():
 				messages.error(request, 'This username is already taken')
 			else:
 				messages.error(request, 'Please enter a valid username')
 			return redirect('profile')
 
 	return redirect('profile')
+
+
+def users(request):
+	if not request.user.is_authenticated:
+		return redirect('sign_in')
+	
+	User = get_user_model()
+	all_users = User.objects.all()
+	context = {'all_users':all_users}
+
+	if request.method == 'GET':
+		return render(request, 'users.html', context)
+	elif request.method == 'POST':
+		return redirect('users')

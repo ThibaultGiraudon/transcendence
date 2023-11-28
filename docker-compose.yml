@@ -17,10 +17,6 @@ volumes:
   media_volume:
     driver: local
     name: media_volume
-    driver_opts:
-      type: none
-      o: bind
-      device: ./${BACK_END_FOLDER}/users_app/profile_pics
 
 services:
   django:
