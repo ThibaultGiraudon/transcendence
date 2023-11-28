@@ -4,7 +4,7 @@ migrations
 *.pyc
 *.pyo
 __pycache__/
-# *.sqlite3
+*.sqlite3
 
 # Ignore les fichiers générés par l'IDE
 *.pyc
