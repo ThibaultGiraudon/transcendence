@@ -39,9 +39,9 @@ async def handle_paddle_move(message, consumer):
 	direction = message['direction']
 
 	if (message['id'] == 'left'):
-		paddle = consumer.leftPaddle
+		paddle = consumer.paddle1
 	elif (message['id'] == 'right'):
-		paddle = consumer.rightPaddle
+		paddle = consumer.paddle2
 
 	if (message['key'] == 'keydown'):
 		if (direction == 'up'):
