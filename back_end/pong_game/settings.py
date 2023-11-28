@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'pong_app',
     'users_app',
+    'chat_app',
     'channels',
 ]
 
