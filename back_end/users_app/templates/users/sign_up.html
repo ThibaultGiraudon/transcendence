@@ -1,4 +1,14 @@
 {% block content %}
+
+{% if request.user.is_authenticated %}
+
+<p>You are already connected, please log out before creating a new user.</p>
+<a href="/sign_out">
+	<button>Log out</button>
+</a>
+
+{% else %}
+
 <form method="POST" novalidate>
 	{% csrf_token %}
 	<h2>Sign up</h2>
@@ -13,5 +23,7 @@
 
 	<input type="submit" value="Sign up" />
 </form>
+
+{% endif %}
 
 {% endblock content%}
