@@ -12,12 +12,11 @@ class Paddle:
             'down': None,
         }
 
-    # def move_up(self, step):
-    #     self.y -= step
-
-    # def move_down(self, step):
-    #     self.y += step
-
+    def moveUp(self):
+        self.position -= self.speed
+    
+    def moveDown(self):
+        self.position += self.speed
 
 class Ball:
     def __init__(self):
