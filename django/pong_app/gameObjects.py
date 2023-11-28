@@ -1,6 +1,6 @@
 class Paddle:
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, id):
+        self.id = id
         self.position = 0
         self.speed = 20
         self.keyState = {

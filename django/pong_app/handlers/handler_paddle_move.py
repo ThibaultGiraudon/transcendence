@@ -14,7 +14,7 @@ async def sendUpdateMessage(consumer, paddle):
 	message = {
 		'type': 'update_paddle_position',
 		'position': paddle.position,
-		'paddleName': paddle.name
+		'id': paddle.id,
 	}
 	await consumer.send(json.dumps(message))
 
