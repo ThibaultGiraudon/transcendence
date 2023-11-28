@@ -1,3 +1,14 @@
+class GameSettings:
+    def __init__(self, nbPaddles):
+        self.nbPaddles = nbPaddles
+        # TODO change name to game instead of canvas 
+        self.canvasWidth = 0
+        self.canvasHeight = 0
+        self.paddles = []
+
+        for id in range(self.nbPaddles):
+            self.paddles.append(Paddle(id))
+
 class Paddle:
     def __init__(self, id):
         self.id = id
