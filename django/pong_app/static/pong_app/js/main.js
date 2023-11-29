@@ -13,8 +13,8 @@ const   keyState = {
 };
 
 const   paddlePosition = {
-    left: 0,
-    right: 0,
+    id0: 0,
+    id1: 0,
     // TODO add top and bottom
 };
 
@@ -56,10 +56,10 @@ document.addEventListener('DOMContentLoaded', function() {
             type: 'init_game',
             canvasWidth: config.width,
             canvasHeight: config.height,
-            paddlePositionLeft: paddlePosition.left,
-            paddlePositionRight: paddlePosition.right,
-            ballPositionX: ballPosition.x,
-            ballPositionY: ballPosition.y,
+            // paddlePositionLeft: paddlePosition.id0,
+            // paddlePositionRight: paddlePosition.id1,
+            // ballPositionX: ballPosition.x,
+            // ballPositionY: ballPosition.y,
         };
         socket.send(JSON.stringify(message));
     });
@@ -68,11 +68,13 @@ document.addEventListener('DOMContentLoaded', function() {
         let message = JSON.parse(event.data);
 
         if (message.type === 'update_paddle_position') {
-            if (message.id === 'left') {
-                paddlePosition.left = parseFloat(message.position);
+            console.log(message);
+            if (message.id === 0) {
+                console.log('id0');
+                paddlePosition.id0 = parseFloat(message.position);
                 updatePaddlePosition()
-            } else if (message.id === 'right') {
-                paddlePosition.right = parseFloat(message.position);
+            } else if (message.id == 1) {
+                paddlePosition.id1 = parseFloat(message.position);
                 updatePaddlePosition()
             }
         }
@@ -110,8 +112,8 @@ var config = {
 phaserGame = new Phaser.Game(config);
 const elements = {
     paddles: {
-        left: null,
-        right: null,
+        id0: null,
+        id1: null,
     },
     ball: null,
 };
@@ -122,22 +124,19 @@ function preload() {
 
 function create() {
     // var rect = new Phaser.Geom.Rectangle(400, 300, 100, 100);
-    elements.paddles.left = this.add.rectangle(10, paddlePosition.left + 50, 10, 100, 0xffffff);
-    elements.paddles.right = this.add.rectangle(config.width - 10, paddlePosition.right + 50, 10, 100, 0xffffff);
+    elements.paddles.id0 = this.add.rectangle(10, paddlePosition.id1 + 50, 10, 100, 0xffffff);
+    elements.paddles.id1 = this.add.rectangle(config.width - 10, paddlePosition.id1 + 50, 10, 100, 0xffffff);
 
     elements.ball = this.add.circle(ballPosition.x, ballPosition.y, 8, 0xffffff);
 }
 
 function update() {
-    // elements.paddles.left.y = paddlePosition.left;
-    // elements.paddles.right.y = paddlePosition.right;
-    // elements.ball.x = ballPosition.x;
-    // elements.ball.y = ballPosition.y;
+    // pass
 }
 
 function updatePaddlePosition() {
-    elements.paddles.left.y = paddlePosition.left + 50;
-    elements.paddles.right.y = paddlePosition.right + 50;
+    elements.paddles.id0.y = paddlePosition.id0 + 50;
+    elements.paddles.id1.y = paddlePosition.id1 + 50;
 }
 
 function updateBallPosition() {
