@@ -48,8 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.addEventListener('open', (event) => {
         const message = {
             type: 'init_game',
-            canvasWidth: config.width,
-            canvasHeight: config.height,
+            // gameWidth: config.width,
+            // gameHeight: config.height,
         };
         socket.send(JSON.stringify(message));
     });
@@ -119,11 +119,11 @@ function update() {
 function updatePaddlePosition(message) {
     if (message.id == 0) {
         elements.paddles.id0.setVisible(true);
-        elements.paddles.id0.x = parseFloat(message.x) + 50
+        elements.paddles.id0.x = parseFloat(message.x)
         elements.paddles.id0.y = parseFloat(message.y) + 50
     } else if (message.id == 1) {
         elements.paddles.id1.setVisible(true);
-        elements.paddles.id1.x = parseFloat(message.x) + 50
+        elements.paddles.id1.x = parseFloat(message.x)
         elements.paddles.id1.y = parseFloat(message.y) + 50
     }
 }

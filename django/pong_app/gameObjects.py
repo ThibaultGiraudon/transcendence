@@ -1,9 +1,9 @@
 class GameSettings:
-    def __init__(self, nbPaddles):
+    def __init__(self, nbPaddles, width, height):
         self.nbPaddles = nbPaddles
         # TODO change name to game instead of canvas 
-        self.canvasWidth = 0
-        self.canvasHeight = 0
+        self.gameWidth = width
+        self.gameHeight = height
         self.paddles = []
         self.ball = Ball()
 
@@ -12,8 +12,6 @@ class GameSettings:
     
     def resetPaddles(self):
         self.paddles.clear()
-        # for paddle in self.paddles:
-            # paddle.clear()
         for id in range(self.nbPaddles):
             self.paddles.append(Paddle(id))
 
