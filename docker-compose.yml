@@ -7,6 +7,9 @@ networks:
 volumes:
   postgres_data:
     driver: local
+  img_volume:
+    driver: local
+    name: img_volume
   static_volume:
     driver: local
     name: static_volume
@@ -14,13 +17,6 @@ volumes:
       type: none
       o: bind
       device: ./${DJANGO_FOLDER}/static
-  templates_volume:
-    driver: local
-    name: templates_volume
-    driver_opts:
-      type: none
-      o: bind
-      device: ./${DJANGO_FOLDER}/pong_app/templates
   ssl_certificates:
     driver: local
     name: ssl_certificates
@@ -28,9 +24,6 @@ volumes:
       type: none
       o: bind
       device: ./ssl
-  img_volume:
-    driver: local
-    name: img_volume
 
 services:
   django:
@@ -47,7 +40,6 @@ services:
     restart: on-failure
     volumes:
       - static_volume:/usr/src/app/static
-      - templates_volume:/usr/src/app/pong_app/templates
       - img_volume:/usr/src/app/static/users_app/img
 
   daphne:
@@ -63,9 +55,6 @@ services:
       - transcendence
     restart: on-failure
     volumes:
-      # TODO voir si le static volume est nécessaire
-      - static_volume:/usr/src/app/static 
-      - templates_volume:/usr/src/app/main/templates
       - ssl_certificates:/etc/ssl
     # TODO remove this (enable it for logs directy in console) (for the print in python)
     tty: true
@@ -93,13 +82,13 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
     ports:
       - "5432:5432"
     networks:
       - transcendence
     restart: on-failure
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
 
   adminer:
     image: adminer
