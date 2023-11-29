@@ -7,6 +7,7 @@ networks:
 volumes:
   postgres_data:
     driver: local
+    name: postgres_data
   img_volume:
     driver: local
     name: img_volume
