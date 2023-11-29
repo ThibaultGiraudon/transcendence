@@ -17,7 +17,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Media files
-MEDIA_ROOT = '/usr/src/app/users_app/profile_pics'
+MEDIA_ROOT = '/usr/src/app/static/users_app/img'
 MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = [
