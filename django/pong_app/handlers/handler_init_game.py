@@ -30,8 +30,23 @@ async def handle_ball_move(consumer):
 async def handle_init_game(message, consumer):
 	consumer.gameSettings.gameWidth = message['canvasWidth']
 	consumer.gameSettings.gameHeight = message['canvasHeight']
+	consumer.gameSettings.resetPaddles()
 	# consumer.paddle1.position = message['paddlePositionLeft']
 	# consumer.paddle2.position = message['paddlePositionRight']
 	# consumer.ball.x = message['ballPositionX']
 	# consumer.ball.y = message['ballPositionY']
+	message = {
+		'type': 'update_paddle_position',
+		'position': consumer.gameSettings.paddles[0].position,
+		'id': consumer.gameSettings.paddles[0].id,
+	}
+	print(message)
+	consumer.send(json.dumps(message))
+	message = {
+		'type': 'update_paddle_position',
+		'position': consumer.gameSettings.paddles[1].position,
+		'id': consumer.gameSettings.paddles[1].id,
+	}
+	print(message)
+	consumer.send(json.dumps(message))
 	consumer.ball.task = asyncio.create_task(handle_ball_move(consumer))
