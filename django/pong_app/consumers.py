@@ -6,7 +6,6 @@ import  json
 
 class PongConsumer(AsyncWebsocketConsumer):
     gameSettings = GameSettings(2)
-    # ball = Ball()
 
     async def connect(self):
         await self.accept()
