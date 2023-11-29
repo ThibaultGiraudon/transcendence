@@ -74,8 +74,19 @@ def sign_up(request):
 	
 	elif request.method == 'POST':
 		form = SignUpForm(request.POST)
-		
+
 		if form.is_valid():
+
+			if CustomUser.objects.filter(email=form.cleaned_data['email']).exists():
+				messages.error(request, "This email is already taken")
+				return redirect('sign_up')
+			elif CustomUser.objects.filter(username=form.cleaned_data['username']).exists():
+				messages.error(request, "This username is already taken")
+				return redirect('sign_up')
+			elif len(form.cleaned_data['username']) < 4:
+				messages.error(request, "Your username is too short (4 characters minimum)")
+				return redirect('sign_up')
+			
 			user = CustomUser.objects.create_user(
 					username=form.cleaned_data['username'],
 					email=form.cleaned_data['email'],
@@ -84,7 +95,7 @@ def sign_up(request):
 			login(request, user)
 			return redirect('pong')
 	
-	messages.error(request, "Form error")
+	messages.error(request, "You need to provide all fields")
 	return redirect('sign_up')
 
 
@@ -267,6 +278,11 @@ def authenticate_42_user(email):
 		return None
 	
 
+def profile_me(request):
+	if not request.user.is_authenticated:
+		return redirect('sign_in')
+	return redirect('profile', username=request.user.username)
+
 @csrf_protect
 def profile(request, username):
 	if not request.user.is_authenticated:
@@ -293,10 +309,13 @@ def profile(request, username):
 		if form.is_valid():
 			if request.user.photo and request.user.photo.name != photo_name:
 				default_storage.delete(request.user.photo.path)
+			elif len(form.cleaned_data['username']) < 4:
+				messages.error(request, "Your username is too short (4 characters minimum)")
+				return redirect('profile', username=username)
 	
 			form.save()
 			messages.success(request, 'Your informations have been updated')
-			return redirect('profile')
+			return redirect('profile', username=request.user.username)
 		else:
 			if 'photo' in form.errors:
 				messages.error(request, 'Please enter a valid picture')
@@ -304,9 +323,9 @@ def profile(request, username):
 				messages.error(request, 'This username is already taken')
 			else:
 				messages.error(request, 'Please enter a valid username')
-			return redirect('profile')
+			return redirect('profile', username=username)
 
-	return redirect('profile')
+	return redirect('profile', username=username)
 
 
 def users(request):
