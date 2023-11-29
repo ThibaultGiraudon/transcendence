@@ -69,14 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (message.type === 'update_paddle_position') {
             console.log(message);
-            if (message.id === 0) {
-                console.log('id0');
-                paddlePosition.id0 = parseFloat(message.position);
-                updatePaddlePosition()
-            } else if (message.id == 1) {
-                paddlePosition.id1 = parseFloat(message.position);
-                updatePaddlePosition()
-            }
+            updatePaddlePosition(message);
         }
 
         if (message.type === 'update_ball_position') {
@@ -123,9 +116,8 @@ function preload() {
 }
 
 function create() {
-    // var rect = new Phaser.Geom.Rectangle(400, 300, 100, 100);
-    elements.paddles.id0 = this.add.rectangle(10, paddlePosition.id1 + 50, 10, 100, 0xffffff);
-    elements.paddles.id1 = this.add.rectangle(config.width - 10, paddlePosition.id1 + 50, 10, 100, 0xffffff);
+    elements.paddles.id0 = this.add.rectangle(0, 0, 10, 100, 0xffffff).setVisible(false);
+    elements.paddles.id1 = this.add.rectangle(0, 0, 10, 100, 0xffffff).setVisible(false);
 
     elements.ball = this.add.circle(ballPosition.x, ballPosition.y, 8, 0xffffff);
 }
@@ -134,9 +126,14 @@ function update() {
     // pass
 }
 
-function updatePaddlePosition() {
-    elements.paddles.id0.y = paddlePosition.id0 + 50;
-    elements.paddles.id1.y = paddlePosition.id1 + 50;
+function updatePaddlePosition(message) {
+    if (message.id == 0) {
+        elements.paddles.id0.setVisible(true);
+        elements.paddles.id0.y = parseFloat(message.position) + 50
+    } else if (message.id == 1) {
+        elements.paddles.id1.setVisible(true);
+        elements.paddles.id1.y = parseFloat(message.position) + 50
+    }
 }
 
 function updateBallPosition() {
