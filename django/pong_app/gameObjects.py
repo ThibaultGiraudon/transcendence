@@ -8,11 +8,18 @@ class GameSettings:
 
         for id in range(self.nbPaddles):
             self.paddles.append(Paddle(id))
+    
+    def resetPaddles(self):
+        self.paddles.clear()
+        # for paddle in self.paddles:
+            # paddle.clear()
+        for id in range(self.nbPaddles):
+            self.paddles.append(Paddle(id))
 
 class Paddle:
     def __init__(self, id):
         self.id = id
-        self.position = 100
+        self.position = 400
         self.speed = 20
         self.keyState = {
             'up': False,
