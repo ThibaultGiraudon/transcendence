@@ -28,9 +28,9 @@ volumes:
       type: none
       o: bind
       device: ./ssl
-  # media_volume:
-  #   driver: local
-  #   name: media_volume
+  img_volume:
+    driver: local
+    name: img_volume
 
 services:
   django:
@@ -48,7 +48,7 @@ services:
     volumes:
       - static_volume:/usr/src/app/static
       - templates_volume:/usr/src/app/pong_app/templates
-      # - media_volume:/usr/src/app/users_app/profile_pics
+      - img_volume:/usr/src/app/static/users_app/img
 
   daphne:
     build:
@@ -63,7 +63,8 @@ services:
       - transcendence
     restart: on-failure
     volumes:
-      - static_volume:/usr/src/app/main/static 
+      # TODO voir si le static volume est nécessaire
+      - static_volume:/usr/src/app/static 
       - templates_volume:/usr/src/app/main/templates
       - ssl_certificates:/etc/ssl
     # TODO remove this (enable it for logs directy in console) (for the print in python)
