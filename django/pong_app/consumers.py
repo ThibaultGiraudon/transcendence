@@ -11,8 +11,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
-        if (self.ball.task):
-            self.ball.task.cancel()
+        if (self.gameSettings.ball.task):
+            self.gameSettings.ball.task.cancel()
 
     async def receive(self, text_data):
         message = json.loads(text_data)
