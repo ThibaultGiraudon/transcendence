@@ -12,12 +12,6 @@ const   keyState = {
     s: false,
 };
 
-const   paddlePosition = {
-    id0: 0,
-    id1: 0,
-    // TODO add top and bottom
-};
-
 const   ballPosition = {
     x: 10,
     y: 10,
@@ -56,10 +50,6 @@ document.addEventListener('DOMContentLoaded', function() {
             type: 'init_game',
             canvasWidth: config.width,
             canvasHeight: config.height,
-            // paddlePositionLeft: paddlePosition.id0,
-            // paddlePositionRight: paddlePosition.id1,
-            // ballPositionX: ballPosition.x,
-            // ballPositionY: ballPosition.y,
         };
         socket.send(JSON.stringify(message));
     });
@@ -129,10 +119,12 @@ function update() {
 function updatePaddlePosition(message) {
     if (message.id == 0) {
         elements.paddles.id0.setVisible(true);
-        elements.paddles.id0.y = parseFloat(message.position) + 50
+        elements.paddles.id0.x = parseFloat(message.x) + 50
+        elements.paddles.id0.y = parseFloat(message.y) + 50
     } else if (message.id == 1) {
         elements.paddles.id1.setVisible(true);
-        elements.paddles.id1.y = parseFloat(message.position) + 50
+        elements.paddles.id1.x = parseFloat(message.x) + 50
+        elements.paddles.id1.y = parseFloat(message.y) + 50
     }
 }
 
