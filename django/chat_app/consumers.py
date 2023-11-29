@@ -3,7 +3,7 @@ import logging
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-messages = []
+messages = {}
 
 class ChatConsumer(AsyncWebsocketConsumer):
     
@@ -16,8 +16,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         await self.accept()
 
-        for message in messages:
-            await self.send(text_data=json.dumps({"message": message[1], "sender": message[0]}))
+        if self.room_name in messages:
+            for message in messages[self.room_name]:
+                await self.send(text_data=json.dumps({"message": message[1], "sender": message[0]}))
             
     async def disconnect(self, close_code):
         # Leave room group
@@ -43,7 +44,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = event["message"]
         sender = event["sender"]
 
-        messages.append([sender, message])
+        if self.room_name not in messages:
+            messages[self.room_name] = []
+        messages[self.room_name].append([sender, message])
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({"message": message, "sender": sender}))
