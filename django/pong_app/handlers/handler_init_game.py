@@ -8,7 +8,6 @@ async def sendUpdateMessage(consumer):
 		'x': consumer.ball.x,
 		'y': consumer.ball.y,
 	}
-	print(message)
 	await consumer.send(json.dumps(message))
 
 async def handle_ball_move(consumer):
@@ -18,10 +17,10 @@ async def handle_ball_move(consumer):
 		consumer.ball.x += delta_x
 		consumer.ball.y += delta_y
 
-		if (consumer.ball.x <= 0) or (consumer.ball.x >= consumer.canvasInfo['width']):
+		if (consumer.ball.x <= 0) or (consumer.ball.x >= consumer.gameSettings.gameWidth):
 			consumer.ball.angle = math.pi - consumer.ball.angle
 
-		if (consumer.ball.y <= 0) or (consumer.ball.y >= consumer.canvasInfo['height']):
+		if (consumer.ball.y <= 0) or (consumer.ball.y >= consumer.gameSettings.gameHeight):
 			consumer.ball.angle = -consumer.ball.angle
 
 		# TODO change to global var for fps
@@ -29,10 +28,25 @@ async def handle_ball_move(consumer):
 		await sendUpdateMessage(consumer)
 
 async def handle_init_game(message, consumer):
-	consumer.canvasInfo['width'] = message['canvasWidth']
-	consumer.canvasInfo['height'] = message['canvasHeight']
-	consumer.leftPaddle.position = message['paddlePositionLeft']
-	consumer.rightPaddle.position = message['paddlePositionRight']
-	consumer.ball.x = message['ballPositionX']
-	consumer.ball.y = message['ballPositionY']
+	consumer.gameSettings.gameWidth = message['canvasWidth']
+	consumer.gameSettings.gameHeight = message['canvasHeight']
+	consumer.gameSettings.resetPaddles()
+	# consumer.paddle1.position = message['paddlePositionLeft']
+	# consumer.paddle2.position = message['paddlePositionRight']
+	# consumer.ball.x = message['ballPositionX']
+	# consumer.ball.y = message['ballPositionY']
+	message = {
+		'type': 'update_paddle_position',
+		'position': consumer.gameSettings.paddles[0].position,
+		'id': consumer.gameSettings.paddles[0].id,
+	}
+	print(message)
+	consumer.send(json.dumps(message))
+	message = {
+		'type': 'update_paddle_position',
+		'position': consumer.gameSettings.paddles[1].position,
+		'id': consumer.gameSettings.paddles[1].id,
+	}
+	print(message)
+	consumer.send(json.dumps(message))
 	consumer.ball.task = asyncio.create_task(handle_ball_move(consumer))

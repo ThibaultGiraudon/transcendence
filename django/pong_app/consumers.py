@@ -5,14 +5,12 @@ from    .gameObjects import *
 import  json
 
 class PongConsumer(AsyncWebsocketConsumer):
-    canvasInfo = {
-        'width': None,
-        'height': None,
-    }
+    gameSettings = GameSettings(2)
 
     ball = Ball()
-    leftPaddle = Paddle('left')
-    rightPaddle = Paddle('right')
+    # paddle1 = gameSettings.paddles[0]
+    # paddle2 = gameSettings.paddles[1]
+
 
     async def connect(self):
         await self.accept()
@@ -23,7 +21,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         message = json.loads(text_data)
-        print(f"Message reçu: {message}")
+        # print(f"Message reçu: {message}")
 
         if (message['type'] == 'init_game'):
             await handle_init_game(message, self)
