@@ -2,7 +2,7 @@ import	json
 import	asyncio
 import	math
 
-async def sendUpdatePaddleMessage(consumer):
+async def sendFirstPaddlePosition(consumer):
     for paddle in consumer.gameSettings.paddles:
         message = {
             'type': 'update_paddle_position',
@@ -12,7 +12,7 @@ async def sendUpdatePaddleMessage(consumer):
         }
         await consumer.send(json.dumps(message))
 
-async def sendUpdateMessage(consumer):
+async def sendUpdateBallMessage(consumer):
 	message = {
 		'type': 'update_ball_position',
 		'x': consumer.gameSettings.ball.x,
@@ -21,7 +21,7 @@ async def sendUpdateMessage(consumer):
 	await consumer.send(json.dumps(message))
 
 async def handle_ball_move(consumer):
-	await sendUpdatePaddleMessage(consumer)
+	await sendFirstPaddlePosition(consumer)
       
 	while (True):
 		delta_x = consumer.gameSettings.ball.speed * math.cos(consumer.gameSettings.ball.angle) 
@@ -37,7 +37,7 @@ async def handle_ball_move(consumer):
 
 		# TODO change to global var for fps
 		await asyncio.sleep(0.03)
-		await sendUpdateMessage(consumer)
+		await sendUpdateBallMessage(consumer)
 
 async def handle_init_game(message, consumer):
 	consumer.gameSettings.gameWidth = message['canvasWidth']
