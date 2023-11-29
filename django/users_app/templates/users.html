@@ -3,19 +3,27 @@
 <h1>All users</h1>
 <ul>
   {% for x in all_users %}
-    <li>
-      <img src={{ x.photo.url }} alt="profile picture" width="25" height="25">
-      {{ x.username }}
-      {% if x.username == user.username%}
-      ⭐
-      {% endif %}
-    </li>
-  {% endfor %}
+    <a href="/profile/{{ x.username }}">
+      <li>
+        <img src={{ x.photo.url }} alt="profile picture" width="25" height="25">
+        {{ x.username }}
+        {% if x.username == user.username%}
+        ⭐
+        {% endif %}
+      </li>
+    </a>
+   {% endfor %}
 </ul>
+
 <style>
     img {
         border-radius: 50%;
       }
+
+    a {
+        text-decoration: none;
+        color: black;
+    }
 </style>
 
 {% endblock content%}
