@@ -15,7 +15,7 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         if (self.gameSettings.ball.task):
             self.gameSettings.ball.task.cancel()
-        # GameSettings.resetPaddles()
+        # self.gameSettings.resetPaddles()
 
     async def receive(self, text_data):
         message = json.loads(text_data)
