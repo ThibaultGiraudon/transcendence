@@ -12,11 +12,6 @@ const   keyState = {
     s: false,
 };
 
-const   ballPosition = {
-    x: 10,
-    y: 10,
-};
-
 // EVENTS
 document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', function(event) {
@@ -48,8 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.addEventListener('open', (event) => {
         const message = {
             type: 'init_game',
-            // gameWidth: config.width,
-            // gameHeight: config.height,
         };
         socket.send(JSON.stringify(message));
     });
@@ -58,14 +51,11 @@ document.addEventListener('DOMContentLoaded', function() {
         let message = JSON.parse(event.data);
 
         if (message.type === 'update_paddle_position') {
-            console.log(message);
             updatePaddlePosition(message);
         }
 
         if (message.type === 'update_ball_position') {
-            ballPosition.x = parseFloat(message.x);
-            ballPosition.y = parseFloat(message.y);
-            updateBallPosition()
+            updateBallPosition(message);
         }
     });
 });
@@ -109,7 +99,7 @@ function create() {
     elements.paddles.id0 = this.add.rectangle(0, 0, 10, 100, 0xffffff).setVisible(false);
     elements.paddles.id1 = this.add.rectangle(0, 0, 10, 100, 0xffffff).setVisible(false);
 
-    elements.ball = this.add.circle(ballPosition.x, ballPosition.y, 8, 0xffffff);
+    elements.ball = this.add.circle(0, 0, 8, 0xffffff).setVisible(false);
 }
 
 function update() {
@@ -118,17 +108,18 @@ function update() {
 
 function updatePaddlePosition(message) {
     if (message.id == 0) {
-        elements.paddles.id0.setVisible(true);
+        elements.paddles.id0.setVisible(true)
         elements.paddles.id0.x = parseFloat(message.x)
         elements.paddles.id0.y = parseFloat(message.y) + 50
     } else if (message.id == 1) {
-        elements.paddles.id1.setVisible(true);
+        elements.paddles.id1.setVisible(true)
         elements.paddles.id1.x = parseFloat(message.x)
         elements.paddles.id1.y = parseFloat(message.y) + 50
     }
 }
 
-function updateBallPosition() {
-    elements.ball.x = ballPosition.x;
-    elements.ball.y = ballPosition.y;
+function updateBallPosition(message) {
+    elements.ball.setVisible(true)
+    elements.ball.x = parseFloat(message.x)
+    elements.ball.y = parseFloat(message.y)
 }
