@@ -42,5 +42,5 @@ async def handle_ball_move(consumer):
 async def handle_init_game(message, consumer):
 	# consumer.gameSettings.gameWidth = message['gameWidth']
 	# consumer.gameSettings.gameHeight = message['gameHeight']
-	# consumer.gameSettings.resetPaddles()
+	consumer.gameSettings.resetPaddles()
 	consumer.gameSettings.ball.task = asyncio.create_task(handle_ball_move(consumer))

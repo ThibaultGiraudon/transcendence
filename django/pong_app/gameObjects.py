@@ -1,7 +1,6 @@
 class GameSettings:
     def __init__(self, nbPaddles, width, height):
         self.nbPaddles = nbPaddles
-        # TODO change name to game instead of canvas 
         self.gameWidth = width
         self.gameHeight = height
         self.paddles = []
@@ -11,15 +10,15 @@ class GameSettings:
             self.paddles.append(Paddle(id))
     
     def resetPaddles(self):
-        self.paddles.clear()
-        for id in range(self.nbPaddles):
-            self.paddles.append(Paddle(id))
+        for paddle in self.paddles:
+            # TODO change maybe
+            paddle.y = self.gameHeight / 2 - 50
 
 class Paddle:
     def __init__(self, id):
         self.id = id
         self.x = 0
-        self.y = 400
+        self.y = 0
         self.speed = 20
         self.keyState = {
             'up': False,
@@ -30,7 +29,6 @@ class Paddle:
             'down': None,
         }
 
-    # TODO maybe change to one method move who check collide
     def moveUp(self):
         self.y -= self.speed
     
