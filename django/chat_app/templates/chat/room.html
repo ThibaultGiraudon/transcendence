@@ -5,21 +5,22 @@
     <title>Chat Room</title>
 </head>
 <body>
-    <p>{{ request.user.username }}</p>
+
     <textarea disabled id="chat-log" cols="100" rows="20"></textarea><br>
     <input id="chat-message-input" type="text" size="100"><br>
     <input id="chat-message-submit" type="button" value="Send">
     {{ room_name|json_script:"room-name" }}
     <script>
+        console.log("coucou1");
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
-        const chatSocket = new WebSocket(
-            'ws://'
-            + window.location.host
-            + '/ws/chat/'
-            + roomName
-            + '/'
-        );
+        let     websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        let     websocketPort = window.location.protocol === 'https:' ? ':8001' : '';
+        const   socketUrl = websocketProtocol + '//' + window.location.host + websocketPort + '/ws/chat/' + roomName + "/";
+        const   chatSocket = new WebSocket(socketUrl);
+
+        console.log(socketUrl);
+
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);

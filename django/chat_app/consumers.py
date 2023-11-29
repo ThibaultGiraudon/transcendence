@@ -1,6 +1,5 @@
 import json
 import logging
-
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 messages = {}
@@ -8,11 +7,16 @@ messages = {}
 class ChatConsumer(AsyncWebsocketConsumer):
     
     async def connect(self):
+        logging.info("----------------\nCONNECT")
+        logging.info("coucou1")
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = f"chat_{self.room_name}"
 
         # Join room group
+        logging.info("----------------\nCONNECT")
+        logging.info("coucou2")
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+
 
         await self.accept()
 
@@ -22,6 +26,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             
     async def disconnect(self, close_code):
         # Leave room group
+        logging.info("----------------\nDISCONNECT")
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     # Receive message from WebSocket
@@ -29,20 +34,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         logging.info("----------------\nRECEIVE")
         logging.info(text_data_json)
-        message = text_data_json["message"]
-        sender = text_data_json["sender"]
+        message = text_data_json.get("message")
+        sender = text_data_json.get("sender")
 
         # Send message to room group
         await self.channel_layer.group_send(
-            self.room_group_name, {"type": "chat.message", "message": message, "sender": sender}
+            self.room_group_name, {"type": "chat_message", "message": message, "sender": sender}
         )
 
     # Receive message from room group
     async def chat_message(self, event):
+        message = event.get("message")
+        sender = event.get("sender")
         logging.info("----------------\nCHAT_MESSAGE")
-        logging.info(event)
-        message = event["message"]
-        sender = event["sender"]
+        logging.info(self.room_name)
 
         if self.room_name not in messages:
             messages[self.room_name] = []

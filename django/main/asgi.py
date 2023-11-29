@@ -13,6 +13,7 @@ from    django.core.asgi import get_asgi_application
 from    channels.routing import ProtocolTypeRouter, URLRouter
 from    channels.auth import AuthMiddlewareStack
 from    django.urls import re_path
+from    django.conf.urls import url
 from    pong_app.consumers import *
 from    chat_app import consumers
 
@@ -21,7 +22,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'main.settings')
 # TODO change name of url
 websocket_urlpatterns = [
     re_path(r'ws/some_path/$', PongConsumer.as_asgi()),
-    re_path(r"ws/chat/(?P<room_name>\w+)/$", consumers.ChatConsumer.as_asgi()),
+    url(r"ws/chat/(?P<room_name>[^/]+)/$", consumers.ChatConsumer.as_asgi()),
 ]
 
 application = ProtocolTypeRouter({
