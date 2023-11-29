@@ -3,8 +3,10 @@ import logging
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 
+messages = []
 
 class ChatConsumer(AsyncWebsocketConsumer):
+    
     async def connect(self):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = f"chat_{self.room_name}"
@@ -14,6 +16,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         await self.accept()
 
+        for message in messages:
+            await self.send(text_data=json.dumps({"message": message[1], "sender": message[0]}))
+            
     async def disconnect(self, close_code):
         # Leave room group
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
@@ -37,6 +42,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         logging.info(event)
         message = event["message"]
         sender = event["sender"]
+
+        messages.append([sender, message])
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({"message": message, "sender": sender}))
