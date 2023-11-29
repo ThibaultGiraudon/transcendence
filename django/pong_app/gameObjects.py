@@ -20,7 +20,8 @@ class GameSettings:
 class Paddle:
     def __init__(self, id):
         self.id = id
-        self.position = 400
+        self.x = 0
+        self.y = 400
         self.speed = 20
         self.keyState = {
             'up': False,
@@ -33,10 +34,10 @@ class Paddle:
 
     # TODO maybe change to one method move who check collide
     def moveUp(self):
-        self.position -= self.speed
+        self.y -= self.speed
     
     def moveDown(self):
-        self.position += self.speed
+        self.y += self.speed
     
     # def checkCollision(self, ball):
 
