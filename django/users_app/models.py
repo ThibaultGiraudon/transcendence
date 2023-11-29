@@ -33,6 +33,7 @@ class CustomUser(AbstractUser):
 	email = models.EmailField(unique=True)
 	username = models.CharField(max_length=150, unique=True)
 	photo = models.ImageField(upload_to='users_app/profile_pics', default='default.jpg')
+	channels = models.JSONField(default=dict)
 
 	# Use the custom manager
 	objects = CustomUserManager()

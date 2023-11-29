@@ -21,18 +21,25 @@
   </br>
 	
 	{% for message in messages %}
-	<div>
-		{% if message.tags == 'success' %}
-			<a data-dismiss="alert">✅</a>
-		{% else %}
-			<a data-dismiss="alert">⚠️</a>
-		{% endif %}
-		{{ message }}
-	</div>
+		<div>
+			{% if message.tags == 'success' %}
+				<a data-dismiss="alert">✅</a>
+			{% else %}
+				<a data-dismiss="alert">⚠️</a>
+			{% endif %}
+			{{ message }}
+		</div>
 	{% endfor %}
 	
 	<input type="submit" value="Accept modifications"/>
 </form>
+
+{% else %}
+
+</br>
+<a href="/create_channel/{{ user.username }}">
+	<button>Chat together</button>
+</a>
 
 {% endif %}
 
