@@ -5,6 +5,7 @@ class GameSettings:
         self.canvasWidth = 0
         self.canvasHeight = 0
         self.paddles = []
+        self.ball = Ball()
 
         for id in range(self.nbPaddles):
             self.paddles.append(Paddle(id))
@@ -36,6 +37,8 @@ class Paddle:
     
     def moveDown(self):
         self.position += self.speed
+    
+    # def checkCollision(self, ball):
 
 class Ball:
     def __init__(self):

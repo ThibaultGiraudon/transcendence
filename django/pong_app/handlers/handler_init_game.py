@@ -5,23 +5,23 @@ import	math
 async def sendUpdateMessage(consumer):
 	message = {
 		'type': 'update_ball_position',
-		'x': consumer.ball.x,
-		'y': consumer.ball.y,
+		'x': consumer.gameSettings.ball.x,
+		'y': consumer.gameSettings.ball.y,
 	}
 	await consumer.send(json.dumps(message))
 
 async def handle_ball_move(consumer):
 	while (True):
-		delta_x = consumer.ball.speed * math.cos(consumer.ball.angle)
-		delta_y = consumer.ball.speed * math.sin(consumer.ball.angle)
-		consumer.ball.x += delta_x
-		consumer.ball.y += delta_y
+		delta_x = consumer.gameSettings.ball.speed * math.cos(consumer.gameSettings.ball.angle)
+		delta_y = consumer.gameSettings.ball.speed * math.sin(consumer.gameSettings.ball.angle)
+		consumer.gameSettings.ball.x += delta_x
+		consumer.gameSettings.ball.y += delta_y
 
-		if (consumer.ball.x <= 0) or (consumer.ball.x >= consumer.gameSettings.gameWidth):
-			consumer.ball.angle = math.pi - consumer.ball.angle
+		if (consumer.gameSettings.ball.x <= 0) or (consumer.gameSettings.ball.x >= consumer.gameSettings.gameWidth):
+			consumer.gameSettings.ball.angle = math.pi - consumer.gameSettings.ball.angle
 
-		if (consumer.ball.y <= 0) or (consumer.ball.y >= consumer.gameSettings.gameHeight):
-			consumer.ball.angle = -consumer.ball.angle
+		if (consumer.gameSettings.ball.y <= 0) or (consumer.gameSettings.ball.y >= consumer.gameSettings.gameHeight):
+			consumer.gameSettings.ball.angle = -consumer.gameSettings.ball.angle
 
 		# TODO change to global var for fps
 		await asyncio.sleep(0.03)
@@ -33,8 +33,8 @@ async def handle_init_game(message, consumer):
 	consumer.gameSettings.resetPaddles()
 	# consumer.paddle1.position = message['paddlePositionLeft']
 	# consumer.paddle2.position = message['paddlePositionRight']
-	# consumer.ball.x = message['ballPositionX']
-	# consumer.ball.y = message['ballPositionY']
+	# consumer.gameSettings.ball.x = message['ballPositionX']
+	# consumer.gameSettings.ball.y = message['ballPositionY']
 	message = {
 		'type': 'update_paddle_position',
 		'position': consumer.gameSettings.paddles[0].position,
@@ -49,4 +49,4 @@ async def handle_init_game(message, consumer):
 	}
 	print(message)
 	consumer.send(json.dumps(message))
-	consumer.ball.task = asyncio.create_task(handle_ball_move(consumer))
+	consumer.gameSettings.ball.task = asyncio.create_task(handle_ball_move(consumer))
