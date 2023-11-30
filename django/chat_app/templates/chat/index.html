@@ -9,16 +9,10 @@
 
 	{% if channels.items %}
 		{% for key, value in channels.items %}
-			<a id="room-name-submit" href="{{ value }}"><p id="room-name-input">{{ key }}</p></a><br>
+			<a href="{{ value }}">{{ key }}</a><br>
 		{% endfor %}
 	{% else %}
 		<p>No channels available.</p>
 	{% endif %}
 </body>
-<script>
-	document.querySelector('#room-name-submit').onclick = function(e) {
-		var roomName = document.querySelector('#room-name-input').value;
-		window.location.pathname = '/chat/' + roomName + '/';
-	};
-</script>
 </html>
