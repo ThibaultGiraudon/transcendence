@@ -25,6 +25,7 @@ class Paddle:
         self.height = 100
         self.color = "0xFDFFFF"
         self.speed = 20
+        self.score = 0
         self.keyState = {
             'up': False,
             'down': False,
@@ -86,10 +87,20 @@ class Ball:
                 self.radius = 10
 
     def checkWallCollision(self, gameSettings):
-        if (self.x <= 0) or (self.x >= gameSettings.gameWidth):
+        # if (self.x <= 0) or (self.x >= gameSettings.gameWidth):
+        #     self.angle = math.pi - self.angle
+
+        id = -1
+        if (self.x <= 0):
             self.angle = math.pi - self.angle
+            id = 0
+        elif (self.x >= gameSettings.gameWidth):
+            self.angle = math.pi - self.angle
+            id = 1
+
         if (self.y <= 0) or (self.y >= gameSettings.gameHeight):
             self.angle = -self.angle
+        return (id);
 
     def move(self):
         deltaX = self.speed * math.cos(self.angle) 
