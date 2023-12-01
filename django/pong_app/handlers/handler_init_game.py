@@ -14,6 +14,15 @@ async def sendInitPaddlePosition(consumer):
         }
         await consumer.send(json.dumps(message))
 
+async def sendInitBallMessage(consumer):
+	message = {
+		'type': 'init_ball_position',
+		'x': consumer.gameSettings.ball.x,
+		'y': consumer.gameSettings.ball.y,
+		'radius': consumer.gameSettings.ball.radius,
+	}
+	await consumer.send(json.dumps(message))
+
 async def sendUpdateBallMessage(consumer):
 	message = {
 		'type': 'update_ball_position',
@@ -24,6 +33,8 @@ async def sendUpdateBallMessage(consumer):
 
 async def handle_ball_move(consumer):
 	await sendInitPaddlePosition(consumer)
+	await sendInitBallMessage(consumer)
+
 	while (True):
 		consumer.gameSettings.ball.move()
 
