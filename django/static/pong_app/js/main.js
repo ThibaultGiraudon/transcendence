@@ -112,7 +112,7 @@ function update() {
 
 function initPaddlePosition(message) {
     if (message.id == 0) {
-        // TODO eviter la pile de if avec une function
+        // TODO eviter la pile de if avec une function padde['id' + i]
         elements.paddles.id0.setVisible(true)
         elements.paddles.id0.x = parseFloat(message.x)
         elements.paddles.id0.y = parseFloat(message.y)
