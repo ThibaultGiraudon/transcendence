@@ -119,17 +119,20 @@ function update() {
 
 function initPaddlePosition(message) {
     if (message.id == 0) {
+        // TODO eviter la pile de if avec une function
         elements.paddles.id0.setVisible(true)
         elements.paddles.id0.x = parseFloat(message.x)
         elements.paddles.id0.y = parseFloat(message.y)
         elements.paddles.id0.width = parseFloat(message.width)
         elements.paddles.id0.height = parseFloat(message.height)
+        elements.paddles.id0.setFillStyle(message.color, 1);
     } else if (message.id == 1) {
         elements.paddles.id1.setVisible(true)
         elements.paddles.id1.x = parseFloat(message.x)
         elements.paddles.id1.y = parseFloat(message.y)
         elements.paddles.id1.width = parseFloat(message.width)
         elements.paddles.id1.height = parseFloat(message.height)
+        elements.paddles.id1.setFillStyle(message.color, 1);
     }
 }
 

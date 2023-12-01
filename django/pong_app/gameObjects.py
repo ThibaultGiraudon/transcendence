@@ -23,6 +23,7 @@ class Paddle:
         self.y = 0
         self.width = 20
         self.height = 100
+        self.color = "0xFDFFFF"
         self.speed = 20
         self.keyState = {
             'up': False,
@@ -32,6 +33,15 @@ class Paddle:
             'up': None,
             'down': None,
         }
+
+        if (self.id == 0):
+            self.color = "0xE21E59"
+        elif (self.id == 1):
+            self.color = "0x1598E9"
+        elif (self.id == 2):
+            self.color = "0x2FD661"
+        elif (self.id == 3):
+            self.color = "0xF19705"
 
     def moveUp(self):
         self.y -= self.speed
