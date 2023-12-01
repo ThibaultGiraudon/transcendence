@@ -38,16 +38,6 @@ class Paddle:
     
     def moveDown(self):
         self.y += self.speed
-    
-    def checkCollision(self, ball):
-        closest_x = max(self.x, min(ball.x, self.x + self.width))
-        closest_y = max(self.y, min(ball.y, self.y + self.height))
-
-        distance = math.sqrt((ball.x - closest_x)**2 + (ball.y - closest_y)**2)
-
-        if distance <= ball.radius:
-            return True
-        return False
 
 class Ball:
     def __init__(self):
@@ -58,15 +48,28 @@ class Ball:
         self.angle = 1.0
         self.task = None
 
-    def checkCollision(self, paddle):
-        closest_x = max(paddle.x, min(self.x, paddle.x + paddle.width))
-        closest_y = max(paddle.y, min(self.y, paddle.y + paddle.height))
+    def checkPaddleCollision(self, paddle):
+        closestX = max(paddle.x, min(self.x, paddle.x + paddle.width))
+        closestY = max(paddle.y, min(self.y, paddle.y + paddle.height))
+        distance = math.sqrt((self.x - closestX)**2 + (self.y - closestY)**2)
 
-        # Calculer la distance entre le centre du cercle et le point le plus proche sur le rectangle
-        distance = math.sqrt((self.x - closest_x)**2 + (self.y - closest_y)**2)
+        # relative_intersect_y = paddle.y + paddle.height / 2 - self.y
+        # normalized_relative_intersect_y = (relative_intersect_y / (paddle.height / 2))
+        # bounce_angle = normalized_relative_intersect_y * (math.pi / 4)  # Angle de rebond
 
-        # Vérifier si la distance est inférieure ou égale au rayon du cercle
-        return distance <= self.radius
+        # Ajuster l'angle de la balle
+        # if self.x < self.canvas_width / 2:
+        #     self.angle = math.pi + bounce_angle
+        # else:
+        #     self.angle = -bounce_angle
+
+        return (distance <= self.radius)
+
+    def checkWallCollision(self, gameSettings):
+        if (self.x <= 0) or (self.x >= gameSettings.gameWidth):
+            self.angle = math.pi - self.angle
+        if (self.y <= 0) or (self.y >= gameSettings.gameHeight):
+            self.angle = -self.angle
 
     def move(self):
         deltaX = self.speed * math.cos(self.angle) 
