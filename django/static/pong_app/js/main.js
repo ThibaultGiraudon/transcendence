@@ -61,6 +61,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (message.type === 'update_ball_position') {
             updateBallPosition(message);
         }
+
+        if (message.type === 'update_score') {
+            console.log(message);
+            elements.scoreText.setText(message.id);
+        }
     });
 });
 
@@ -88,16 +93,21 @@ var config = {
 
 phaserGame = new Phaser.Game(config);
 const elements = {
-    paddles: {
-    },
+    paddles: [],
     ball: null,
+    scoreText: null,
 };
 
 function create() {
     for (let i = 0; i < 4; i++) {
         elements.paddles['id' + i] = this.add.rectangle(0, 0, 0, 0, 0xFFFFFF).setVisible(false);
+        elements.paddles['id' + i].setOrigin(0.5, 0.5);
     }
     elements.ball = this.add.circle(0, 0, 0, 0xFDF3E1).setVisible(false);
+    elements.scoreText = this.add.text(config.width / 2, 16, '0 - 2', {
+        fontSize: '32px',
+        fill: '#fff',
+    }).setOrigin(0.5, 0)
 }
 
 function initPaddlePosition(message) {

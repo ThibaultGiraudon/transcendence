@@ -25,6 +25,13 @@ async def sendUpdateBallMessage(consumer, ball):
 	}
 	await consumer.send(json.dumps(message))
 
+async def sendUpdateScore(consumer, id):
+	message = {
+		'type': 'update_score',
+		'id': consumer.gameSettings.paddles[id].id,
+	}
+	await consumer.send(json.dumps(message))
+
 async def handle_ball_move(consumer):
 	ball = consumer.gameSettings.ball
 	await sendInitPaddlePosition(consumer)
@@ -39,8 +46,9 @@ async def handle_ball_move(consumer):
 		if (ball.checkPaddleCollision(consumer.gameSettings.paddles[1])):
 			print("Collision paddle 1")
 
-		ball.checkWallCollision(consumer.gameSettings)
-
+		id = ball.checkWallCollision(consumer.gameSettings)
+		if (id >= 0):
+			await sendUpdateScore(consumer, id)
 
 		# TODO change to global var for fps
 		await asyncio.sleep(0.03)
