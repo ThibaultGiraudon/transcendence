@@ -32,20 +32,21 @@ async def sendUpdateBallMessage(consumer):
 	await consumer.send(json.dumps(message))
 
 async def handle_ball_move(consumer):
+	ball = consumer.gameSettings.ball
 	await sendInitPaddlePosition(consumer)
 	await sendInitBallMessage(consumer)
 
 	while (True):
-		consumer.gameSettings.ball.move()
+		ball.move()
 
-		if (consumer.gameSettings.ball.checkCollision(consumer.gameSettings.paddles[0])):
+		if (ball.checkCollision(consumer.gameSettings.paddles[0])):
 			print("Collision paddle 0")
 
-		if (consumer.gameSettings.ball.x <= 0) or (consumer.gameSettings.ball.x >= consumer.gameSettings.gameWidth):
-			consumer.gameSettings.ball.angle = math.pi - consumer.gameSettings.ball.angle
+		if (ball.x <= 0) or (ball.x >= consumer.gameSettings.gameWidth):
+			ball.angle = math.pi - ball.angle
 
-		if (consumer.gameSettings.ball.y <= 0) or (consumer.gameSettings.ball.y >= consumer.gameSettings.gameHeight):
-			consumer.gameSettings.ball.angle = -consumer.gameSettings.ball.angle
+		if (ball.y <= 0) or (ball.y >= consumer.gameSettings.gameHeight):
+			ball.angle = -ball.angle
 
 		# TODO change to global var for fps
 		await asyncio.sleep(0.03)
