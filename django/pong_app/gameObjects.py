@@ -44,7 +44,7 @@ class Ball:
         self.x = 100.0
         self.y = 100.0
         self.radius = 8
-        self.speed = 10
+        self.speed = 20
         self.angle = 1.0
         self.task = None
 
@@ -62,6 +62,9 @@ class Ball:
                 self.angle = max(-maxAngle, min(maxAngle, reflectionAngle))
             elif (paddle.id == 1):
                 self.angle = math.pi - max(-maxAngle, min(maxAngle, reflectionAngle))
+
+            speedFactor = 1 - abs(collisionPosition - 0.5)
+            self.speed = 20 * speedFactor * 1.5
 
     def checkWallCollision(self, gameSettings):
         if (self.x <= 0) or (self.x >= gameSettings.gameWidth):
