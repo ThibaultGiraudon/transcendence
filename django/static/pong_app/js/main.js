@@ -111,10 +111,14 @@ function updatePaddlePosition(message) {
         elements.paddles.id0.setVisible(true)
         elements.paddles.id0.x = parseFloat(message.x)
         elements.paddles.id0.y = parseFloat(message.y) + 50
+        elements.paddles.id0.width = parseFloat(message.width)
+        elements.paddles.id0.height = parseFloat(message.height)
     } else if (message.id == 1) {
         elements.paddles.id1.setVisible(true)
         elements.paddles.id1.x = parseFloat(message.x)
         elements.paddles.id1.y = parseFloat(message.y) + 50
+        elements.paddles.id1.width = parseFloat(message.width)
+        elements.paddles.id1.height = parseFloat(message.height)
     }
 }
 

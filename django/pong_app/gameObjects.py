@@ -19,6 +19,8 @@ class Paddle:
         self.id = id
         self.x = 0
         self.y = 0
+        self.width = 10
+        self.height = 100
         self.speed = 20
         self.keyState = {
             'up': False,
@@ -35,12 +37,21 @@ class Paddle:
     def moveDown(self):
         self.y += self.speed
     
-    # def checkCollision(self, ball):
+    def checkCollision(self, ball):
+        if (
+            ball.x >= self.x and
+            ball.x <= self.x + 10 and
+            ball.y >= self.y and
+            ball.y <= self.y + 100
+        ):
+            return True
+        return False
 
 class Ball:
     def __init__(self):
         self.x = 100.0
         self.y = 100.0
+        self.radius = 10
         self.speed = 10
         self.angle = 1.0
         self.task = None
