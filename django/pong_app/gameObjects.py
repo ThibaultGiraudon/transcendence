@@ -79,7 +79,7 @@ class Ball:
             self.speed = 20 * speedFactor * 1.5
 
             if (speedFactor > 0.9):
-                self.color = "0xDF5211"
+                self.color = paddle.color
                 self.radius = 8
             else:
                 self.color = "0xFDF3E1"
