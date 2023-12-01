@@ -14,27 +14,27 @@ async def sendInitPaddlePosition(consumer):
         }
         await consumer.send(json.dumps(message))
 
-async def sendInitBallMessage(consumer):
+async def sendInitBallMessage(consumer, ball):
 	message = {
 		'type': 'init_ball_position',
-		'x': consumer.gameSettings.ball.x,
-		'y': consumer.gameSettings.ball.y,
-		'radius': consumer.gameSettings.ball.radius,
+		'x': ball.x,
+		'y': ball.y,
+		'radius': ball.radius,
 	}
 	await consumer.send(json.dumps(message))
 
-async def sendUpdateBallMessage(consumer):
+async def sendUpdateBallMessage(consumer, ball):
 	message = {
 		'type': 'update_ball_position',
-		'x': consumer.gameSettings.ball.x,
-		'y': consumer.gameSettings.ball.y,
+		'x': ball.x,
+		'y': ball.y,
 	}
 	await consumer.send(json.dumps(message))
 
 async def handle_ball_move(consumer):
 	ball = consumer.gameSettings.ball
 	await sendInitPaddlePosition(consumer)
-	await sendInitBallMessage(consumer)
+	await sendInitBallMessage(consumer, ball)
 
 	while (True):
 		ball.move()
@@ -50,7 +50,7 @@ async def handle_ball_move(consumer):
 
 		# TODO change to global var for fps
 		await asyncio.sleep(0.03)
-		await sendUpdateBallMessage(consumer)
+		await sendUpdateBallMessage(consumer, ball)
 
 async def handle_init_game(consumer):
 	consumer.gameSettings.resetPaddles()
