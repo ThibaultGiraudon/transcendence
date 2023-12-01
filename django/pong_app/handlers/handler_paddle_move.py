@@ -27,7 +27,7 @@ async def keydownLoop(direction, paddle, consumer):
 	while (paddle.keyState[direction] or paddle.keyState[direction]):
 		if (paddle.keyState[direction] and direction == 'up' and paddle.y > 0):
 			paddle.moveUp()
-		elif (paddle.keyState[direction] and direction == 'down' and paddle.y < consumer.gameSettings.gameHeight - 100):
+		elif (paddle.keyState[direction] and direction == 'down' and paddle.y < consumer.gameSettings.gameHeight - paddle.height):
 			paddle.moveDown()
 
 		await sendUpdateMessage(consumer, paddle)
