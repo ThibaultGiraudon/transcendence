@@ -87,7 +87,8 @@ var config = {
         update: update,
         updatePaddlePosition: updatePaddlePosition,
         updateBallPosition: updateBallPosition,
-    }
+    },
+    backgroundColor: '#080808',
 };
 
 phaserGame = new Phaser.Game(config);
@@ -104,10 +105,15 @@ function preload() {
 }
 
 function create() {
-    elements.paddles.id0 = this.add.rectangle(0, 0, 0, 0, 0xffffff).setVisible(false);
-    elements.paddles.id1 = this.add.rectangle(0, 0, 0, 0, 0xffffff).setVisible(false);
+    elements.paddles.id0 = this.add.rectangle(0, 0, 0, 0, 0xE21E59).setVisible(false);
+    elements.paddles.id1 = this.add.rectangle(0, 0, 0, 0, 0x1598E9).setVisible(false);
+    // elements.paddles.id2 = this.add.rectangle(600, 10, 100, 10, 0x2FD661);
+    // elements.paddles.id3 = this.add.rectangle(200, 590, 100, 10, 0xF19705);
 
-    elements.ball = this.add.circle(0, 0, 0, 0xffffff).setVisible(false);
+    // 2FD661
+    // F19705
+
+    elements.ball = this.add.circle(0, 0, 0, 0xFDF3E1).setVisible(false);
 }
 
 function update() {
