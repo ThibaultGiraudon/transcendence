@@ -79,9 +79,7 @@ var config = {
         }
     },
     scene: {
-        preload: preload,
         create: create,
-        update: update,
         updatePaddlePosition: updatePaddlePosition,
         updateBallPosition: updateBallPosition,
     },
@@ -95,19 +93,11 @@ const elements = {
     ball: null,
 };
 
-function preload() {
-    // this.load.image('paddle', 'test.jpg');
-}
-
 function create() {
     for (let i = 0; i < 4; i++) {
         elements.paddles['id' + i] = this.add.rectangle(0, 0, 0, 0, 0xFFFFFF).setVisible(false);
     }
     elements.ball = this.add.circle(0, 0, 0, 0xFDF3E1).setVisible(false);
-}
-
-function update() {
-    // pass
 }
 
 function initPaddlePosition(message) {
