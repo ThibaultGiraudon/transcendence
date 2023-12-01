@@ -146,7 +146,6 @@ function updatePaddlePosition(message) {
 }
 
 function updateBallPosition(message) {
-    // elements.ball.setVisible(true)
     elements.ball.x = parseFloat(message.x)
     elements.ball.y = parseFloat(message.y)
 }
