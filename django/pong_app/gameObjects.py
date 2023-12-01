@@ -53,17 +53,8 @@ class Ball:
         closestY = max(paddle.y, min(self.y, paddle.y + paddle.height))
         distance = math.sqrt((self.x - closestX)**2 + (self.y - closestY)**2)
 
-        # relative_intersect_y = paddle.y + paddle.height / 2 - self.y
-        # normalized_relative_intersect_y = (relative_intersect_y / (paddle.height / 2))
-        # bounce_angle = normalized_relative_intersect_y * (math.pi / 4)  # Angle de rebond
-
-        # Ajuster l'angle de la balle
-        # if self.x < self.canvas_width / 2:
-        #     self.angle = math.pi + bounce_angle
-        # else:
-        #     self.angle = -bounce_angle
-
-        return (distance <= self.radius)
+        if (distance <= self.radius):
+            self.angle = math.pi - self.angle
 
     def checkWallCollision(self, gameSettings):
         if (self.x <= 0) or (self.x >= gameSettings.gameWidth):
