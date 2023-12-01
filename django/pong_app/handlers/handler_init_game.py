@@ -5,9 +5,12 @@ import	math
 async def sendFirstPaddlePosition(consumer):
     for paddle in consumer.gameSettings.paddles:
         message = {
+			# TODO change to init_paddle_position
             'type': 'update_paddle_position',
 			'x': paddle.x,
             'y': paddle.y,
+			'width': paddle.width,
+			'height': paddle.height,
             'id': paddle.id,
         }
         await consumer.send(json.dumps(message))
