@@ -72,8 +72,9 @@ document.addEventListener('DOMContentLoaded', function() {
 var phaserGame;
 var config = {
     type: Phaser.AUTO,
+    // TODO change to dynamic
     width: 800,
-    height: 600,
+    height: 800,
     physics: {
         default: 'arcade',
         arcade: {

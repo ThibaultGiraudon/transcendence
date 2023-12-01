@@ -5,7 +5,7 @@ from    .gameObjects import *
 import  json
 
 class PongConsumer(AsyncWebsocketConsumer):
-    gameSettings = GameSettings(2, 800, 600)
+    gameSettings = GameSettings(2, 800, 800)
     gameSettings.paddles[0].x = 10
     gameSettings.paddles[1].x = gameSettings.gameWidth - gameSettings.paddles[1].width - 10
 
