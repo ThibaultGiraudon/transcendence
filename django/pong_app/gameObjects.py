@@ -43,7 +43,7 @@ class Ball:
     def __init__(self):
         self.x = 100.0
         self.y = 100.0
-        self.radius = 8
+        self.radius = 10
         self.speed = 20
         self.angle = 1.0
         self.task = None
