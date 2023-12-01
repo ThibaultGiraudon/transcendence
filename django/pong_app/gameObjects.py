@@ -54,7 +54,13 @@ class Ball:
         distance = math.sqrt((self.x - closestX)**2 + (self.y - closestY)**2)
 
         if (distance <= self.radius):
-            self.angle = math.pi - self.angle
+            relative_collision_position = (closestY - paddle.y) / paddle.height
+            angle_coefficient = 1.5
+            reflection_angle = (relative_collision_position - 0.5) * math.pi * angle_coefficient
+
+            # Limiter l'angle maximal pour éviter une verticalité excessive
+            max_angle = math.pi / 3  # Choisissez un angle maximal selon vos besoins
+            self.angle = max(-max_angle, min(max_angle, reflection_angle))
 
     def checkWallCollision(self, gameSettings):
         if (self.x <= 0) or (self.x >= gameSettings.gameWidth):
