@@ -14,27 +14,19 @@ async def sendInitPaddlePosition(consumer):
         }
         await consumer.send(json.dumps(message))
 
-async def sendInitBallMessage(consumer, ball):
-	message = {
-		'type': 'init_ball_position',
-		'x': ball.x,
-		'y': ball.y,
-		'radius': ball.radius,
-	}
-	await consumer.send(json.dumps(message))
-
 async def sendUpdateBallMessage(consumer, ball):
 	message = {
 		'type': 'update_ball_position',
 		'x': ball.x,
 		'y': ball.y,
+		'radius': ball.radius,
+		'color': ball.color,
 	}
 	await consumer.send(json.dumps(message))
 
 async def handle_ball_move(consumer):
 	ball = consumer.gameSettings.ball
 	await sendInitPaddlePosition(consumer)
-	await sendInitBallMessage(consumer, ball)
 
 	while (True):
 		# TODO maybe change this to bottom
