@@ -44,6 +44,7 @@ class Ball:
         self.x = 100.0
         self.y = 100.0
         self.radius = 10
+        self.color = "0xFDF3E1"
         self.speed = 20
         self.angle = 1.0
         self.task = None
@@ -63,8 +64,16 @@ class Ball:
             elif (paddle.id == 1):
                 self.angle = math.pi - max(-maxAngle, min(maxAngle, reflectionAngle))
 
+            # TODO deplacer dans un function powershot
             speedFactor = 1 - abs(collisionPosition - 0.5)
             self.speed = 20 * speedFactor * 1.5
+
+            if (speedFactor > 0.9):
+                self.color = "0xDF5211"
+                self.radius = 8
+            else:
+                self.color = "0xFDF3E1"
+                self.radius = 10
 
     def checkWallCollision(self, gameSettings):
         if (self.x <= 0) or (self.x >= gameSettings.gameWidth):
