@@ -54,6 +54,10 @@ document.addEventListener('DOMContentLoaded', function() {
             initPaddlePosition(message);
         }
 
+        if (message.type === 'init_ball_position') {
+            initBallPosition(message);
+        }
+
         if (message.type === 'update_paddle_position') {
             updatePaddlePosition(message);
         }
@@ -103,7 +107,7 @@ function create() {
     elements.paddles.id0 = this.add.rectangle(0, 0, 0, 0, 0xffffff).setVisible(false);
     elements.paddles.id1 = this.add.rectangle(0, 0, 0, 0, 0xffffff).setVisible(false);
 
-    elements.ball = this.add.circle(0, 0, 8, 0xffffff).setVisible(false);
+    elements.ball = this.add.circle(0, 0, 0, 0xffffff).setVisible(false);
 }
 
 function update() {
@@ -126,6 +130,13 @@ function initPaddlePosition(message) {
     }
 }
 
+function initBallPosition(message) {
+    elements.ball.setVisible(true)
+    elements.ball.x = parseFloat(message.x)
+    elements.ball.y = parseFloat(message.y)
+    elements.ball.radius = parseFloat(message.radius)
+}
+
 function updatePaddlePosition(message) {
     if (message.id == 0) {
         elements.paddles.id0.y = parseFloat(message.y)
@@ -135,7 +146,7 @@ function updatePaddlePosition(message) {
 }
 
 function updateBallPosition(message) {
-    elements.ball.setVisible(true)
+    // elements.ball.setVisible(true)
     elements.ball.x = parseFloat(message.x)
     elements.ball.y = parseFloat(message.y)
 }
