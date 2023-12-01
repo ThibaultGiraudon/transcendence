@@ -38,6 +38,9 @@ async def handle_ball_move(consumer):
 	while (True):
 		consumer.gameSettings.ball.move()
 
+		if (consumer.gameSettings.ball.checkCollision(consumer.gameSettings.paddles[0])):
+			print("Collision paddle 0")
+
 		if (consumer.gameSettings.ball.x <= 0) or (consumer.gameSettings.ball.x >= consumer.gameSettings.gameWidth):
 			consumer.gameSettings.ball.angle = math.pi - consumer.gameSettings.ball.angle
 

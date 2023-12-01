@@ -40,12 +40,12 @@ class Paddle:
         self.y += self.speed
     
     def checkCollision(self, ball):
-        if (
-            ball.x >= self.x and
-            ball.x <= self.x + 10 and
-            ball.y >= self.y and
-            ball.y <= self.y + 100
-        ):
+        closest_x = max(self.x, min(ball.x, self.x + self.width))
+        closest_y = max(self.y, min(ball.y, self.y + self.height))
+
+        distance = math.sqrt((ball.x - closest_x)**2 + (ball.y - closest_y)**2)
+
+        if distance <= ball.radius:
             return True
         return False
 
@@ -57,6 +57,16 @@ class Ball:
         self.speed = 10
         self.angle = 1.0
         self.task = None
+
+    def checkCollision(self, paddle):
+        closest_x = max(paddle.x, min(self.x, paddle.x + paddle.width))
+        closest_y = max(paddle.y, min(self.y, paddle.y + paddle.height))
+
+        # Calculer la distance entre le centre du cercle et le point le plus proche sur le rectangle
+        distance = math.sqrt((self.x - closest_x)**2 + (self.y - closest_y)**2)
+
+        # Vérifier si la distance est inférieure ou égale au rayon du cercle
+        return distance <= self.radius
 
     def move(self):
         deltaX = self.speed * math.cos(self.angle) 
