@@ -1,3 +1,5 @@
+import math
+
 class GameSettings:
     def __init__(self, nbPaddles, width, height):
         self.nbPaddles = nbPaddles
@@ -56,8 +58,8 @@ class Ball:
         self.angle = 1.0
         self.task = None
 
-#     def move(self):
-#         delta_x = self.speed * math.cos(self.angle)
-#         delta_y = self.speed * math.sin(self.angle)
-#         self.x += delta_x
-#         self.y += delta_y
+    def move(self):
+        deltaX = self.speed * math.cos(self.angle) 
+        deltaY = self.speed * math.sin(self.angle)
+        self.x += deltaX
+        self.y += deltaY

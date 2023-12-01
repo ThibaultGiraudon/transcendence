@@ -2,7 +2,7 @@ import	json
 import	asyncio
 import	math
 
-async def sendFirstPaddlePosition(consumer):
+async def sendInitPaddlePosition(consumer):
     for paddle in consumer.gameSettings.paddles:
         message = {
             'type': 'init_paddle_position',
@@ -23,13 +23,9 @@ async def sendUpdateBallMessage(consumer):
 	await consumer.send(json.dumps(message))
 
 async def handle_ball_move(consumer):
-	await sendFirstPaddlePosition(consumer)
-      
+	await sendInitPaddlePosition(consumer)
 	while (True):
-		delta_x = consumer.gameSettings.ball.speed * math.cos(consumer.gameSettings.ball.angle) 
-		delta_y = consumer.gameSettings.ball.speed * math.sin(consumer.gameSettings.ball.angle)
-		consumer.gameSettings.ball.x += delta_x
-		consumer.gameSettings.ball.y += delta_y
+		consumer.gameSettings.ball.move()
 
 		if (consumer.gameSettings.ball.x <= 0) or (consumer.gameSettings.ball.x >= consumer.gameSettings.gameWidth):
 			consumer.gameSettings.ball.angle = math.pi - consumer.gameSettings.ball.angle
@@ -41,8 +37,6 @@ async def handle_ball_move(consumer):
 		await asyncio.sleep(0.03)
 		await sendUpdateBallMessage(consumer)
 
-async def handle_init_game(message, consumer):
-	# consumer.gameSettings.gameWidth = message['gameWidth']
-	# consumer.gameSettings.gameHeight = message['gameHeight']
+async def handle_init_game(consumer):
 	consumer.gameSettings.resetPaddles()
 	consumer.gameSettings.ball.task = asyncio.create_task(handle_ball_move(consumer))
