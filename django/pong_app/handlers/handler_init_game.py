@@ -10,6 +10,7 @@ async def sendInitPaddlePosition(consumer):
             'y': paddle.y,
 			'width': paddle.width,
 			'height': paddle.height,
+			'color': paddle.color,
             'id': paddle.id,
         }
         await consumer.send(json.dumps(message))
