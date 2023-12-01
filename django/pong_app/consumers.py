@@ -7,7 +7,7 @@ import  json
 class PongConsumer(AsyncWebsocketConsumer):
     gameSettings = GameSettings(2, 800, 600)
     gameSettings.paddles[0].x = 10
-    gameSettings.paddles[1].x = gameSettings.gameWidth - 10
+    gameSettings.paddles[1].x = gameSettings.gameWidth - gameSettings.paddles[1].width - 10
 
     async def connect(self):
         await self.accept()
@@ -15,7 +15,6 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         if (self.gameSettings.ball.task):
             self.gameSettings.ball.task.cancel()
-        # self.gameSettings.resetPaddles()
 
     async def receive(self, text_data):
         message = json.loads(text_data)

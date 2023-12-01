@@ -13,10 +13,7 @@ def keyupReset(direction, paddle):
 async def sendUpdateMessage(consumer, paddle):
 	message = {
 		'type': 'update_paddle_position',
-		'x': paddle.x,
 		'y': paddle.y,
-		'width': paddle.width,
-		'height': paddle.height,
 		'id': paddle.id,
 	}
 	await consumer.send(json.dumps(message))

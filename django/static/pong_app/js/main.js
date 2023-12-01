@@ -50,6 +50,10 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.addEventListener('message', (event) => {
         let message = JSON.parse(event.data);
 
+        if (message.type === 'init_paddle_position') {
+            initPaddlePosition(message);
+        }
+
         if (message.type === 'update_paddle_position') {
             updatePaddlePosition(message);
         }
@@ -96,8 +100,8 @@ function preload() {
 }
 
 function create() {
-    elements.paddles.id0 = this.add.rectangle(0, 0, 10, 100, 0xffffff).setVisible(false);
-    elements.paddles.id1 = this.add.rectangle(0, 0, 10, 100, 0xffffff).setVisible(false);
+    elements.paddles.id0 = this.add.rectangle(0, 0, 0, 0, 0xffffff).setVisible(false);
+    elements.paddles.id1 = this.add.rectangle(0, 0, 0, 0, 0xffffff).setVisible(false);
 
     elements.ball = this.add.circle(0, 0, 8, 0xffffff).setVisible(false);
 }
@@ -106,19 +110,27 @@ function update() {
     // pass
 }
 
-function updatePaddlePosition(message) {
+function initPaddlePosition(message) {
     if (message.id == 0) {
         elements.paddles.id0.setVisible(true)
         elements.paddles.id0.x = parseFloat(message.x)
-        elements.paddles.id0.y = parseFloat(message.y) + 50
+        elements.paddles.id0.y = parseFloat(message.y)
         elements.paddles.id0.width = parseFloat(message.width)
         elements.paddles.id0.height = parseFloat(message.height)
     } else if (message.id == 1) {
         elements.paddles.id1.setVisible(true)
         elements.paddles.id1.x = parseFloat(message.x)
-        elements.paddles.id1.y = parseFloat(message.y) + 50
+        elements.paddles.id1.y = parseFloat(message.y)
         elements.paddles.id1.width = parseFloat(message.width)
         elements.paddles.id1.height = parseFloat(message.height)
+    }
+}
+
+function updatePaddlePosition(message) {
+    if (message.id == 0) {
+        elements.paddles.id0.y = parseFloat(message.y)
+    } else if (message.id == 1) {
+        elements.paddles.id1.y = parseFloat(message.y)
     }
 }
 
