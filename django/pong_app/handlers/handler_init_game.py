@@ -37,16 +37,17 @@ async def handle_ball_move(consumer):
 	await sendInitBallMessage(consumer, ball)
 
 	while (True):
+		# TODO maybe change this to bottom
 		ball.move()
 
-		if (ball.checkCollision(consumer.gameSettings.paddles[0])):
+		if (ball.checkPaddleCollision(consumer.gameSettings.paddles[0])):
 			print("Collision paddle 0")
 
-		if (ball.x <= 0) or (ball.x >= consumer.gameSettings.gameWidth):
-			ball.angle = math.pi - ball.angle
+		if (ball.checkPaddleCollision(consumer.gameSettings.paddles[1])):
+			print("Collision paddle 1")
 
-		if (ball.y <= 0) or (ball.y >= consumer.gameSettings.gameHeight):
-			ball.angle = -ball.angle
+		ball.checkWallCollision(consumer.gameSettings)
+
 
 		# TODO change to global var for fps
 		await asyncio.sleep(0.03)
