@@ -49,8 +49,6 @@ document.addEventListener('DOMContentLoaded', function() {
             type: 'init_game',
         };
         socket.send(JSON.stringify(message));
-
-        initScore();
     });
 
     socket.addEventListener('message', (event) => {
@@ -58,6 +56,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (message.type === 'init_paddle_position') {
             initPaddlePosition(message);
+        }
+
+        if (message.type === 'init_score') {
+            console.log(message);
+            initScore(message);
         }
 
         if (message.type === 'update_paddle_position') {
@@ -69,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (message.type === 'update_score') {
-            // console.log(message);
+            console.log(message);
             // TODO change cette merde
             elements.scoreText[message.id].setText(message.score).setVisible(true);
         }
@@ -138,13 +141,26 @@ function initPaddlePosition(message) {
     }
 }
 
-function initScore() {
+function initScore(message) {
     const backgroundColors = ['#E21E59', '#1598E9', '#2FD661', '#F19705'];
-    const scoreSpans = document.querySelectorAll('.score_bar .player_score');
-    
+    const scoreSpans = document.querySelectorAll('.player_score');
+
+    console.log(message.nbPaddles);
+
+    for (let i = 0; i < message.nbPaddles; i++) {
+        if (message.nbPaddles == 2) {
+            scoreSpans[i].backgroundColor = backgroundColors[i];
+            console.log(scoreSpans[i].backgroundColor);
+            scoreSpans[i].style.width = '50%';
+        } else if (message.nbPaddles == 4) {
+            scoreSpans[i].style.width = '25%';
+        }
+    }
+
     scoreSpans.forEach((span, index) => {
         span.style.backgroundColor = backgroundColors[index];
     });
+
 }
 
 function updatePaddlePosition(message) {
