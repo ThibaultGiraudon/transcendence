@@ -16,12 +16,14 @@ async def sendInitPaddlePosition(consumer):
         await consumer.send(json.dumps(message))
 
 async def sendInitScore(consumer, nbPaddles):
-	# TODO send the right score in case of ctrl+r
-	message = {
-		'type': 'init_score',
-		'nbPaddles': nbPaddles,
-	}
-	await consumer.send(json.dumps(message))
+	for paddle in consumer.gameSettings.paddles:
+		message = {
+			'type': 'init_score',
+			'nbPaddles': nbPaddles,
+			'score': paddle.score,
+			'id': paddle.id,
+		}
+		await consumer.send(json.dumps(message))
 
 async def sendUpdateBallMessage(consumer, ball):
 	message = {
@@ -49,7 +51,7 @@ async def handle_ball_move(consumer):
 	await sendInitScore(consumer, consumer.gameSettings.nbPaddles)
 
 	while (True):
-		# TODO maybe change this to bottom
+		# TODO maybe change this to bottom (ball.move)
 		ball.move()
 
 		if (ball.checkPaddleCollision(consumer.gameSettings.paddles[0])):
@@ -67,5 +69,6 @@ async def handle_ball_move(consumer):
 		await sendUpdateBallMessage(consumer, ball)
 
 async def handle_init_game(consumer):
+	# TODO chamger ca pour eviter de reset les paddles a 0 a chaque ctrl + r
 	consumer.gameSettings.resetPaddles()
 	consumer.gameSettings.ball.task = asyncio.create_task(handle_ball_move(consumer))
