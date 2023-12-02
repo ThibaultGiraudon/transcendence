@@ -53,7 +53,7 @@ async def handle_ball_move(consumer):
 			await sendUpdateScore(consumer, id)
 
 		# TODO change to global var for fps
-		await asyncio.sleep(0.03)
+		await asyncio.sleep(0.01)
 		await sendUpdateBallMessage(consumer, ball)
 
 async def handle_init_game(consumer):

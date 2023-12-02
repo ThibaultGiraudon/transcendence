@@ -31,7 +31,7 @@ async def keydownLoop(direction, paddle, consumer):
 			paddle.moveDown()
 
 		await sendUpdateMessage(consumer, paddle)
-		await asyncio.sleep(0.03) # TODO change to global var for speed
+		await asyncio.sleep(0.01) # TODO change to global var for speed
 
 async def handle_paddle_move(message, consumer):
 	direction = message['direction']
