@@ -137,19 +137,14 @@ function initScore(message) {
     const backgroundColors = ['#E21E59', '#1598E9', '#2FD661', '#F19705'];
     const scoreSpans = document.querySelectorAll('.player_score');
 
-    for (let i = 0; i < message.nbPaddles; i++) {
-        if (message.nbPaddles == 2) {
-            scoreSpans[i].style.width = '50%';
-            scoreSpans[i].textContent = '0';
-        } else if (message.nbPaddles == 4) {
-            scoreSpans[i].style.width = '25%';
-            scoreSpans[i].textContent = '0';
-        }
+    if (message.nbPaddles == 2) {
+        scoreSpans[message.id].style.width = '50%';
+        scoreSpans[message.id ^ 1].textContent = message.score;
+    } else if (message.nbPaddles == 4) {
+        scoreSpans[message.id].style.width = '25%';
+        scoreSpans[message.id].textContent = message.score;
     }
-
-    scoreSpans.forEach((span, index) => {
-        span.style.backgroundColor = backgroundColors[index];
-    });
+    scoreSpans[message.id].style.backgroundColor = backgroundColors[message.id];
 }
 
 function updatePaddlePosition(message) {
