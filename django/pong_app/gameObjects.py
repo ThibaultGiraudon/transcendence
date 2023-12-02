@@ -24,7 +24,7 @@ class Paddle:
         self.width = 20
         self.height = 100
         self.color = "0xFDFFFF"
-        self.speed = 20
+        self.speed = 10
         self.score = 0
         self.keyState = {
             'up': False,
@@ -56,7 +56,7 @@ class Ball:
         self.y = 100.0
         self.radius = 10
         self.color = "0xFDF3E1"
-        self.speed = 20
+        self.speed = 10
         self.angle = 1.0
         self.task = None
 
@@ -77,7 +77,7 @@ class Ball:
 
             # TODO deplacer dans un function powershot
             speedFactor = 1 - abs(collisionPosition - 0.5)
-            self.speed = 20 * speedFactor * 1.5
+            self.speed = 10 * speedFactor * 1.5
 
             if (speedFactor > 0.9):
                 self.color = paddle.color
