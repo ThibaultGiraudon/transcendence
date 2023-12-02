@@ -59,7 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (message.type === 'init_score') {
-            console.log(message);
             initScore(message);
         }
 
@@ -72,9 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (message.type === 'update_score') {
-            console.log(message);
-            // TODO change cette merde
-            elements.scoreText[message.id].setText(message.score).setVisible(true);
+            updateScore(message);
         }
     });
 });
@@ -103,9 +100,9 @@ var config = {
 
 phaserGame = new Phaser.Game(config);
 const elements = {
+    scoreText: [],
     paddles: [],
     ball: null,
-    scoreText: [],
 };
 
 function create() {
@@ -113,11 +110,6 @@ function create() {
         // TODO si on chnage en bas on est plus oblige de mettre id1 mais on peut juste mettre 1
         elements.paddles['id' + i] = this.add.rectangle(0, 0, 0, 0, 0xFFFFFF).setVisible(false);
         elements.paddles['id' + i].setOrigin(0.5, 0.5);
-
-        elements.scoreText[i] = this.add.text(config.width / 2 + i * 100, 16, '0', {
-            fontSize: '32px',
-            fill: '#fff',
-        }).setOrigin(0.5, 0).setVisible(false);
     }
     elements.ball = this.add.circle(0, 0, 0, 0xFDF3E1).setVisible(false);
 }
@@ -145,22 +137,19 @@ function initScore(message) {
     const backgroundColors = ['#E21E59', '#1598E9', '#2FD661', '#F19705'];
     const scoreSpans = document.querySelectorAll('.player_score');
 
-    console.log(message.nbPaddles);
-
     for (let i = 0; i < message.nbPaddles; i++) {
         if (message.nbPaddles == 2) {
-            scoreSpans[i].backgroundColor = backgroundColors[i];
-            console.log(scoreSpans[i].backgroundColor);
             scoreSpans[i].style.width = '50%';
+            scoreSpans[i].textContent = '0';
         } else if (message.nbPaddles == 4) {
             scoreSpans[i].style.width = '25%';
+            scoreSpans[i].textContent = '0';
         }
     }
 
     scoreSpans.forEach((span, index) => {
         span.style.backgroundColor = backgroundColors[index];
     });
-
 }
 
 function updatePaddlePosition(message) {
@@ -177,4 +166,13 @@ function updateBallPosition(message) {
     elements.ball.y = parseFloat(message.y)
     elements.ball.radius = parseFloat(message.radius)
     elements.ball.setFillStyle(message.color, 1);
+}
+
+function updateScore(message) {
+    const scoreSpans = document.querySelectorAll('.player_score');
+    if (message.nbPaddles == 2) {
+        scoreSpans[message.id ^ 1].textContent = message.score;
+    } else if (message.nbPaddles == 4) {
+        scoreSpans[message.id].textContent = message.score;
+    }
 }

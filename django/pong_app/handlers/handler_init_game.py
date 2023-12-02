@@ -16,6 +16,7 @@ async def sendInitPaddlePosition(consumer):
         await consumer.send(json.dumps(message))
 
 async def sendInitScore(consumer, nbPaddles):
+	# TODO send the right score in case of ctrl+r
 	message = {
 		'type': 'init_score',
 		'nbPaddles': nbPaddles,
@@ -36,6 +37,7 @@ async def sendUpdateScore(consumer, id):
 	consumer.gameSettings.paddles[id].score += 1
 	message = {
 		'type': 'update_score',
+		'nbPaddles': consumer.gameSettings.nbPaddles,
 		'score': consumer.gameSettings.paddles[id].score,	
 		'id': consumer.gameSettings.paddles[id].id,
 	}

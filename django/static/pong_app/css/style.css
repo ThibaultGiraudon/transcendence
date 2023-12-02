@@ -15,7 +15,6 @@ body {
 .score_bar {
 	width: 800px;
 	height: 100px;
-	background-color: #FFFFFF;
 	border-radius: 10px;
 	overflow: hidden;
 	display: flex;
@@ -25,8 +24,12 @@ body {
 }
 
 .score_bar .player_score {
-	display: block;
 	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: monospace;
+	font-size: 50px;
 }
 
 canvas {
