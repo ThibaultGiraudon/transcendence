@@ -26,8 +26,10 @@ async def sendUpdateBallMessage(consumer, ball):
 	await consumer.send(json.dumps(message))
 
 async def sendUpdateScore(consumer, id):
+	consumer.gameSettings.paddles[id].score += 1
 	message = {
 		'type': 'update_score',
+		'score': consumer.gameSettings.paddles[id].score,	
 		'id': consumer.gameSettings.paddles[id].id,
 	}
 	await consumer.send(json.dumps(message))
