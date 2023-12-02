@@ -77,7 +77,8 @@ class Ball:
 
             # TODO deplacer dans un function powershot
             speedFactor = 1 - abs(collisionPosition - 0.5)
-            self.speed = 10 * speedFactor * 1.5
+            # TODO changer le 8 par la speed de la balle (mais pas self.speed)
+            self.speed = 8 * speedFactor * 1.5
 
             if (speedFactor > 0.9):
                 self.color = paddle.color
