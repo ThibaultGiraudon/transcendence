@@ -63,8 +63,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (message.type === 'update_score') {
-            console.log(message);
-            elements.scoreText.setText(message.id);
+            // console.log(message);
+            // TODO change cette merde
+            elements.scoreText[message.id].setText(message.score).setVisible(true);
         }
     });
 });
@@ -95,19 +96,21 @@ phaserGame = new Phaser.Game(config);
 const elements = {
     paddles: [],
     ball: null,
-    scoreText: null,
+    scoreText: [],
 };
 
 function create() {
     for (let i = 0; i < 4; i++) {
+        // TODO si on chnage en bas on est plus oblige de mettre id1 mais on peut juste mettre 1
         elements.paddles['id' + i] = this.add.rectangle(0, 0, 0, 0, 0xFFFFFF).setVisible(false);
         elements.paddles['id' + i].setOrigin(0.5, 0.5);
+
+        elements.scoreText[i] = this.add.text(config.width / 2 + i * 100, 16, '0', {
+            fontSize: '32px',
+            fill: '#fff',
+        }).setOrigin(0.5, 0).setVisible(false);
     }
     elements.ball = this.add.circle(0, 0, 0, 0xFDF3E1).setVisible(false);
-    elements.scoreText = this.add.text(config.width / 2, 16, '0 - 2', {
-        fontSize: '32px',
-        fill: '#fff',
-    }).setOrigin(0.5, 0)
 }
 
 function initPaddlePosition(message) {
