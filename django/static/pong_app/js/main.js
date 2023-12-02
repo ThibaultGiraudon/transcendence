@@ -25,6 +25,10 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             socket.send(JSON.stringify(message));
         }
+
+        if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+            event.preventDefault();
+        }
     });
 
     document.addEventListener('keyup', function(event) {
@@ -45,6 +49,8 @@ document.addEventListener('DOMContentLoaded', function() {
             type: 'init_game',
         };
         socket.send(JSON.stringify(message));
+
+        initScore();
     });
 
     socket.addEventListener('message', (event) => {
@@ -130,6 +136,15 @@ function initPaddlePosition(message) {
         elements.paddles.id1.height = parseFloat(message.height)
         elements.paddles.id1.setFillStyle(message.color, 1);
     }
+}
+
+function initScore() {
+    const backgroundColors = ['#FF5733', '#33FF57', '#5733FF', '#FFFF33'];
+    const scoreSpans = document.querySelectorAll('.score_bar span');
+    
+    scoreSpans.forEach((span, index) => {
+        span.style.backgroundColor = backgroundColors[index];
+    });
 }
 
 function updatePaddlePosition(message) {
