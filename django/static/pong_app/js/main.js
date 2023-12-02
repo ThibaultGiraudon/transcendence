@@ -139,8 +139,8 @@ function initPaddlePosition(message) {
 }
 
 function initScore() {
-    const backgroundColors = ['#FF5733', '#33FF57', '#5733FF', '#FFFF33'];
-    const scoreSpans = document.querySelectorAll('.score_bar span');
+    const backgroundColors = ['#E21E59', '#1598E9', '#2FD661', '#F19705'];
+    const scoreSpans = document.querySelectorAll('.score_bar .player_score');
     
     scoreSpans.forEach((span, index) => {
         span.style.backgroundColor = backgroundColors[index];

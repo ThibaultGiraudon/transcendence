@@ -1,7 +1,35 @@
 body {
-	background-color: #000000;
+	margin: 0;
+	padding: 50px 0;
+	background-color: #313131;
 	color: #ffffff;
 	font-family: "Lucida Console", Monaco, monospace;
 	font-size: 20px;
 	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+.score_bar {
+	width: 800px;
+	height: 100px;
+	background-color: #FFFFFF;
+	border-radius: 10px;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 10px;
+}
+
+.score_bar .player_score {
+	display: block;
+	width: 25%;
+	height: 100%;
+}
+
+canvas {
+	border-radius: 10px;
 }
