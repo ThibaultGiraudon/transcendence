@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="{% static 'pong_app/css/style.css' %}">
 </head>
 <body>
+    {% include 'interface.html' %}
+    
     <h1>WebSocket Test</h1>
     {% if request.user.is_authenticated %}
         <h1>{{ request.user.username }}</h1>

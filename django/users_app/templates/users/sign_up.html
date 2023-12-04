@@ -1,5 +1,7 @@
 {% block content %}
 
+{% include 'interface.html' %}
+
 {% if request.user.is_authenticated %}
 
 <p>You are already connected, please log out before creating a new user.</p>

@@ -13,6 +13,7 @@ from    django.core.asgi import get_asgi_application
 from    channels.routing import ProtocolTypeRouter, URLRouter
 from    channels.auth import AuthMiddlewareStack
 from    django.urls import re_path
+from    django.conf.urls import url
 from    pong_app.consumers import *
 from    chat_app.consumers import *
 
