@@ -1,5 +1,7 @@
 {% block content %}
 
+{% include 'interface.html' %}
+
 {% if request.user.is_authenticated %}
 
 <p>You are already connected, please log out before log in.</p>
@@ -31,10 +33,6 @@
 </a>
 
 <br><br>
-
-<a href="/sign_up">
-	<button>Sign up</button>
-</a>
 
 {% endif %}
 	
