@@ -76,7 +76,6 @@ services:
     volumes:
       - ssl_certificates:/etc/ssl
 
-
   postgres:
     image: postgres:latest
     env_file: .env
