@@ -1,0 +1,13 @@
+body {
+	margin: 0;
+	padding: 50px 0;
+	background-color: #c01b1b;
+	color: #ffffff;
+	font-family: "Lucida Console", Monaco, monospace;
+	font-size: 20px;
+	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
