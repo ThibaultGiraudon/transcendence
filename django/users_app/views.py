@@ -96,8 +96,14 @@ def sign_up(request):
 			user.save()
 			login(request, user)
 			return redirect('pong')
-	
-	messages.error(request, "You need to provide all fields")
+
+		else:
+			if 'username' in form.errors:
+				messages.error(request, "Your username can't have special characters")
+			elif 'email' in form.errors:
+				messages.error(request, "You need to provide a valid email")
+			else:
+				messages.error(request, "You need to provide all fields")
 	return redirect('sign_up')
 
 
