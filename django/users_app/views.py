@@ -18,6 +18,8 @@ from django.views.decorators.csrf import csrf_protect
 
 # 42 API
 API_URL = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fcheck_authorize%2F&response_type=code"
+API_URR = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=https%3A%2F%2Flocalhost%3A8001%2Fcheck_authorize%2F&response_type=code"
+API_URU = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=https%3A%2F%2Flocalhost%3A8001%2Fcheck_authorize%2F&response_type=code"
 API_USER = 'https://api.intra.42.fr/v2/me'
 token = '690c107e335181f7039f3792799aebb1fa4d55b320bd232dd68877c0cc13545d'
 
@@ -94,8 +96,14 @@ def sign_up(request):
 			user.save()
 			login(request, user)
 			return redirect('pong')
-	
-	messages.error(request, "You need to provide all fields")
+
+		else:
+			if 'username' in form.errors:
+				messages.error(request, "Your username can't have special characters")
+			elif 'email' in form.errors:
+				messages.error(request, "You need to provide a valid email")
+			else:
+				messages.error(request, "You need to provide all fields")
 	return redirect('sign_up')
 
 
@@ -104,7 +112,7 @@ def sign_out(request):
 	Log out the user
  
 	Arguments:
-		request: the user who should be delogged
+		request: ???
 	Returns:
 		sign_in page
 	"""
@@ -116,7 +124,18 @@ def sign_out(request):
 
 
 def ft_api(request):
-	return redirect(API_URL)
+	logging.info("------------------\nIS_SECURE")
+	logging.info(request.is_secure)
+	logging.info("------------------\nSCHEME")
+	logging.info(request.scheme)
+	protocol = request.scheme
+	port = '%3A8001' if protocol == "https" else '%3A8000'
+	api_url = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=" + \
+	protocol + "%3A%2F%2Flocalhost" + \
+	port + "%2Fcheck_authorize%2F&response_type=code"
+	logging.info("--------------------\nAPI_URL")
+	logging.info(api_url)
+	return redirect(api_url)
 
 
 def	check_authorize(request):
@@ -124,7 +143,7 @@ def	check_authorize(request):
 	Check if the user authorize the 42's connection or not
  
 	Arguments:
-		????request: an url request????
+		request: ???
 	Returns:
 		pong page : the user authorize the connection
 		sign_in page : the user refuse the connection
@@ -134,7 +153,7 @@ def	check_authorize(request):
 		return redirect('sign_in')
 	if request.method == 'GET' and 'code' in request.GET:
 		code = request.GET['code']
-	response_token = handle_42_callback(code)
+	response_token = handle_42_callback(request, code)
 	response_data = make_api_request_with_token(API_USER, response_token)
 	connect_42_user(request, response_data)
 	return redirect('pong')
@@ -202,24 +221,28 @@ def make_api_request_with_token(api_url, token):
 		return None
 
 
-def handle_42_callback(code):
+def handle_42_callback(request, code):
 	"""
 	Ask 42 api for token thanks to the code replied after the redirection
  
 	Arguments:
+		request : ???
 		code : the replied code from 42 redirection
 	Returns:
 		None : the request failed
 		token : the requet succeed
 	"""
-
+	port = '8001' if request.scheme == 'https' else '8000'
+	redirect_uri = request.scheme + '://localhost:' + port + '/check_authorize/'
 	token_url = "https://api.intra.42.fr/oauth/token"
+	logging.info("-----------------\nREDIRECT_URI")
+	logging.info(redirect_uri)
 	token_params = {
 		'grant_type': 'authorization_code',
 		'client_id': 'u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c',
 		'client_secret': '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',
 		'code': code,
-		'redirect_uri': 'http://localhost:8000/check_authorize/'
+		'redirect_uri': redirect_uri
 	}
 
 	response = requests.post(token_url, data=token_params)
