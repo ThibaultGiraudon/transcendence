@@ -1,32 +1,28 @@
+{% extends 'base.html' %}
+
+{% block css %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebSocket Test</title>
-    <link rel="stylesheet" href="{% static 'pong_app/css/style.css' %}">
-</head>
-<body>
-    {% include 'interface.html' %}
-    
-    <h1>WebSocket Test</h1>
-    {% if request.user.is_authenticated %}
-        <h1>{{ request.user.username }}</h1>
-        <a href="/profile">
-            <button>Profil</button>
-        </a>
-    {% endif %}
+<link rel="stylesheet" href="{% static 'pong_app/css/style.css' %}">
+{% endblock %}
 
-    <div class="score_bar">
-        <span class="player_score id0"></span>
-        <span class="player_score id1"></span>
-        <span class="player_score id2"></span>
-        <span class="player_score id3"></span>
-    </div>
+{% block title %}
+Pong game
+{% endblock %}
 
-    <script src="{% static 'pong_app/js/phaser.min.js' %}"></script>
-    <script type="module" src="{% static 'pong_app/js/main.js' %}"></script>
-</body>
-</html>
+{% block content %}
+
+{% if request.user.is_authenticated %}
+	<h1>Player: {{ request.user.username }}</h1>
+{% endif %}
+
+<div class="score_bar">
+	<span class="player_score id0"></span>
+	<span class="player_score id1"></span>
+	<span class="player_score id2"></span>
+	<span class="player_score id3"></span>
+</div>
+
+<script src="{% static 'pong_app/js/phaser.min.js' %}"></script>
+<script type="module" src="{% static 'pong_app/js/main.js' %}"></script>
+
+{% endblock %}

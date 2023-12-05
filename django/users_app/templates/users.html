@@ -1,6 +1,15 @@
-{% block content %}
+{% extends 'base.html' %}
 
-{% include 'interface.html' %}
+{% block css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'pong_app/css/style.css' %}">
+{% endblock %}
+
+{% block title %}
+All users
+{% endblock %}
+
+{% block content %}
 
 <h1>All users</h1>
 <ul>
@@ -21,11 +30,6 @@
     img {
         border-radius: 50%;
       }
-
-    a {
-        text-decoration: none;
-        color: black;
-    }
 </style>
 
-{% endblock content%}
+{% endblock %}

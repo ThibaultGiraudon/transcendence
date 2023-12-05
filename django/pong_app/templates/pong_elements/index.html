@@ -1,20 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <!-- TODO change X-UA (se renseigner sur quoi mettre) -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pong Game</title>
-</head>
-<body>
-    {% include 'interface.html' %}
+{% extends 'base.html' %}
 
-    <h1>Pong Game</h1>
-</body>
-<foot>
-    {% load static %}
-    <script src="{% static 'pong_app/js/phaser.min.js' %}"></script>
-    <script type="module" src="{% static 'pong_app/js/main.js' %}"></script>
-</foot>
-</html>
+{% block title %}
+Pong game
+{% endblock %}
+
+{% block content %}
+
+<h1>Pong Game</h1>
+
+{% endblock %}
+
+{% block footer %}
+
+{% load static %}
+<script src="{% static 'pong_app/js/phaser.min.js' %}"></script>
+<script type="module" src="{% static 'pong_app/js/main.js' %}"></script>
+
+{% endblock %}
