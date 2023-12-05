@@ -1,6 +1,15 @@
-{% block content %}
+{% extends 'base.html' %}
 
-{% include 'interface.html' %}
+{% block css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'pong_app/css/style.css' %}">
+{% endblock %}
+
+{% block title %}
+Sign up
+{% endblock %}
+
+{% block content %}
 
 {% if request.user.is_authenticated %}
 
@@ -28,4 +37,4 @@
 
 {% endif %}
 
-{% endblock content%}
+{% endblock %}
