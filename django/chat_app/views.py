@@ -3,8 +3,13 @@ from django.shortcuts import redirect
 from django.contrib.auth import get_user_model
 import uuid
 
-def index(request):
-	return render(request, "chat/index.html", {'channels': request.user.channels})
+def chat(request):
+	if not request.user.is_authenticated:
+		return redirect('sign_in')
+	
+	users = get_user_model().objects.all()
+
+	return render(request, "chat/chat.html", {'channels': request.user.channels, 'users': users})
 
 
 def create_channel(request, user_to):

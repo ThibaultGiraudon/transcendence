@@ -1,51 +1,56 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>Chat Room</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-    <textarea disabled id="chat-log" cols="100" rows="20"></textarea><br>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
-    {{ room_name|json_script:"room-name" }}
-    <script>
-        const roomName = JSON.parse(document.getElementById('room-name').textContent);
+{% block css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'pong_app/css/style.css' %}">
+{% endblock %}
 
-        let     websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        let     websocketPort = window.location.protocol === 'https:' ? '' : '';
-        const   socketUrl = websocketProtocol + '//' + window.location.host + websocketPort + '/ws/chat/' + roomName + "/";
-        const   chatSocket = new WebSocket(socketUrl);
+{% block title %}
+Char Room
+{% endblock %}
 
-        chatSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.sender + " : " + data.message + '\n');
-        };
+{% block content %}
 
-        chatSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-        };
+<textarea disabled id="chat-log" cols="100" rows="20"></textarea><br>
+<input id="chat-message-input" type="text" size="100"><br>
+<input id="chat-message-submit" type="button" value="Send">
+{{ room_name|json_script:"room-name" }}
+<script>
+	const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
-        document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.key === 'Enter') {  // enter, return
-                document.querySelector('#chat-message-submit').click();
-            }
-        };
+	let		websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+	let		websocketPort = window.location.protocol === 'https:' ? '' : '';
+	const	socketUrl = websocketProtocol + '//' + window.location.host + websocketPort + '/ws/chat/' + roomName + "/";
+	const	chatSocket = new WebSocket(socketUrl);
 
-        document.querySelector('#chat-message-submit').onclick = function(e) {
-            const messageInputDom = document.querySelector('#chat-message-input');
-            const message = messageInputDom.value;
-            if (!message)
-                return 
-            const sender = "{{ request.user.username }}"
-            chatSocket.send(JSON.stringify({
-                'message': message,
-                'sender': sender
-            }));
-            messageInputDom.value = '';
-        };
-    </script>
-</body>
-</html>
+	chatSocket.onmessage = function(e) {
+		const data = JSON.parse(e.data);
+		document.querySelector('#chat-log').value += (data.sender + " : " + data.message + '\n');
+	};
+
+	chatSocket.onclose = function(e) {
+		console.error('Chat socket closed unexpectedly');
+	};
+
+	document.querySelector('#chat-message-input').focus();
+	document.querySelector('#chat-message-input').onkeyup = function(e) {
+		if (e.key === 'Enter') {  // enter, return
+			document.querySelector('#chat-message-submit').click();
+		}
+	};
+
+	document.querySelector('#chat-message-submit').onclick = function(e) {
+		const messageInputDom = document.querySelector('#chat-message-input');
+		const message = messageInputDom.value;
+		if (!message)
+			return 
+		const sender = "{{ request.user.username }}"
+		chatSocket.send(JSON.stringify({
+			'message': message,
+			'sender': sender
+		}));
+		messageInputDom.value = '';
+	};
+</script>
+
+{% endblock %}
