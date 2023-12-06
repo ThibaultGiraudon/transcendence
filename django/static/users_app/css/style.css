@@ -78,17 +78,18 @@
 }
 
 .sign-42-button input {
-	font-family: var(--font-text-bold);
-	padding: var(--input-padding);
-	width: 100%;
-    border: 1px solid var(--color-dark);
+	padding: calc(var(--input-padding) + 2px);
+	border-style: none;
 	border-radius: var(--input-border-radius);
-    color: var(--color-dark-hover);
-    background: transparent;
+	width: 100%;
+	background-color: var(--color-dark);
+	color: var(--color-light);
+	font-family: var(--font-text-bold);
 }
 
 .sign-42-button input:hover {
-	background-color: var(--color-dark);
-	color: var(--color-light);
-	transition: 0.3s ease;
+    color: var(--color-dark);
+	padding: calc(var(--input-padding) + 1px);
+	background: transparent;
+    border: 1px solid var(--color-dark);
 }
