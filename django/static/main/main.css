@@ -139,12 +139,16 @@ header .header-menu {
 
 header .header-menu .menu-link {
 	height: 100%;
+    font-family: var(--font-text-bold);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	color: var(--color-light);
-	/* text-transform: uppercase; */
 	margin-right: var(--menu-link-margin);
+}
+
+header .header-menu .menu-link:hover {
+    color: var(--color-light-hover);
 }
 
 header .header-menu .menu-link:last-child {
