@@ -3,7 +3,8 @@
 	margin: 50px 0;
 	padding: 0 40px;
 	width: 50%;
-	height: 50vh;
+	height: auto;
+	/* height: 50vh; */
 	background-color: var(--color-light-hover);
 	border-radius: var(--border-radius);
 	display: flex;
@@ -78,6 +79,7 @@
 }
 
 .sign-42-button input {
+	margin-bottom: 20px;
 	padding: calc(var(--input-padding) + 2px);
 	border-style: none;
 	border-radius: var(--input-border-radius);
