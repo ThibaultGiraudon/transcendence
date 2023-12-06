@@ -6,7 +6,7 @@
 }
 @font-face {
     font-family: 'Identidad Regular';
-    src: url('fonts/identidad-extralight.otf') format('opentype');
+    src: url('fonts/identidad-extralight.ttf') format('truetype');
     font-weight: normal;
 }
 
@@ -15,30 +15,32 @@
     /* Fonts */
     --font-text-regular: 'Identidad Regular', serif;
     --font-text-bold: 'Identidad Bold', monospace;
-    --font-title: 'Roboto', sans-serif;
     /* Colors */
     --color-light: #F3F2ED;
 	--color-dark: #212121;
-    --color-light-hover: #E2DED2;
-    --color-dark-hover: #373737;
+    --color-light-hover: #EBE8E0;
+    --color-dark-hover: #474747;
     /* Text size */
     --h1-size: 5em;
-    --h2-size: 1.8em;
-    --h3-size: 1.5em;
-    --h4-size: 1.2em;
-    --h5-size: 1em;
-    --h6-size: 0.8em;
+    --h2-size: 3em;
+    --h3-size: 2em;
+    --h4-size: 1em;
+    --h5-size: 0.8em;
+    --h6-size: 0.6em;
     /* Sizes */
     --header-height: 100px;
     --border-radius: 20px;
+    --input-border-radius: 10px;
+    --input-padding: 10px;
 	--menu-link-margin: 20px;
+    --body-width: 60%;
+    --columns-gap: 10px;
     /* --card-gap: 30px; */
-    /* --body-width: 60%; */
 }
 
 /* GLOBAL */
 h1 {
-    font-family: var(--font-title);
+    font-family: var(--font-text-bold);
     font-size: var(--h1-size);
     padding: 0;
     margin: 0;
@@ -46,7 +48,7 @@ h1 {
 }
 
 h2 {
-    font-family: var(--font-title);
+    font-family: var(--font-text-bold);
     font-size: var(--h2-size);
     padding: 0;
     margin: 0;
@@ -54,7 +56,7 @@ h2 {
 }
 
 h3 {
-    font-family: var(--font-title);
+    font-family: var(--font-text-bold);
     font-size: var(--h3-size);
     padding: 0;
     margin: 0;
@@ -90,20 +92,28 @@ p {
     font-size: var(--h4-size);
     padding: 0;
     margin: 0;
-    color: var(--color-dark);
+    color: var(--color-dark-hover);
 }
 
 a {
-    font-family: var(--font-text-bold);
+    font-family: var(--font-text-regular);
     font-size: var(--h4-size);
     padding: 0;
     margin: 0;
-    color: var(--color-dark);
+    color: var(--color-dark-hover);
     text-decoration: none;
     transition: all 0.3s ease-in-out;
 }
 
 a:hover {
+    color: var(--color-dark-hover);
+}
+
+label {
+    font-family: var(--font-text-regular);
+    font-size: var(--h5-size);
+    padding: 0;
+    margin: 0;
     color: var(--color-dark-hover);
 }
 
@@ -115,7 +125,6 @@ body {
 	background-color: var(--color-light);
 	font-family: "Lucida Console", Monaco, monospace;
 	font-size: 20px;
-	text-align: center;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -153,4 +162,13 @@ header .header-menu .menu-link:hover {
 
 header .header-menu .menu-link:last-child {
 	margin-right: 0;
+}
+
+/* MAIN */
+main {
+    width: var(--body-width);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
