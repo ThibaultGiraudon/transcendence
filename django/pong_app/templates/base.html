@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -5,39 +7,34 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>{% block title %}{% endblock %}</title>
+		<link rel="stylesheet" href="{% static 'main/main.css' %}">
 		{% block css %}{% endblock %}
 	</head>
 	<body>
-		<!-- Header -->
 		<header>
 			{% block header %}{% endblock %}
+			<nav class="header-menu">
+				<a href="{% url 'home' %}" class="menu-link">Home</a>
+				{% if user.is_authenticated %}
+					<a href="{% url 'pong' %}" class="menu-link">Pong</a>
+					<a href="{% url 'chat' %}" class="menu-link">Chat</a>
+					<a href="{% url 'users' %}" class="menu-link">Users</a>
+				{% endif %}
+				<p class="menu-link">|</p>
+				{% if user.is_authenticated %}
+					<a href="{% url 'profile_me' %}" class="menu-link">Profile</a>
+					<a href="{% url 'sign_out' %}" class="menu-link">Sign out</a>
+				{% else %}
+					<a href="{% url 'sign_in' %}" class="menu-link">Sign in</a>
+					<a href="{% url 'sign_up' %}" class="menu-link">Sign up</a>
+				{% endif %}
+			</nav>
 		</header>
 		
-		<!-- Navigation bar -->
-		<nav>
-			<a href="{% url 'home' %}" class="navbar-button">Home</a>
-			{% if user.is_authenticated %}
-				<a href="{% url 'pong' %}" class="navbar-button">Pong</a>
-				<a href="{% url 'chat' %}" class="navbar-button">Chat</a>
-				<a href="{% url 'users' %}" class="navbar-button">Users</a>
-			{% endif %}
-			|
-			{% if user.is_authenticated %}
-				<a href="{% url 'profile_me' %}" class="navbar-button">Profile</a>
-				<a href="{% url 'sign_out' %}" class="navbar-button">Sign out</a>
-			{% else %}
-				<a href="{% url 'sign_in' %}" class="navbar-button">Sign in</a>
-				<a href="{% url 'sign_up' %}" class="navbar-button">Sign up</a>
-			{% endif %}
-		</nav>
-		</br>
-		
-		<!-- Content -->
 		<main>
 			{% block content %}{% endblock %}
 		</main>
 		
-		<!-- Footer -->
 		<footer>
 			{% block footer %}{% endblock %}
 		</footer>

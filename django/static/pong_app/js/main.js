@@ -95,7 +95,7 @@ var config = {
         updatePaddlePosition: updatePaddlePosition,
         updateBallPosition: updateBallPosition,
     },
-    backgroundColor: '#080808',
+    backgroundColor: '#212121',
 };
 
 phaserGame = new Phaser.Game(config);
