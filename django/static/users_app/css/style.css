@@ -31,12 +31,6 @@
 	justify-content: flex-start;
 }
 
-.sign-form .sign-subtitle {
-	height: 30px;
-	display: flex;
-	align-items: center;
-}
-
 .sign-form input {
 	font-family: var(--font-text-bold);
 	color: var(--color-dark-hover);

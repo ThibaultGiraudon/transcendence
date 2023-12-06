@@ -20,20 +20,22 @@ Sign up
 
 {% else %}
 
-<form method="POST" novalidate>
-	{% csrf_token %}
-	<h2>Sign up</h2>
-	{{form.as_p}}
+<div class="form-div">
+	<form method="POST" novalidate class="sign-form">
+		{% csrf_token %}
+		<h3 class="sign-title">Sign up</h3>
+		{{form.as_p}}
 
-	{% for message in messages %}
-	<div>
-		<a data-dismiss="alert">⚠️</a>
-			{{ message }}
-	</div>
-	{% endfor %}
+		{% for message in messages %}
+		<div class="error-alert">
+			<a data-dismiss="alert">⚠️</a>
+			<p>{{ message }}</p>
+		</div>
+		{% endfor %}
 
-	<input type="submit" value="Sign up" />
-</form>
+		<input type="submit" value="Sign up" />
+	</form>
+</div>
 
 {% endif %}
 
