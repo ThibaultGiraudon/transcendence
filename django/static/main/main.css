@@ -1,15 +1,21 @@
-/* TODO add fonts */
-/* @font-face { */
-    /* font-family: 'Minipax Regular'; */
-    /* src: url('fonts/Minipax-Regular.ttf') format('truetype'); */
-/* } */
+/* FONTS */
+@font-face {
+    font-family: 'Identidad Bold';
+    src: url('fonts/identidad-extrabold.otf') format('opentype');
+    font-weight: bold;
+}
+@font-face {
+    font-family: 'Identidad Regular';
+    src: url('fonts/identidad-extralight.otf') format('opentype');
+    font-weight: normal;
+}
 
 /* VARIABLES */
 :root {
     /* Fonts */
-    --font-text-regular: 'Minipax Regular', monospace;
-    --font-text-bold: 'Minipax Bold', monospace;
-    --font-title: 'Shrikhand Bold', sans-serif;
+    --font-text-regular: 'Identidad Regular', serif;
+    --font-text-bold: 'Identidad Bold', monospace;
+    --font-title: 'Roboto', sans-serif;
     /* Colors */
     --color-light: #F3F2ED;
 	--color-dark: #212121;
@@ -25,6 +31,7 @@
     /* Sizes */
     --header-height: 100px;
     --border-radius: 20px;
+	--menu-link-margin: 20px;
     /* --card-gap: 30px; */
     /* --body-width: 60%; */
 }
@@ -135,4 +142,11 @@ header .header-menu .menu-link {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	color: var(--color-light);
+	/* text-transform: uppercase; */
+	margin-right: var(--menu-link-margin);
+}
+
+header .header-menu .menu-link:last-child {
+	margin-right: 0;
 }
