@@ -60,6 +60,16 @@ class Ball:
         self.angle = 1.0
         self.task = None
 
+    def __powerShot(self, paddle, collisionPosition):
+        speedFactor = 1 - abs(collisionPosition - 0.5)
+        self.speed = 8 * speedFactor * 1.5
+        if (speedFactor > 0.9):
+            self.color = paddle.color
+            self.radius = 8
+        else:
+            self.color = "0xFDF3E1"
+            self.radius = 10
+
     def checkPaddleCollision(self, paddle):
         closestX = max(paddle.x, min(self.x, paddle.x + paddle.width))
         closestY = max(paddle.y, min(self.y, paddle.y + paddle.height))
@@ -75,22 +85,9 @@ class Ball:
             elif (paddle.id == 1):
                 self.angle = math.pi - max(-maxAngle, min(maxAngle, reflectionAngle))
 
-            # TODO deplacer dans un function powershot
-            speedFactor = 1 - abs(collisionPosition - 0.5)
-            # TODO changer le 8 par la speed de la balle (mais pas self.speed)
-            self.speed = 8 * speedFactor * 1.5
-
-            if (speedFactor > 0.9):
-                self.color = paddle.color
-                self.radius = 8
-            else:
-                self.color = "0xFDF3E1"
-                self.radius = 10
+            self.__powerShot(paddle, collisionPosition)
 
     def checkWallCollision(self, gameSettings):
-        # if (self.x <= 0) or (self.x >= gameSettings.gameWidth):
-        #     self.angle = math.pi - self.angle
-
         id = -1
         if (self.x <= 0):
             self.angle = math.pi - self.angle
