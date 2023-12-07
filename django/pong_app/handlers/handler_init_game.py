@@ -35,13 +35,13 @@ async def sendUpdateBallMessage(consumer, ball):
 	}
 	await consumer.send(json.dumps(message))
 
-async def sendUpdateScore(consumer, id):
-	consumer.gameSettings.paddles[id].score += 1
+async def sendUpdateScore(consumer, paddleID):
+	consumer.gameSettings.paddles[paddleID].score += 1
 	message = {
 		'type': 'update_score',
 		'nbPaddles': consumer.gameSettings.nbPaddles,
-		'score': consumer.gameSettings.paddles[id].score,	
-		'id': consumer.gameSettings.paddles[id].id,
+		'score': consumer.gameSettings.paddles[paddleID].score,	
+		'id': consumer.gameSettings.paddles[paddleID].id,
 	}
 	await consumer.send(json.dumps(message))
 
@@ -57,9 +57,11 @@ async def handle_ball_move(consumer):
 		for paddle in consumer.gameSettings.paddles:
 			ball.checkPaddleCollision(paddle)
 
-		id = ball.checkWallCollision(consumer.gameSettings)
-		if (id >= 0):
-			await sendUpdateScore(consumer, id)
+		paddleID = ball.checkWallCollision(consumer.gameSettings)
+		if (paddleID >= 0):
+			consumer.gameSettings.resetPaddles()
+			await sendInitPaddlePosition(consumer)
+			await sendUpdateScore(consumer, paddleID)
 
 		# TODO change to global var for fps
 		await asyncio.sleep(0.01)
