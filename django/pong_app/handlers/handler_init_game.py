@@ -54,11 +54,8 @@ async def handle_ball_move(consumer):
 		# TODO maybe change this to bottom (ball.move)
 		ball.move()
 
-		if (ball.checkPaddleCollision(consumer.gameSettings.paddles[0])):
-			print("Collision paddle 0")
-
-		if (ball.checkPaddleCollision(consumer.gameSettings.paddles[1])):
-			print("Collision paddle 1")
+		for paddle in consumer.gameSettings.paddles:
+			ball.checkPaddleCollision(paddle)
 
 		id = ball.checkWallCollision(consumer.gameSettings)
 		if (id >= 0):
