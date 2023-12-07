@@ -1,4 +1,5 @@
 import math
+import random
 
 class GameSettings:
     def __init__(self, nbPaddles, width, height):
@@ -23,7 +24,6 @@ class Paddle:
         self.y = 0
         self.width = 20
         self.height = 100
-        # self.color = "0xFDFFFF"
         self.speed = 10
         self.score = 0
         self.keyState = {
@@ -40,17 +40,7 @@ class Paddle:
             "0x2FD661",
             "0xF19705",
         ]
-
         self.color = self.colorArray[self.id]
-
-        # if (self.id == 0):
-        #     self.color = "0xE21E59"
-        # elif (self.id == 1):
-        #     self.color = "0x1598E9"
-        # elif (self.id == 2):
-        #     self.color = "0x2FD661"
-        # elif (self.id == 3):
-        #     self.color = "0xF19705"
 
     def moveUp(self):
         self.y -= self.speed
@@ -64,13 +54,14 @@ class Ball:
         self.y = 100.0
         self.radius = 10
         self.color = "0xFDF3E1"
-        self.speed = 10
+        self.speed = 5
+        self.speedBase = 8
         self.angle = 1.0
         self.task = None
 
     def __powerShot(self, paddle, collisionPosition):
         speedFactor = 1 - abs(collisionPosition - 0.5)
-        self.speed = 8 * speedFactor * 1.5
+        self.speed = self.speedBase * speedFactor * 1.5
         if (speedFactor > 0.9):
             self.color = paddle.color
             self.radius = 8
@@ -113,3 +104,11 @@ class Ball:
         deltaY = self.speed * math.sin(self.angle)
         self.x += deltaX
         self.y += deltaY
+
+    def resetBall(self, gameSettings):
+        self.x = gameSettings.gameWidth / 2
+        self.y = gameSettings.gameHeight / 2
+        self.radius = 10
+        self.color = "0xFDF3E1"
+        self.speed = 5
+        self.angle = random.choice([0, math.pi])

@@ -25,7 +25,7 @@ async def sendInitScore(consumer, nbPaddles):
 		}
 		await consumer.send(json.dumps(message))
 
-async def sendUpdateBallMessage(consumer, ball):
+async def sendUpdateBallPosition(consumer, ball):
 	message = {
 		'type': 'update_ball_position',
 		'x': ball.x,
@@ -59,15 +59,14 @@ async def handle_ball_move(consumer):
 
 		paddleID = ball.checkWallCollision(consumer.gameSettings)
 		if (paddleID >= 0):
-			consumer.gameSettings.resetPaddles()
-			await sendInitPaddlePosition(consumer)
 			await sendUpdateScore(consumer, paddleID)
+			ball.resetBall(consumer.gameSettings)
+			await asyncio.sleep(1)
 
 		# TODO change to global var for fps
 		await asyncio.sleep(0.01)
-		await sendUpdateBallMessage(consumer, ball)
+		await sendUpdateBallPosition(consumer, ball)
 
 async def handle_init_game(consumer):
-	# TODO chamger ca pour eviter de reset les paddles a 0 a chaque ctrl + r
-	consumer.gameSettings.resetPaddles()
+	# consumer.gameSettings.resetPaddles()
 	consumer.gameSettings.ball.task = asyncio.create_task(handle_ball_move(consumer))
