@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.files import File
+from django.conf import settings
 
 class CustomUserManager(BaseUserManager):
 	def create_user(self, email, username, password=None, photo=None, **extra_fields):
@@ -12,8 +13,7 @@ class CustomUserManager(BaseUserManager):
 		user = self.model(email=email, username=username, **extra_fields)
 
 		if photo is None:
-			default_image_path = '/usr/src/app/static/users_app/img/default.jpg'
-			with open(default_image_path, 'rb') as default_image_file:
+			with open(settings.DEFAULT_IMAGE_PATH, 'rb') as default_image_file:
 				user.photo.save('default.jpg', File(default_image_file), save=False)
 		else:
 			user.photo = photo
@@ -33,7 +33,6 @@ class CustomUser(AbstractUser):
 	email = models.EmailField(unique=True)
 	username = models.CharField(max_length=150, unique=True)
 	photo = models.ImageField(upload_to='static/users_app/img', default='default.jpg')
-	# photo = models.ImageField(upload_to='users_app/profile_pics', default='default.jpg')
 	channels = models.JSONField(default=dict)
 
 	# Use the custom manager
