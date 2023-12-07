@@ -1,6 +1,5 @@
 import	json
 import	asyncio
-import	math
 
 async def sendInitPaddlePosition(consumer):
     for paddle in consumer.gameSettings.paddles:
@@ -68,5 +67,5 @@ async def handle_ball_move(consumer):
 		await sendUpdateBallPosition(consumer, ball)
 
 async def handle_init_game(consumer):
-	# consumer.gameSettings.resetPaddles()
+	consumer.gameSettings.ball.resetBall(consumer.gameSettings)
 	consumer.gameSettings.ball.task = asyncio.create_task(handle_ball_move(consumer))
