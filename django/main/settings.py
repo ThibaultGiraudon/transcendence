@@ -31,6 +31,10 @@ STATICFILES_DIRS = [
 
 handler404 = 'pong_app.views.custom_404'
 
+# Default profile picture
+
+DEFAULT_IMAGE_PATH = '/usr/src/app/static/users_app/img/default.jpg'
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -159,7 +163,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
