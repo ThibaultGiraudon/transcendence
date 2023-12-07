@@ -18,7 +18,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         message = json.loads(text_data)
-        # print(f"Message reçu: {message}")
 
         if (message['type'] == 'init_game'):
             await handle_init_game(self)
