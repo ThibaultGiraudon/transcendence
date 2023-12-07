@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let message = JSON.parse(event.data);
 
         if (message.type === 'init_paddle_position') {
-            initPaddlePosition(message);
+            initPaddlePosition(message, elements.paddles[message.id]);
         }
 
         if (message.type === 'init_score') {
@@ -107,30 +107,19 @@ const elements = {
 
 function create() {
     for (let i = 0; i < 4; i++) {
-        // TODO si on chnage en bas on est plus oblige de mettre id1 mais on peut juste mettre 1
-        elements.paddles['id' + i] = this.add.rectangle(0, 0, 0, 0, 0xFFFFFF).setVisible(false);
-        elements.paddles['id' + i].setOrigin(0.5, 0.5);
+        elements.paddles[i] = this.add.rectangle(0, 0, 0, 0, 0xFFFFFF).setVisible(false);
+        elements.paddles[i].setOrigin(0.5, 0.5);
     }
     elements.ball = this.add.circle(0, 0, 0, 0xFDF3E1).setVisible(false);
 }
 
-function initPaddlePosition(message) {
-    if (message.id == 0) {
-        // TODO eviter la pile de if avec une function padde['id' + i]
-        elements.paddles.id0.setVisible(true)
-        elements.paddles.id0.x = parseFloat(message.x)
-        elements.paddles.id0.y = parseFloat(message.y)
-        elements.paddles.id0.width = parseFloat(message.width)
-        elements.paddles.id0.height = parseFloat(message.height)
-        elements.paddles.id0.setFillStyle(message.color, 1);
-    } else if (message.id == 1) {
-        elements.paddles.id1.setVisible(true)
-        elements.paddles.id1.x = parseFloat(message.x)
-        elements.paddles.id1.y = parseFloat(message.y)
-        elements.paddles.id1.width = parseFloat(message.width)
-        elements.paddles.id1.height = parseFloat(message.height)
-        elements.paddles.id1.setFillStyle(message.color, 1);
-    }
+function initPaddlePosition(message, paddle) {
+    paddle.setVisible(true)
+    paddle.x = parseFloat(message.x)
+    paddle.y = parseFloat(message.y)
+    paddle.width = parseFloat(message.width)
+    paddle.height = parseFloat(message.height)
+    paddle.setFillStyle(message.color, 1);
 }
 
 function initScore(message) {
@@ -149,9 +138,9 @@ function initScore(message) {
 
 function updatePaddlePosition(message) {
     if (message.id == 0) {
-        elements.paddles.id0.y = parseFloat(message.y)
+        elements.paddles[0].y = parseFloat(message.y)
     } else if (message.id == 1) {
-        elements.paddles.id1.y = parseFloat(message.y)
+        elements.paddles[1].y = parseFloat(message.y)
     }
 }
 

@@ -6,3 +6,4 @@ Pas de communication entre http et https
 Message recu en double si recharge
 mettre les balises scripts dans un .js
 changer les poition par 0 et gerer cote js le decalage
+mettre un countdown au mileu au reset pour pas quon crois que cest un lag
