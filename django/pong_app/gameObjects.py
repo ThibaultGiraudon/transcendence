@@ -23,7 +23,7 @@ class Paddle:
         self.y = 0
         self.width = 20
         self.height = 100
-        self.color = "0xFDFFFF"
+        # self.color = "0xFDFFFF"
         self.speed = 10
         self.score = 0
         self.keyState = {
@@ -34,15 +34,23 @@ class Paddle:
             'up': None,
             'down': None,
         }
+        self.colorArray = [
+            "0xE21E59",
+            "0x1598E9",
+            "0x2FD661",
+            "0xF19705",
+        ]
 
-        if (self.id == 0):
-            self.color = "0xE21E59"
-        elif (self.id == 1):
-            self.color = "0x1598E9"
-        elif (self.id == 2):
-            self.color = "0x2FD661"
-        elif (self.id == 3):
-            self.color = "0xF19705"
+        self.color = self.colorArray[self.id]
+
+        # if (self.id == 0):
+        #     self.color = "0xE21E59"
+        # elif (self.id == 1):
+        #     self.color = "0x1598E9"
+        # elif (self.id == 2):
+        #     self.color = "0x2FD661"
+        # elif (self.id == 3):
+        #     self.color = "0xF19705"
 
     def moveUp(self):
         self.y -= self.speed
