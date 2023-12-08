@@ -11,7 +11,7 @@ class GameSettings:
 
         for id in range(self.nbPaddles):
             self.paddles.append(Paddle(id))
-            self.paddles[id].position = self.gameHeight / 2
+            self.paddles[id].position = self.gameHeight / 2 - self.paddles[id].height / 2
         
         if self.nbPaddles == 2:
             self.initPaddles2()
@@ -19,24 +19,24 @@ class GameSettings:
             self.initPaddles4()
     
     def initPaddles2(self):
-        self.paddles[0].x = 10
-        self.paddles[1].x = self.gameWidth - self.paddles[1].width - 10
+        self.paddles[0].offset = 10
+        self.paddles[1].offset = self.gameWidth - self.paddles[1].width - 10
 
     def initPaddles4(self):
-        self.paddles[0].x = 10
-        self.paddles[1].x = self.gameWidth - self.paddles[1].width - 10
-        self.paddles[2].x = 20
-        self.paddles[3].x = self.gameHeight - self.paddles[3].width
+        for id in range(self.nbPaddles):
+            if (id % 2 == 0):
+                self.paddles[id].offset = 10
+            else:
+                self.paddles[id].offset = self.gameWidth - self.paddles[id].width - 10
 
-        self.paddles[2].width, self.paddles[2].height = self.paddles[2].height, self.paddles[2].width
-        self.paddles[3].width, self.paddles[3].height = self.paddles[3].height, self.paddles[3].width
-        self.paddles[2].x, self.paddles[2].position = self.paddles[2].position, self.paddles[2].x
-        self.paddles[3].x, self.paddles[3].position = self.paddles[3].position, self.paddles[3].x
+        for id in range(2, self.nbPaddles):
+            self.paddles[id].width, self.paddles[id].height = self.paddles[id].height, self.paddles[id].width
+            self.paddles[id].offset, self.paddles[id].position = self.paddles[id].position, self.paddles[id].offset
 
 class Paddle:
     def __init__(self, id):
         self.id = id
-        self.x = 0
+        self.offset = 0
         self.position = 0
         self.width = 20
         self.height = 100
@@ -86,7 +86,7 @@ class Ball:
             self.radius = 10
 
     def checkPaddleCollision(self, paddle):
-        closestX = max(paddle.x, min(self.x, paddle.x + paddle.width))
+        closestX = max(paddle.offset, min(self.x, paddle.offset + paddle.width))
         closestY = max(paddle.position, min(self.y, paddle.position + paddle.height))
         distance = math.sqrt((self.x - closestX)**2 + (self.y - closestY)**2)
 
