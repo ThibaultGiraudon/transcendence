@@ -33,6 +33,17 @@ async def keydownLoop(direction, paddle, consumer):
 		await sendUpdatePaddleMessage(consumer, paddle)
 		await asyncio.sleep(0.01) # TODO change to global var for speed
 
+async def aiLoop(consumer):
+	paddle = consumer.ai.paddle
+	while (True):
+		if (consumer.gameSettings.ball.y < paddle.position + paddle.height / 2):
+			paddle.moveUp()
+		elif (consumer.gameSettings.ball.y > paddle.position + paddle.height / 2):
+			paddle.moveDown()
+
+		await sendUpdatePaddleMessage(consumer, paddle)
+		await asyncio.sleep(0.1)
+
 async def handle_paddle_move(message, consumer):
 	direction = message['direction']
 
@@ -40,6 +51,10 @@ async def handle_paddle_move(message, consumer):
 		paddle = consumer.gameSettings.paddles[0]
 	elif (message['id'] == '1'):
 		paddle = consumer.gameSettings.paddles[1]
+	
+	if (consumer.ai.task == None):
+		consumer.ai.task = asyncio.create_task(aiLoop(consumer))
+		return ;
 
 	if (message['key'] == 'keydown'):
 		if (direction == 'up'):

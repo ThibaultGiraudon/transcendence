@@ -1,5 +1,6 @@
 import math
 import random
+import asyncio
 
 class GameSettings:
     def __init__(self, nbPaddles, width, height):
@@ -57,6 +58,7 @@ class Paddle:
             "0xF19705",
         ]
         self.color = self.colorArray[self.id]
+        self.isAI = False
 
     def moveUp(self):
         self.position -= self.speed
@@ -128,3 +130,22 @@ class Ball:
         self.color = "0xFDF3E1"
         self.speed = 5
         self.angle = random.choice([0, math.pi])
+
+class AIPlayer:
+    def __init__(self, paddle, ball):
+        self.paddle = paddle
+        self.ball = ball
+        self.task = None
+
+        paddle.isAI = True
+
+    def move(self):
+        while (True):
+            if (self.ball.y < self.paddle.position + self.paddle.height / 2):
+                self.paddle.moveUp()
+            elif (self.ball.y > self.paddle.position + self.paddle.height / 2):
+                self.paddle.moveDown()
+            else:
+                self.paddle.moveUp()
+                self.paddle.moveDown()
+            asyncio.sleep(0.01)
