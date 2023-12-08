@@ -42,7 +42,7 @@ async def aiLoop(consumer):
 			paddle.moveDown()
 
 		await sendUpdatePaddleMessage(consumer, paddle)
-		await asyncio.sleep(0.1)
+		await asyncio.sleep(0.025)
 
 async def handle_paddle_move(message, consumer):
 	direction = message['direction']
@@ -51,17 +51,17 @@ async def handle_paddle_move(message, consumer):
 		paddle = consumer.gameSettings.paddles[0]
 	elif (message['id'] == '1'):
 		paddle = consumer.gameSettings.paddles[1]
-	
-	if (consumer.ai.task == None):
-		consumer.ai.task = asyncio.create_task(aiLoop(consumer))
-		return ;
 
-	if (message['key'] == 'keydown'):
-		if (direction == 'up'):
-			paddle.keyState[direction] = True;
-		elif (direction == 'down'):
-			paddle.keyState[direction] = True;
-		paddle.taskAsyncio[direction] = asyncio.create_task(keydownLoop(direction, paddle, consumer))
+	if (paddle.isAI == False):
+		if (consumer.ai.task == None):
+			consumer.ai.task = asyncio.create_task(aiLoop(consumer))
 
-	elif (message['key'] == 'keyup'):
-		keyupReset(direction, paddle)
+		if (message['key'] == 'keydown'):
+			if (direction == 'up'):
+				paddle.keyState[direction] = True;
+			elif (direction == 'down'):
+				paddle.keyState[direction] = True;
+			paddle.taskAsyncio[direction] = asyncio.create_task(keydownLoop(direction, paddle, consumer))
+
+		elif (message['key'] == 'keyup'):
+			keyupReset(direction, paddle)
