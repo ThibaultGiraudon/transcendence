@@ -125,9 +125,8 @@ function initGameSize(message) {
 
 function initPaddlePosition(message, paddle) {
     paddle.setVisible(true)
-    // TODO change to offset and position (pour que ca marche avec 4 joueurs)
     paddle.x = parseFloat(message.x)
-    paddle.y = parseFloat(message.y) - parseFloat(message.height) / 2
+    paddle.y = parseFloat(message.y)
     paddle.width = parseFloat(message.width)
     paddle.height = parseFloat(message.height)
     paddle.setFillStyle(message.color, 1);
@@ -139,7 +138,7 @@ function initScore(message) {
 
     if (message.nbPaddles == 2) {
         scoreSpans[message.id].style.width = '50%';
-        //  TODO change ce score vers le back 
+        //  TODO change ce score dans le back-end
         scoreSpans[message.id ^ 1].textContent = message.score;
     } else if (message.nbPaddles == 4) {
         scoreSpans[message.id].style.width = '25%';
@@ -150,11 +149,14 @@ function initScore(message) {
 
 function updatePaddlePosition(message) {
     if (message.id == 0) {
-        elements.paddles[0].y = parseFloat(message.y)
+        elements.paddles[0].y = parseFloat(message.position)
     } else if (message.id == 1) {
-        elements.paddles[1].y = parseFloat(message.y)
+        elements.paddles[1].y = parseFloat(message.position)
+    } else if (message.id == 2) {
+        elements.paddles[2].x = parseFloat(message.position)
+    } else if (message.id == 3) {
+        elements.paddles[3].x = parseFloat(message.position)
     }
-    // TODO add 4 player 
 }
 
 function updateBallPosition(message) {
