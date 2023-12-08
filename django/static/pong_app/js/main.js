@@ -126,7 +126,7 @@ function initGameSize(message) {
 function initPaddlePosition(message, paddle) {
     paddle.setVisible(true)
     paddle.x = parseFloat(message.x)
-    paddle.y = parseFloat(message.y) - parseFloat(message.height) / 2
+    paddle.y = parseFloat(message.y)
     paddle.width = parseFloat(message.width)
     paddle.height = parseFloat(message.height)
     paddle.setFillStyle(message.color, 1);

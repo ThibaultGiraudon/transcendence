@@ -13,7 +13,7 @@ async def sendInitPaddlePosition(consumer):
     for paddle in consumer.gameSettings.paddles:
         message = {
             'type': 'init_paddle_position',
-			'x': paddle.x,
+			'x': paddle.offset,
             'y': paddle.position,
 			'width': paddle.width,
 			'height': paddle.height,
