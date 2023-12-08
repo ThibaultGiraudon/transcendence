@@ -149,11 +149,14 @@ function initScore(message) {
 
 function updatePaddlePosition(message) {
     if (message.id == 0) {
-        elements.paddles[0].y = parseFloat(message.y)
+        elements.paddles[0].y = parseFloat(message.position)
     } else if (message.id == 1) {
-        elements.paddles[1].y = parseFloat(message.y)
+        elements.paddles[1].y = parseFloat(message.position)
+    } else if (message.id == 2) {
+        elements.paddles[2].x = parseFloat(message.position)
+    } else if (message.id == 3) {
+        elements.paddles[3].x = parseFloat(message.position)
     }
-    // TODO add 4 player 
 }
 
 function updateBallPosition(message) {
