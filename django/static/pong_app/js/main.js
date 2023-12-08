@@ -125,7 +125,6 @@ function initGameSize(message) {
 
 function initPaddlePosition(message, paddle) {
     paddle.setVisible(true)
-    // TODO change to offset and position (pour que ca marche avec 4 joueurs)
     paddle.x = parseFloat(message.x)
     paddle.y = parseFloat(message.y) - parseFloat(message.height) / 2
     paddle.width = parseFloat(message.width)
@@ -139,7 +138,7 @@ function initScore(message) {
 
     if (message.nbPaddles == 2) {
         scoreSpans[message.id].style.width = '50%';
-        //  TODO change ce score vers le back 
+        //  TODO change ce score dans le back-end
         scoreSpans[message.id ^ 1].textContent = message.score;
     } else if (message.nbPaddles == 4) {
         scoreSpans[message.id].style.width = '25%';

@@ -13,7 +13,7 @@ def keyupReset(direction, paddle):
 async def sendUpdateMessage(consumer, paddle):
 	message = {
 		'type': 'update_paddle_position',
-		'y': paddle.y,
+		'y': paddle.position,
 		'id': paddle.id,
 	}
 	await consumer.send(json.dumps(message))
@@ -25,9 +25,9 @@ async def keydownLoop(direction, paddle, consumer):
 		paddle.keyState['up'] = False;
 
 	while (paddle.keyState[direction] or paddle.keyState[direction]):
-		if (paddle.keyState[direction] and direction == 'up' and paddle.y > 0):
+		if (paddle.keyState[direction] and direction == 'up' and paddle.position > 0):
 			paddle.moveUp()
-		elif (paddle.keyState[direction] and direction == 'down' and paddle.y < consumer.gameSettings.gameHeight - paddle.height):
+		elif (paddle.keyState[direction] and direction == 'down' and paddle.position < consumer.gameSettings.gameHeight - paddle.height):
 			paddle.moveDown()
 
 		await sendUpdateMessage(consumer, paddle)
