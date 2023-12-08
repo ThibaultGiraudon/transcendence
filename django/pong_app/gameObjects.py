@@ -17,23 +17,24 @@ class GameSettings:
         elif self.nbPaddles == 4:
             self.initPaddles4()
     
-    def resetPaddles(self):
-        for paddle in self.paddles:
-            # TODO change maybe
-            paddle.y = self.gameHeight / 2 - 50
-    
     def initPaddles2(self):
         self.paddles[0].x = 10
         self.paddles[1].x = self.gameWidth - self.paddles[1].width - 10
 
     def initPaddles4(self):
+        self.paddles[2].width, self.paddles[2].height = self.paddles[2].height, self.paddles[2].width
+        self.paddles[3].width, self.paddles[3].height = self.paddles[3].height, self.paddles[3].width
+
         self.paddles[0].x = 10
         self.paddles[1].x = self.gameWidth - self.paddles[1].width - 10
         self.paddles[2].y = 10
-        self.paddles[3].y = self.gameHeight - self.paddles[3].width - 10
+        self.paddles[3].y = self.gameHeight - self.paddles[3].height - 10
 
-        self.paddles[2].width, self.paddles[2].height = self.paddles[2].height, self.paddles[2].width
-        self.paddles[3].width, self.paddles[3].height = self.paddles[3].height, self.paddles[3].width
+        for paddle in self.paddles:
+            if (paddle.id == 0 or paddle.id == 1):
+                paddle.y = self.gameHeight / 2
+            else:
+                paddle.x = self.gameWidth / 2
 
 class Paddle:
     def __init__(self, id):
@@ -96,8 +97,6 @@ class Ball:
             collisionPosition = (closestY - paddle.y) / paddle.height
             reflectionAngle = (collisionPosition - 0.5) * math.pi
             maxAngle = math.pi / 3
-
-            print("collision paddle")
 
             if (paddle.id == 0):
                 self.angle = max(-maxAngle, min(maxAngle, reflectionAngle))
