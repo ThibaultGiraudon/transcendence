@@ -1,6 +1,15 @@
 import	json
 import	asyncio
 
+async def sendInitGameSize(consumer):
+	print("sendInitGameSize")
+	message = {
+		'type': 'init_game_size',
+		'width': consumer.gameSettings.gameWidth,
+		'height': consumer.gameSettings.gameHeight,
+	}
+	await consumer.send(json.dumps(message))
+
 async def sendInitPaddlePosition(consumer):
     for paddle in consumer.gameSettings.paddles:
         message = {
@@ -45,10 +54,11 @@ async def sendUpdateScore(consumer, paddleID):
 	await consumer.send(json.dumps(message))
 
 async def handle_ball_move(consumer):
-	ball = consumer.gameSettings.ball
+	await sendInitGameSize(consumer)
 	await sendInitPaddlePosition(consumer)
 	await sendInitScore(consumer, consumer.gameSettings.nbPaddles)
 
+	ball = consumer.gameSettings.ball
 	while (True):
 		# TODO maybe change this to bottom (ball.move)
 		ball.move()
