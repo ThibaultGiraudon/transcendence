@@ -2,7 +2,6 @@ import	json
 import	asyncio
 
 async def sendInitGameSize(consumer):
-	print("sendInitGameSize")
 	message = {
 		'type': 'init_game_size',
 		'width': consumer.gameSettings.gameWidth,

@@ -1,5 +1,7 @@
 import * as utils from './utils.js';
 
+// TODO separer dans des fichiers differents
+
 let     websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 let     websocketPort = window.location.protocol === 'https:' ? ':8001' : '';
 const   socketUrl = websocketProtocol + '//' + window.location.host + websocketPort + '/ws/some_path/';
@@ -123,8 +125,9 @@ function initGameSize(message) {
 
 function initPaddlePosition(message, paddle) {
     paddle.setVisible(true)
+    // TODO change to offset and position (pour que ca marche avec 4 joueurs)
     paddle.x = parseFloat(message.x)
-    paddle.y = parseFloat(message.y)
+    paddle.y = parseFloat(message.y) - parseFloat(message.height) / 2
     paddle.width = parseFloat(message.width)
     paddle.height = parseFloat(message.height)
     paddle.setFillStyle(message.color, 1);
@@ -136,6 +139,7 @@ function initScore(message) {
 
     if (message.nbPaddles == 2) {
         scoreSpans[message.id].style.width = '50%';
+        //  TODO change ce score vers le back 
         scoreSpans[message.id ^ 1].textContent = message.score;
     } else if (message.nbPaddles == 4) {
         scoreSpans[message.id].style.width = '25%';
@@ -150,6 +154,7 @@ function updatePaddlePosition(message) {
     } else if (message.id == 1) {
         elements.paddles[1].y = parseFloat(message.y)
     }
+    // TODO add 4 player 
 }
 
 function updateBallPosition(message) {
