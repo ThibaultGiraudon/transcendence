@@ -10,10 +10,10 @@ def keyupReset(direction, paddle):
 	if (paddle.taskAsyncio[direction]):
 		paddle.taskAsyncio[direction].cancel()
 
-async def sendUpdateMessage(consumer, paddle):
+async def sendUpdatePaddleMessage(consumer, paddle):
 	message = {
 		'type': 'update_paddle_position',
-		'y': paddle.y,
+		'position': paddle.position,
 		'id': paddle.id,
 	}
 	await consumer.send(json.dumps(message))
@@ -25,12 +25,12 @@ async def keydownLoop(direction, paddle, consumer):
 		paddle.keyState['up'] = False;
 
 	while (paddle.keyState[direction] or paddle.keyState[direction]):
-		if (paddle.keyState[direction] and direction == 'up' and paddle.y > 0):
+		if (paddle.keyState[direction] and direction == 'up' and paddle.position > 0):
 			paddle.moveUp()
-		elif (paddle.keyState[direction] and direction == 'down' and paddle.y < consumer.gameSettings.gameHeight - paddle.height):
+		elif (paddle.keyState[direction] and direction == 'down' and paddle.position < consumer.gameSettings.gameHeight - paddle.height):
 			paddle.moveDown()
 
-		await sendUpdateMessage(consumer, paddle)
+		await sendUpdatePaddleMessage(consumer, paddle)
 		await asyncio.sleep(0.01) # TODO change to global var for speed
 
 async def handle_paddle_move(message, consumer):
