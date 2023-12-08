@@ -54,6 +54,10 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.addEventListener('message', (event) => {
         let message = JSON.parse(event.data);
 
+        if (message.type === 'init_game_size') {
+            initGameSize(message);
+        }
+
         if (message.type === 'init_paddle_position') {
             initPaddlePosition(message, elements.paddles[message.id]);
         }
@@ -80,9 +84,8 @@ document.addEventListener('DOMContentLoaded', function() {
 var phaserGame;
 var config = {
     type: Phaser.AUTO,
-    // TODO change to dynamic
-    width: 800,
-    height: 800,
+    width: 0,
+    height: 0,
     physics: {
         default: 'arcade',
         arcade: {
@@ -98,7 +101,6 @@ var config = {
     backgroundColor: '#212121',
 };
 
-phaserGame = new Phaser.Game(config);
 const elements = {
     scoreText: [],
     paddles: [],
@@ -111,6 +113,12 @@ function create() {
         elements.paddles[i].setOrigin(0.5, 0.5);
     }
     elements.ball = this.add.circle(0, 0, 0, 0xFDF3E1).setVisible(false);
+}
+
+function initGameSize(message) {
+    config.width = message.width;
+    config.height = message.height;
+    phaserGame = new Phaser.Game(config);
 }
 
 function initPaddlePosition(message, paddle) {
