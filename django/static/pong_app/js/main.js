@@ -112,7 +112,6 @@ const elements = {
 function create() {
     for (let i = 0; i < 4; i++) {
         elements.paddles[i] = this.add.rectangle(0, 0, 0, 0, 0xFFFFFF).setVisible(false);
-        elements.paddles[i].setOrigin(0.5, 0.5);
     }
     elements.ball = this.add.circle(0, 0, 0, 0xFDF3E1).setVisible(false);
 }
