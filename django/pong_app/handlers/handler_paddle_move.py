@@ -45,19 +45,14 @@ async def moveAiToAim(paddle, consumer, aimPosition):
 
 async def aiLoop(consumer):
 	paddle = consumer.ai.paddle
-	test = 0
 	while True:
-		if test == 0:
-			aimPosition = 0
-			test = 1
-		elif test == 1:
-			aimPosition = 800
-			test = 0
+		aimPosition = consumer.gameSettings.ball.y
+		print(aimPosition)
 
 		# TODO move this in class
-		move_task = asyncio.create_task(moveAiToAim(paddle, consumer, aimPosition))
+		moveTask = asyncio.create_task(moveAiToAim(paddle, consumer, aimPosition))
 		await asyncio.sleep(1)
-		move_task.cancel()
+		moveTask.cancel()
 
 async def handle_paddle_move(message, consumer):
 	direction = message['direction']
