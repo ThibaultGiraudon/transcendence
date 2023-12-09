@@ -9,8 +9,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     ai = AIPlayer(gameSettings.paddles[1], gameSettings.ball)
 
-	# consumer.ai.task = asyncio.create_task(aiLoop(consumer))
-
     async def connect(self):
         await self.accept()
 
