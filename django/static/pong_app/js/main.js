@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (message.type === 'update_paddle_position') {
+            console.log(message);
             updatePaddlePosition(message);
         }
 

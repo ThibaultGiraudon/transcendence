@@ -136,16 +136,20 @@ class AIPlayer:
         self.paddle = paddle
         self.ball = ball
         self.task = None
-
         paddle.isAI = True
 
-    def move(self):
-        while (True):
-            if (self.ball.y < self.paddle.position + self.paddle.height / 2):
-                self.paddle.moveUp()
-            elif (self.ball.y > self.paddle.position + self.paddle.height / 2):
-                self.paddle.moveDown()
-            else:
-                self.paddle.moveUp()
-                self.paddle.moveDown()
-            asyncio.sleep(0.01)
+    # def getAimPosition(self):
+    #     if (self.ball.x < self.paddle.offset + self.paddle.width / 2):
+    #         return (0)
+    #     elif (self.ball.x > self.paddle.offset + self.paddle.width / 2):
+    #         return (self.paddle.height)
+
+    # async def move(self, aimPosition):
+    #     print(aimPosition)
+    #     while (True):
+    #         # if (aimPosition < self.paddle.position):
+    #             # self.paddle.moveUp()
+    #         # elif (aimPosition > self.paddle.position):
+    #             # self.paddle.moveDown()
+    #         print("AI move")
+    #         await asyncio.sleep(0.01)
