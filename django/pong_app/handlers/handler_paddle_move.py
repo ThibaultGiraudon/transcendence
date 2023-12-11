@@ -1,5 +1,6 @@
 import json
 import asyncio
+import math
 
 def keyupReset(direction, paddle):
 	if (direction == 'up'):
@@ -34,7 +35,7 @@ async def keydownLoop(direction, paddle, consumer):
 		await asyncio.sleep(0.01) # TODO change to global var for speed
 
 async def moveAiToAim(paddle, consumer, aimPosition):
-	while True:
+	while (True):
 		if (aimPosition < paddle.position):
 			paddle.moveUp()
 			await sendUpdatePaddleMessage(consumer, paddle)
@@ -43,12 +44,27 @@ async def moveAiToAim(paddle, consumer, aimPosition):
 			await sendUpdatePaddleMessage(consumer, paddle)
 		await asyncio.sleep(0.01)
 
+async def calculateAimPosition(consumer):
+	ball = consumer.gameSettings.ball
+	angle = ball.angle
+	ball_x = ball.x
+	ball_y = ball.y
+	collision_y_vertical = ball_y + (consumer.gameSettings.gameWidth - ball_x) * math.tan(angle)
+	# collision_x_horizontal = ball_x + (consumer.gameSettings.gameHeight - ball_y) * math.tan(angle)
+
+	# TODO change 800
+	if 0 <= collision_y_vertical <= 800:
+		return collision_y_vertical
+	return (ball_x + (consumer.gameSettings.gameHeight - ball_y) / math.tan(angle))
+
 async def aiLoop(consumer):
 	paddle = consumer.ai.paddle
-	while True:
-		aimPosition = consumer.gameSettings.ball.y
-		print(aimPosition)
+	while (True):
+		collision_y = await calculateAimPosition(consumer)
+		print("collision_y: ", collision_y)
 
+		aimPosition = 0
+	
 		# TODO move this in class
 		moveTask = asyncio.create_task(moveAiToAim(paddle, consumer, aimPosition))
 		await asyncio.sleep(1)
