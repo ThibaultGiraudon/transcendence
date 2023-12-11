@@ -49,20 +49,30 @@ async def calculateAimPosition(consumer):
 	angle = ball.angle
 	ball_x = ball.x
 	ball_y = ball.y
-	collision_y_vertical = ball_y + (consumer.gameSettings.gameWidth - ball_x) * math.tan(angle)
-	# collision_x_horizontal = ball_x + (consumer.gameSettings.gameHeight - ball_y) * math.tan(angle)
 
-	# TODO change 800
-	if 0 <= collision_y_vertical <= 800:
-		return collision_y_vertical
-	return (ball_x + (consumer.gameSettings.gameHeight - ball_y) / math.tan(angle))
+	while (True):
+		collisionY = ball_y + (consumer.gameSettings.gameWidth - ball_x) * math.tan(angle)
+		if 0 <= collisionY <= consumer.gameSettings.gameHeight:
+			return collisionY
+		else:
+			collisionX = abs(ball_x + (consumer.gameSettings.gameHeight - ball_y) / math.tan(angle))
+			ball_x = collisionX
+			angle = -angle
+			# return	collisionX
+			if (collisionY < 0):
+				ball_y = 0
+			elif (collisionY > consumer.gameSettings.gameHeight):
+				ball_y = consumer.gameSettings.gameHeight
+	
+	# return (ball_x + (consumer.gameSettings.gameHeight - ball_y) / math.tan(angle))
 
 async def aiLoop(consumer):
 	paddle = consumer.ai.paddle
 	while (True):
-		collision_y = await calculateAimPosition(consumer)
-		print("collision_y: ", collision_y)
+		collisionPosition = await calculateAimPosition(consumer)
+		print("collisionPosition: ", collisionPosition)
 
+		# aimPosition = collisionPosition - paddle.height / 2
 		aimPosition = 0
 	
 		# TODO move this in class
