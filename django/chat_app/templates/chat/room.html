@@ -11,9 +11,11 @@ Chat Room
 
 {% block content %}
 
-<div id="chat-log"></div><br>
-<input id="chat-message-input" type="text" size="100"><br>
-<input id="chat-message-submit" type="button" value="Send">
+<div>
+	<div id="chat-log"></div><br>
+	<input id="chat-message-input" type="text" size="100"><br>
+	<input id="chat-message-submit" type="button" value="Send">
+</div>
 
 {{ room_name|json_script:"room-name" }}
 <script>
