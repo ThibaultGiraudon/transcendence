@@ -10,9 +10,14 @@ Chat Room
 {% endblock %}
 
 {% block content %}
+<div class="container">
+	<img src={{ user_to.photo.url }} alt="profile picture" width="60" height="60">
+	<h3>{{ user_to.username }}</h3>
+</div>
 
 <div id="chat-log" class="chat-log"></div>
 <br>
+
 <input id="chat-message-input" type="text" size="50">
 <input id="chat-message-submit" type="button" value="Send">
 
@@ -31,6 +36,8 @@ Chat Room
 		messageContainer.textContent = data.message;
 		messageContainer.className = data.sender === "{{ request.user.username }}" ? 'my-message' : 'other-message';
 		document.querySelector('#chat-log').appendChild(messageContainer);
+		var chatLog = document.querySelector('.chat-log');
+		chatLog.scrollTop = chatLog.scrollHeight;
 	};
 
 	chatSocket.onopen = function(e) {
