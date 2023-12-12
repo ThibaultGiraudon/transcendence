@@ -34,6 +34,7 @@ class CustomUser(AbstractUser):
 	username = models.CharField(max_length=150, unique=True)
 	photo = models.ImageField(upload_to='static/users_app/img', default='default.jpg')
 	channels = models.JSONField(default=dict)
+	messages = models.JSONField(default=dict)
 
 	# Use the custom manager
 	objects = CustomUserManager()
