@@ -308,11 +308,22 @@ def profile_me(request):
 
 @csrf_protect
 def profile(request, username):
+	logging.info("---------------\n ")
+	logging.info("Enter in profile\n\n")
+ 
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
 	photo_name = request.user.photo.name
 	User = get_user_model()
 
+	room = None
+	for user, channel in request.user.channels.items():
+		if user == username:
+			room = channel
+			break
+
+	logging.info("---------------\nROOM ")
+	logging.info(room)
 	try:
 		user = User.objects.get(username=username)
 	except User.DoesNotExist:
@@ -321,7 +332,8 @@ def profile(request, username):
 	if request.method == 'GET':
 		form = EditProfileForm(instance=request.user)
 		context = {	'form':form,
-					'user':user}
+					'user':user,
+     				'room':room}
 		return render(request, 'profile.html', context)
 	
 	elif request.method == 'POST':
@@ -334,11 +346,11 @@ def profile(request, username):
 				default_storage.delete(request.user.photo.path)
 			elif len(form.cleaned_data['username']) < 4:
 				messages.error(request, "Your username is too short (4 characters minimum)")
-				return redirect('profile', username=username)
+				return redirect('profile', username=username, room=room)
 	
 			form.save()
 			messages.success(request, 'Your informations have been updated')
-			return redirect('profile', username=request.user.username)
+			return redirect('profile', username=request.user.username, room=room)
 		else:
 			if 'photo' in form.errors:
 				messages.error(request, 'Please enter a valid picture')
@@ -346,9 +358,9 @@ def profile(request, username):
 				messages.error(request, 'This username is already taken')
 			else:
 				messages.error(request, 'Please enter a valid username')
-			return redirect('profile', username=username)
+			return redirect('profile', username=username, room=room)
 
-	return redirect('profile', username=username)
+	return redirect('profile', username=username, room=room)
 
 
 def users(request):

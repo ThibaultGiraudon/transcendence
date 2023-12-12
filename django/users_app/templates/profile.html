@@ -14,6 +14,8 @@
 <img src={{ user.photo.url }} alt="profile picture" width="100" height="100">
 <p>{{ user.username }}</p>
 
+<h3>{{ room }}</h3>
+
 {% if user.username == request.user.username %}
 
 <p>{{ user.email}}</p>
@@ -48,9 +50,15 @@
 {% else %}
 
 </br>
-<a href="/create_channel/{{ user.username }}">
-	<button>Chat together</button>
-</a>
+{% if room %}
+	<a href="/chat/{{ room }}">
+		<button>Send a chat</button>
+	</a>
+{% else %}
+	<a href="/create_channel/{{ user.username }}">
+		<button>Send a chat</button>
+	</a>
+{% endif%}
 
 {% endif %}
 

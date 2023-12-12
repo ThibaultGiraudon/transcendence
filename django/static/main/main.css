@@ -164,6 +164,33 @@ header .header-menu .menu-link:last-child {
 	margin-right: 0;
 }
 
+header .header-menu .menu-link:first-child {
+	margin-left: 5%;
+}
+
+.menu-link-right {
+    margin-left: auto;
+    height: 100%;
+    font-family: var(--font-text-bold);
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    color: var(--color-light);
+    margin-right: var(--menu-link-margin);
+}
+
+img {
+    padding-left: 5%;
+    border-radius: 50%;
+}
+
+.container {
+	margin-top: 5%;
+	display: flex;
+	align-items: center;
+	justify-content: center
+  }
+
 /* MAIN */
 main {
     width: var(--body-width);
