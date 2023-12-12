@@ -51,29 +51,39 @@ async def calculateAimPosition(consumer):
 	ball_y = ball.y
 
 	while (True):
-		collisionY = ball_y + (consumer.gameSettings.gameWidth - ball_x) * math.tan(angle)
-		if 0 <= collisionY <= consumer.gameSettings.gameHeight:
-			return collisionY
+		collisionYright = ball_y + (consumer.gameSettings.gameWidth - ball_x) * math.tan(angle)
+		collisionYleft = ball_y + (0 - ball_x) * math.tan(angle)
+		# if angle == 0:
+			# collisionX = ball_x
+		# else:
+		# collisionX = ball_x + (consumer.gameSettings.gameHeight - ball_y) * math.tan(angle)
+
+		normalizedAngle = angle % (2 * math.pi)
+		if (math.pi / 2 < normalizedAngle < 3 * math.pi / 2):
+			print("left: ", collisionYleft)
 		else:
-			collisionX = abs(ball_x + (consumer.gameSettings.gameHeight - ball_y) / math.tan(angle))
-			ball_x = collisionX
-			angle = -angle
-			# return	collisionX
-			if (collisionY < 0):
-				ball_y = 0
-			elif (collisionY > consumer.gameSettings.gameHeight):
-				ball_y = consumer.gameSettings.gameHeight
-	
-	# return (ball_x + (consumer.gameSettings.gameHeight - ball_y) / math.tan(angle))
+			print("right: ", collisionYright)
+
+		# print("(x= ", round(collisionX), ") (y= ", round(collisionYright))
+		if (0 <= collisionYright <= consumer.gameSettings.gameHeight):
+			return collisionYright
+		return 0
+		# elif (0 <= collisionX <= consumer.gameSettings.gameWidth):
+		# 	ball_x = collisionX
+		# 	if (collisionYright < 0):
+		# 		ball_y = 0
+		# 	elif (collisionYright > consumer.gameSettings.gameHeight):
+		# 		ball_y = consumer.gameSettings.gameHeight
+		# 	angle = -angle
 
 async def aiLoop(consumer):
 	paddle = consumer.ai.paddle
 	while (True):
 		collisionPosition = await calculateAimPosition(consumer)
-		print("collisionPosition: ", collisionPosition)
+		# print("collisionPosition: ", collisionPosition)
 
-		# aimPosition = collisionPosition - paddle.height / 2
-		aimPosition = 0
+		aimPosition = collisionPosition - paddle.height / 2
+		# aimPosition = 0
 	
 		# TODO move this in class
 		moveTask = asyncio.create_task(moveAiToAim(paddle, consumer, aimPosition))

@@ -72,7 +72,8 @@ async def handle_ball_move(consumer):
 			await asyncio.sleep(1)
 
 		# TODO change to global var for fps
-		await asyncio.sleep(0.01)
+		# TODO tmp (0.01)
+		await asyncio.sleep(0.05)
 		await sendUpdateBallPosition(consumer, ball)
 
 async def handle_init_game(consumer):
