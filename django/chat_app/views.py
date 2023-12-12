@@ -35,5 +35,14 @@ def create_channel(request, user_to):
 def room(request, room_name):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
-	
-	return render(request, "chat/room.html", {"room_name": room_name})
+
+	user_to = None
+	for user, channel in request.user.channels.items():
+		if channel == room_name:
+			user_to = get_user_model().objects.get(username=user)
+			break
+
+	if user_to is None:
+		return redirect('chat')
+ 
+	return render(request, "chat/room.html", {"room_name": room_name, "user_to": user_to})
