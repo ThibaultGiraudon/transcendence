@@ -2,7 +2,7 @@
 
 {% block css %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'pong_app/css/style.css' %}">
+<link rel="stylesheet" href="{% static 'chat_app/css/style.css' %}">
 {% endblock %}
 
 {% block title %}
@@ -12,24 +12,17 @@ All users
 {% block content %}
 
 <h1>All users</h1>
-<ul>
-  {% for x in all_users %}
-    <a href="/profile/{{ x.username }}">
-      <li>
-        <img src={{ x.photo.url }} alt="profile picture" width="25" height="25">
-        {{ x.username }}
-        {% if x.username == user.username%}
-        ⭐
-        {% endif %}
-      </li>
-    </a>
-   {% endfor %}
-</ul>
-
-<style>
-    img {
-        border-radius: 50%;
-      }
-</style>
+<div class="list">
+{% for x in all_users %}
+  <a href="/profile/{{ x.username }}">
+    {% if x.username != user.username%}
+        <div class="container">
+          <img src={{ x.photo.url }} alt="profile picture" width="60" height="60">
+          <h3>{{ x.username }}</h3>
+        </div>
+    {% endif %}
+  </a>
+{% endfor %}
+</div>
 
 {% endblock %}

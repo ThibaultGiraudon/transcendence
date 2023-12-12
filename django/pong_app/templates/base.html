@@ -21,10 +21,12 @@
 				{% endif %}
 				<p class="menu-link">|</p>
 				{% if user.is_authenticated %}
-				<a href="{% url 'profile_me' %}" class="menu-link">Profile</a>
+				{% comment %} <a href="{% url 'profile_me' %}" class="menu-link">Profile</a> {% endcomment %}
 				<a href="{% url 'sign_out' %}" class="menu-link">Sign out</a>
-				<p class="menu-link">|</p>
-				<p class="menu-link">{{ user.username }}</p>
+				<a href="{% url 'profile_me' %}" class="menu-link-right">
+					{{ user.username }}
+					<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
+				</a>
 				{% else %}
 				<a href="{% url 'sign_in' %}" class="menu-link">Sign in</a>
 				<a href="{% url 'sign_up' %}" class="menu-link">Sign up</a>
