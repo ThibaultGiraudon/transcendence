@@ -22,7 +22,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'main.settings')
 # TODO change name of url
 websocket_urlpatterns = [
     re_path(r'ws/some_path/$', PongConsumer.as_asgi()),
-    re_path(r"ws/chat/(?P<room_name>\w+)/$", ChatConsumer.as_asgi()),
+    re_path(r"ws/chat/(?P<room_name>[\w-]+)/$", ChatConsumer.as_asgi()),
 ]
 
 application = ProtocolTypeRouter({

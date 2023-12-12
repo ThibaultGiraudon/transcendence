@@ -2,7 +2,7 @@
 
 {% block css %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'pong_app/css/style.css' %}">
+<link rel="stylesheet" href="{% static 'chat_app/css/style.css' %}">
 {% endblock %}
 
 {% block title %}
@@ -11,11 +11,10 @@ Chat Room
 
 {% block content %}
 
-<div>
-	<div id="chat-log"></div><br>
-	<input id="chat-message-input" type="text" size="100"><br>
-	<input id="chat-message-submit" type="button" value="Send">
-</div>
+<div id="chat-log" class="chat-log"></div>
+<br>
+<input id="chat-message-input" type="text" size="50">
+<input id="chat-message-submit" type="button" value="Send">
 
 {{ room_name|json_script:"room-name" }}
 <script>
@@ -29,30 +28,37 @@ Chat Room
 	chatSocket.onmessage = function(e) {
 		const data = JSON.parse(e.data);
 		const messageContainer = document.createElement('p');
-		messageContainer.textContent = data.sender + " : " + data.message;
+		messageContainer.textContent = data.message;
+		messageContainer.className = data.sender === "{{ request.user.username }}" ? 'my-message' : 'other-message';
 		document.querySelector('#chat-log').appendChild(messageContainer);
+	};
+
+	chatSocket.onopen = function(e) {
+		document.querySelector('#chat-log').innerHTML = '';
 	};
 
 	chatSocket.onclose = function(e) {
 		console.error('Chat socket closed unexpectedly');
 	};
 
+	chatSocket.onerror = function(e) {
+		console.error('WebSocket error: ', e);
+	};
+
 	document.querySelector('#chat-message-input').focus();
 	document.querySelector('#chat-message-input').onkeyup = function(e) {
-		if (e.key === 'Enter') {  // enter, return
+		if (e.key === 'Enter') {
 			document.querySelector('#chat-message-submit').click();
 		}
 	};
 
+	document.querySelector('#chat-message-submit').onclick = null;
 	document.querySelector('#chat-message-submit').onclick = function(e) {
 		const messageInputDom = document.querySelector('#chat-message-input');
-		const message = messageInputDom.value;
+		const message = messageInputDom.value.trim();
 		if (!message)
 		  return;
 		const sender = "{{ request.user.username }}";
-		const messageContainer = document.createElement('p');
-		messageContainer.textContent = sender + " : " + message;
-		document.querySelector('#chat-log').appendChild(messageContainer);
 		chatSocket.send(JSON.stringify({
 		  'message': message,
 		  'sender': sender

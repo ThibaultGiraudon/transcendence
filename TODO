@@ -5,3 +5,4 @@ pour le mode 4 joueeur si tas plus de vie tes elimine et ton cote devient un mur
 Pas de photo de profile en https
 Pas de communication entre http et https
 Message recu en double si recharge
+Ne pas recreer de conv si existe deja dans "Chat together" a la page profile
