@@ -26,7 +26,7 @@ Chat Room
 	const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
 	let		websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-	let		websocketPort = window.location.protocol === 'https:' ? '' : '';
+	let		websocketPort = window.location.protocol === 'https:' ? ':8001' : '';
 	const	socketUrl = websocketProtocol + '//' + window.location.host + websocketPort + '/ws/chat/' + roomName + "/";
 	const	chatSocket = new WebSocket(socketUrl);
 
