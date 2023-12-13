@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.db import connection
 from django.views.decorators.http import require_POST
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 from users_app.models import Notification
 
 
