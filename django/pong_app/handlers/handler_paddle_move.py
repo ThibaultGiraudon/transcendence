@@ -54,36 +54,35 @@ async def calculateAimPosition(consumer):
 	# while (True):
 	for _ in range(5):
 		angle = angle % (2 * math.pi)
-		print("angle: ", angle)
 		collisionYright = ballY + (consumer.gameSettings.gameWidth - ballX) * math.tan(angle)
 		collisionYleft = ballY + (-ballX * math.tan(angle))
 
 		if (math.pi / 2 < angle < 3 * math.pi / 2):
 			if (0 < collisionYleft < consumer.gameSettings.gameHeight):
-				# print("left: ", collisionYleft)
+				print("left: ", collisionYleft)
 				return (collisionYleft)
 		else:
 			if (0 < collisionYright < consumer.gameSettings.gameHeight):
-				# print("right: ", collisionYright)
+				print("right: ", collisionYright)
 				return (collisionYright)
 
-		collisionXbottom, collisionXtop = 0, 0
+		collisionXbottom, collisionXtop = -1, -1
 		if (angle != 0):
 			collisionXtop = ballX + (0 - ballY) / math.tan(angle)
-			collisionXbottom = ballX + (consumer.gameSettings.gameHeight - ballY / math.tan(angle))
+			collisionXbottom = ballX + (consumer.gameSettings.gameHeight - ballY) / math.tan(angle)
 
 		if (0 < angle < math.pi):
-			if (0 < collisionXtop < consumer.gameSettings.gameWidth):
-				ballX = collisionXtop
+			if (0 < collisionXbottom < consumer.gameSettings.gameWidth):
+				print("bottom: ", collisionXbottom)
+				ballX = collisionXbottom
 				ballY = consumer.gameSettings.gameHeight
 				angle = -angle	
-				print("bottom: ", collisionXtop)
 		else:
-			if (0 < collisionXbottom < consumer.gameSettings.gameWidth):
-				ballX = collisionXbottom
+			if (0 < collisionXtop < consumer.gameSettings.gameWidth):
+				print("top: ", collisionXtop)
+				ballX = collisionXtop
 				ballY = 0
 				angle = -angle	
-				print("top: ", collisionXbottom)
 
 async def aiLoop(consumer):
 	paddle = consumer.ai.paddle
@@ -91,8 +90,8 @@ async def aiLoop(consumer):
 		collisionPosition = await calculateAimPosition(consumer)
 		# print("collisionPosition: ", collisionPosition)
 
-		aimPosition = collisionPosition - paddle.height / 2
-		# aimPosition = 0
+		# aimPosition = collisionPosition - paddle.height / 2
+		aimPosition = 0
 	
 		# TODO move this in class
 		moveTask = asyncio.create_task(moveAiToAim(paddle, consumer, aimPosition))
