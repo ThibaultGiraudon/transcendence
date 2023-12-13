@@ -179,6 +179,17 @@ header .header-menu .menu-link:first-child {
     margin-right: var(--menu-link-margin);
 }
 
+.notification-count {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 5px;
+    font-size: 14px;
+}
+
 img {
     padding-left: 5%;
     border-radius: 50%;

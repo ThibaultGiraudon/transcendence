@@ -15,21 +15,24 @@
 			<nav class="header-menu">
 				<a href="{% url 'home' %}" class="menu-link">Home</a>
 				{% if user.is_authenticated %}
-				<a href="{% url 'pong' %}" class="menu-link">Pong</a>
-				<a href="{% url 'chat' %}" class="menu-link">Chat</a>
-				<a href="{% url 'users' %}" class="menu-link">Users</a>
+					<a href="{% url 'pong' %}" class="menu-link">Pong</a>
+					<a href="{% url 'chat' %}" class="menu-link">Chat</a>
+					<a href="{% url 'users' %}" class="menu-link">Users</a>
 				{% endif %}
 				<p class="menu-link">|</p>
 				{% if user.is_authenticated %}
-				{% comment %} <a href="{% url 'profile_me' %}" class="menu-link">Profile</a> {% endcomment %}
-				<a href="{% url 'sign_out' %}" class="menu-link">Sign out</a>
-				<a href="{% url 'profile_me' %}" class="menu-link-right">
-					{{ user.username }}
-					<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
-				</a>
+					<a href="{% url 'sign_out' %}" class="menu-link">Sign out</a>
+					<a href="{% url 'profile_me' %}" class="menu-link-right">
+						{{ user.username }}
+						<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
+					</a>
+					<a href="{% url 'notifications' %}" class="menu-link-right">
+						<img src="{% static 'main/img/notifications.png' %}" alt="notifications" width="50" height="50">
+						<span class="notification-count">{{ user.nbNewNotifications }}</span>
+					</a>
 				{% else %}
-				<a href="{% url 'sign_in' %}" class="menu-link">Sign in</a>
-				<a href="{% url 'sign_up' %}" class="menu-link">Sign up</a>
+					<a href="{% url 'sign_in' %}" class="menu-link">Sign in</a>
+					<a href="{% url 'sign_up' %}" class="menu-link">Sign up</a>
 				{% endif %}
 			</nav>
 			{% block header %}{% endblock %}
