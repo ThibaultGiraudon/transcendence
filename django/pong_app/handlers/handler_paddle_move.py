@@ -36,6 +36,8 @@ async def keydownLoop(direction, paddle, consumer):
 
 async def moveAiToAim(paddle, consumer, aimPosition):
 	while (True):
+		if (aimPosition - 10 < paddle.position < aimPosition + 10):
+			paddle.position = round(aimPosition)
 		if (aimPosition < paddle.position):
 			paddle.moveUp()
 			await sendUpdatePaddleMessage(consumer, paddle)
@@ -60,11 +62,9 @@ async def calculateAimPosition(consumer):
 
 		if (math.pi / 2 < angle < 3 * math.pi / 2):
 			if (0 < collisionYleft < height):
-				# print("left: ", collisionYleft)
 				return (collisionYleft)
 		else:
 			if (0 < collisionYright < height):
-				# print("right: ", collisionYright)
 				return (collisionYright)
 
 		collisionXtop = ballX + (0 - ballY) / math.tan(angle)
@@ -72,13 +72,11 @@ async def calculateAimPosition(consumer):
 
 		if (0 < angle < math.pi):
 			if (0 < collisionXbottom < width):
-				# print("bottom: ", collisionXbottom)
 				ballX = collisionXbottom
 				ballY = height
 				angle = -angle	
 		else:
 			if (0 < collisionXtop < width):
-				# print("top: ", collisionXtop)
 				ballX = collisionXtop
 				ballY = 0
 				angle = -angle	
