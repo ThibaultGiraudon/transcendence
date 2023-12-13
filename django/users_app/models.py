@@ -3,13 +3,14 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.files import File
 from django.conf import settings
 
+
 class CustomUserManager(BaseUserManager):
 	def create_user(self, email, username, password=None, photo=None, **extra_fields):
 		
 		if not email:
 			raise ValueError('The Email field must be set')
 		email = self.normalize_email(email)
-		
+  
 		user = self.model(email=email, username=username, **extra_fields)
 
 		if photo is None:
@@ -35,6 +36,7 @@ class CustomUser(AbstractUser):
 	photo = models.ImageField(upload_to='static/users_app/img', default='default.jpg')
 	channels = models.JSONField(default=dict)
 	messages = models.JSONField(default=dict)
+	nbNewNotifications = models.IntegerField(default=0)
 
 	# Use the custom manager
 	objects = CustomUserManager()
@@ -48,3 +50,15 @@ class CustomUser(AbstractUser):
 
 	def save(self, *args, **kwargs):
 		super(CustomUser, self).save(*args, **kwargs)
+
+
+class Notification(models.Model):
+	user = models.ForeignKey(CustomUser, related_name='notifications', on_delete=models.CASCADE)
+	message = models.TextField()
+	date = models.DateTimeField(auto_now_add=True)
+	read = models.BooleanField(default=False)
+ 
+	def save(self, *args, **kwargs):
+		self.user.nbNewNotifications += 1
+		self.user.save()
+		super(Notification, self).save(*args, **kwargs)
