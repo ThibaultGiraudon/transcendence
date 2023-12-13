@@ -47,27 +47,32 @@ async def moveAiToAim(paddle, consumer, aimPosition):
 async def calculateAimPosition(consumer):
 	ball = consumer.gameSettings.ball
 	angle = ball.angle
-	ball_x = ball.x
-	ball_y = ball.y
+	ballX = ball.x
+	ballY = ball.y
 
 	while (True):
 		angle = angle % (2 * math.pi)
-		collisionYright = ball_y + (consumer.gameSettings.gameWidth - ball_x) * math.tan(angle)
-		collisionYleft = ball_y + (-ball_x * math.tan(angle))
+		collisionYright = ballY + (consumer.gameSettings.gameWidth - ballX) * math.tan(angle)
+		collisionYleft = ballY + (-ballX * math.tan(angle))
 
 		if (math.pi / 2 < angle < 3 * math.pi / 2):
-			print("left: ", collisionYleft)
+			if (0 < collisionYleft < consumer.gameSettings.gameHeight):
+				print("left: ", collisionYleft)
 		else:
-			print("right: ", collisionYright)
+			if (0 < collisionYright < consumer.gameSettings.gameHeight):
+				print("right: ", collisionYright)
 
 		collisionXbottom, collisionXtop = 0, 0
 		if (angle != 0):
-			collisionXbottom = ball_x + (consumer.gameSettings.gameHeight - ball_y) / math.tan(angle)
-			collisionXtop = ball_x + (-ball_y / math.tan(angle))
+			collisionXbottom = ballX + (consumer.gameSettings.gameHeight - ballY) / math.tan(angle)
+			collisionXtop = ballX + (-ballY / math.tan(angle))
+
 		if (0 < angle < math.pi):
-			print("bottom: ", collisionXbottom)
+			if (0 < collisionXbottom < consumer.gameSettings.gameWidth):
+				print("bottom: ", collisionXbottom)
 		else:
-			print("top: ", collisionXtop)
+			if (0 < collisionXtop < consumer.gameSettings.gameWidth):
+				print("top: ", collisionXtop)
 		
 
 
@@ -76,11 +81,11 @@ async def calculateAimPosition(consumer):
 			return collisionYright
 		return 0
 		# elif (0 <= collisionX <= consumer.gameSettings.gameWidth):
-		# 	ball_x = collisionX
+		# 	ballX = collisionX
 		# 	if (collisionYright < 0):
-		# 		ball_y = 0
+		# 		ballY = 0
 		# 	elif (collisionYright > consumer.gameSettings.gameHeight):
-		# 		ball_y = consumer.gameSettings.gameHeight
+		# 		ballY = consumer.gameSettings.gameHeight
 		# 	angle = -angle
 
 async def aiLoop(consumer):
