@@ -48,12 +48,11 @@ async def calculateAimPosition(consumer):
 	ball = consumer.gameSettings.ball
 	angle = ball.angle
 	ballX = ball.x
-	ballY = ball.y + 30
+	ballY = ball.y
 
-	width = consumer.gameSettings.gameWidth - 30
+	width = consumer.gameSettings.gameWidth
 	height = consumer.gameSettings.gameHeight
 
-	# while (True):
 	for _ in range(5):
 		angle = angle % (2 * math.pi)
 		collisionYright = ballY + (width - ballX) * math.tan(angle)
@@ -61,30 +60,34 @@ async def calculateAimPosition(consumer):
 
 		if (math.pi / 2 < angle < 3 * math.pi / 2):
 			if (0 < collisionYleft < height):
-				print("left: ", collisionYleft)
+				# print("left: ", collisionYleft)
 				return (collisionYleft)
 		else:
 			if (0 < collisionYright < height):
-				print("right: ", collisionYright)
+				# print("right: ", collisionYright)
 				return (collisionYright)
 
-		collisionXbottom, collisionXtop = 400, 400
-		if (angle != 0):
-			collisionXtop = ballX + (0 - ballY) / math.tan(angle)
-			collisionXbottom = ballX + (height - ballY) / math.tan(angle)
+		collisionXtop = ballX + (0 - ballY) / math.tan(angle)
+		collisionXbottom = ballX + (height - ballY) / math.tan(angle)
 
 		if (0 < angle < math.pi):
-			if (30 < collisionXbottom < width):
-				print("bottom: ", collisionXbottom)
+			if (0 < collisionXbottom < width):
+				# print("bottom: ", collisionXbottom)
 				ballX = collisionXbottom
 				ballY = height
 				angle = -angle	
 		else:
-			if (30 < collisionXtop < width):
-				print("top: ", collisionXtop)
+			if (0 < collisionXtop < width):
+				# print("top: ", collisionXtop)
 				ballX = collisionXtop
 				ballY = 0
 				angle = -angle	
+
+	print("x=", ballX, "y=", ballY, "angle=", angle)	
+	print("collisionXtop=", collisionXtop, "collisionXbottom=", collisionXbottom)
+	print("collisionYright=", collisionYright, "collisionYleft=", collisionYleft)
+	print("CRASH AVOID\n")
+	return (height)
 
 async def aiLoop(consumer):
 	paddle = consumer.ai.paddle
