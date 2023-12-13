@@ -37,6 +37,7 @@ class CustomUser(AbstractUser):
 	channels = models.JSONField(default=dict)
 	messages = models.JSONField(default=dict)
 	follows = ArrayField(models.CharField(max_length=150), default=list)
+	status = models.CharField(max_length=150, default="online")
 
 	# Use the custom manager
 	objects = CustomUserManager()
