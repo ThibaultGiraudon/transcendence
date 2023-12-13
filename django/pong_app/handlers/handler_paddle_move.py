@@ -51,8 +51,8 @@ async def calculateAimPosition(consumer):
 	ballY = ball.y
 
 	print("\n\n")
-	# while (True):
-	for _ in range(5):
+	while (True):
+	# for _ in range(5):
 		angle = angle % (2 * math.pi)
 		collisionYright = ballY + (consumer.gameSettings.gameWidth - ballX) * math.tan(angle)
 		collisionYleft = ballY + (-ballX * math.tan(angle))
@@ -90,8 +90,8 @@ async def aiLoop(consumer):
 		collisionPosition = await calculateAimPosition(consumer)
 		# print("collisionPosition: ", collisionPosition)
 
-		# aimPosition = collisionPosition - paddle.height / 2
-		aimPosition = 0
+		aimPosition = collisionPosition - paddle.height / 2
+		# aimPosition = 0
 	
 		# TODO move this in class
 		moveTask = asyncio.create_task(moveAiToAim(paddle, consumer, aimPosition))
