@@ -51,18 +51,25 @@ async def calculateAimPosition(consumer):
 	ball_y = ball.y
 
 	while (True):
+		angle = angle % (2 * math.pi)
 		collisionYright = ball_y + (consumer.gameSettings.gameWidth - ball_x) * math.tan(angle)
-		collisionYleft = ball_y + (0 - ball_x) * math.tan(angle)
-		# if angle == 0:
-			# collisionX = ball_x
-		# else:
-		# collisionX = ball_x + (consumer.gameSettings.gameHeight - ball_y) * math.tan(angle)
+		collisionYleft = ball_y + (-ball_x * math.tan(angle))
 
-		normalizedAngle = angle % (2 * math.pi)
-		if (math.pi / 2 < normalizedAngle < 3 * math.pi / 2):
+		if (math.pi / 2 < angle < 3 * math.pi / 2):
 			print("left: ", collisionYleft)
 		else:
 			print("right: ", collisionYright)
+
+		collisionXbottom, collisionXtop = 0, 0
+		if (angle != 0):
+			collisionXbottom = ball_x + (consumer.gameSettings.gameHeight - ball_y) / math.tan(angle)
+			collisionXtop = ball_x + (-ball_y / math.tan(angle))
+		if (0 < angle < math.pi):
+			print("bottom: ", collisionXbottom)
+		else:
+			print("top: ", collisionXtop)
+		
+
 
 		# print("(x= ", round(collisionX), ") (y= ", round(collisionYright))
 		if (0 <= collisionYright <= consumer.gameSettings.gameHeight):
