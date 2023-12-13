@@ -1,6 +1,7 @@
 import json
 import asyncio
 import math
+import random
 
 def keyupReset(direction, paddle):
 	if (direction == 'up'):
@@ -49,10 +50,10 @@ async def moveAiToAim(paddle, consumer, aimPosition):
 async def calculateAimPosition(consumer):
 	ball = consumer.gameSettings.ball
 	angle = ball.angle
-	ballX = ball.x
+	ballX = ball.x - 30
 	ballY = ball.y
 
-	width = consumer.gameSettings.gameWidth
+	width = consumer.gameSettings.gameWidth - 60
 	height = consumer.gameSettings.gameHeight
 
 	for _ in range(5):
@@ -71,12 +72,12 @@ async def calculateAimPosition(consumer):
 		collisionXbottom = ballX + (height - ballY) / math.tan(angle)
 
 		if (0 < angle < math.pi):
-			if (0 < collisionXbottom < width):
+			if (30 < collisionXbottom < width):
 				ballX = collisionXbottom
 				ballY = height
 				angle = -angle	
 		else:
-			if (0 < collisionXtop < width):
+			if (30 < collisionXtop < width):
 				ballX = collisionXtop
 				ballY = 0
 				angle = -angle	
@@ -87,14 +88,12 @@ async def calculateAimPosition(consumer):
 	print("CRASH AVOID\n")
 	return (height)
 
-async def aiLoop(consumer):
-	paddle = consumer.ai.paddle
+async def aiLoop(consumer, paddle):
 	while (True):
-		# task = asyncio.create_task(calculateAimPosition(consumer))
 		collisionPosition = await calculateAimPosition(consumer)
-		# print("collisionPosition: ", collisionPosition)
 
-		aimPosition = collisionPosition - paddle.height / 2
+		# aimPosition = collisionPosition - paddle.height / 2
+		aimPosition = collisionPosition - paddle.height / 2 + random.randint(-20, 20)
 	
 		# TODO move this in class
 		moveTask = asyncio.create_task(moveAiToAim(paddle, consumer, aimPosition))
@@ -109,10 +108,11 @@ async def handle_paddle_move(message, consumer):
 	elif (message['id'] == '1'):
 		paddle = consumer.gameSettings.paddles[1]
 
-	if (paddle.isAI == False):
-		if (consumer.ai.task == None):
-			consumer.ai.task = asyncio.create_task(aiLoop(consumer))
+	for paddle in consumer.gameSettings.paddles:
+		if (paddle.aiTask == None):
+			paddle.aiTask = asyncio.create_task(aiLoop(consumer, paddle))
 
+	if (paddle.isAI == False):
 		if (message['key'] == 'keydown'):
 			if (direction == 'up'):
 				paddle.keyState[direction] = True;
