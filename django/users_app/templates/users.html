@@ -11,11 +11,22 @@ All users
 
 {% block content %}
 
+<h1>Friends</h1>
+<div class="list">
+{% for x in friends %}
+  <a href="/profile/{{ x.username }}">
+        <div class="container">
+          <img src={{ x.photo.url }} alt="profile picture" width="60" height="60">
+          <h3>{{ x.username }}</h3>
+        </div>
+  </a>
+{% endfor %}
+
 <h1>All users</h1>
 <div class="list">
 {% for x in all_users %}
   <a href="/profile/{{ x.username }}">
-    {% if x.username != user.username%}
+    {% if x.username != user.username and not x in friends%}
         <div class="container">
           <img src={{ x.photo.url }} alt="profile picture" width="60" height="60">
           <h3>{{ x.username }}</h3>

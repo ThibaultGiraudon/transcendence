@@ -48,6 +48,21 @@
 {% else %}
 
 </br>
+
+{% if user.username in request.user.follows %}
+    <p>L'utilisateur est déjà suivi.</p>
+{% else %}
+    <a href="/follow/{{ user.username }}">
+        <button>Follow</button>
+    </a>
+{% endif %}
+
+{% if user.username in request.user.follows %}
+	<a href="/unfollow/{{ user.username }}">
+		<button>Unfollow</button>
+	</a>
+{% endif %}
+
 {% if room %}
 	<a href="/chat/{{ room }}">
 		<button>Send a chat</button>

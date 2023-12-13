@@ -369,9 +369,36 @@ def users(request):
 	
 	User = get_user_model()
 	all_users = User.objects.all()
-	context = {'all_users':all_users}
+	friends = []
+	for user in all_users:
+		if user.username in request.user.follows:
+			friends.append(user)
+	context = {'all_users':all_users, 'friends':friends}
 
 	if request.method == 'GET':
 		return render(request, 'users.html', context)
 	elif request.method == 'POST':
 		return redirect('users')
+	
+
+def follow(request, username):
+	if not request.user.is_authenticated:
+		return redirect('sign_in')
+	
+	logging.info("---------------FOLLOW\n ")
+	logging.info(username)
+	
+	request.user.follows.append(username)
+	request.user.save()
+	return redirect(profile, username=username)
+
+def unfollow(request, username):
+	if not request.user.is_authenticated:
+		return redirect('sign_in')
+
+	logging.info("---------------UNFOLLOW\n ")
+	logging.info(username)
+
+	request.user.follows.remove(username)
+	request.user.save()
+	return redirect(profile, username=username)
