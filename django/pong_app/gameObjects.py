@@ -59,6 +59,7 @@ class Paddle:
         ]
         self.color = self.colorArray[self.id]
         self.isAI = False
+        self.aiTask = None
 
     def moveUp(self):
         self.position -= self.speed
@@ -131,12 +132,12 @@ class Ball:
         self.speed = 5
         self.angle = random.choice([0, math.pi])
 
-class AIPlayer:
-    def __init__(self, paddle, ball):
-        self.paddle = paddle
-        self.ball = ball
-        self.task = None
-        paddle.isAI = True
+# class AIPlayer:
+#     def __init__(self, paddle, ball):
+#         self.paddle = paddle
+#         self.ball = ball
+#         self.task = None
+#         paddle.isAI = True
 
     # def getAimPosition(self):
     #     if (self.ball.x < self.paddle.offset + self.paddle.width / 2):
