@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.files import File
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 
 class CustomUserManager(BaseUserManager):
 	def create_user(self, email, username, password=None, photo=None, **extra_fields):
@@ -35,6 +36,7 @@ class CustomUser(AbstractUser):
 	photo = models.ImageField(upload_to='static/users_app/img', default='default.jpg')
 	channels = models.JSONField(default=dict)
 	messages = models.JSONField(default=dict)
+	follows = ArrayField(models.CharField(max_length=150), default=list)
 
 	# Use the custom manager
 	objects = CustomUserManager()
