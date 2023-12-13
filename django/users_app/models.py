@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.files import File
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 from django.conf import settings
 
 
@@ -59,6 +61,10 @@ class Notification(models.Model):
 	read = models.BooleanField(default=False)
  
 	def save(self, *args, **kwargs):
+		super(Notification, self).save(*args, **kwargs)
 		self.user.nbNewNotifications += 1
 		self.user.save()
-		super(Notification, self).save(*args, **kwargs)
+		channel_layer = get_channel_layer()
+		async_to_sync(channel_layer.group_send)(
+			f"notifications_{self.user.id}", {"type": "notification.message", "message": "You have a new notification"}
+		)
