@@ -7,14 +7,14 @@ from io import BytesIO
 from django.core.files.base import ContentFile
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.models import User
 from users_app.models import CustomUser
 from django.contrib.auth import login, logout
 from django.contrib.auth import get_user_model
 from .forms import LoginForm, SignUpForm, EditProfileForm
-from django.conf import settings
 from django.core.files.storage import default_storage
 from django.views.decorators.csrf import csrf_protect
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 # 42 API
 API_URL = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fcheck_authorize%2F&response_type=code"
@@ -49,6 +49,17 @@ def sign_in(request):
 			user = authenticate_custom_user(email=email, password=password)
 			if user:
 				user.status = "online"
+				user.save()
+				channel_layer = get_channel_layer()
+
+				async_to_sync(channel_layer.group_send)(
+					'status',
+					{
+						'type': 'status_update',
+						'username': user.username,
+						'status': 'online'
+					}
+				)
 				login(request, user)
 				return redirect('pong')
 			else:
@@ -97,6 +108,16 @@ def sign_up(request):
 					password=form.cleaned_data['password'])
 			user.save()
 			login(request, user)
+			channel_layer = get_channel_layer()
+
+			async_to_sync(channel_layer.group_send)(
+				'status',
+				{
+					'type': 'status_update',
+					'username': request.user.username,
+					'status': 'online'
+				}
+			)
 			return redirect('pong')
 
 		else:
@@ -121,6 +142,19 @@ def sign_out(request):
 
 	request.user.status = "offline"
 	request.user.save()
+ 
+	channel_layer = get_channel_layer()
+
+	async_to_sync(channel_layer.group_send)(
+        'status',
+        {
+            'type': 'status_update',
+            'username': request.user.username,
+            'status': 'offline'
+        }
+    )
+	logging.info("---------------\nLOGOUT\n")
+ 
 	if request.user.is_authenticated:
 		logout(request)
 	
@@ -175,6 +209,16 @@ def	connect_42_user(request, response_data):
 	user = authenticate_42_user(email=response_data['email'])
 	if user:
 		user.status = "online"
+		channel_layer = get_channel_layer()
+		async_to_sync(channel_layer.group_send)(
+			'status',
+			{
+				'type': 'status_update',
+				'username': user.username,
+				'status': 'online'
+			}
+		)
+		user.save()
 		login(request, user)
 	else:
 		photo_url = response_data['image']['link']
