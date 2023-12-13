@@ -12,20 +12,19 @@ Chat Rooms
 {% block content %}
 
 <h1>Private chats</h1>
-<h3>What chat room would you like to enter?</h3>
 <br>
 
 {% if channels.items %}
 	{% for key, value in channels.items %}
 		<a href="{{ value }}">
-			<li>
 				{% for user in users %}
 					{% if user.username == key %}
-						<img src={{ user.photo.url }} alt="profile picture" width="25" height="25">
+						<div class="container">
+							<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
+							<h3>{{ user.username }}</h3>
+						</div>
 					{% endif %}
 				{% endfor %}
-				{{ key }}
-			</li>
 		</a>
 	{% endfor %}
 {% else %}
