@@ -18,9 +18,15 @@ All users
         <div class="container">
           <img src={{ x.photo.url }} alt="profile picture" width="60" height="60">
           <h3>{{ x.username }}</h3>
+          {% if x.status == 'online' %}
+            <p>🟢</p>
+          {% else %}
+            <p>🔴</p>
+          {% endif %}
         </div>
   </a>
 {% endfor %}
+</div>
 
 <h1>All users</h1>
 <div class="list">
@@ -30,6 +36,11 @@ All users
         <div class="container">
           <img src={{ x.photo.url }} alt="profile picture" width="60" height="60">
           <h3>{{ x.username }}</h3>
+          {% if x.status == 'online' %}
+            <p>🟢</p>
+          {% else %}
+            <p>🔴</p>
+          {% endif %}
         </div>
     {% endif %}
   </a>

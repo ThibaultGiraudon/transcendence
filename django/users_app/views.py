@@ -48,6 +48,7 @@ def sign_in(request):
 			password = form.cleaned_data['password']
 			user = authenticate_custom_user(email=email, password=password)
 			if user:
+				user.status = "online"
 				login(request, user)
 				return redirect('pong')
 			else:
@@ -55,6 +56,7 @@ def sign_in(request):
 				return redirect('sign_in')
 
 		messages.error(request, "Form error, you need to provide all fields")
+
 		return redirect('sign_in')
 
 
@@ -117,6 +119,8 @@ def sign_out(request):
 		sign_in page
 	"""
 
+	request.user.status = "offline"
+	request.user.save()
 	if request.user.is_authenticated:
 		logout(request)
 	
@@ -170,6 +174,7 @@ def	connect_42_user(request, response_data):
 
 	user = authenticate_42_user(email=response_data['email'])
 	if user:
+		user.status = "online"
 		login(request, user)
 	else:
 		photo_url = response_data['image']['link']
