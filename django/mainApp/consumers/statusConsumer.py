@@ -1,11 +1,10 @@
 from    channels.generic.websocket import AsyncWebsocketConsumer
-import  json, logging
+import  json
 
 class StatusConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_group_name = 'status'
 
-        # Join room group
         await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
@@ -37,7 +36,6 @@ class StatusConsumer(AsyncWebsocketConsumer):
         status = event['status']
         username = event['username']
 
-        # Send status to WebSocket
         await self.send(text_data=json.dumps({
             'type': 'status_update',
             'status': status,

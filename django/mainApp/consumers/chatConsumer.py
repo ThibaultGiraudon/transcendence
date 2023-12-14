@@ -6,19 +6,16 @@ from channels.db import database_sync_to_async
 from datetime import datetime
 
 class ChatConsumer(AsyncWebsocketConsumer):
-	
 	@database_sync_to_async
 	def create_notification(self, user, message):
-		from users_app.models import Notification
+		from mainApp.models import Notification
 		notification = Notification(user=user, message=message)
 		notification.save()
 
-	
 	@database_sync_to_async
 	def change_status_to_online(self):
 		self.scope['user'].status = 'online'
 		self.scope['user'].save()
-	
 
 	@database_sync_to_async
 	def get_user_to(self, room_name):
@@ -29,7 +26,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 				return user
 		return None
 		
-		
 	async def connect(self):
 		self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
 		self.room_group_name = f"chat_{self.room_name}"
@@ -38,11 +34,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 		await self.accept()
 
-		# Send previous messages
 		await self.send_previous_messages()
-
 	
-	# Get previous messages
 	@database_sync_to_async
 	def get_previous_messages(self):
 		User = get_user_model()
@@ -52,21 +45,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
 				messages.extend(user.messages[self.room_name])
 		return messages
 
-
 	async def send_previous_messages(self):
 		previous_messages = await self.get_previous_messages()
 		previous_messages.sort(key=lambda msg: msg['timestamp'])
 		for message in previous_messages:
 			await self.send(text_data=json.dumps(message))
-  
 
 	async def disconnect(self, close_code):
-		# Set status to online
 		await self.change_status_to_online()
-
-		# Leave room group
 		await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
-
 
 	# Receive message from WebSocket
 	async def receive(self, text_data):
@@ -75,23 +62,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		sender = text_data_json.get("sender")
 		timestamp = datetime.now().isoformat()
 
-		# Save message
 		await self.save_message(sender, message, timestamp)
 
-		# Get the user to send
-		userTo = await self.get_user_to(self.room_name)
+		userToSend = await self.get_user_to(self.room_name)
 		
 		# Send a notification
-		if userTo is not None and userTo.status != f"chat:{self.scope['user'].username}":
-			await self.create_notification(userTo, f"You have a new message from {sender}.")
+		if userToSend is not None and userToSend.status != f"chat:{self.scope['user'].username}":
+			await self.create_notification(userToSend, f"You have a new message from {sender}.")
 
 		# Send message to room group
 		await self.channel_layer.group_send(
 			self.room_group_name, {"type": "chat_message", "message": message, "sender": sender, "timestamp": timestamp}
 		)
 
-
-	# Save messages
 	@database_sync_to_async
 	def save_message(self, sender, message, timestamp):
 		User = get_user_model()
@@ -101,11 +84,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		user.messages[self.room_name].append({'sender': sender, 'message': message, 'timestamp': timestamp})
 		user.save()
 
-
 	# Receive message from room group
 	async def chat_message(self, event):
 		message = event.get("message")
 		sender = event.get("sender")
 
-		# Send message to WebSocket
 		await self.send(text_data=json.dumps({"message": message, "sender": sender}))
