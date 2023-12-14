@@ -396,7 +396,7 @@ def profile(request, username):
 				default_storage.delete(request.user.photo.path)
 			elif len(form.cleaned_data['username']) < 4:
 				messages.error(request, "Your username is too short (4 characters minimum)")
-				return redirect('profile', username=username, room=room)
+				return redirect('profile', { 'username':username, 'room':room })
 	
 			form.save()
 			messages.success(request, 'Your informations have been updated')
@@ -408,9 +408,9 @@ def profile(request, username):
 				messages.error(request, 'This username is already taken')
 			else:
 				messages.error(request, 'Please enter a valid username')
-			return redirect('profile', username=username, room=room)
+			return redirect('profile', { 'username':username, 'room':room })
 
-	return redirect('profile', username=username, room=room)
+	return redirect('profile', { 'username':username, 'room':room })
 
 
 def users(request):
@@ -437,10 +437,16 @@ def follow(request, username):
 	
 	logging.info("---------------FOLLOW\n ")
 	logging.info(username)
+
+	User = get_user_model()
+	userTo = User.objects.get(username=username)
+	notification = Notification(user=userTo, message=f"{username} is now following you.")
+	notification.save()
 	
 	request.user.follows.append(username)
 	request.user.save()
-	return redirect(profile, username=username)
+	return redirect('profile', { 'username':username })
+
 
 def unfollow(request, username):
 	if not request.user.is_authenticated:
@@ -451,4 +457,4 @@ def unfollow(request, username):
 
 	request.user.follows.remove(username)
 	request.user.save()
-	return redirect(profile, username=username)
+	return redirect('profile', { 'username':username })
