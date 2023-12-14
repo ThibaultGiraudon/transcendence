@@ -351,6 +351,7 @@ def profile_me(request):
 def profile(request, username):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
+
 	photo_name = request.user.photo.name
 	User = get_user_model()
 
@@ -363,6 +364,7 @@ def profile(request, username):
 		user = User.objects.get(username=username)
 	except User.DoesNotExist:
 		return redirect('users')
+	
 
 	if request.method == 'GET':
 		form = EditProfileForm(instance=request.user)
