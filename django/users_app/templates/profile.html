@@ -48,16 +48,31 @@
 {% else %}
 
 </br>
-<a href="/create_channel/{{ user.username }}">
-	<button>Chat together</button>
-</a>
 
+{% if user.username in request.user.follows %}
+    <p>L'utilisateur est déjà suivi.</p>
+{% else %}
+    <a href="/follow/{{ user.username }}">
+        <button>Follow</button>
+    </a>
 {% endif %}
 
-<style>
-    img {
-        border-radius: 50%;
-      }
-</style>
+{% if user.username in request.user.follows %}
+	<a href="/unfollow/{{ user.username }}">
+		<button>Unfollow</button>
+	</a>
+{% endif %}
+
+{% if room %}
+	<a href="/chat/{{ room }}">
+		<button>Send a chat</button>
+	</a>
+{% else %}
+	<a href="/create_channel/{{ user.username }}">
+		<button>Send a chat</button>
+	</a>
+{% endif%}
+
+{% endif %}
 
 {% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Notifications
+{% endblock %}
+
+{% block content %}
+
+<h1>Notifications</h1>
+
+<form method="post" action="{% url 'delete_all_notifications' %}">
+	{% csrf_token %}
+	<input type="submit" value="Delete All">
+</form>
+
+{% for notification in notifs %}
+	<div class="notification">
+		<span>
+		{% if not notification.read %}
+		[NEW] 
+		{% endif %}
+		{{ notification.date }}: {{ notification.message }}
+		</span>
+		<form method="post" action="{% url 'delete_notification' notification.id %}">
+			{% csrf_token %}
+			<input type="submit" value="Delete">
+		</form>
+	</div>
+	<br>
+{% empty %}
+	<p>No notifications.</p>
+{% endfor %}
+
+{% endblock %}
