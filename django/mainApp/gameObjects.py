@@ -1,6 +1,5 @@
 import math
 import random
-import asyncio
 
 class GameSettings:
     def __init__(self, nbPaddles, width, height):
