@@ -36,7 +36,6 @@ class StatusConsumer(AsyncWebsocketConsumer):
         status = event['status']
         username = event['username']
 
-        # Send status to WebSocket
         await self.send(text_data=json.dumps({
             'type': 'status_update',
             'status': status,
