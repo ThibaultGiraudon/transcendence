@@ -1,5 +1,3 @@
-# Dependencies
-import os
 import logging
 import requests
 from PIL import Image
@@ -7,15 +5,15 @@ from io import BytesIO
 from django.core.files.base import ContentFile
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from users_app.models import CustomUser
+from ..models import CustomUser
 from django.contrib.auth import login, logout
 from django.contrib.auth import get_user_model
-from .forms import LoginForm, SignUpForm, EditProfileForm
+from ..forms import LoginForm, SignUpForm, EditProfileForm
 from django.core.files.storage import default_storage
 from django.views.decorators.csrf import csrf_protect
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-from .models import Notification
+from ..models import Notification
 
 # 42 API
 API_URL = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fcheck_authorize%2F&response_type=code"
@@ -70,7 +68,6 @@ def sign_in(request):
 		messages.error(request, "Form error, you need to provide all fields")
 
 		return redirect('sign_in')
-
 
 @csrf_protect
 def sign_up(request):
@@ -130,7 +127,6 @@ def sign_up(request):
 				messages.error(request, "You need to provide all fields")
 	return redirect('sign_up')
 
-
 def sign_out(request):
 	"""
 	Log out the user
@@ -160,7 +156,6 @@ def sign_out(request):
 	
 	return redirect('sign_in')
 
-
 def ft_api(request):
 	protocol = request.scheme
 	port = '%3A8001' if protocol == "https" else '%3A8000'
@@ -168,7 +163,6 @@ def ft_api(request):
 	protocol + "%3A%2F%2Flocalhost" + \
 	port + "%2Fcheck_authorize%2F&response_type=code"
 	return redirect(api_url)
-
 
 def	check_authorize(request):
 	"""
@@ -189,7 +183,6 @@ def	check_authorize(request):
 	response_data = make_api_request_with_token(API_USER, response_token)
 	connect_42_user(request, response_data)
 	return redirect('pong')
-
 
 def	connect_42_user(request, response_data):
 	"""
@@ -231,7 +224,6 @@ def	connect_42_user(request, response_data):
 		if user:
 			login(request, user)
 
-
 def make_api_request_with_token(api_url, token):
 	"""
 	Request for 42 api
@@ -262,7 +254,6 @@ def make_api_request_with_token(api_url, token):
 	except requests.RequestException as e:
 		logging.error(f"Erreur de requête API: {e}")
 		return None
-
 
 def handle_42_callback(request, code):
 	"""
@@ -297,7 +288,6 @@ def handle_42_callback(request, code):
 		logging.info(f" error: {response.text}")
 		return None
 
-
 def authenticate_custom_user(email, password):
 	"""
 	Authenticate function with email and password
@@ -320,7 +310,6 @@ def authenticate_custom_user(email, password):
 	except User.DoesNotExist:
 		return None
 
-
 def authenticate_42_user(email):
 	"""
 	Authenticate function without password
@@ -340,7 +329,6 @@ def authenticate_42_user(email):
 		return user
 	except User.DoesNotExist:
 		return None
-	
 
 def profile_me(request):
 	if not request.user.is_authenticated:
@@ -364,7 +352,6 @@ def profile(request, username):
 		user = User.objects.get(username=username)
 	except User.DoesNotExist:
 		return redirect('users')
-	
 
 	if request.method == 'GET':
 		form = EditProfileForm(instance=request.user)
@@ -400,7 +387,6 @@ def profile(request, username):
 
 	return redirect('profile', username=username)
 
-
 def users(request):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
@@ -417,7 +403,6 @@ def users(request):
 		return render(request, 'users.html', context)
 	elif request.method == 'POST':
 		return redirect('users')
-	
 
 def follow(request, username):
 	if not request.user.is_authenticated:
@@ -431,7 +416,6 @@ def follow(request, username):
 	request.user.follows.append(username)
 	request.user.save()
 	return redirect('profile', username=username)
-
 
 def unfollow(request, username):
 	if not request.user.is_authenticated:

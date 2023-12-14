@@ -22,7 +22,7 @@ STATICFILES_DIRS = [
 
 # Custom errors
 
-handler404 = 'pong_app.views.custom_404'
+handler404 = 'mainApp.views.custom_404'
 
 # Default profile picture
 
@@ -49,13 +49,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'pong_app',
-    'users_app',
-    'chat_app',
+    'mainApp',
     'channels',
 ]
 
-AUTH_USER_MODEL = 'users_app.CustomUser'
+AUTH_USER_MODEL = 'mainApp.CustomUser'
 
 LOGGING = {
     "version": 1,
@@ -71,7 +69,7 @@ LOGGING = {
     },
 }
 
-ASGI_APPLICATION = 'main.asgi.application'
+ASGI_APPLICATION = 'mainProject.asgi.application'
 
 CHANNEL_LAYERS = {
     "default": {
@@ -89,7 +87,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'main.urls'
+ROOT_URLCONF = 'mainProject.urls'
 
 TEMPLATES = [
     {
@@ -107,7 +105,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'main.wsgi.application'
+WSGI_APPLICATION = 'mainProject.wsgi.application'
 
 #TODO change to env var
 DATABASES = {
