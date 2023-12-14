@@ -154,7 +154,6 @@ def sign_out(request):
             'status': 'offline'
         }
     )
-	logging.info("---------------\nLOGOUT\n")
  
 	if request.user.is_authenticated:
 		logout(request)
@@ -163,17 +162,11 @@ def sign_out(request):
 
 
 def ft_api(request):
-	logging.info("------------------\nIS_SECURE")
-	logging.info(request.is_secure)
-	logging.info("------------------\nSCHEME")
-	logging.info(request.scheme)
 	protocol = request.scheme
 	port = '%3A8001' if protocol == "https" else '%3A8000'
 	api_url = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=" + \
 	protocol + "%3A%2F%2Flocalhost" + \
 	port + "%2Fcheck_authorize%2F&response_type=code"
-	logging.info("--------------------\nAPI_URL")
-	logging.info(api_url)
 	return redirect(api_url)
 
 
@@ -285,8 +278,6 @@ def handle_42_callback(request, code):
 	port = '8001' if request.scheme == 'https' else '8000'
 	redirect_uri = request.scheme + '://localhost:' + port + '/check_authorize/'
 	token_url = "https://api.intra.42.fr/oauth/token"
-	logging.info("-----------------\nREDIRECT_URI")
-	logging.info(redirect_uri)
 	token_params = {
 		'grant_type': 'authorization_code',
 		'client_id': 'u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c',
@@ -358,9 +349,6 @@ def profile_me(request):
 
 @csrf_protect
 def profile(request, username):
-	logging.info("---------------\n ")
-	logging.info("Enter in profile\n\n")
- 
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
 	photo_name = request.user.photo.name
@@ -371,9 +359,6 @@ def profile(request, username):
 		if user == username:
 			room = channel
 			break
-
-	logging.info("---------------\nROOM ")
-	logging.info(room)
 	try:
 		user = User.objects.get(username=username)
 	except User.DoesNotExist:
@@ -434,9 +419,6 @@ def users(request):
 def follow(request, username):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
-	
-	logging.info("---------------FOLLOW\n ")
-	logging.info(username)
 
 	User = get_user_model()
 	userTo = User.objects.get(username=username)
@@ -451,9 +433,6 @@ def follow(request, username):
 def unfollow(request, username):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
-
-	logging.info("---------------UNFOLLOW\n ")
-	logging.info(username)
 
 	request.user.follows.remove(username)
 	request.user.save()
