@@ -22,7 +22,7 @@ STATICFILES_DIRS = [
 
 # Custom errors
 
-handler404 = 'pong_app.views.custom_404'
+handler404 = 'mainApp.views.custom_404'
 
 # Default profile picture
 
@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'pong_app',
+    'mainApp',
     'users_app',
     'chat_app',
     'channels',
