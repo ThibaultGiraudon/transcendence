@@ -2,9 +2,28 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
+from channels.db import database_sync_to_async
 from datetime import datetime
 
 class ChatConsumer(AsyncWebsocketConsumer):
+	
+	@database_sync_to_async
+	def create_notification(self, user, message):
+		from users_app.models import Notification
+		notification = Notification(user=user, message=message)
+		notification.save()
+	
+
+	@database_sync_to_async
+	def get_user_to(self, room_name):
+		User = get_user_model()
+		users = User.objects.all()
+		for user in users:
+			if room_name in user.channels.values() and user.username != self.scope["user"].username:
+				return user
+		return None
+		
+		
 	async def connect(self):
 		self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
 		self.room_group_name = f"chat_{self.room_name}"
@@ -42,6 +61,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 	# Receive message from WebSocket
 	async def receive(self, text_data):
+		from users_app.models import Notification
+	
 		text_data_json = json.loads(text_data)
 		message = text_data_json.get("message")
 		sender = text_data_json.get("sender")
@@ -50,10 +71,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		# Save message
 		await self.save_message(sender, message, timestamp)
 
+		# Get the user to send
+		userTo = await self.get_user_to(self.room_name)
+
+		# Send a notification
+		if userTo is not None:
+			await self.create_notification(userTo, f"You have a new message from {sender}.")
+
 		# Send message to room group
 		await self.channel_layer.group_send(
-        	self.room_group_name, {"type": "chat_message", "message": message, "sender": sender, "timestamp": timestamp}
-    	)
+			self.room_group_name, {"type": "chat_message", "message": message, "sender": sender, "timestamp": timestamp}
+		)
 
 
 	# Save messages
