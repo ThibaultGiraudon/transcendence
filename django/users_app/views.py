@@ -7,14 +7,15 @@ from io import BytesIO
 from django.core.files.base import ContentFile
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.models import User
 from users_app.models import CustomUser
 from django.contrib.auth import login, logout
 from django.contrib.auth import get_user_model
 from .forms import LoginForm, SignUpForm, EditProfileForm
-from django.conf import settings
 from django.core.files.storage import default_storage
 from django.views.decorators.csrf import csrf_protect
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from .models import Notification
 
 # 42 API
 API_URL = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fcheck_authorize%2F&response_type=code"
@@ -48,6 +49,18 @@ def sign_in(request):
 			password = form.cleaned_data['password']
 			user = authenticate_custom_user(email=email, password=password)
 			if user:
+				user.status = "online"
+				user.save()
+				channel_layer = get_channel_layer()
+
+				async_to_sync(channel_layer.group_send)(
+					'status',
+					{
+						'type': 'status_update',
+						'username': user.username,
+						'status': 'online'
+					}
+				)
 				login(request, user)
 				return redirect('pong')
 			else:
@@ -55,6 +68,7 @@ def sign_in(request):
 				return redirect('sign_in')
 
 		messages.error(request, "Form error, you need to provide all fields")
+
 		return redirect('sign_in')
 
 
@@ -95,6 +109,16 @@ def sign_up(request):
 					password=form.cleaned_data['password'])
 			user.save()
 			login(request, user)
+			channel_layer = get_channel_layer()
+
+			async_to_sync(channel_layer.group_send)(
+				'status',
+				{
+					'type': 'status_update',
+					'username': request.user.username,
+					'status': 'online'
+				}
+			)
 			return redirect('pong')
 
 		else:
@@ -117,6 +141,20 @@ def sign_out(request):
 		sign_in page
 	"""
 
+	request.user.status = "offline"
+	request.user.save()
+ 
+	channel_layer = get_channel_layer()
+
+	async_to_sync(channel_layer.group_send)(
+        'status',
+        {
+            'type': 'status_update',
+            'username': request.user.username,
+            'status': 'offline'
+        }
+    )
+ 
 	if request.user.is_authenticated:
 		logout(request)
 	
@@ -124,17 +162,11 @@ def sign_out(request):
 
 
 def ft_api(request):
-	logging.info("------------------\nIS_SECURE")
-	logging.info(request.is_secure)
-	logging.info("------------------\nSCHEME")
-	logging.info(request.scheme)
 	protocol = request.scheme
 	port = '%3A8001' if protocol == "https" else '%3A8000'
 	api_url = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=" + \
 	protocol + "%3A%2F%2Flocalhost" + \
 	port + "%2Fcheck_authorize%2F&response_type=code"
-	logging.info("--------------------\nAPI_URL")
-	logging.info(api_url)
 	return redirect(api_url)
 
 
@@ -170,6 +202,17 @@ def	connect_42_user(request, response_data):
 
 	user = authenticate_42_user(email=response_data['email'])
 	if user:
+		user.status = "online"
+		channel_layer = get_channel_layer()
+		async_to_sync(channel_layer.group_send)(
+			'status',
+			{
+				'type': 'status_update',
+				'username': user.username,
+				'status': 'online'
+			}
+		)
+		user.save()
 		login(request, user)
 	else:
 		photo_url = response_data['image']['link']
@@ -235,8 +278,6 @@ def handle_42_callback(request, code):
 	port = '8001' if request.scheme == 'https' else '8000'
 	redirect_uri = request.scheme + '://localhost:' + port + '/check_authorize/'
 	token_url = "https://api.intra.42.fr/oauth/token"
-	logging.info("-----------------\nREDIRECT_URI")
-	logging.info(redirect_uri)
 	token_params = {
 		'grant_type': 'authorization_code',
 		'client_id': 'u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c',
@@ -310,24 +351,33 @@ def profile_me(request):
 def profile(request, username):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
+
 	photo_name = request.user.photo.name
 	User = get_user_model()
 
+	room = None
+	for user, channel in request.user.channels.items():
+		if user == username:
+			room = channel
+			break
 	try:
 		user = User.objects.get(username=username)
 	except User.DoesNotExist:
 		return redirect('users')
+	
 
 	if request.method == 'GET':
 		form = EditProfileForm(instance=request.user)
 		context = {	'form':form,
-					'user':user}
+					'user':user,
+					'room':room}
 		return render(request, 'profile.html', context)
 	
 	elif request.method == 'POST':
 		form = EditProfileForm(request.POST, request.FILES, instance=request.user)
 		context = {	'form':form,
-					'user':user}
+					'user':user,
+					'room':room}
 		
 		if form.is_valid():
 			if request.user.photo and request.user.photo.name != photo_name:
@@ -357,9 +407,36 @@ def users(request):
 	
 	User = get_user_model()
 	all_users = User.objects.all()
-	context = {'all_users':all_users}
+	friends = []
+	for user in all_users:
+		if user.username in request.user.follows:
+			friends.append(user)
+	context = {'all_users':all_users, 'friends':friends}
 
 	if request.method == 'GET':
 		return render(request, 'users.html', context)
 	elif request.method == 'POST':
 		return redirect('users')
+	
+
+def follow(request, username):
+	if not request.user.is_authenticated:
+		return redirect('sign_in')
+
+	User = get_user_model()
+	userTo = User.objects.get(username=username)
+	notification = Notification(user=userTo, message=f"{username} is now following you.")
+	notification.save()
+ 
+	request.user.follows.append(username)
+	request.user.save()
+	return redirect('profile', username=username)
+
+
+def unfollow(request, username):
+	if not request.user.is_authenticated:
+		return redirect('sign_in')
+
+	request.user.follows.remove(username)
+	request.user.save()
+	return redirect('profile', username=username)

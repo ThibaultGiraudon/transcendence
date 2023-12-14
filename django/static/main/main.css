@@ -17,7 +17,7 @@
     --font-text-bold: 'Identidad Bold', monospace;
     /* Colors */
     --color-light: #F3F2ED;
-	--color-dark: #212121;
+	--color-dark: #0B132B;
     --color-light-hover: #EBE8E0;
     --color-dark-hover: #474747;
     /* Text size */
@@ -163,6 +163,43 @@ header .header-menu .menu-link:hover {
 header .header-menu .menu-link:last-child {
 	margin-right: 0;
 }
+
+header .header-menu .menu-link:first-child {
+	margin-left: 5%;
+}
+
+.menu-link-right {
+    margin-left: auto;
+    height: 100%;
+    font-family: var(--font-text-bold);
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    color: var(--color-light);
+    margin-right: var(--menu-link-margin);
+}
+
+.notification-count {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 5px;
+    font-size: 14px;
+}
+
+img {
+    border-radius: 50%;
+}
+
+.container {
+	margin-top: 5%;
+	display: flex;
+	align-items: center;
+	justify-content: center
+  }
 
 /* MAIN */
 main {

@@ -2,7 +2,7 @@
 
 {% block css %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'pong_app/css/style.css' %}">
+<link rel="stylesheet" href="{% static 'chat_app/css/style.css' %}">
 {% endblock %}
 
 {% block title %}
@@ -10,49 +10,62 @@ Chat Room
 {% endblock %}
 
 {% block content %}
-
-<div>
-	<div id="chat-log"></div><br>
-	<input id="chat-message-input" type="text" size="100"><br>
-	<input id="chat-message-submit" type="button" value="Send">
+<div class="container">
+	<img src={{ user_to.photo.url }} alt="profile picture" width="60" height="60">
+	<h3>{{ user_to.username }}</h3>
 </div>
+
+<div id="chat-log" class="chat-log"></div>
+<br>
+
+<input id="chat-message-input" type="text" size="50">
+<input id="chat-message-submit" type="button" value="Send">
 
 {{ room_name|json_script:"room-name" }}
 <script>
 	const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
 	let		websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-	let		websocketPort = window.location.protocol === 'https:' ? '' : '';
+	let		websocketPort = window.location.protocol === 'https:' ? ':8001' : '';
 	const	socketUrl = websocketProtocol + '//' + window.location.host + websocketPort + '/ws/chat/' + roomName + "/";
 	const	chatSocket = new WebSocket(socketUrl);
 
 	chatSocket.onmessage = function(e) {
 		const data = JSON.parse(e.data);
 		const messageContainer = document.createElement('p');
-		messageContainer.textContent = data.sender + " : " + data.message;
+		messageContainer.textContent = data.message;
+		messageContainer.className = data.sender === "{{ request.user.username }}" ? 'my-message' : 'other-message';
 		document.querySelector('#chat-log').appendChild(messageContainer);
+		var chatLog = document.querySelector('.chat-log');
+		chatLog.scrollTop = chatLog.scrollHeight;
+	};
+
+	chatSocket.onopen = function(e) {
+		document.querySelector('#chat-log').innerHTML = '';
 	};
 
 	chatSocket.onclose = function(e) {
 		console.error('Chat socket closed unexpectedly');
 	};
 
+	chatSocket.onerror = function(e) {
+		console.error('WebSocket error: ', e);
+	};
+
 	document.querySelector('#chat-message-input').focus();
 	document.querySelector('#chat-message-input').onkeyup = function(e) {
-		if (e.key === 'Enter') {  // enter, return
+		if (e.key === 'Enter') {
 			document.querySelector('#chat-message-submit').click();
 		}
 	};
 
+	document.querySelector('#chat-message-submit').onclick = null;
 	document.querySelector('#chat-message-submit').onclick = function(e) {
 		const messageInputDom = document.querySelector('#chat-message-input');
-		const message = messageInputDom.value;
+		const message = messageInputDom.value.trim();
 		if (!message)
 		  return;
 		const sender = "{{ request.user.username }}";
-		const messageContainer = document.createElement('p');
-		messageContainer.textContent = sender + " : " + message;
-		document.querySelector('#chat-log').appendChild(messageContainer);
 		chatSocket.send(JSON.stringify({
 		  'message': message,
 		  'sender': sender

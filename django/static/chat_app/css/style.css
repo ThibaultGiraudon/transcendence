@@ -1,0 +1,59 @@
+/* CHAT APP */
+.chat-log {
+	width: 50vw;
+	height: 50vh;
+	overflow-y: auto;
+	background-color: var(--color-light-hover);
+	border-radius: var(--border-radius);
+	margin-top: 5%;
+}
+
+.my-message {
+	float: right;
+	color: white;
+	background-color: #5BC0BE;
+	-webkit-border-radius:var(--border-radius);
+	-moz-border-radius:var(--border-radius);
+	border-radius: var(--border-radius);
+	text-align: right;
+	font-family: var(--font-text-regular);
+	font: 15px/20px;
+	padding: 10px 20px;
+	margin-top: 0.5vh;
+	margin-right: 0.5vw;
+	clear: both;
+}
+
+.other-message {
+	float: left;
+	color: white;
+	background-color: #3A506B;
+	-webkit-border-radius:var(--border-radius);
+	-moz-border-radius:var(--border-radius);
+	border-radius: var(--border-radius);
+	text-align: left;
+	font-family: var(--font-text-regular);
+	font: 15px/20px;
+	padding: 10px 20px;
+	margin-top: 0.5vh;
+	margin-left: 0.5vw;
+	clear: both;
+}
+
+img {
+	border-radius: 50%;
+	padding-right: 2%;
+}
+
+.container {
+	margin-top: 5%;
+	display: flex;
+	align-items: center;
+	justify-content: center
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}

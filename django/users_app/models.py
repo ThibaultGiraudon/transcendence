@@ -1,7 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.files import File
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
+
 
 class CustomUserManager(BaseUserManager):
 	def create_user(self, email, username, password=None, photo=None, **extra_fields):
@@ -9,7 +13,7 @@ class CustomUserManager(BaseUserManager):
 		if not email:
 			raise ValueError('The Email field must be set')
 		email = self.normalize_email(email)
-		
+  
 		user = self.model(email=email, username=username, **extra_fields)
 
 		if photo is None:
@@ -34,6 +38,10 @@ class CustomUser(AbstractUser):
 	username = models.CharField(max_length=150, unique=True)
 	photo = models.ImageField(upload_to='static/users_app/img', default='default.jpg')
 	channels = models.JSONField(default=dict)
+	messages = models.JSONField(default=dict)
+	follows = ArrayField(models.CharField(max_length=150), default=list)
+	status = models.CharField(max_length=150, default="online")
+	nbNewNotifications = models.IntegerField(default=0)
 
 	# Use the custom manager
 	objects = CustomUserManager()
@@ -47,3 +55,19 @@ class CustomUser(AbstractUser):
 
 	def save(self, *args, **kwargs):
 		super(CustomUser, self).save(*args, **kwargs)
+
+
+class Notification(models.Model):
+	user = models.ForeignKey(CustomUser, related_name='notifications', on_delete=models.CASCADE)
+	message = models.TextField()
+	date = models.DateTimeField(auto_now_add=True)
+	read = models.BooleanField(default=False)
+ 
+	def save(self, *args, **kwargs):
+		super(Notification, self).save(*args, **kwargs)
+		self.user.nbNewNotifications += 1
+		self.user.save()
+		channel_layer = get_channel_layer()
+		async_to_sync(channel_layer.group_send)(
+			f"notifications_{self.user.id}", {"type": "notification.message", "message": "You have a new notification"}
+		)
