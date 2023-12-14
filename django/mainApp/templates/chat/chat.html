@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'pong_app/css/style.css' %}">
+{% endblock %}
+
+{% block title %}
+Chat Rooms
+{% endblock %}
+
+{% block content %}
+
+<h1>Private chats</h1>
+<br>
+
+{% if channels.items %}
+	{% for key, value in channels.items %}
+		<a href="{{ value }}">
+				{% for user in users %}
+					{% if user.username == key %}
+						<div class="container">
+							<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
+							<h3>{{ user.username }}</h3>
+						</div>
+					{% endif %}
+				{% endfor %}
+		</a>
+	{% endfor %}
+{% else %}
+	<p>No channels available.</p>
+{% endif %}
+
+<style>
+	img {
+		border-radius: 50%;
+	}
+</style>
+
+{% endblock %}

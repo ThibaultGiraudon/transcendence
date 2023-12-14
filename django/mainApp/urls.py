@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import pongView, notificationsView, mainView, usersView
+from .views import pongView, notificationsView, mainView, usersView, chatView
 
 urlpatterns = [
     path('', mainView.home, name='home'),
@@ -20,4 +20,8 @@ urlpatterns = [
     path('users/', usersView.users, name="users"),
     path('follow/<str:username>', usersView.follow, name="follow"),
     path('unfollow/<str:username>', usersView.unfollow, name="unfollow"),
+
+    path("chat/", chatView.chat, name="chat"),
+    path("chat/<str:room_name>/", chatView.room, name="room"),
+    path("create_channel/<str:user_to>/", chatView.create_channel, name="create_channel")
 ]

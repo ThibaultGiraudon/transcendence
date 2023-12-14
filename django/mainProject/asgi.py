@@ -17,7 +17,7 @@ from    django.urls import re_path
 from    mainApp.consumers.pongConsumer import PongConsumer
 from    mainApp.consumers.notificationsConsumer import NotificationConsumer
 from    mainApp.consumers.statusConsumer import StatusConsumer
-from    chat_app.consumers import *
+from    mainApp.consumers.chatConsumer import ChatConsumer
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mainProject.settings')
 
