@@ -1,5 +1,7 @@
 import * as utils from './utils.js';
 
+// TODO separer dans des fichiers differents
+
 let     websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 let     websocketPort = window.location.protocol === 'https:' ? ':8001' : '';
 const   socketUrl = websocketProtocol + '//' + window.location.host + websocketPort + '/ws/some_path/';
@@ -54,8 +56,12 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.addEventListener('message', (event) => {
         let message = JSON.parse(event.data);
 
+        if (message.type === 'init_game_size') {
+            initGameSize(message);
+        }
+
         if (message.type === 'init_paddle_position') {
-            initPaddlePosition(message);
+            initPaddlePosition(message, elements.paddles[message.id]);
         }
 
         if (message.type === 'init_score') {
@@ -63,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (message.type === 'update_paddle_position') {
+            console.log(message);
             updatePaddlePosition(message);
         }
 
@@ -80,9 +87,8 @@ document.addEventListener('DOMContentLoaded', function() {
 var phaserGame;
 var config = {
     type: Phaser.AUTO,
-    // TODO change to dynamic
-    width: 800,
-    height: 800,
+    width: 0,
+    height: 0,
     physics: {
         default: 'arcade',
         arcade: {
@@ -98,7 +104,6 @@ var config = {
     backgroundColor: '#212121',
 };
 
-phaserGame = new Phaser.Game(config);
 const elements = {
     scoreText: [],
     paddles: [],
@@ -107,30 +112,24 @@ const elements = {
 
 function create() {
     for (let i = 0; i < 4; i++) {
-        // TODO si on chnage en bas on est plus oblige de mettre id1 mais on peut juste mettre 1
-        elements.paddles['id' + i] = this.add.rectangle(0, 0, 0, 0, 0xFFFFFF).setVisible(false);
-        elements.paddles['id' + i].setOrigin(0.5, 0.5);
+        elements.paddles[i] = this.add.rectangle(0, 0, 0, 0, 0xFFFFFF).setVisible(false);
     }
     elements.ball = this.add.circle(0, 0, 0, 0xFDF3E1).setVisible(false);
 }
 
-function initPaddlePosition(message) {
-    if (message.id == 0) {
-        // TODO eviter la pile de if avec une function padde['id' + i]
-        elements.paddles.id0.setVisible(true)
-        elements.paddles.id0.x = parseFloat(message.x)
-        elements.paddles.id0.y = parseFloat(message.y)
-        elements.paddles.id0.width = parseFloat(message.width)
-        elements.paddles.id0.height = parseFloat(message.height)
-        elements.paddles.id0.setFillStyle(message.color, 1);
-    } else if (message.id == 1) {
-        elements.paddles.id1.setVisible(true)
-        elements.paddles.id1.x = parseFloat(message.x)
-        elements.paddles.id1.y = parseFloat(message.y)
-        elements.paddles.id1.width = parseFloat(message.width)
-        elements.paddles.id1.height = parseFloat(message.height)
-        elements.paddles.id1.setFillStyle(message.color, 1);
-    }
+function initGameSize(message) {
+    config.width = message.width;
+    config.height = message.height;
+    phaserGame = new Phaser.Game(config);
+}
+
+function initPaddlePosition(message, paddle) {
+    paddle.setVisible(true)
+    paddle.x = parseFloat(message.x)
+    paddle.y = parseFloat(message.y)
+    paddle.width = parseFloat(message.width)
+    paddle.height = parseFloat(message.height)
+    paddle.setFillStyle(message.color, 1);
 }
 
 function initScore(message) {
@@ -139,6 +138,7 @@ function initScore(message) {
 
     if (message.nbPaddles == 2) {
         scoreSpans[message.id].style.width = '50%';
+        //  TODO change ce score dans le back-end
         scoreSpans[message.id ^ 1].textContent = message.score;
     } else if (message.nbPaddles == 4) {
         scoreSpans[message.id].style.width = '25%';
@@ -149,9 +149,13 @@ function initScore(message) {
 
 function updatePaddlePosition(message) {
     if (message.id == 0) {
-        elements.paddles.id0.y = parseFloat(message.y)
+        elements.paddles[0].y = parseFloat(message.position)
     } else if (message.id == 1) {
-        elements.paddles.id1.y = parseFloat(message.y)
+        elements.paddles[1].y = parseFloat(message.position)
+    } else if (message.id == 2) {
+        elements.paddles[2].x = parseFloat(message.position)
+    } else if (message.id == 3) {
+        elements.paddles[3].x = parseFloat(message.position)
     }
 }
 
