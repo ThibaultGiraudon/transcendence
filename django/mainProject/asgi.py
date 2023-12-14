@@ -18,7 +18,7 @@ from    mainApp.consumers import *
 from    chat_app.consumers import *
 from    users_app.consumers import *
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'main.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mainProject.settings')
 
 # TODO change name of url
 websocket_urlpatterns = [
