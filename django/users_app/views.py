@@ -368,24 +368,25 @@ def profile(request, username):
 		form = EditProfileForm(instance=request.user)
 		context = {	'form':form,
 					'user':user,
-     				'room':room}
+					'room':room}
 		return render(request, 'profile.html', context)
 	
 	elif request.method == 'POST':
 		form = EditProfileForm(request.POST, request.FILES, instance=request.user)
 		context = {	'form':form,
-					'user':user}
+					'user':user,
+					'room':room}
 		
 		if form.is_valid():
 			if request.user.photo and request.user.photo.name != photo_name:
 				default_storage.delete(request.user.photo.path)
 			elif len(form.cleaned_data['username']) < 4:
 				messages.error(request, "Your username is too short (4 characters minimum)")
-				return redirect('profile', username=username, room=room)
+				return redirect('profile', username=username)
 	
 			form.save()
 			messages.success(request, 'Your informations have been updated')
-			return redirect('profile', username=request.user.username, room=room)
+			return redirect('profile', username=request.user.username)
 		else:
 			if 'photo' in form.errors:
 				messages.error(request, 'Please enter a valid picture')
@@ -393,9 +394,9 @@ def profile(request, username):
 				messages.error(request, 'This username is already taken')
 			else:
 				messages.error(request, 'Please enter a valid username')
-			return redirect('profile', username=username, room=room)
+			return redirect('profile', username=username)
 
-	return redirect('profile', username=username, room=room)
+	return redirect('profile', username=username)
 
 
 def users(request):
