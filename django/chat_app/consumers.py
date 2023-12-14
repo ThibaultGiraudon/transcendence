@@ -9,7 +9,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 	
 	@database_sync_to_async
 	def create_notification(self, user, message):
-		from users_app.models import Notification
+		from mainApp.models import Notification
 		notification = Notification(user=user, message=message)
 		notification.save()
 

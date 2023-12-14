@@ -50,12 +50,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mainApp',
-    'users_app',
     'chat_app',
     'channels',
 ]
 
-AUTH_USER_MODEL = 'users_app.CustomUser'
+AUTH_USER_MODEL = 'mainApp.CustomUser'
 
 LOGGING = {
     "version": 1,
