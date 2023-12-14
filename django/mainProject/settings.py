@@ -71,7 +71,7 @@ LOGGING = {
     },
 }
 
-ASGI_APPLICATION = 'main.asgi.application'
+ASGI_APPLICATION = 'mainProject.asgi.application'
 
 CHANNEL_LAYERS = {
     "default": {
@@ -89,7 +89,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'main.urls'
+ROOT_URLCONF = 'mainProject.urls'
 
 TEMPLATES = [
     {
@@ -107,7 +107,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'main.wsgi.application'
+WSGI_APPLICATION = 'mainProject.wsgi.application'
 
 #TODO change to env var
 DATABASES = {
