@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
 from django.core.exceptions import ObjectDoesNotExist
-from users_app.models import Notification
+from ..models import Notification
 
 def notifications(request):
 	if not request.user.is_authenticated:

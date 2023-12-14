@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'pong_app/css/style.css' %}">
+{% endblock %}
+
+{% block title %}
+{{ user.username }} profile
+{% endblock %}
+
+{% block content %}
+
+<img src={{ user.photo.url }} alt="profile picture" width="100" height="100">
+<p>{{ user.username }}</p>
+
+{% if user.username == request.user.username %}
+
+<p>{{ user.email}}</p>
+
+<form method="POST" enctype="multipart/form-data" novalidate>
+	{% csrf_token %}
+
+	<h2>Edit informations</h2>
+
+  <h4>Change username</h4>
+	{{form.username}}
+
+  <h4>Change profile picture</h4>
+  {{form.photo}}
+
+  </br>
+	
+	{% for message in messages %}
+		<div>
+			{% if message.tags == 'success' %}
+				<a data-dismiss="alert">✅</a>
+			{% else %}
+				<a data-dismiss="alert">⚠️</a>
+			{% endif %}
+			{{ message }}
+		</div>
+	{% endfor %}
+	
+	<input type="submit" value="Accept modifications"/>
+</form>
+
+{% else %}
+
+</br>
+
+{% if user.username in request.user.follows %}
+    <p>L'utilisateur est déjà suivi.</p>
+{% else %}
+    <a href="/follow/{{ user.username }}">
+        <button>Follow</button>
+    </a>
+{% endif %}
+
+{% if user.username in request.user.follows %}
+	<a href="/unfollow/{{ user.username }}">
+		<button>Unfollow</button>
+	</a>
+{% endif %}
+
+{% if room %}
+	<a href="/chat/{{ room }}">
+		<button>Send a chat</button>
+	</a>
+{% else %}
+	<a href="/create_channel/{{ user.username }}">
+		<button>Send a chat</button>
+	</a>
+{% endif%}
+
+{% endif %}
+
+{% endblock %}
