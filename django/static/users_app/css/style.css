@@ -50,6 +50,7 @@
 	width: 100%;
 	background-color: var(--color-dark);
 	color: var(--color-light);
+    transition: background-color 0.3s ease;
 }
 
 .sign-form input[type="submit"]:hover {
@@ -87,6 +88,7 @@
 	background-color: var(--color-dark);
 	color: var(--color-light);
 	font-family: var(--font-text-bold);
+    transition: background-color 0.3s ease;
 }
 
 .sign-42-button input:hover {

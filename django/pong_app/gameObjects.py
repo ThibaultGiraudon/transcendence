@@ -1,4 +1,6 @@
 import math
+import random
+import asyncio
 
 class GameSettings:
     def __init__(self, nbPaddles, width, height):
@@ -10,20 +12,35 @@ class GameSettings:
 
         for id in range(self.nbPaddles):
             self.paddles.append(Paddle(id))
+            self.paddles[id].position = self.gameHeight / 2 - self.paddles[id].height / 2
+        
+        if self.nbPaddles == 2:
+            self.initPaddles2()
+        elif self.nbPaddles == 4:
+            self.initPaddles4()
     
-    def resetPaddles(self):
-        for paddle in self.paddles:
-            # TODO change maybe
-            paddle.y = self.gameHeight / 2 - 50
+    def initPaddles2(self):
+        self.paddles[0].offset = 10
+        self.paddles[1].offset = self.gameWidth - self.paddles[1].width - 10
+
+    def initPaddles4(self):
+        for id in range(self.nbPaddles):
+            if (id % 2 == 0):
+                self.paddles[id].offset = 10
+            else:
+                self.paddles[id].offset = self.gameWidth - self.paddles[id].width - 10
+
+        for id in range(2, self.nbPaddles):
+            self.paddles[id].width, self.paddles[id].height = self.paddles[id].height, self.paddles[id].width
+            self.paddles[id].offset, self.paddles[id].position = self.paddles[id].position, self.paddles[id].offset
 
 class Paddle:
     def __init__(self, id):
         self.id = id
-        self.x = 0
-        self.y = 0
+        self.offset = 0
+        self.position = 0
         self.width = 20
         self.height = 100
-        self.color = "0xFDFFFF"
         self.speed = 10
         self.score = 0
         self.keyState = {
@@ -34,21 +51,21 @@ class Paddle:
             'up': None,
             'down': None,
         }
-
-        if (self.id == 0):
-            self.color = "0xE21E59"
-        elif (self.id == 1):
-            self.color = "0x1598E9"
-        elif (self.id == 2):
-            self.color = "0x2FD661"
-        elif (self.id == 3):
-            self.color = "0xF19705"
+        self.colorArray = [
+            "0xE21E59",
+            "0x1598E9",
+            "0x2FD661",
+            "0xF19705",
+        ]
+        self.color = self.colorArray[self.id]
+        self.isAI = False
+        self.aiTask = None
 
     def moveUp(self):
-        self.y -= self.speed
+        self.position -= self.speed
     
     def moveDown(self):
-        self.y += self.speed
+        self.position += self.speed
 
 class Ball:
     def __init__(self):
@@ -56,17 +73,28 @@ class Ball:
         self.y = 100.0
         self.radius = 10
         self.color = "0xFDF3E1"
-        self.speed = 10
+        self.speed = 5
+        self.speedBase = 8
         self.angle = 1.0
         self.task = None
 
+    def __powerShot(self, paddle, collisionPosition):
+        speedFactor = 1 - abs(collisionPosition - 0.5)
+        self.speed = self.speedBase * speedFactor * 1.5
+        if (speedFactor > 0.9):
+            self.color = paddle.color
+            self.radius = 8
+        else:
+            self.color = "0xFDF3E1"
+            self.radius = 10
+
     def checkPaddleCollision(self, paddle):
-        closestX = max(paddle.x, min(self.x, paddle.x + paddle.width))
-        closestY = max(paddle.y, min(self.y, paddle.y + paddle.height))
+        closestX = max(paddle.offset, min(self.x, paddle.offset + paddle.width))
+        closestY = max(paddle.position, min(self.y, paddle.position + paddle.height))
         distance = math.sqrt((self.x - closestX)**2 + (self.y - closestY)**2)
 
         if (distance <= self.radius):
-            collisionPosition = (closestY - paddle.y) / paddle.height
+            collisionPosition = (closestY - paddle.position) / paddle.height
             reflectionAngle = (collisionPosition - 0.5) * math.pi
             maxAngle = math.pi / 3
 
@@ -75,22 +103,9 @@ class Ball:
             elif (paddle.id == 1):
                 self.angle = math.pi - max(-maxAngle, min(maxAngle, reflectionAngle))
 
-            # TODO deplacer dans un function powershot
-            speedFactor = 1 - abs(collisionPosition - 0.5)
-            # TODO changer le 8 par la speed de la balle (mais pas self.speed)
-            self.speed = 8 * speedFactor * 1.5
-
-            if (speedFactor > 0.9):
-                self.color = paddle.color
-                self.radius = 8
-            else:
-                self.color = "0xFDF3E1"
-                self.radius = 10
+            self.__powerShot(paddle, collisionPosition)
 
     def checkWallCollision(self, gameSettings):
-        # if (self.x <= 0) or (self.x >= gameSettings.gameWidth):
-        #     self.angle = math.pi - self.angle
-
         id = -1
         if (self.x <= 0):
             self.angle = math.pi - self.angle
@@ -108,3 +123,34 @@ class Ball:
         deltaY = self.speed * math.sin(self.angle)
         self.x += deltaX
         self.y += deltaY
+
+    def resetBall(self, gameSettings):
+        self.x = gameSettings.gameWidth / 2
+        self.y = gameSettings.gameHeight / 2
+        self.radius = 10
+        self.color = "0xFDF3E1"
+        self.speed = 5
+        self.angle = random.choice([0, math.pi])
+
+# class AIPlayer:
+#     def __init__(self, paddle, ball):
+#         self.paddle = paddle
+#         self.ball = ball
+#         self.task = None
+#         paddle.isAI = True
+
+    # def getAimPosition(self):
+    #     if (self.ball.x < self.paddle.offset + self.paddle.width / 2):
+    #         return (0)
+    #     elif (self.ball.x > self.paddle.offset + self.paddle.width / 2):
+    #         return (self.paddle.height)
+
+    # async def move(self, aimPosition):
+    #     print(aimPosition)
+    #     while (True):
+    #         # if (aimPosition < self.paddle.position):
+    #             # self.paddle.moveUp()
+    #         # elif (aimPosition > self.paddle.position):
+    #             # self.paddle.moveDown()
+    #         print("AI move")
+    #         await asyncio.sleep(0.01)
