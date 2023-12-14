@@ -18,7 +18,7 @@ All users
 			<div class="container" data-user-id="{{ x.username }}">
 			<img src={{ x.photo.url }} alt="profile picture" width="60" height="60">
 			<h3>{{ x.username }}</h3>
-			{% if x.status == 'online' %}
+			{% if x.status != 'offline' %}
 				<p class="status">🟢</p>
 			{% else %}
 				<p class="status">🔴</p>
@@ -36,10 +36,10 @@ All users
 		  <div class="container" data-user-id="{{ x.username }}">
 			<img src={{ x.photo.url }} alt="profile picture" width="60" height="60">
 			<h3>{{ x.username }}</h3>
-			{% if x.status == 'online' %}
-			  <p class="status">🟢</p>
+			{% if x.status != 'offline' %}
+				<p class="status">🟢</p>
 			{% else %}
-			  <p class="status">🔴</p>
+				<p class="status">🔴</p>
 			{% endif %}
 		  </div>
 	  {% endif %}
@@ -57,7 +57,6 @@ All users
 		console.log('Connection established');
 	};
 
-	// Écoutez les messages entrants
 	// Écoutez les messages entrants
 	document.addEventListener('DOMContentLoaded', (event) => {
 		socket.addEventListener('message', function (event) {

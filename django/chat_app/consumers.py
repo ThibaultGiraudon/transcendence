@@ -12,6 +12,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		from users_app.models import Notification
 		notification = Notification(user=user, message=message)
 		notification.save()
+
+	
+	@database_sync_to_async
+	def change_status_to_online(self):
+		self.scope['user'].status = 'online'
+		self.scope['user'].save()
 	
 
 	@database_sync_to_async
@@ -55,6 +61,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
   
 
 	async def disconnect(self, close_code):
+		# Set status to online
+		await self.change_status_to_online()
+
 		# Leave room group
 		await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
@@ -71,10 +80,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 		# Get the user to send
 		userTo = await self.get_user_to(self.room_name)
-		logging.info("-------------------")
-		logging.info(userTo.status)
+		
 		# Send a notification
-		if userTo is not None:
+		if userTo is not None and userTo.status != f"chat:{self.scope['user'].username}":
 			await self.create_notification(userTo, f"You have a new message from {sender}.")
 
 		# Send message to room group
