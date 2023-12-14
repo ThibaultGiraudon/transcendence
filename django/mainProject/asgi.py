@@ -14,7 +14,8 @@ from    channels.routing import ProtocolTypeRouter, URLRouter
 from    channels.auth import AuthMiddlewareStack
 from    django.urls import re_path
 from    django.conf.urls import url
-from    mainApp.consumers import *
+from    mainApp.consumers.pongConsumer import PongConsumer
+from    mainApp.consumers.notificationsConsumer import NotificationConsumer
 from    chat_app.consumers import *
 from    users_app.consumers import *
 
