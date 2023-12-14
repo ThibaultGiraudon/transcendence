@@ -11,7 +11,6 @@ def chat(request):
 
 	return render(request, "chat/chat.html", {'channels': request.user.channels, 'users': users})
 
-
 def create_channel(request, user_to):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
@@ -30,7 +29,6 @@ def create_channel(request, user_to):
 	user_to.save()
 
 	return redirect('room', room_name=room_name)
-
 
 def room(request, room_name):
 	if not request.user.is_authenticated:
