@@ -1,4 +1,4 @@
-import json
+import json, logging
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
@@ -61,8 +61,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 	# Receive message from WebSocket
 	async def receive(self, text_data):
-		from users_app.models import Notification
-	
 		text_data_json = json.loads(text_data)
 		message = text_data_json.get("message")
 		sender = text_data_json.get("sender")
@@ -73,7 +71,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 		# Get the user to send
 		userTo = await self.get_user_to(self.room_name)
-
+		logging.info("-------------------")
+		logging.info(userTo.status)
 		# Send a notification
 		if userTo is not None:
 			await self.create_notification(userTo, f"You have a new message from {sender}.")
