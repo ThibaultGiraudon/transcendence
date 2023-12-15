@@ -15,7 +15,7 @@ async def sendInitPaddlePosition(consumer):
             'type': 'init_paddle_position',
 			'x': paddle.offset,
             'y': paddle.position,
-			'width': paddle.width,
+			'thickness': paddle.thickness,
 			'height': paddle.height,
 			'color': paddle.color,
             'id': paddle.id,
