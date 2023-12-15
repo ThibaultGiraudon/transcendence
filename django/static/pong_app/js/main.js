@@ -69,7 +69,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (message.type === 'update_paddle_position') {
-            console.log(message);
             updatePaddlePosition(message);
         }
 
@@ -108,13 +107,15 @@ const elements = {
     scoreText: [],
     paddles: [],
     ball: null,
+    field: null,
 };
 
 function create() {
+    elements.field = this.add.rectangle(0, 0, 0, 0, 0x404040, 0.4).setVisible(false);
+    elements.ball = this.add.circle(0, 0, 0, 0xFDF3E1).setVisible(false);
     for (let i = 0; i < 4; i++) {
         elements.paddles[i] = this.add.rectangle(0, 0, 0, 0, 0xFFFFFF).setVisible(false);
     }
-    elements.ball = this.add.circle(0, 0, 0, 0xFDF3E1).setVisible(false);
 }
 
 function initGameSize(message) {
@@ -130,6 +131,14 @@ function initPaddlePosition(message, paddle) {
     paddle.width = parseFloat(message.width)
     paddle.height = parseFloat(message.height)
     paddle.setFillStyle(message.color, 1);
+    if (parseFloat(message.id) == 0) {
+        const offset = parseFloat(message.width) + parseFloat(message.x);
+        elements.field.setVisible(true)
+        elements.field.x = offset
+        elements.field.y = offset
+        elements.field.width = config.width - offset * 2
+        elements.field.height = config.height - offset * 2
+    }
 }
 
 function initScore(message) {
