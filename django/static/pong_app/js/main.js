@@ -8,8 +8,8 @@ const   socketUrl = websocketProtocol + '//' + window.location.host + websocketP
 const   socket = new WebSocket(socketUrl);
 
 const   keyState = {
-    ArrowUp: false,
-    ArrowDown: false,
+    o: false,
+    l: false,
     w: false,
     s: false,
 };
