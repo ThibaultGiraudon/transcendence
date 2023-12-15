@@ -8,7 +8,7 @@ class GameSettings:
         self.gameHeight = height
         self.paddles = []
         self.ball = Ball()
-        self.offset = 10
+        self.offset = 20
 
         for id in range(self.nbPaddles):
             self.paddles.append(Paddle(id))
