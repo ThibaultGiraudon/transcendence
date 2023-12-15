@@ -12,6 +12,10 @@ const   keyState = {
     l: false,
     w: false,
     s: false,
+    z: false,
+    x: false,
+    n: false,
+    m: false,
 };
 
 // EVENTS

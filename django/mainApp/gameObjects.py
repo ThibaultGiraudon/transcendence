@@ -8,6 +8,7 @@ class GameSettings:
         self.gameHeight = height
         self.paddles = []
         self.ball = Ball()
+        self.offset = 10
 
         for id in range(self.nbPaddles):
             self.paddles.append(Paddle(id))
@@ -17,19 +18,21 @@ class GameSettings:
             self.initPaddles2()
         elif self.nbPaddles == 4:
             self.initPaddles4()
+
+        self.limit = self.offset + self.paddles[0].width
     
     def initPaddles2(self):
-        self.paddles[0].offset = 10
-        self.paddles[1].offset = self.gameWidth - self.paddles[1].width - 10
-        self.paddles[0].x = 10
-        self.paddles[1].x = self.gameWidth - self.paddles[1].width - 10
+        self.paddles[0].offset = self.offset
+        self.paddles[1].offset = self.gameWidth - self.paddles[1].width - self.offset
+        self.paddles[0].x = self.offset
+        self.paddles[1].x = self.gameWidth - self.paddles[1].width - self.offset
 
     def initPaddles4(self):
         for id in range(self.nbPaddles):
             if (id % 2 == 0):
-                self.paddles[id].offset = 10
+                self.paddles[id].offset = self.offset
             else:
-                self.paddles[id].offset = self.gameWidth - self.paddles[id].width - 10
+                self.paddles[id].offset = self.gameWidth - self.paddles[id].width - self.offset
 
         for id in range(2, self.nbPaddles):
             self.paddles[id].width, self.paddles[id].height = self.paddles[id].height, self.paddles[id].width

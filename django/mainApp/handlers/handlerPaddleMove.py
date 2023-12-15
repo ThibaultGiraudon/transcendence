@@ -4,11 +4,7 @@ import math
 import random
 
 def keyupReset(direction, paddle):
-	if (direction == 'up'):
-		paddle.keyState[direction] = False;
-	elif (direction == 'down'):
-		paddle.keyState[direction] = False;
-
+	paddle.keyState[direction] = False;
 	if (paddle.taskAsyncio[direction]):
 		paddle.taskAsyncio[direction].cancel()
 
@@ -27,11 +23,11 @@ async def keydownLoop(direction, paddle, consumer):
 		paddle.keyState['up'] = False;
 
 	while (paddle.keyState[direction] or paddle.keyState[direction]):
-		if (paddle.keyState[direction] and direction == 'up' and paddle.position > 0):
+		if (paddle.keyState[direction] and direction == 'up' and paddle.position > consumer.gameSettings.limit):
 			paddle.moveUp()
-		elif (paddle.keyState[direction] and direction == 'down' and paddle.position < consumer.gameSettings.gameHeight - paddle.height):
+		elif (paddle.keyState[direction] and direction == 'down' and paddle.position < consumer.gameSettings.gameHeight - paddle.height - consumer.gameSettings.limit):
 			paddle.moveDown()
-
+		
 		await sendUpdatePaddleMessage(consumer, paddle)
 		await asyncio.sleep(0.01) # TODO change to global var for speed
 
@@ -102,11 +98,7 @@ async def aiLoop(consumer, paddle):
 
 async def handle_paddle_move(message, consumer):
 	direction = message['direction']
-
-	if (message['id'] == '0'):
-		paddle = consumer.gameSettings.paddles[0]
-	elif (message['id'] == '1'):
-		paddle = consumer.gameSettings.paddles[1]
+	paddle = consumer.gameSettings.paddles[int(message['id'])]
 
 	# for paddle in consumer.gameSettings.paddles:
 	# 	if (paddle.aiTask == None):
