@@ -25,7 +25,7 @@ async def keydownLoop(direction, paddle, consumer):
 	while (paddle.keyState[direction] or paddle.keyState[direction]):
 		if (paddle.keyState[direction] and direction == 'up' and paddle.position > consumer.gameSettings.limit):
 			paddle.moveUp()
-		elif (paddle.keyState[direction] and direction == 'down' and paddle.position < consumer.gameSettings.gameHeight - paddle.height - consumer.gameSettings.limit):
+		elif (paddle.keyState[direction] and direction == 'down' and paddle.position < consumer.gameSettings.gameHeight - paddle.size - consumer.gameSettings.limit):
 			paddle.moveDown()
 		
 		await sendUpdatePaddleMessage(consumer, paddle)
@@ -88,8 +88,8 @@ async def aiLoop(consumer, paddle):
 	while (True):
 		collisionPosition = await calculateAimPosition(consumer)
 
-		# aimPosition = collisionPosition - paddle.height / 2
-		aimPosition = collisionPosition - paddle.height / 2 + random.randint(-20, 20)
+		# aimPosition = collisionPosition - paddle.size / 2
+		aimPosition = collisionPosition - paddle.size / 2 + random.randint(-20, 20)
 	
 		# TODO move this in class
 		moveTask = asyncio.create_task(moveAiToAim(paddle, consumer, aimPosition))

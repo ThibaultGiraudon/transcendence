@@ -12,7 +12,7 @@ class GameSettings:
 
         for id in range(self.nbPaddles):
             self.paddles.append(Paddle(id))
-            self.paddles[id].position = self.gameHeight / 2 - self.paddles[id].height / 2
+            self.paddles[id].position = self.gameHeight / 2 - self.paddles[id].size / 2
         
         if self.nbPaddles == 2:
             self.initPaddles2()
@@ -35,7 +35,7 @@ class GameSettings:
                 self.paddles[id].offset = self.gameWidth - self.paddles[id].thickness - self.offset
 
         for id in range(2, self.nbPaddles):
-            self.paddles[id].thickness, self.paddles[id].height = self.paddles[id].height, self.paddles[id].thickness
+            self.paddles[id].thickness, self.paddles[id].size = self.paddles[id].size, self.paddles[id].thickness
             self.paddles[id].offset, self.paddles[id].position = self.paddles[id].position, self.paddles[id].offset
 
 class Paddle:
@@ -44,7 +44,7 @@ class Paddle:
         self.offset = 0
         self.position = 0
         self.thickness = 20
-        self.height = 100
+        self.size = 100
         self.speed = 10
         self.score = 0
         self.keyState = {
@@ -94,11 +94,11 @@ class Ball:
 
     def checkPaddleCollision(self, paddle):
         closestX = max(paddle.offset, min(self.x, paddle.offset + paddle.thickness))
-        closestY = max(paddle.position, min(self.y, paddle.position + paddle.height))
+        closestY = max(paddle.position, min(self.y, paddle.position + paddle.size))
         distance = math.sqrt((self.x - closestX)**2 + (self.y - closestY)**2)
 
         if (distance <= self.radius):
-            collisionPosition = (closestY - paddle.position) / paddle.height
+            collisionPosition = (closestY - paddle.position) / paddle.size
             reflectionAngle = (collisionPosition - 0.5) * math.pi
             maxAngle = math.pi / 3
 
