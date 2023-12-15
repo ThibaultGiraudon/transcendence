@@ -130,26 +130,3 @@ class Ball:
         self.color = "0xFDF3E1"
         self.speed = 5
         self.angle = random.choice([0, math.pi])
-
-# class AIPlayer:
-#     def __init__(self, paddle, ball):
-#         self.paddle = paddle
-#         self.ball = ball
-#         self.task = None
-#         paddle.isAI = True
-
-    # def getAimPosition(self):
-    #     if (self.ball.x < self.paddle.offset + self.paddle.width / 2):
-    #         return (0)
-    #     elif (self.ball.x > self.paddle.offset + self.paddle.width / 2):
-    #         return (self.paddle.height)
-
-    # async def move(self, aimPosition):
-    #     print(aimPosition)
-    #     while (True):
-    #         # if (aimPosition < self.paddle.position):
-    #             # self.paddle.moveUp()
-    #         # elif (aimPosition > self.paddle.position):
-    #             # self.paddle.moveDown()
-    #         print("AI move")
-    #         await asyncio.sleep(0.01)
