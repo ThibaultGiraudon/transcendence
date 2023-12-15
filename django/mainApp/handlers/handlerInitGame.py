@@ -10,17 +10,21 @@ async def sendInitGameSize(consumer):
 	await consumer.send(json.dumps(message))
 
 async def sendInitPaddlePosition(consumer):
-    for paddle in consumer.gameSettings.paddles:
-        message = {
+	for paddle in consumer.gameSettings.paddles:
+		if (paddle.id == 2 or paddle.id == 3):
+			thickness, size = paddle.size, paddle.thickness
+		else:
+			thickness, size = paddle.thickness, paddle.size
+		message = {
             'type': 'init_paddle_position',
 			'x': paddle.offset,
             'y': paddle.position,
-			'width': paddle.thickness,
-			'height': paddle.size,
+			'width': thickness,
+			'height': size,
 			'color': paddle.color,
             'id': paddle.id,
         }
-        await consumer.send(json.dumps(message))
+		await consumer.send(json.dumps(message))
 
 async def sendInitScore(consumer, nbPaddles):
 	for paddle in consumer.gameSettings.paddles:
