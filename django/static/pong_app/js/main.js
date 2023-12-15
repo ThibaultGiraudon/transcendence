@@ -132,11 +132,11 @@ function initPaddlePosition(message, paddle) {
     paddle.setVisible(true)
     paddle.x = parseFloat(message.x)
     paddle.y = parseFloat(message.y)
-    paddle.width = parseFloat(message.width)
+    paddle.width = parseFloat(message.thickness)
     paddle.height = parseFloat(message.height)
     paddle.setFillStyle(message.color, 1);
     if (parseFloat(message.id) == 0) {
-        const offset = parseFloat(message.width) + parseFloat(message.x);
+        const offset = parseFloat(message.thickness) + parseFloat(message.x);
         elements.field.setVisible(true)
         elements.field.x = offset
         elements.field.y = offset

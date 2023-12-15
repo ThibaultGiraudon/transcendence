@@ -19,23 +19,23 @@ class GameSettings:
         elif self.nbPaddles == 4:
             self.initPaddles4()
 
-        self.limit = self.offset + self.paddles[0].width
+        self.limit = self.offset + self.paddles[0].thickness
     
     def initPaddles2(self):
         self.paddles[0].offset = self.offset
-        self.paddles[1].offset = self.gameWidth - self.paddles[1].width - self.offset
+        self.paddles[1].offset = self.gameWidth - self.paddles[1].thickness - self.offset
         self.paddles[0].x = self.offset
-        self.paddles[1].x = self.gameWidth - self.paddles[1].width - self.offset
+        self.paddles[1].x = self.gameWidth - self.paddles[1].thickness - self.offset
 
     def initPaddles4(self):
         for id in range(self.nbPaddles):
             if (id % 2 == 0):
                 self.paddles[id].offset = self.offset
             else:
-                self.paddles[id].offset = self.gameWidth - self.paddles[id].width - self.offset
+                self.paddles[id].offset = self.gameWidth - self.paddles[id].thickness - self.offset
 
         for id in range(2, self.nbPaddles):
-            self.paddles[id].width, self.paddles[id].height = self.paddles[id].height, self.paddles[id].width
+            self.paddles[id].thickness, self.paddles[id].height = self.paddles[id].height, self.paddles[id].thickness
             self.paddles[id].offset, self.paddles[id].position = self.paddles[id].position, self.paddles[id].offset
 
 class Paddle:
@@ -43,7 +43,7 @@ class Paddle:
         self.id = id
         self.offset = 0
         self.position = 0
-        self.width = 20
+        self.thickness = 20
         self.height = 100
         self.speed = 10
         self.score = 0
@@ -93,7 +93,7 @@ class Ball:
             self.radius = 10
 
     def checkPaddleCollision(self, paddle):
-        closestX = max(paddle.offset, min(self.x, paddle.offset + paddle.width))
+        closestX = max(paddle.offset, min(self.x, paddle.offset + paddle.thickness))
         closestY = max(paddle.position, min(self.y, paddle.position + paddle.height))
         distance = math.sqrt((self.x - closestX)**2 + (self.y - closestY)**2)
 
