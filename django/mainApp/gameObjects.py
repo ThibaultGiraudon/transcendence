@@ -21,6 +21,8 @@ class GameSettings:
     def initPaddles2(self):
         self.paddles[0].offset = 10
         self.paddles[1].offset = self.gameWidth - self.paddles[1].width - 10
+        self.paddles[0].x = 10
+        self.paddles[1].x = self.gameWidth - self.paddles[1].width - 10
 
     def initPaddles4(self):
         for id in range(self.nbPaddles):
