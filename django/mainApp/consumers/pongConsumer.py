@@ -1,6 +1,6 @@
 from    channels.generic.websocket import AsyncWebsocketConsumer
-from    ..handlers.handler_init_game import handle_init_game
-from    ..handlers.handler_paddle_move import handle_paddle_move
+from    ..handlers.handlerInitGame import handle_init_game
+from    ..handlers.handlerPaddleMove import handle_paddle_move
 from    ..gameObjects import *
 import  json
 
