@@ -35,7 +35,7 @@ class GameSettings:
                 self.paddles[id].offset = self.gameWidth - self.paddles[id].thickness - self.offset
 
         for id in range(2, self.nbPaddles):
-            self.paddles[id].thickness, self.paddles[id].size = self.paddles[id].size, self.paddles[id].thickness
+            # self.paddles[id].thickness, self.paddles[id].size = self.paddles[id].size, self.paddles[id].thickness
             self.paddles[id].offset, self.paddles[id].position = self.paddles[id].position, self.paddles[id].offset
 
 class Paddle:
