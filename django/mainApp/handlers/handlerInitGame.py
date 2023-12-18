@@ -69,7 +69,7 @@ async def handle_ball_move(consumer):
 		ball.move()
 
 		for paddle in consumer.gameSettings.paddles:
-			ball.checkPaddleCollision(paddle)
+			ball.checkPaddleCollision(paddle, consumer.gameSettings)
 
 		paddleID = ball.checkWallCollision(consumer.gameSettings)
 		# TODO ici pour desactiver ou activer le mur 
