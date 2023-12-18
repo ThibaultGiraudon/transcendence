@@ -1,13 +1,11 @@
 from    channels.generic.websocket import AsyncWebsocketConsumer
-from    ..handlers.handler_init_game import handle_init_game
-from    ..handlers.handler_paddle_move import handle_paddle_move
+from    ..handlers.handlerInitGame import handle_init_game
+from    ..handlers.handlerPaddleMove import handle_paddle_move
 from    ..gameObjects import *
 import  json
 
 class PongConsumer(AsyncWebsocketConsumer):
-	gameSettings = GameSettings(2, 800, 800)
-	gameSettings.paddles[0].x = 10
-	gameSettings.paddles[1].x = gameSettings.gameWidth - gameSettings.paddles[1].width - 10
+	gameSettings = GameSettings(4, 800)
 
 	async def connect(self):
 		await self.accept()

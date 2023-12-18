@@ -8,10 +8,14 @@ const   socketUrl = websocketProtocol + '//' + window.location.host + websocketP
 const   socket = new WebSocket(socketUrl);
 
 const   keyState = {
-    ArrowUp: false,
-    ArrowDown: false,
+    o: false,
+    l: false,
     w: false,
     s: false,
+    z: false,
+    x: false,
+    n: false,
+    m: false,
 };
 
 // EVENTS
@@ -57,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let message = JSON.parse(event.data);
 
         if (message.type === 'init_game_size') {
-            initGameSize(message);
+            initsquareSize(message);
         }
 
         if (message.type === 'init_paddle_position') {
@@ -69,7 +73,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (message.type === 'update_paddle_position') {
-            console.log(message);
             updatePaddlePosition(message);
         }
 
@@ -108,18 +111,20 @@ const elements = {
     scoreText: [],
     paddles: [],
     ball: null,
+    field: null,
 };
 
 function create() {
+    elements.field = this.add.rectangle(0, 0, 0, 0, 0x404040, 0.4).setVisible(false);
+    elements.ball = this.add.circle(0, 0, 0, 0xFDF3E1).setVisible(false);
     for (let i = 0; i < 4; i++) {
         elements.paddles[i] = this.add.rectangle(0, 0, 0, 0, 0xFFFFFF).setVisible(false);
     }
-    elements.ball = this.add.circle(0, 0, 0, 0xFDF3E1).setVisible(false);
 }
 
-function initGameSize(message) {
-    config.width = message.width;
-    config.height = message.height;
+function initsquareSize(message) {
+    config.width = message.size;
+    config.height = message.size;
     phaserGame = new Phaser.Game(config);
 }
 
@@ -130,6 +135,14 @@ function initPaddlePosition(message, paddle) {
     paddle.width = parseFloat(message.width)
     paddle.height = parseFloat(message.height)
     paddle.setFillStyle(message.color, 1);
+    if (parseFloat(message.id) == 0) {
+        const offset = parseFloat(message.width) + parseFloat(message.x);
+        elements.field.setVisible(true)
+        elements.field.x = offset
+        elements.field.y = offset
+        elements.field.width = config.width - offset * 2
+        elements.field.height = config.height - offset * 2
+    }
 }
 
 function initScore(message) {
@@ -138,7 +151,6 @@ function initScore(message) {
 
     if (message.nbPaddles == 2) {
         scoreSpans[message.id].style.width = '50%';
-        //  TODO change ce score dans le back-end
         scoreSpans[message.id ^ 1].textContent = message.score;
     } else if (message.nbPaddles == 4) {
         scoreSpans[message.id].style.width = '25%';
@@ -171,7 +183,18 @@ function updateScore(message) {
     const scoreSpans = document.querySelectorAll('.player_score');
     if (message.nbPaddles == 2) {
         scoreSpans[message.id ^ 1].textContent = message.score;
+        if (message.score >= 10) {
+            // TODO peut etre changer jsute la classe et tout gerer dans le css
+            scoreSpans[message.id ^ 1].style.backgroundColor = '#212121';
+            scoreSpans[message.id ^ 1].style.color = '#DADADA';
+            elements.paddles[message.id ^ 1].setVisible(false);
+        }
     } else if (message.nbPaddles == 4) {
         scoreSpans[message.id].textContent = message.score;
+        if (message.score >= 10) {
+            scoreSpans[message.id].style.backgroundColor = '#212121';
+            scoreSpans[message.id].style.color = '#DADADA';
+            elements.paddles[message.id].setVisible(false);
+        }
     }
 }

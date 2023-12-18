@@ -2,44 +2,29 @@ import math
 import random
 
 class GameSettings:
-    def __init__(self, nbPaddles, width, height):
+    def __init__(self, nbPaddles, size):
         self.nbPaddles = nbPaddles
-        self.gameWidth = width
-        self.gameHeight = height
+        self.squareSize = size;
         self.paddles = []
         self.ball = Ball()
+        self.offset = 20
+        self.paddleThickness = 20
+        self.paddleSize = 100
+        self.limit = self.offset + self.paddleThickness
 
         for id in range(self.nbPaddles):
             self.paddles.append(Paddle(id))
-            self.paddles[id].position = self.gameHeight / 2 - self.paddles[id].height / 2
-        
-        if self.nbPaddles == 2:
-            self.initPaddles2()
-        elif self.nbPaddles == 4:
-            self.initPaddles4()
-    
-    def initPaddles2(self):
-        self.paddles[0].offset = 10
-        self.paddles[1].offset = self.gameWidth - self.paddles[1].width - 10
-
-    def initPaddles4(self):
-        for id in range(self.nbPaddles):
+            self.paddles[id].position = self.squareSize / 2 - self.paddleSize / 2
             if (id % 2 == 0):
-                self.paddles[id].offset = 10
+                self.paddles[id].offset = self.offset
             else:
-                self.paddles[id].offset = self.gameWidth - self.paddles[id].width - 10
-
-        for id in range(2, self.nbPaddles):
-            self.paddles[id].width, self.paddles[id].height = self.paddles[id].height, self.paddles[id].width
-            self.paddles[id].offset, self.paddles[id].position = self.paddles[id].position, self.paddles[id].offset
+                self.paddles[id].offset = self.squareSize - self.limit
 
 class Paddle:
     def __init__(self, id):
         self.id = id
         self.offset = 0
         self.position = 0
-        self.width = 20
-        self.height = 100
         self.speed = 10
         self.score = 0
         self.keyState = {
@@ -57,6 +42,7 @@ class Paddle:
             "0xF19705",
         ]
         self.color = self.colorArray[self.id]
+        self.isAlive = True
         self.isAI = False
         self.aiTask = None
 
@@ -87,13 +73,26 @@ class Ball:
             self.color = "0xFDF3E1"
             self.radius = 10
 
-    def checkPaddleCollision(self, paddle):
-        closestX = max(paddle.offset, min(self.x, paddle.offset + paddle.width))
-        closestY = max(paddle.position, min(self.y, paddle.position + paddle.height))
+    def checkPaddleCollision(self, paddle, gameSettings):
+        if (paddle.isAlive == False):
+            return    
+
+        if (paddle.id == 2 or paddle.id == 3):
+            paddleThickness, paddleSize = gameSettings.paddleSize, gameSettings.paddleThickness
+            offset, position = paddle.position, paddle.offset
+        else:
+            paddleThickness, paddleSize = gameSettings.paddleThickness, gameSettings.paddleSize
+            offset, position = paddle.offset, paddle.position
+
+        closestX = max(offset, min(self.x, offset + paddleThickness))
+        closestY = max(position, min(self.y, position + paddleSize))
         distance = math.sqrt((self.x - closestX)**2 + (self.y - closestY)**2)
 
-        if (distance <= self.radius):
-            collisionPosition = (closestY - paddle.position) / paddle.height
+        if distance < self.radius:
+            if (paddle.id == 2 or paddle.id == 3):
+                collisionPosition = (closestX - offset) / paddleThickness
+            else:
+                collisionPosition = (closestY - position) / paddleSize
             reflectionAngle = (collisionPosition - 0.5) * math.pi
             maxAngle = math.pi / 3
 
@@ -101,6 +100,10 @@ class Ball:
                 self.angle = max(-maxAngle, min(maxAngle, reflectionAngle))
             elif (paddle.id == 1):
                 self.angle = math.pi - max(-maxAngle, min(maxAngle, reflectionAngle))
+            elif (paddle.id == 2):
+                self.angle = math.pi / 2 - max(-maxAngle, min(maxAngle, reflectionAngle))
+            elif (paddle.id == 3):
+                self.angle = -math.pi / 2 + max(-maxAngle, min(maxAngle, reflectionAngle))
 
             self.__powerShot(paddle, collisionPosition)
 
@@ -109,12 +112,19 @@ class Ball:
         if (self.x <= 0):
             self.angle = math.pi - self.angle
             id = 0
-        elif (self.x >= gameSettings.gameWidth):
+        elif (self.x >= gameSettings.squareSize):
             self.angle = math.pi - self.angle
             id = 1
-
-        if (self.y <= 0) or (self.y >= gameSettings.gameHeight):
+        elif (self.y <= 0):
             self.angle = -self.angle
+            id = 2
+        elif (self.y >= gameSettings.squareSize):
+            self.angle = -self.angle
+            id = 3
+        if (id >= 2 and gameSettings.nbPaddles == 2):
+            id = -1
+        if (gameSettings.paddles[id].isAlive == False):
+            id = -1
         return (id);
 
     def move(self):
@@ -124,32 +134,21 @@ class Ball:
         self.y += deltaY
 
     def resetBall(self, gameSettings):
-        self.x = gameSettings.gameWidth / 2
-        self.y = gameSettings.gameHeight / 2
+        self.x = gameSettings.squareSize / 2
+        self.y = gameSettings.squareSize / 2
         self.radius = 10
         self.color = "0xFDF3E1"
         self.speed = 5
-        self.angle = random.choice([0, math.pi])
 
-# class AIPlayer:
-#     def __init__(self, paddle, ball):
-#         self.paddle = paddle
-#         self.ball = ball
-#         self.task = None
-#         paddle.isAI = True
-
-    # def getAimPosition(self):
-    #     if (self.ball.x < self.paddle.offset + self.paddle.width / 2):
-    #         return (0)
-    #     elif (self.ball.x > self.paddle.offset + self.paddle.width / 2):
-    #         return (self.paddle.height)
-
-    # async def move(self, aimPosition):
-    #     print(aimPosition)
-    #     while (True):
-    #         # if (aimPosition < self.paddle.position):
-    #             # self.paddle.moveUp()
-    #         # elif (aimPosition > self.paddle.position):
-    #             # self.paddle.moveDown()
-    #         print("AI move")
-    #         await asyncio.sleep(0.01)
+        randomAngle = []
+        for paddle in gameSettings.paddles:
+            if paddle.isAlive and paddle.id == 0:
+                randomAngle.append(math.pi)
+            elif paddle.isAlive and paddle.id == 1:
+                randomAngle.append(0)
+            elif paddle.isAlive and paddle.id == 2:
+                randomAngle.append(-math.pi / 2)
+            elif paddle.isAlive and paddle.id == 3:
+                randomAngle.append(math.pi / 2)
+                
+        self.angle = random.choice(randomAngle)
