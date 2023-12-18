@@ -151,7 +151,6 @@ function initScore(message) {
 
     if (message.nbPaddles == 2) {
         scoreSpans[message.id].style.width = '50%';
-        //  TODO change ce score dans le back-end
         scoreSpans[message.id ^ 1].textContent = message.score;
     } else if (message.nbPaddles == 4) {
         scoreSpans[message.id].style.width = '25%';
@@ -184,7 +183,18 @@ function updateScore(message) {
     const scoreSpans = document.querySelectorAll('.player_score');
     if (message.nbPaddles == 2) {
         scoreSpans[message.id ^ 1].textContent = message.score;
+        if (message.score >= 10) {
+            // TODO peut etre changer jsute la classe et tout gerer dans le css
+            scoreSpans[message.id ^ 1].style.backgroundColor = '#212121';
+            scoreSpans[message.id ^ 1].style.color = '#DADADA';
+            elements.paddles[message.id ^ 1].setVisible(false);
+        }
     } else if (message.nbPaddles == 4) {
         scoreSpans[message.id].textContent = message.score;
+        if (message.score >= 10) {
+            scoreSpans[message.id].style.backgroundColor = '#212121';
+            scoreSpans[message.id].style.color = '#DADADA';
+            elements.paddles[message.id].setVisible(false);
+        }
     }
 }
