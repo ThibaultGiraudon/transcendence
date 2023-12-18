@@ -1,9 +1,7 @@
 idee elias powershot ratio (je me comprends) (% de powershot)
 pour le mode 4 joueeur si tas plus de vie tes elimine et ton cote devient un mur 
-move base.html in static (all template in static)
 Pas de photo de profile en https
 mettre les balises scripts dans un .js
-changer les poition par 0 et gerer cote js le decalage
 mettre un countdown au mileu au reset pour pas quon crois que cest un lag
 
 mettre le ws en wss pour les notifs
