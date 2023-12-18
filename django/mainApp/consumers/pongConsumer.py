@@ -5,7 +5,7 @@ from    ..gameObjects import *
 import  json
 
 class PongConsumer(AsyncWebsocketConsumer):
-	gameSettings = GameSettings(4, 500)
+	gameSettings = GameSettings(4, 800)
 
 	async def connect(self):
 		await self.accept()

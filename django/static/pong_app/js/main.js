@@ -123,8 +123,8 @@ function create() {
 }
 
 function initsquareSize(message) {
-    config.width = message.width;
-    config.height = message.height;
+    config.width = message.size;
+    config.height = message.size;
     phaserGame = new Phaser.Game(config);
 }
 
