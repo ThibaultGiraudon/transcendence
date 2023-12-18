@@ -27,8 +27,6 @@ class Paddle:
         self.id = id
         self.offset = 0
         self.position = 0
-        self.paddleThickness = 20
-        self.paddleSize = 100
         self.speed = 10
         self.score = 0
         self.keyState = {
@@ -76,13 +74,12 @@ class Ball:
             self.color = "0xFDF3E1"
             self.radius = 10
 
-    def checkPaddleCollision(self, paddle):
-        # TODO a voir si on inverse pas des le debut plutot que inverser chaque fois
+    def checkPaddleCollision(self, paddle, gameSettings):
         if (paddle.id == 2 or paddle.id == 3):
-            paddleThickness, paddleSize = paddle.paddleSize, paddle.paddleThickness
+            paddleThickness, paddleSize = gameSettings.paddleSize, gameSettings.paddleThickness
             offset, position = paddle.position, paddle.offset
         else:
-            paddleThickness, paddleSize = paddle.paddleThickness, paddle.paddleSize
+            paddleThickness, paddleSize = gameSettings.paddleThickness, gameSettings.paddleSize
             offset, position = paddle.offset, paddle.position
 
         closestX = max(offset, min(self.x, offset + paddleThickness))
