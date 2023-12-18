@@ -15,8 +15,6 @@ class GameSettings:
         for id in range(self.nbPaddles):
             self.paddles.append(Paddle(id))
             self.paddles[id].position = self.squareSize / 2 - self.paddleSize / 2
-        
-        for id in range(self.nbPaddles):
             if (id % 2 == 0):
                 self.paddles[id].offset = self.offset
             else:
