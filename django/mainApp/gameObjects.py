@@ -8,33 +8,19 @@ class GameSettings:
         self.paddles = []
         self.ball = Ball()
         self.offset = 20
+        self.paddleThickness = 20
+        self.paddleSize = 100
+        self.limit = self.offset + self.paddleThickness
 
         for id in range(self.nbPaddles):
             self.paddles.append(Paddle(id))
-            self.paddles[id].position = self.squareSize / 2 - self.paddles[id].paddleSize / 2
+            self.paddles[id].position = self.squareSize / 2 - self.paddleSize / 2
         
-        if self.nbPaddles == 2:
-            self.initPaddles2()
-        elif self.nbPaddles == 4:
-            self.initPaddles4()
-
-        self.limit = self.offset + self.paddles[0].paddleThickness
-    
-    def initPaddles2(self):
-        self.paddles[0].offset = self.offset
-        self.paddles[1].offset = self.squareSize - self.paddles[1].paddleThickness - self.offset
-
-    def initPaddles4(self):
-        self.paddles[0].offset = self.offset
-        self.paddles[1].offset = self.squareSize - self.paddles[1].paddleThickness - self.offset
-        self.paddles[2].offset = self.offset
-        self.paddles[3].offset = self.squareSize - self.paddles[3].paddleThickness - self.offset
-
         for id in range(self.nbPaddles):
             if (id % 2 == 0):
                 self.paddles[id].offset = self.offset
             else:
-                self.paddles[id].offset = self.squareSize - self.paddles[id].paddleThickness - self.offset
+                self.paddles[id].offset = self.squareSize - self.limit
 
 class Paddle:
     def __init__(self, id):
