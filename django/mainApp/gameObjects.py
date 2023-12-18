@@ -23,18 +23,18 @@ class GameSettings:
     def initPaddles2(self):
         self.paddles[0].offset = self.offset
         self.paddles[1].offset = self.squareSize - self.paddles[1].thickness - self.offset
-        self.paddles[0].x = self.offset
-        self.paddles[1].x = self.squareSize - self.paddles[1].thickness - self.offset
 
     def initPaddles4(self):
+        self.paddles[0].offset = self.offset
+        self.paddles[1].offset = self.squareSize - self.paddles[1].thickness - self.offset
+        self.paddles[2].offset = self.offset
+        self.paddles[3].offset = self.squareSize - self.paddles[3].thickness - self.offset
+
         for id in range(self.nbPaddles):
             if (id % 2 == 0):
                 self.paddles[id].offset = self.offset
             else:
                 self.paddles[id].offset = self.squareSize - self.paddles[id].thickness - self.offset
-
-        for id in range(2, self.nbPaddles):
-            self.paddles[id].offset, self.paddles[id].position = self.paddles[id].position, self.paddles[id].offset
 
 class Paddle:
     def __init__(self, id):
@@ -91,23 +91,20 @@ class Ball:
             self.radius = 10
 
     def checkPaddleCollision(self, paddle):
+        # TODO a voir si on inverse pas des le debut plutot que inverser chaque fois
         if (paddle.id == 2 or paddle.id == 3):
             thickness, size = paddle.size, paddle.thickness
+            offset, position = paddle.position, paddle.offset
         else:
             thickness, size = paddle.thickness, paddle.size
+            offset, position = paddle.offset, paddle.position
 
-        closestX = max(paddle.offset, min(self.x, paddle.offset + thickness))
-        closestY = max(paddle.position, min(self.y, paddle.position + size))
+        closestX = max(offset, min(self.x, offset + thickness))
+        closestY = max(position, min(self.y, position + size))
         distance = math.sqrt((self.x - closestX)**2 + (self.y - closestY)**2)
 
         if distance < self.radius:
-            collisionID = paddle.id
-            print(collisionID)
-
-
-        # closestX = max(paddle.offset, min(self.x, paddle.offset + paddle.thickness))
-        # closestY = max(paddle.position, min(self.y, paddle.position + paddle.size))
-        # distance = math.sqrt((self.x - closestX)**2 + (self.y - closestY)**2)
+            print("collisions paddle : ", paddle.id)
 
         # if (distance <= self.radius):
         #     print("collisions paddle : ", paddle.id)
@@ -131,6 +128,7 @@ class Ball:
             self.angle = math.pi - self.angle
             id = 1
 
+        # TODO add id to check if wall is collide (update score)
         if (self.y <= 0) or (self.y >= gameSettings.squareSize):
             self.angle = -self.angle
         return (id);
