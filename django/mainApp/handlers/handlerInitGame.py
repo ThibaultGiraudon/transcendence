@@ -72,11 +72,10 @@ async def handle_ball_move(consumer):
 			ball.checkPaddleCollision(paddle, consumer.gameSettings)
 
 		paddleID = ball.checkWallCollision(consumer.gameSettings)
-		# TODO ici pour desactiver ou activer le mur 
-		# if (paddleID >= 0):
-			# await sendUpdateScore(consumer, paddleID)
-			# ball.resetBall(consumer.gameSettings)
-			# await asyncio.sleep(1)
+		if (paddleID >= 0):
+			await sendUpdateScore(consumer, paddleID)
+			ball.resetBall(consumer.gameSettings)
+			await asyncio.sleep(1)
 
 		# TODO change to global var for fps
 		await asyncio.sleep(0.01)
