@@ -9,3 +9,5 @@ mettre le ws en wss pour les notifs
 ca sert a quoi tests.py ya un import a selenium je vois pas pk on a besoin de selenium
 
 mettre gameObjects dans un dossier
+
+leger bug quand on joue a deux la paddle vivante disparait et reapparait
