@@ -72,7 +72,13 @@ async def handle_ball_move(consumer):
 			ball.checkPaddleCollision(paddle, consumer.gameSettings)
 
 		paddleID = ball.checkWallCollision(consumer.gameSettings)
+		paddle = consumer.gameSettings.paddles[paddleID]
 		if (paddleID >= 0):
+			if (paddle.score == 9):
+				paddle.isAlive = False
+				paddle.color = "0x212121"
+			
+			await sendInitPaddlePosition(consumer)	
 			await sendUpdateScore(consumer, paddleID)
 			ball.resetBall(consumer.gameSettings)
 			await asyncio.sleep(1)

@@ -42,6 +42,7 @@ class Paddle:
             "0xF19705",
         ]
         self.color = self.colorArray[self.id]
+        self.isAlive = True
         self.isAI = False
         self.aiTask = None
 
@@ -73,6 +74,9 @@ class Ball:
             self.radius = 10
 
     def checkPaddleCollision(self, paddle, gameSettings):
+        if (paddle.isAlive == False):
+            return    
+
         if (paddle.id == 2 or paddle.id == 3):
             paddleThickness, paddleSize = gameSettings.paddleSize, gameSettings.paddleThickness
             offset, position = paddle.position, paddle.offset
@@ -118,6 +122,8 @@ class Ball:
             self.angle = -self.angle
             id = 3
         if (id >= 2 and gameSettings.nbPaddles == 2):
+            id = -1
+        if (gameSettings.paddles[id].isAlive == False):
             id = -1
         return (id);
 
