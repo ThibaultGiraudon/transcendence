@@ -57,8 +57,9 @@ class Ball:
         self.y = 100.0
         self.radius = 10
         self.color = "0xFDF3E1"
-        self.speed = 5
-        self.speedBase = 8
+        # TODO change
+        self.speed = 3
+        self.speedBase = 3
         self.angle = 1.0
         self.task = None
 
@@ -85,7 +86,23 @@ class Ball:
         distance = math.sqrt((self.x - closestX)**2 + (self.y - closestY)**2)
 
         if distance < self.radius:
-            print("collisions paddle : ", paddle.id)
+            if (paddle.id == 2 or paddle.id == 3):
+                collisionPosition = (closestX - offset) / paddleThickness
+            else:
+                collisionPosition = (closestY - position) / paddleSize
+            reflectionAngle = (collisionPosition - 0.5) * math.pi
+            maxAngle = math.pi / 3
+
+            if (paddle.id == 0):
+                self.angle = max(-maxAngle, min(maxAngle, reflectionAngle))
+            elif (paddle.id == 1):
+                self.angle = math.pi - max(-maxAngle, min(maxAngle, reflectionAngle))
+            elif (paddle.id == 2):
+                self.angle = math.pi / 2 - max(-maxAngle, min(maxAngle, reflectionAngle))
+            elif (paddle.id == 3):
+                self.angle = -math.pi / 2 + max(-maxAngle, min(maxAngle, reflectionAngle))
+
+            self.__powerShot(paddle, collisionPosition)
 
     def checkWallCollision(self, gameSettings):
         id = -1
