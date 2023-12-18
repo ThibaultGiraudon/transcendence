@@ -25,7 +25,7 @@ async def keydownLoop(direction, paddle, consumer):
 	while (paddle.keyState[direction] or paddle.keyState[direction]):
 		if (paddle.keyState[direction] and direction == 'up' and paddle.position > consumer.gameSettings.limit):
 			paddle.moveUp()
-		elif (paddle.keyState[direction] and direction == 'down' and paddle.position < consumer.gameSettings.gameHeight - paddle.size - consumer.gameSettings.limit):
+		elif (paddle.keyState[direction] and direction == 'down' and paddle.position < consumer.gameSettings.squareSize - paddle.size - consumer.gameSettings.limit):
 			paddle.moveDown()
 		
 		await sendUpdatePaddleMessage(consumer, paddle)
@@ -49,8 +49,8 @@ async def calculateAimPosition(consumer):
 	ballX = ball.x - 30
 	ballY = ball.y
 
-	width = consumer.gameSettings.gameWidth - 60
-	height = consumer.gameSettings.gameHeight
+	width = consumer.gameSettings.squareSize - 60
+	height = consumer.gameSettings.squareSize
 
 	for _ in range(5):
 		angle = angle % (2 * math.pi)

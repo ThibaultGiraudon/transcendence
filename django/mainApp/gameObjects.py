@@ -2,17 +2,16 @@ import math
 import random
 
 class GameSettings:
-    def __init__(self, nbPaddles, width, height):
+    def __init__(self, nbPaddles, size):
         self.nbPaddles = nbPaddles
-        self.gameWidth = width
-        self.gameHeight = height
+        self.squareSize = size;
         self.paddles = []
         self.ball = Ball()
         self.offset = 20
 
         for id in range(self.nbPaddles):
             self.paddles.append(Paddle(id))
-            self.paddles[id].position = self.gameHeight / 2 - self.paddles[id].size / 2
+            self.paddles[id].position = self.squareSize / 2 - self.paddles[id].size / 2
         
         if self.nbPaddles == 2:
             self.initPaddles2()
@@ -23,16 +22,16 @@ class GameSettings:
     
     def initPaddles2(self):
         self.paddles[0].offset = self.offset
-        self.paddles[1].offset = self.gameWidth - self.paddles[1].thickness - self.offset
+        self.paddles[1].offset = self.squareSize - self.paddles[1].thickness - self.offset
         self.paddles[0].x = self.offset
-        self.paddles[1].x = self.gameWidth - self.paddles[1].thickness - self.offset
+        self.paddles[1].x = self.squareSize - self.paddles[1].thickness - self.offset
 
     def initPaddles4(self):
         for id in range(self.nbPaddles):
             if (id % 2 == 0):
                 self.paddles[id].offset = self.offset
             else:
-                self.paddles[id].offset = self.gameWidth - self.paddles[id].thickness - self.offset
+                self.paddles[id].offset = self.squareSize - self.paddles[id].thickness - self.offset
 
         for id in range(2, self.nbPaddles):
             self.paddles[id].offset, self.paddles[id].position = self.paddles[id].position, self.paddles[id].offset
@@ -113,11 +112,11 @@ class Ball:
         if (self.x <= 0):
             self.angle = math.pi - self.angle
             id = 0
-        elif (self.x >= gameSettings.gameWidth):
+        elif (self.x >= gameSettings.squareSize):
             self.angle = math.pi - self.angle
             id = 1
 
-        if (self.y <= 0) or (self.y >= gameSettings.gameHeight):
+        if (self.y <= 0) or (self.y >= gameSettings.squareSize):
             self.angle = -self.angle
         return (id);
 
@@ -128,8 +127,8 @@ class Ball:
         self.y += deltaY
 
     def resetBall(self, gameSettings):
-        self.x = gameSettings.gameWidth / 2
-        self.y = gameSettings.gameHeight / 2
+        self.x = gameSettings.squareSize / 2
+        self.y = gameSettings.squareSize / 2
         self.radius = 10
         self.color = "0xFDF3E1"
         self.speed = 5

@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let message = JSON.parse(event.data);
 
         if (message.type === 'init_game_size') {
-            initGameSize(message);
+            initsquareSize(message);
         }
 
         if (message.type === 'init_paddle_position') {
@@ -122,7 +122,7 @@ function create() {
     }
 }
 
-function initGameSize(message) {
+function initsquareSize(message) {
     config.width = message.width;
     config.height = message.height;
     phaserGame = new Phaser.Game(config);
