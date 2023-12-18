@@ -42,6 +42,7 @@ class Paddle:
             "0xF19705",
         ]
         self.color = self.colorArray[self.id]
+        self.isAlive = True
         self.isAI = False
         self.aiTask = None
 
@@ -57,9 +58,8 @@ class Ball:
         self.y = 100.0
         self.radius = 10
         self.color = "0xFDF3E1"
-        # TODO change
-        self.speed = 3
-        self.speedBase = 3
+        self.speed = 5
+        self.speedBase = 8
         self.angle = 1.0
         self.task = None
 
@@ -74,6 +74,9 @@ class Ball:
             self.radius = 10
 
     def checkPaddleCollision(self, paddle, gameSettings):
+        if (paddle.isAlive == False):
+            return    
+
         if (paddle.id == 2 or paddle.id == 3):
             paddleThickness, paddleSize = gameSettings.paddleSize, gameSettings.paddleThickness
             offset, position = paddle.position, paddle.offset
@@ -112,10 +115,16 @@ class Ball:
         elif (self.x >= gameSettings.squareSize):
             self.angle = math.pi - self.angle
             id = 1
-
-        # TODO add id to check if wall is collide (update score)
-        if (self.y <= 0) or (self.y >= gameSettings.squareSize):
+        elif (self.y <= 0):
             self.angle = -self.angle
+            id = 2
+        elif (self.y >= gameSettings.squareSize):
+            self.angle = -self.angle
+            id = 3
+        if (id >= 2 and gameSettings.nbPaddles == 2):
+            id = -1
+        if (gameSettings.paddles[id].isAlive == False):
+            id = -1
         return (id);
 
     def move(self):
@@ -130,4 +139,16 @@ class Ball:
         self.radius = 10
         self.color = "0xFDF3E1"
         self.speed = 5
-        self.angle = random.choice([0, math.pi]) - math.pi / 2
+
+        randomAngle = []
+        for paddle in gameSettings.paddles:
+            if paddle.isAlive and paddle.id == 0:
+                randomAngle.append(math.pi)
+            elif paddle.isAlive and paddle.id == 1:
+                randomAngle.append(0)
+            elif paddle.isAlive and paddle.id == 2:
+                randomAngle.append(-math.pi / 2)
+            elif paddle.isAlive and paddle.id == 3:
+                randomAngle.append(math.pi / 2)
+                
+        self.angle = random.choice(randomAngle)
