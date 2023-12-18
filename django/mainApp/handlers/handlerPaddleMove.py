@@ -88,6 +88,7 @@ async def aiLoop(consumer, paddle):
 	while (True):
 		collisionPosition = await calculateAimPosition(consumer)
 
+		# TODO
 		# aimPosition = collisionPosition - paddle.size / 2
 		aimPosition = collisionPosition - paddle.size / 2 + random.randint(-20, 20)
 	
@@ -100,6 +101,7 @@ async def handle_paddle_move(message, consumer):
 	direction = message['direction']
 	paddle = consumer.gameSettings.paddles[int(message['id'])]
 
+	# TODO
 	# for paddle in consumer.gameSettings.paddles:
 	# 	if (paddle.aiTask == None):
 	# 		paddle.aiTask = asyncio.create_task(aiLoop(consumer, paddle))
