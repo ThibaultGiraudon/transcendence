@@ -11,17 +11,17 @@ async def sendInitsquareSize(consumer):
 async def sendInitPaddlePosition(consumer):
 	for paddle in consumer.gameSettings.paddles:
 		if (paddle.id == 2 or paddle.id == 3):
-			paddleThickness, size = paddle.size, paddle.paddleThickness
+			paddleThickness, paddleSize = paddle.paddleSize, paddle.paddleThickness
 			offset, position = paddle.position, paddle.offset
 		else:
-			paddleThickness, size = paddle.paddleThickness, paddle.size
+			paddleThickness, paddleSize = paddle.paddleThickness, paddle.paddleSize
 			offset, position = paddle.offset, paddle.position
 		message = {
             'type': 'init_paddle_position',
 			'x': offset,
             'y': position,
 			'width': paddleThickness,
-			'height': size,
+			'height': paddleSize,
 			'color': paddle.color,
             'id': paddle.id,
         }
