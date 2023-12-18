@@ -4,8 +4,7 @@ import	asyncio
 async def sendInitsquareSize(consumer):
 	message = {
 		'type': 'init_game_size',
-		'width': consumer.gameSettings.squareSize,
-		'height': consumer.gameSettings.squareSize,
+		'size': consumer.gameSettings.squareSize,
 	}
 	await consumer.send(json.dumps(message))
 
