@@ -1,11 +1,11 @@
 import	json
 import	asyncio
 
-async def sendInitGameSize(consumer):
+async def sendInitsquareSize(consumer):
 	message = {
 		'type': 'init_game_size',
-		'width': consumer.gameSettings.gameWidth,
-		'height': consumer.gameSettings.gameHeight,
+		'width': consumer.gameSettings.squareSize,
+		'height': consumer.gameSettings.squareSize,
 	}
 	await consumer.send(json.dumps(message))
 
@@ -57,7 +57,7 @@ async def sendUpdateScore(consumer, paddleID):
 	await consumer.send(json.dumps(message))
 
 async def handle_ball_move(consumer):
-	await sendInitGameSize(consumer)
+	await sendInitsquareSize(consumer)
 	await sendInitPaddlePosition(consumer)
 	await sendInitScore(consumer, consumer.gameSettings.nbPaddles)
 
