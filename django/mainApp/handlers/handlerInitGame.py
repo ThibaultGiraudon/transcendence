@@ -9,17 +9,20 @@ async def sendInitsquareSize(consumer):
 	await consumer.send(json.dumps(message))
 
 async def sendInitPaddlePosition(consumer):
+	gameSettings = consumer.gameSettings
 	for paddle in consumer.gameSettings.paddles:
 		if (paddle.id == 2 or paddle.id == 3):
-			thickness, size = paddle.size, paddle.thickness
+			paddleThickness, paddleSize = gameSettings.paddleSize, gameSettings.paddleThickness
+			offset, position = paddle.position, paddle.offset
 		else:
-			thickness, size = paddle.thickness, paddle.size
+			paddleThickness, paddleSize = gameSettings.paddleThickness, gameSettings.paddleSize
+			offset, position = paddle.offset, paddle.position
 		message = {
             'type': 'init_paddle_position',
-			'x': paddle.offset,
-            'y': paddle.position,
-			'width': thickness,
-			'height': size,
+			'x': offset,
+            'y': position,
+			'width': paddleThickness,
+			'height': paddleSize,
 			'color': paddle.color,
             'id': paddle.id,
         }
@@ -66,13 +69,14 @@ async def handle_ball_move(consumer):
 		ball.move()
 
 		for paddle in consumer.gameSettings.paddles:
-			ball.checkPaddleCollision(paddle)
+			ball.checkPaddleCollision(paddle, consumer.gameSettings)
 
 		paddleID = ball.checkWallCollision(consumer.gameSettings)
-		if (paddleID >= 0):
-			await sendUpdateScore(consumer, paddleID)
-			ball.resetBall(consumer.gameSettings)
-			await asyncio.sleep(1)
+		# TODO ici pour desactiver ou activer le mur 
+		# if (paddleID >= 0):
+			# await sendUpdateScore(consumer, paddleID)
+			# ball.resetBall(consumer.gameSettings)
+			# await asyncio.sleep(1)
 
 		# TODO change to global var for fps
 		await asyncio.sleep(0.01)
