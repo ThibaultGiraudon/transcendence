@@ -140,7 +140,15 @@ class Ball:
         self.color = "0xFDF3E1"
         self.speed = 5
 
-        if (gameSettings.nbPaddles == 2):
-            self.angle = random.choice([0, math.pi])
-        elif (gameSettings.nbPaddles == 4):
-            self.angle = random.choice([0, math.pi, math.pi / 2, -math.pi / 2])
+        randomAngle = []
+        for paddle in gameSettings.paddles:
+            if paddle.isAlive and paddle.id == 0:
+                randomAngle.append(math.pi)
+            elif paddle.isAlive and paddle.id == 1:
+                randomAngle.append(0)
+            elif paddle.isAlive and paddle.id == 2:
+                randomAngle.append(-math.pi / 2)
+            elif paddle.isAlive and paddle.id == 3:
+                randomAngle.append(math.pi / 2)
+                
+        self.angle = random.choice(randomAngle)
