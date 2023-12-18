@@ -18,30 +18,30 @@ class GameSettings:
         elif self.nbPaddles == 4:
             self.initPaddles4()
 
-        self.limit = self.offset + self.paddles[0].thickness
+        self.limit = self.offset + self.paddles[0].paddleThickness
     
     def initPaddles2(self):
         self.paddles[0].offset = self.offset
-        self.paddles[1].offset = self.squareSize - self.paddles[1].thickness - self.offset
+        self.paddles[1].offset = self.squareSize - self.paddles[1].paddleThickness - self.offset
 
     def initPaddles4(self):
         self.paddles[0].offset = self.offset
-        self.paddles[1].offset = self.squareSize - self.paddles[1].thickness - self.offset
+        self.paddles[1].offset = self.squareSize - self.paddles[1].paddleThickness - self.offset
         self.paddles[2].offset = self.offset
-        self.paddles[3].offset = self.squareSize - self.paddles[3].thickness - self.offset
+        self.paddles[3].offset = self.squareSize - self.paddles[3].paddleThickness - self.offset
 
         for id in range(self.nbPaddles):
             if (id % 2 == 0):
                 self.paddles[id].offset = self.offset
             else:
-                self.paddles[id].offset = self.squareSize - self.paddles[id].thickness - self.offset
+                self.paddles[id].offset = self.squareSize - self.paddles[id].paddleThickness - self.offset
 
 class Paddle:
     def __init__(self, id):
         self.id = id
         self.offset = 0
         self.position = 0
-        self.thickness = 20
+        self.paddleThickness = 20
         self.size = 100
         self.speed = 10
         self.score = 0
@@ -93,13 +93,13 @@ class Ball:
     def checkPaddleCollision(self, paddle):
         # TODO a voir si on inverse pas des le debut plutot que inverser chaque fois
         if (paddle.id == 2 or paddle.id == 3):
-            thickness, size = paddle.size, paddle.thickness
+            paddleThickness, size = paddle.size, paddle.paddleThickness
             offset, position = paddle.position, paddle.offset
         else:
-            thickness, size = paddle.thickness, paddle.size
+            paddleThickness, size = paddle.paddleThickness, paddle.size
             offset, position = paddle.offset, paddle.position
 
-        closestX = max(offset, min(self.x, offset + thickness))
+        closestX = max(offset, min(self.x, offset + paddleThickness))
         closestY = max(position, min(self.y, position + size))
         distance = math.sqrt((self.x - closestX)**2 + (self.y - closestY)**2)
 
