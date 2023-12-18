@@ -57,9 +57,8 @@ class Ball:
         self.y = 100.0
         self.radius = 10
         self.color = "0xFDF3E1"
-        # TODO change
-        self.speed = 3
-        self.speedBase = 3
+        self.speed = 5
+        self.speedBase = 8
         self.angle = 1.0
         self.task = None
 
@@ -112,10 +111,14 @@ class Ball:
         elif (self.x >= gameSettings.squareSize):
             self.angle = math.pi - self.angle
             id = 1
-
-        # TODO add id to check if wall is collide (update score)
-        if (self.y <= 0) or (self.y >= gameSettings.squareSize):
+        elif (self.y <= 0):
             self.angle = -self.angle
+            id = 2
+        elif (self.y >= gameSettings.squareSize):
+            self.angle = -self.angle
+            id = 3
+        if (id >= 2 and gameSettings.nbPaddles == 2):
+            id = -1
         return (id);
 
     def move(self):
@@ -130,4 +133,8 @@ class Ball:
         self.radius = 10
         self.color = "0xFDF3E1"
         self.speed = 5
-        self.angle = random.choice([0, math.pi]) - math.pi / 2
+
+        if (gameSettings.nbPaddles == 2):
+            self.angle = random.choice([0, math.pi])
+        elif (gameSettings.nbPaddles == 4):
+            self.angle = random.choice([0, math.pi, math.pi / 2, -math.pi / 2])
