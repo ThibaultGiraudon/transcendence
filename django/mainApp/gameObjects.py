@@ -91,21 +91,36 @@ class Ball:
             self.radius = 10
 
     def checkPaddleCollision(self, paddle):
-        closestX = max(paddle.offset, min(self.x, paddle.offset + paddle.thickness))
-        closestY = max(paddle.position, min(self.y, paddle.position + paddle.size))
+        if (paddle.id == 2 or paddle.id == 3):
+            thickness, size = paddle.size, paddle.thickness
+        else:
+            thickness, size = paddle.thickness, paddle.size
+
+        closestX = max(paddle.offset, min(self.x, paddle.offset + thickness))
+        closestY = max(paddle.position, min(self.y, paddle.position + size))
         distance = math.sqrt((self.x - closestX)**2 + (self.y - closestY)**2)
 
-        if (distance <= self.radius):
-            collisionPosition = (closestY - paddle.position) / paddle.size
-            reflectionAngle = (collisionPosition - 0.5) * math.pi
-            maxAngle = math.pi / 3
+        if distance < self.radius:
+            collisionID = paddle.id
+            print(collisionID)
 
-            if (paddle.id == 0):
-                self.angle = max(-maxAngle, min(maxAngle, reflectionAngle))
-            elif (paddle.id == 1):
-                self.angle = math.pi - max(-maxAngle, min(maxAngle, reflectionAngle))
 
-            self.__powerShot(paddle, collisionPosition)
+        # closestX = max(paddle.offset, min(self.x, paddle.offset + paddle.thickness))
+        # closestY = max(paddle.position, min(self.y, paddle.position + paddle.size))
+        # distance = math.sqrt((self.x - closestX)**2 + (self.y - closestY)**2)
+
+        # if (distance <= self.radius):
+        #     print("collisions paddle : ", paddle.id)
+        #     collisionPosition = (closestY - paddle.position) / paddle.size
+        #     reflectionAngle = (collisionPosition - 0.5) * math.pi
+        #     maxAngle = math.pi / 3
+
+        #     if (paddle.id == 0):
+        #         self.angle = max(-maxAngle, min(maxAngle, reflectionAngle))
+        #     elif (paddle.id == 1):
+        #         self.angle = math.pi - max(-maxAngle, min(maxAngle, reflectionAngle))
+
+        #     self.__powerShot(paddle, collisionPosition)
 
     def checkWallCollision(self, gameSettings):
         id = -1
@@ -132,4 +147,4 @@ class Ball:
         self.radius = 10
         self.color = "0xFDF3E1"
         self.speed = 5
-        self.angle = random.choice([0, math.pi])
+        self.angle = random.choice([0, math.pi]) - math.pi / 2
