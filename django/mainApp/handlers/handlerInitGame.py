@@ -1,26 +1,32 @@
 import	json
 import	asyncio
 
-async def sendInitGameSize(consumer):
+async def sendInitsquareSize(consumer):
 	message = {
 		'type': 'init_game_size',
-		'width': consumer.gameSettings.gameWidth,
-		'height': consumer.gameSettings.gameHeight,
+		'size': consumer.gameSettings.squareSize,
 	}
 	await consumer.send(json.dumps(message))
 
 async def sendInitPaddlePosition(consumer):
-    for paddle in consumer.gameSettings.paddles:
-        message = {
+	gameSettings = consumer.gameSettings
+	for paddle in consumer.gameSettings.paddles:
+		if (paddle.id == 2 or paddle.id == 3):
+			paddleThickness, paddleSize = gameSettings.paddleSize, gameSettings.paddleThickness
+			offset, position = paddle.position, paddle.offset
+		else:
+			paddleThickness, paddleSize = gameSettings.paddleThickness, gameSettings.paddleSize
+			offset, position = paddle.offset, paddle.position
+		message = {
             'type': 'init_paddle_position',
-			'x': paddle.offset,
-            'y': paddle.position,
-			'width': paddle.width,
-			'height': paddle.height,
+			'x': offset,
+            'y': position,
+			'width': paddleThickness,
+			'height': paddleSize,
 			'color': paddle.color,
             'id': paddle.id,
         }
-        await consumer.send(json.dumps(message))
+		await consumer.send(json.dumps(message))
 
 async def sendInitScore(consumer, nbPaddles):
 	for paddle in consumer.gameSettings.paddles:
@@ -53,7 +59,7 @@ async def sendUpdateScore(consumer, paddleID):
 	await consumer.send(json.dumps(message))
 
 async def handle_ball_move(consumer):
-	await sendInitGameSize(consumer)
+	await sendInitsquareSize(consumer)
 	await sendInitPaddlePosition(consumer)
 	await sendInitScore(consumer, consumer.gameSettings.nbPaddles)
 
@@ -63,19 +69,23 @@ async def handle_ball_move(consumer):
 		ball.move()
 
 		for paddle in consumer.gameSettings.paddles:
-			ball.checkPaddleCollision(paddle)
+			ball.checkPaddleCollision(paddle, consumer.gameSettings)
 
 		paddleID = ball.checkWallCollision(consumer.gameSettings)
+		paddle = consumer.gameSettings.paddles[paddleID]
 		if (paddleID >= 0):
+			if (paddle.score == 9):
+				paddle.isAlive = False
+				paddle.color = "0x212121"
+			
+			await sendInitPaddlePosition(consumer)	
 			await sendUpdateScore(consumer, paddleID)
 			ball.resetBall(consumer.gameSettings)
 			await asyncio.sleep(1)
 
 		# TODO change to global var for fps
-		# TODO tmp (0.01)
 		await asyncio.sleep(0.01)
 		await sendUpdateBallPosition(consumer, ball)
 
 async def handle_init_game(consumer):
-	consumer.gameSettings.ball.resetBall(consumer.gameSettings)
 	consumer.gameSettings.ball.task = asyncio.create_task(handle_ball_move(consumer))
