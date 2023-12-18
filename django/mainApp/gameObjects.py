@@ -8,41 +8,23 @@ class GameSettings:
         self.paddles = []
         self.ball = Ball()
         self.offset = 20
+        self.paddleThickness = 20
+        self.paddleSize = 100
+        self.limit = self.offset + self.paddleThickness
 
         for id in range(self.nbPaddles):
             self.paddles.append(Paddle(id))
-            self.paddles[id].position = self.squareSize / 2 - self.paddles[id].size / 2
-        
-        if self.nbPaddles == 2:
-            self.initPaddles2()
-        elif self.nbPaddles == 4:
-            self.initPaddles4()
-
-        self.limit = self.offset + self.paddles[0].thickness
-    
-    def initPaddles2(self):
-        self.paddles[0].offset = self.offset
-        self.paddles[1].offset = self.squareSize - self.paddles[1].thickness - self.offset
-        self.paddles[0].x = self.offset
-        self.paddles[1].x = self.squareSize - self.paddles[1].thickness - self.offset
-
-    def initPaddles4(self):
-        for id in range(self.nbPaddles):
+            self.paddles[id].position = self.squareSize / 2 - self.paddleSize / 2
             if (id % 2 == 0):
                 self.paddles[id].offset = self.offset
             else:
-                self.paddles[id].offset = self.squareSize - self.paddles[id].thickness - self.offset
-
-        for id in range(2, self.nbPaddles):
-            self.paddles[id].offset, self.paddles[id].position = self.paddles[id].position, self.paddles[id].offset
+                self.paddles[id].offset = self.squareSize - self.limit
 
 class Paddle:
     def __init__(self, id):
         self.id = id
         self.offset = 0
         self.position = 0
-        self.thickness = 20
-        self.size = 100
         self.speed = 10
         self.score = 0
         self.keyState = {
@@ -75,8 +57,9 @@ class Ball:
         self.y = 100.0
         self.radius = 10
         self.color = "0xFDF3E1"
-        self.speed = 5
-        self.speedBase = 8
+        # TODO change
+        self.speed = 3
+        self.speedBase = 3
         self.angle = 1.0
         self.task = None
 
@@ -90,13 +73,23 @@ class Ball:
             self.color = "0xFDF3E1"
             self.radius = 10
 
-    def checkPaddleCollision(self, paddle):
-        closestX = max(paddle.offset, min(self.x, paddle.offset + paddle.thickness))
-        closestY = max(paddle.position, min(self.y, paddle.position + paddle.size))
+    def checkPaddleCollision(self, paddle, gameSettings):
+        if (paddle.id == 2 or paddle.id == 3):
+            paddleThickness, paddleSize = gameSettings.paddleSize, gameSettings.paddleThickness
+            offset, position = paddle.position, paddle.offset
+        else:
+            paddleThickness, paddleSize = gameSettings.paddleThickness, gameSettings.paddleSize
+            offset, position = paddle.offset, paddle.position
+
+        closestX = max(offset, min(self.x, offset + paddleThickness))
+        closestY = max(position, min(self.y, position + paddleSize))
         distance = math.sqrt((self.x - closestX)**2 + (self.y - closestY)**2)
 
-        if (distance <= self.radius):
-            collisionPosition = (closestY - paddle.position) / paddle.size
+        if distance < self.radius:
+            if (paddle.id == 2 or paddle.id == 3):
+                collisionPosition = (closestX - offset) / paddleThickness
+            else:
+                collisionPosition = (closestY - position) / paddleSize
             reflectionAngle = (collisionPosition - 0.5) * math.pi
             maxAngle = math.pi / 3
 
@@ -104,6 +97,10 @@ class Ball:
                 self.angle = max(-maxAngle, min(maxAngle, reflectionAngle))
             elif (paddle.id == 1):
                 self.angle = math.pi - max(-maxAngle, min(maxAngle, reflectionAngle))
+            elif (paddle.id == 2):
+                self.angle = math.pi / 2 - max(-maxAngle, min(maxAngle, reflectionAngle))
+            elif (paddle.id == 3):
+                self.angle = -math.pi / 2 + max(-maxAngle, min(maxAngle, reflectionAngle))
 
             self.__powerShot(paddle, collisionPosition)
 
@@ -116,6 +113,7 @@ class Ball:
             self.angle = math.pi - self.angle
             id = 1
 
+        # TODO add id to check if wall is collide (update score)
         if (self.y <= 0) or (self.y >= gameSettings.squareSize):
             self.angle = -self.angle
         return (id);
@@ -132,4 +130,4 @@ class Ball:
         self.radius = 10
         self.color = "0xFDF3E1"
         self.speed = 5
-        self.angle = random.choice([0, math.pi])
+        self.angle = random.choice([0, math.pi]) - math.pi / 2
