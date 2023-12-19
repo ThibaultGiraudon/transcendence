@@ -108,24 +108,27 @@ class Ball:
             self.__powerShot(paddle, collisionPosition)
 
     def checkWallCollision(self, gameSettings):
-        id = -1
-        if (self.x <= 0):
-            self.angle = math.pi - self.angle
-            id = 0
-        elif (self.x >= gameSettings.squareSize):
-            self.angle = math.pi - self.angle
-            id = 1
-        elif (self.y <= 0):
-            self.angle = -self.angle
-            id = 2
-        elif (self.y >= gameSettings.squareSize):
-            self.angle = -self.angle
-            id = 3
-        if (id >= 2 and gameSettings.nbPaddles == 2):
-            id = -1
-        if (gameSettings.paddles[id].isAlive == False):
-            id = -1
-        return (id);
+        maxPosition = gameSettings.squareSize - gameSettings.limit
+        for paddle in gameSettings.paddles:
+            if (paddle.isAlive == True):
+                if (paddle.id == 0 and self.x <= 0):
+                    return (0)
+                elif (paddle.id == 1 and self.x >= gameSettings.squareSize):
+                    return (1)
+                elif (paddle.id == 2 and self.y <= 0):
+                    return (2)
+                elif (paddle.id == 3 and self.y >= gameSettings.squareSize):
+                    return (3)
+            else:
+                if (paddle.id == 0 and self.x <= gameSettings.limit):
+                    self.angle = math.pi - self.angle
+                elif (paddle.id == 1 and self.x >= maxPosition):
+                    self.angle = math.pi - self.angle
+                elif (paddle.id == 2 and self.y <= gameSettings.limit):
+                    self.angle = -self.angle
+                elif (paddle.id == 3 and self.y >= maxPosition):
+                    self.angle = -self.angle
+        return (-1)
 
     def move(self):
         deltaX = self.speed * math.cos(self.angle) 
