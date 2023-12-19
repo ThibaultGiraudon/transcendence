@@ -8,7 +8,7 @@ class Ball:
         self.radius = 10
         self.color = "0xFDF3E1"
         self.speed = 5
-        self.speedBase = 8
+        self.speedBase = 10
         self.angle = 1.0
         self.task = None
     
@@ -24,7 +24,7 @@ class Ball:
 
     def __powerShot(self, paddle, collisionPosition):
         speedFactor = 1 - abs(collisionPosition - 0.5)
-        self.speed = self.speedBase * speedFactor * 1.5
+        self.speed = self.speedBase * speedFactor * 1.4
         if (speedFactor > 0.9):
             self.color = paddle.color
             self.radius = 8
