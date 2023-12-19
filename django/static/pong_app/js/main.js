@@ -69,7 +69,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (message.type === 'init_score') {
-            console.log(message);
             initScore(message);
         }
 
@@ -82,7 +81,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (message.type === 'update_score') {
-            console.log(message);
             updateScore(message);
         }
     });
@@ -117,7 +115,7 @@ const elements = {
 };
 
 function create() {
-    elements.field = this.add.rectangle(0, 0, 0, 0, 0x404040, 0.4).setVisible(false);
+    elements.field = this.add.rectangle(0, 0, 0, 0, 0x404040, 0.4).setVisible(true);
     elements.ball = this.add.circle(0, 0, 0, 0xFDF3E1).setVisible(false);
     for (let i = 0; i < 4; i++) {
         elements.paddles[i] = this.add.rectangle(0, 0, 0, 0, 0xFFFFFF).setVisible(false);
@@ -137,14 +135,11 @@ function initPaddlePosition(message, paddle) {
     paddle.width = parseFloat(message.width)
     paddle.height = parseFloat(message.height)
     paddle.setFillStyle(message.color, 1);
-    if (parseFloat(message.id) == 0) {
-        const offset = parseFloat(message.width) + parseFloat(message.x);
-        elements.field.setVisible(true)
-        elements.field.x = offset
-        elements.field.y = offset
-        elements.field.width = config.width - offset * 2
-        elements.field.height = config.height - offset * 2
-    }
+    const limit = parseFloat(message.limit);
+    elements.field.x = limit
+    elements.field.y = limit
+    elements.field.width = config.width - limit * 2
+    elements.field.height = config.height - limit * 2
 }
 
 function initScore(message) {
@@ -159,9 +154,15 @@ function initScore(message) {
     scoreSpans[message.id].textContent = message.score;
     scoreSpans[message.id].style.backgroundColor = backgroundColors[message.id];
     if (message.score >= 10) {
-        scoreSpans[message.id].style.backgroundColor = '#212121';
-        scoreSpans[message.id].style.color = '#DADADA';
-        elements.paddles[message.id].setVisible(false);
+        if (message.nbPaddles == 4) {
+            scoreSpans[message.id].style.backgroundColor = '#212121';
+            scoreSpans[message.id].style.color = '#DADADA';
+            elements.paddles[message.id].setVisible(false);
+        } else if (message.nbPaddles == 2) {
+            scoreSpans[message.id ^ 1].style.backgroundColor = '#212121';
+            scoreSpans[message.id ^ 1].style.color = '#DADADA';
+            elements.paddles[message.id ^ 1].setVisible(false);
+        }
     }
 }
 
@@ -188,10 +189,16 @@ function updateBallPosition(message) {
 function updateScore(message) {
     const scoreSpans = document.querySelectorAll('.player_score');
     scoreSpans[message.id].textContent = message.score;
+    // TODO a mettre dans un fucntion car on a pareil dans initScore
     if (message.score >= 10) {
-        // TODO peut etre changer jsute la classe et tout gerer dans le css
-        scoreSpans[message.id].style.backgroundColor = '#212121';
-        scoreSpans[message.id].style.color = '#DADADA';
-        elements.paddles[message.id].setVisible(false);
+        if (message.nbPaddles == 4) {
+            scoreSpans[message.id].style.backgroundColor = '#212121';
+            scoreSpans[message.id].style.color = '#DADADA';
+            elements.paddles[message.id].setVisible(false);
+        } else if (message.nbPaddles == 2) {
+            scoreSpans[message.id ^ 1].style.backgroundColor = '#212121';
+            scoreSpans[message.id ^ 1].style.color = '#DADADA';
+            elements.paddles[message.id ^ 1].setVisible(false);
+        }
     }
 }

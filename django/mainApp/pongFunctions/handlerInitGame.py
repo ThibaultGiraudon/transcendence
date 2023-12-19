@@ -27,6 +27,7 @@ async def sendInitPaddlePosition(consumer):
 			'height': paddleSize,
 			'color': paddle.color,
             'id': paddle.id,
+			'limit': consumer.gameSettings.limit
         }
 		await consumer.send(json.dumps(message))
 
@@ -65,6 +66,7 @@ async def sendUpdateScore(consumer, paddleID):
 	message = {
 		'type': 'update_score',
 		'score': score,	
+		'nbPaddles': consumer.gameSettings.nbPaddles,
 		'id': id,
 	}
 	await consumer.send(json.dumps(message))
