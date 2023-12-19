@@ -11,6 +11,16 @@ class Ball:
         self.speedBase = 8
         self.angle = 1.0
         self.task = None
+    
+    def __getReflectionAngle(self, paddle, maxAngle, reflectionAngle):
+        if (paddle.id == 0):
+            self.angle = max(-maxAngle, min(maxAngle, reflectionAngle))
+        elif (paddle.id == 1):
+            self.angle = math.pi - max(-maxAngle, min(maxAngle, reflectionAngle))
+        elif (paddle.id == 2):
+            self.angle = math.pi / 2 - max(-maxAngle, min(maxAngle, reflectionAngle))
+        elif (paddle.id == 3):
+            self.angle = -math.pi / 2 + max(-maxAngle, min(maxAngle, reflectionAngle))
 
     def __powerShot(self, paddle, collisionPosition):
         speedFactor = 1 - abs(collisionPosition - 0.5)
@@ -21,6 +31,19 @@ class Ball:
         else:
             self.color = "0xFDF3E1"
             self.radius = 10
+
+    def __getRandomAngle(self, gameSettings):
+        randomAngle = []
+        for paddle in gameSettings.paddles:
+            if paddle.isAlive and paddle.id == 0:
+                randomAngle.append(math.pi)
+            elif paddle.isAlive and paddle.id == 1:
+                randomAngle.append(0)
+            elif paddle.isAlive and paddle.id == 2:
+                randomAngle.append(-math.pi / 2)
+            elif paddle.isAlive and paddle.id == 3:
+                randomAngle.append(math.pi / 2)
+        return (randomAngle)
 
     def checkPaddleCollision(self, paddle, gameSettings):
         if (paddle.isAlive == False):
@@ -45,15 +68,7 @@ class Ball:
             reflectionAngle = (collisionPosition - 0.5) * math.pi
             maxAngle = math.pi / 3
 
-            if (paddle.id == 0):
-                self.angle = max(-maxAngle, min(maxAngle, reflectionAngle))
-            elif (paddle.id == 1):
-                self.angle = math.pi - max(-maxAngle, min(maxAngle, reflectionAngle))
-            elif (paddle.id == 2):
-                self.angle = math.pi / 2 - max(-maxAngle, min(maxAngle, reflectionAngle))
-            elif (paddle.id == 3):
-                self.angle = -math.pi / 2 + max(-maxAngle, min(maxAngle, reflectionAngle))
-
+            self.__getReflectionAngle(paddle, maxAngle, reflectionAngle)
             self.__powerShot(paddle, collisionPosition)
 
     def checkWallCollision(self, gameSettings):
@@ -92,15 +107,5 @@ class Ball:
         self.color = "0xFDF3E1"
         self.speed = 5
 
-        randomAngle = []
-        for paddle in gameSettings.paddles:
-            if paddle.isAlive and paddle.id == 0:
-                randomAngle.append(math.pi)
-            elif paddle.isAlive and paddle.id == 1:
-                randomAngle.append(0)
-            elif paddle.isAlive and paddle.id == 2:
-                randomAngle.append(-math.pi / 2)
-            elif paddle.isAlive and paddle.id == 3:
-                randomAngle.append(math.pi / 2)
-                
+        randomAngle = self.__getRandomAngle(gameSettings)
         self.angle = random.choice(randomAngle)
