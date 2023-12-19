@@ -55,9 +55,10 @@ class CustomUser(AbstractUser):
 	photo = models.ImageField(upload_to='static/users_app/img', default='default.jpg')
 	channels = models.JSONField(default=dict)
 	messages = models.JSONField(default=dict)
-	follows = ArrayField(models.CharField(max_length=150), default=list)
+	follows = ArrayField(models.IntegerField(), default=list)
 	status = models.CharField(max_length=150, default="online")
 	nbNewNotifications = models.IntegerField(default=0)
+	#blockedUsers = ArrayField(models.IntegerField(), default=list)
 
 	# Use the custom manager
 	objects = CustomUserManager()

@@ -18,10 +18,10 @@ urlpatterns = [
     path('profile/', usersView.profile_me, name="profile_me"),
     path('profile/<str:username>', usersView.profile, name="profile"),
     path('users/', usersView.users, name="users"),
-    path('follow/<str:username>', usersView.follow, name="follow"),
-    path('unfollow/<str:username>', usersView.unfollow, name="unfollow"),
+    path('follow/<int:id>', usersView.follow, name="follow"),
+    path('unfollow/<int:id>', usersView.unfollow, name="unfollow"),
 
     path("chat/", chatView.chat, name="chat"),
     path("chat/<str:room_name>/", chatView.room, name="room"),
-    path("create_channel/<str:user_to>/", chatView.create_channel, name="create_channel")
+    path("create_channel/<int:id>/", chatView.create_channel, name="create_channel")
 ]

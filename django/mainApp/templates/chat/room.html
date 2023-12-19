@@ -10,6 +10,9 @@ Chat Room
 {% endblock %}
 
 {% block content %}
+
+<h2>Participants</h2>
+
 <div class="container">
 	<img src={{ user_to.photo.url }} alt="profile picture" width="60" height="60">
 	<h3>{{ user_to.username }}</h3>
@@ -34,7 +37,7 @@ Chat Room
 		const data = JSON.parse(e.data);
 		const messageContainer = document.createElement('p');
 		messageContainer.textContent = data.message;
-		messageContainer.className = data.sender === "{{ request.user.username }}" ? 'my-message' : 'other-message';
+		messageContainer.className = data.sender === "{{ request.user.id }}" ? 'my-message' : 'other-message';
 		document.querySelector('#chat-log').appendChild(messageContainer);
 		var chatLog = document.querySelector('.chat-log');
 		chatLog.scrollTop = chatLog.scrollHeight;
@@ -65,7 +68,7 @@ Chat Room
 		const message = messageInputDom.value.trim();
 		if (!message)
 		  return;
-		const sender = "{{ request.user.username }}";
+		const sender = "{{ request.user.id }}";
 		chatSocket.send(JSON.stringify({
 		  'message': message,
 		  'sender': sender

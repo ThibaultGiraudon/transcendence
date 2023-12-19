@@ -14,7 +14,7 @@
 <img src={{ user.photo.url }} alt="profile picture" width="100" height="100">
 <p>{{ user.username }}</p>
 
-{% if user.username == request.user.username %}
+{% if user.id == request.user.id %}
 
 <p>{{ user.email}}</p>
 
@@ -49,16 +49,16 @@
 
 </br>
 
-{% if user.username in request.user.follows %}
+{% if user.id in request.user.follows %}
     <p>L'utilisateur est déjà suivi.</p>
 {% else %}
-    <a href="/follow/{{ user.username }}">
+    <a href="/follow/{{ user.id }}">
         <button>Follow</button>
     </a>
 {% endif %}
 
-{% if user.username in request.user.follows %}
-	<a href="/unfollow/{{ user.username }}">
+{% if user.id in request.user.follows %}
+	<a href="/unfollow/{{ user.id }}">
 		<button>Unfollow</button>
 	</a>
 {% endif %}
@@ -68,7 +68,7 @@
 		<button>Send a chat</button>
 	</a>
 {% else %}
-	<a href="/create_channel/{{ user.username }}">
+	<a href="/create_channel/{{ user.id }}">
 		<button>Send a chat</button>
 	</a>
 {% endif%}

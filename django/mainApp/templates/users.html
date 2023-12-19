@@ -15,7 +15,7 @@ All users
 <div class="list">
 	{% for x in friends %}
   		<a href="/profile/{{ x.username }}">
-			<div class="container" data-user-id="{{ x.username }}">
+			<div class="container" data-user-id="{{ x.id }}">
 			<img src={{ x.photo.url }} alt="profile picture" width="60" height="60">
 			<h3>{{ x.username }}</h3>
 			{% if x.status != 'offline' %}
@@ -32,8 +32,8 @@ All users
 <div class="list">
 	{% for x in all_users %}
 	<a href="/profile/{{ x.username }}">
-	  {% if x.username != user.username and not x in friends%}
-		  <div class="container" data-user-id="{{ x.username }}">
+	  {% if x.id != user.id and not x in friends%}
+		  <div class="container" data-user-id="{{ x.id }}">
 			<img src={{ x.photo.url }} alt="profile picture" width="60" height="60">
 			<h3>{{ x.username }}</h3>
 			{% if x.status != 'offline' %}
@@ -68,7 +68,7 @@ All users
 			if (message.type === 'status_update') {
 				console.log('status_update');
 				// Trouvez l'élément DOM correspondant à l'utilisateur
-				var userElement = document.querySelector('.container[data-user-id="' + message.username + '"]');
+				var userElement = document.querySelector('.container[data-user-id="' + message.id + '"]');
 				console.log(userElement);
 
 				// Mettez à jour le statut de l'utilisateur
