@@ -16,9 +16,6 @@ from asgiref.sync import async_to_sync
 from ..models import Notification
 
 # 42 API
-API_URL = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fcheck_authorize%2F&response_type=code"
-API_URR = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=https%3A%2F%2Flocalhost%3A8001%2Fcheck_authorize%2F&response_type=code"
-API_URU = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=https%3A%2F%2Flocalhost%3A8001%2Fcheck_authorize%2F&response_type=code"
 API_USER = 'https://api.intra.42.fr/v2/me'
 token = '690c107e335181f7039f3792799aebb1fa4d55b320bd232dd68877c0cc13545d'
 
@@ -272,7 +269,7 @@ def handle_42_callback(request, code):
 	token_params = {
 		'grant_type': 'authorization_code',
 		'client_id': 'u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c',
-		'client_secret': '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',
+		'client_secret': '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',
 		'code': code,
 		'redirect_uri': redirect_uri
 	}
@@ -342,12 +339,14 @@ def profile(request, username):
 
 	photo_name = request.user.photo.name
 	User = get_user_model()
+	user_to = User.objects.get(username=username)
 
 	room = None
-	for user, channel in request.user.channels.items():
-		if user == username:
+	for id, channel in request.user.channels.items():
+		if int(id) == user_to.id:
 			room = channel
 			break
+
 	try:
 		user = User.objects.get(username=username)
 	except User.DoesNotExist:
