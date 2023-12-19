@@ -32,6 +32,10 @@ async def keydownLoop(direction, paddle, consumer):
 		await asyncio.sleep(0.01) # TODO change to global var for speed
 
 async def moveAiToAim(paddle, consumer, aimPosition):
+	if (aimPosition < consumer.gameSettings.limit):
+		aimPosition = consumer.gameSettings.limit
+	elif (aimPosition > consumer.gameSettings.squareSize - consumer.gameSettings.paddleSize - consumer.gameSettings.limit):
+		aimPosition = consumer.gameSettings.squareSize - consumer.gameSettings.paddleSize - consumer.gameSettings.limit
 	while (True):
 		if (aimPosition - 10 < paddle.position < aimPosition + 10):
 			paddle.position = round(aimPosition)
