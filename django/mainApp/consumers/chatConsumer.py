@@ -14,21 +14,24 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 	@database_sync_to_async
 	def change_status_to_online(self):
-		self.scope['user'].status = 'online'
-		self.scope['user'].save()
-
+		User = get_user_model()
+		user = User.objects.get(id=self.scope['user'].id)
+		user.status = 'online'
+		user.save()
+		
 	@database_sync_to_async
 	def get_user_to(self, room_name):
 		User = get_user_model()
 		users = User.objects.all()
 		for user in users:
-			if room_name in user.channels.values() and user.username != self.scope["user"].username:
+			if room_name in user.channels.values() and user.id != self.scope["user"].id:
 				return user
 		return None
 		
 	async def connect(self):
 		self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
 		self.room_group_name = f"chat_{self.room_name}"
+		print(f"Room name: {self.room_name}") # Add this line for debugging
 
 		# Join room group
 		await self.channel_layer.group_add(self.room_group_name, self.channel_name)
@@ -40,6 +43,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 	def get_previous_messages(self):
 		User = get_user_model()
 		messages = []
+
 		for user in User.objects.all():
 			if self.room_name in user.messages:
 				messages.extend(user.messages[self.room_name])
@@ -67,8 +71,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		userToSend = await self.get_user_to(self.room_name)
 		
 		# Send a notification
-		if userToSend is not None and userToSend.status != f"chat:{self.scope['user'].username}":
-			await self.create_notification(userToSend, f"You have a new message from {sender}.")
+		if userToSend is not None and userToSend.status != f"chat:{self.scope['user'].id}":
+			await self.create_notification(userToSend, f"You have a new message from {self.scope['user'].username}.")
 
 		# Send message to room group
 		await self.channel_layer.group_send(
@@ -78,9 +82,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
 	@database_sync_to_async
 	def save_message(self, sender, message, timestamp):
 		User = get_user_model()
-		user = User.objects.get(username=sender)
+		user = User.objects.get(id=sender)
+
+
+		user.refresh_from_db()
 		if self.room_name not in user.messages:
 			user.messages[self.room_name] = []
+
 		user.messages[self.room_name].append({'sender': sender, 'message': message, 'timestamp': timestamp})
 		user.save()
 

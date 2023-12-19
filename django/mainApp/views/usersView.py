@@ -143,13 +143,13 @@ def sign_out(request):
 	channel_layer = get_channel_layer()
 
 	async_to_sync(channel_layer.group_send)(
-        'status',
-        {
-            'type': 'status_update',
-            'username': request.user.username,
-            'status': 'offline'
-        }
-    )
+		'status',
+		{
+			'type': 'status_update',
+			'username': request.user.username,
+			'status': 'offline'
+		}
+	)
  
 	if request.user.is_authenticated:
 		logout(request)
@@ -395,7 +395,7 @@ def users(request):
 	all_users = User.objects.all()
 	friends = []
 	for user in all_users:
-		if user.username in request.user.follows:
+		if user.id in request.user.follows:
 			friends.append(user)
 	context = {'all_users':all_users, 'friends':friends}
 
@@ -404,23 +404,37 @@ def users(request):
 	elif request.method == 'POST':
 		return redirect('users')
 
-def follow(request, username):
+def follow(request, id):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
 
 	User = get_user_model()
-	userTo = User.objects.get(username=username)
-	notification = Notification(user=userTo, message=f"{username} is now following you.")
+	try:
+		userTo = User.objects.get(id=id)
+		if id in request.user.follows:
+			raise ValueError
+	except (User.DoesNotExist, ValueError):
+		return redirect('users')
+	
+	notification = Notification(user=userTo, message=f"{request.user.username} is now following you.")
 	notification.save()
  
-	request.user.follows.append(username)
+	request.user.follows.append(id)
 	request.user.save()
-	return redirect('profile', username=username)
+	return redirect('profile', username=userTo.username)
 
-def unfollow(request, username):
+def unfollow(request, id):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
+	
+	User = get_user_model()
+	try:
+		userTo = User.objects.get(id=id)
+		if id not in request.user.follows:
+			raise ValueError
+	except (User.DoesNotExist, ValueError):
+		return redirect('users')
 
-	request.user.follows.remove(username)
+	request.user.follows.remove(id)
 	request.user.save()
-	return redirect('profile', username=username)
+	return redirect('profile', username=userTo.username)
