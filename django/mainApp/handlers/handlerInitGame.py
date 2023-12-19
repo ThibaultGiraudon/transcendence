@@ -11,6 +11,8 @@ async def sendInitsquareSize(consumer):
 async def sendInitPaddlePosition(consumer):
 	gameSettings = consumer.gameSettings
 	for paddle in consumer.gameSettings.paddles:
+		if (paddle.isAlive == False):
+			continue
 		if (paddle.id == 2 or paddle.id == 3):
 			paddleThickness, paddleSize = gameSettings.paddleSize, gameSettings.paddleThickness
 			offset, position = paddle.position, paddle.offset
@@ -30,6 +32,8 @@ async def sendInitPaddlePosition(consumer):
 
 async def sendInitScore(consumer, nbPaddles):
 	for paddle in consumer.gameSettings.paddles:
+		if (paddle.isAlive == False):
+			continue
 		message = {
 			'type': 'init_score',
 			'nbPaddles': nbPaddles,
