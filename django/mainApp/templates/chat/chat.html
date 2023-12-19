@@ -15,16 +15,16 @@ Chat Rooms
 <br>
 
 {% if chats %}
-    {% for chat in chats %}
-        <a href={{ chat.link }}>
-            <div class="container">
-                <img src={{ chat.user.photo.url }} alt="profile picture" width="60" height="60">
-                <h3>{{ chat.user.username }}</h3>
-            </div>
-        </a>
-    {% endfor %}
+	{% for chat in chats %}
+		<a href={{ chat.room_name }}>
+			<div class="container">
+				{% comment %} <img src={{ chat.user.photo.url }} alt="profile picture" width="60" height="60"> {% endcomment %}
+				<h3>{{ chat.name }}</h3>
+			</div>
+		</a>
+	{% endfor %}
 {% else %}
-    <p>No channels available.</p>
+	<p>No channels available.</p>
 {% endif %}
 
 <style>

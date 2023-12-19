@@ -12,6 +12,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		notification = Notification(user=user, message=message)
 		notification.save()
 
+
 	@database_sync_to_async
 	def change_status_to_online(self):
 		User = get_user_model()
@@ -19,19 +20,26 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		user.status = 'online'
 		user.save()
 		
+
 	@database_sync_to_async
-	def get_user_to(self, room_name):
-		User = get_user_model()
-		users = User.objects.all()
-		for user in users:
-			if room_name in user.channels.values() and user.id != self.scope["user"].id:
-				return user
-		return None
+	def get_users(self, room_name):
+		users = []
+
+		from mainApp.models import Channel
+		try:
+			channel = Channel.objects.get(room_name=room_name)
+			for user in channel.users.all():
+				if user.id != self.scope['user'].id:
+					users.append(user)
+			
+			return users
+		except Channel.DoesNotExist:
+			return None
 		
+
 	async def connect(self):
 		self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
 		self.room_group_name = f"chat_{self.room_name}"
-		print(f"Room name: {self.room_name}") # Add this line for debugging
 
 		# Join room group
 		await self.channel_layer.group_add(self.room_group_name, self.channel_name)
@@ -39,62 +47,102 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 		await self.send_previous_messages()
 	
+
 	@database_sync_to_async
 	def get_previous_messages(self):
-		User = get_user_model()
-		messages = []
+		from mainApp.models import Channel
+		
+		# Get the channel
+		try:
+			channel = Channel.objects.get(room_name=self.room_name)
+		except Channel.DoesNotExist:
+			return []
+		
+		return channel.messages
 
-		for user in User.objects.all():
-			if self.room_name in user.messages:
-				messages.extend(user.messages[self.room_name])
-		return messages
 
 	async def send_previous_messages(self):
+		# Get messages and sort them
 		previous_messages = await self.get_previous_messages()
+		if previous_messages is None or len(previous_messages) == 0:
+			return
 		previous_messages.sort(key=lambda msg: msg['timestamp'])
+
+		# Send the previous messages
 		for message in previous_messages:
 			await self.send(text_data=json.dumps(message))
+
 
 	async def disconnect(self, close_code):
 		await self.change_status_to_online()
 		await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
-	# Receive message from WebSocket
+
 	async def receive(self, text_data):
+		# Receive message from WebSocket
 		text_data_json = json.loads(text_data)
 		message = text_data_json.get("message")
 		sender = text_data_json.get("sender")
+		username = text_data_json.get("username")
 		timestamp = datetime.now().isoformat()
 
-		await self.save_message(sender, message, timestamp)
+		# Save the message
+		await self.save_message(sender, username, message, timestamp)
 
-		userToSend = await self.get_user_to(self.room_name)
+		# Get the channel
+		channel = await self.get_channel()
+
+		if channel is None:
+			return
+
+		# Get the users
+		usersToSend = await self.get_users(self.room_name)
+
+		# Send a notification to the users
+		if usersToSend is not None:
+			for userToSend in usersToSend:
+				if userToSend.status != f"chat:{self.room_name}":
+					if self.scope['user'].id not in userToSend.blockedUsers:
+						await self.create_notification(userToSend, f"You have a new message from {channel.name}")
 		
-		# Send a notification
-		if userToSend is not None and userToSend.status != f"chat:{self.scope['user'].id}":
-			await self.create_notification(userToSend, f"You have a new message from {self.scope['user'].username}.")
-
 		# Send message to room group
 		await self.channel_layer.group_send(
-			self.room_group_name, {"type": "chat_message", "message": message, "sender": sender, "timestamp": timestamp}
+			self.room_group_name, {"type": "chat_message", "message": message, "sender": sender, "username": username, "timestamp": timestamp}
 		)
+	
 
 	@database_sync_to_async
-	def save_message(self, sender, message, timestamp):
-		User = get_user_model()
-		user = User.objects.get(id=sender)
+	def get_channel(self):
+		from mainApp.models import Channel
+		try:
+			return Channel.objects.get(room_name=self.room_name)
+		except Channel.DoesNotExist:
+			return None
 
 
-		user.refresh_from_db()
-		if self.room_name not in user.messages:
-			user.messages[self.room_name] = []
+	@database_sync_to_async
+	def save_message(self, sender, username, message, timestamp):
+		from mainApp.models import Channel
+		
+		# Get the channel
+		try:
+			channel = Channel.objects.get(room_name=self.room_name)
+		except Channel.DoesNotExist:
+			return
+		
+		if channel.messages is None:
+			channel.messages = []
 
-		user.messages[self.room_name].append({'sender': sender, 'message': message, 'timestamp': timestamp})
-		user.save()
+		# Save the message
+		channel.messages.append({ "sender": sender, "username": username, "message": message, "timestamp": timestamp })
+		channel.save()
 
-	# Receive message from room group
+
 	async def chat_message(self, event):
+		# Receive message from room group
 		message = event.get("message")
 		sender = event.get("sender")
+		username = event.get("username")
 
-		await self.send(text_data=json.dumps({"message": message, "sender": sender}))
+		# Send message to WebSocket
+		await self.send(text_data=json.dumps({"message": message, "sender": sender, "username": username}))
