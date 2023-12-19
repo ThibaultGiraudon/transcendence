@@ -1,7 +1,7 @@
 from    channels.generic.websocket import AsyncWebsocketConsumer
-from    ..handlers.handlerInitGame import handle_init_game
-from    ..handlers.handlerPaddleMove import handle_paddle_move
-from    ..gameObjects import *
+from    ..pongFunctions.handlerInitGame import handle_init_game
+from    ..pongFunctions.handlerPaddleMove import handle_paddle_move
+from    ..pongFunctions.gameSettingsClass import GameSettings
 import  json
 
 class PongConsumer(AsyncWebsocketConsumer):
