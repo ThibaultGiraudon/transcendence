@@ -96,18 +96,15 @@ async def aiLoop(consumer, paddle):
 	
 		# TODO move this in class
 		moveTask = asyncio.create_task(moveAiToAim(paddle, consumer, aimPosition))
-		await asyncio.sleep(0.2)
+		await asyncio.sleep(1)
 		moveTask.cancel()
 
 async def handle_paddle_move(message, consumer):
 	direction = message['direction']
 	paddle = consumer.gameSettings.paddles[int(message['id'])]
 
-	for paddle in consumer.gameSettings.paddles:
-		if (paddle.isAlive == False):
-			continue
-		if (paddle.aiTask == None):
-			paddle.aiTask = asyncio.create_task(aiLoop(consumer, paddle))
+	if (paddle.id == 1 and paddle.aiTask == None):
+		paddle.aiTask = asyncio.create_task(aiLoop(consumer, paddle))
 
 	if (paddle.isAI == False and paddle.isAlive == True):
 		if (message['key'] == 'keydown'):
