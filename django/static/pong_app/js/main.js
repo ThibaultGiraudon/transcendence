@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (message.type === 'init_score') {
+            console.log(message);
             initScore(message);
         }
 
@@ -81,6 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (message.type === 'update_score') {
+            console.log(message);
             updateScore(message);
         }
     });
@@ -156,6 +158,11 @@ function initScore(message) {
     }
     scoreSpans[message.id].textContent = message.score;
     scoreSpans[message.id].style.backgroundColor = backgroundColors[message.id];
+    if (message.score >= 10) {
+        scoreSpans[message.id].style.backgroundColor = '#212121';
+        scoreSpans[message.id].style.color = '#DADADA';
+        elements.paddles[message.id].setVisible(false);
+    }
 }
 
 function updatePaddlePosition(message) {

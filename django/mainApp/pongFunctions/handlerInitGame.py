@@ -32,11 +32,8 @@ async def sendInitPaddlePosition(consumer):
 
 async def sendInitScore(consumer, nbPaddles):
 	for paddle in consumer.gameSettings.paddles:
-		if (paddle.isAlive == False):
+		if (consumer.gameSettings.nbPaddles == 2 and paddle.id >= 2):
 			continue
-		# if (consumer.gameSettings.nbPaddles == 2):
-			# score = paddle.score ^ 1
-		# else:
 		score = paddle.score
 		message = {
 			'type': 'init_score',
