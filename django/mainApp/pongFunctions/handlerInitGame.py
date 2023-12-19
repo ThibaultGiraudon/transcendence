@@ -67,7 +67,6 @@ async def sendUpdateScore(consumer, paddleID):
 		id = consumer.gameSettings.paddles[paddleID].id
 	message = {
 		'type': 'update_score',
-		'nbPaddles': consumer.gameSettings.nbPaddles,
 		'score': score,	
 		'id': id,
 	}
