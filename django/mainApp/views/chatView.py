@@ -79,8 +79,11 @@ def room(request, room_name):
 	# Get the users in the channel
 	users = list(channel.users.all())
 	
+	# Get the blocked users
+	blocked_users = request.user.blockedUsers
+
 	# Update the status of the current user
 	request.user.status = f"chat:{room_name}"
 	request.user.save()
  
-	return render(request, "chat/room.html", {"room_name": room_name, "users": users})
+	return render(request, "chat/room.html", {"room_name": room_name, "blocked_users": blocked_users, "users": users})
