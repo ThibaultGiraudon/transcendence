@@ -34,10 +34,14 @@ async def sendInitScore(consumer, nbPaddles):
 	for paddle in consumer.gameSettings.paddles:
 		if (paddle.isAlive == False):
 			continue
+		# if (consumer.gameSettings.nbPaddles == 2):
+			# score = paddle.score ^ 1
+		# else:
+		score = paddle.score
 		message = {
 			'type': 'init_score',
 			'nbPaddles': nbPaddles,
-			'score': paddle.score,
+			'score': score,
 			'id': paddle.id,
 		}
 		await consumer.send(json.dumps(message))
@@ -53,12 +57,19 @@ async def sendUpdateBallPosition(consumer, ball):
 	await consumer.send(json.dumps(message))
 
 async def sendUpdateScore(consumer, paddleID):
-	consumer.gameSettings.paddles[paddleID].score += 1
+	if (consumer.gameSettings.nbPaddles == 2):
+		consumer.gameSettings.paddles[paddleID ^ 1].score += 1
+		score = consumer.gameSettings.paddles[paddleID ^ 1].score
+		id = consumer.gameSettings.paddles[paddleID ^ 1].id
+	else:
+		consumer.gameSettings.paddles[paddleID].score += 1
+		score = consumer.gameSettings.paddles[paddleID].score
+		id = consumer.gameSettings.paddles[paddleID].id
 	message = {
 		'type': 'update_score',
 		'nbPaddles': consumer.gameSettings.nbPaddles,
-		'score': consumer.gameSettings.paddles[paddleID].score,	
-		'id': consumer.gameSettings.paddles[paddleID].id,
+		'score': score,	
+		'id': id,
 	}
 	await consumer.send(json.dumps(message))
 
