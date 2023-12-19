@@ -28,6 +28,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
             {
                 'type': 'status_update',
                 'username': username,
+                'id': 'id',
                 'status': status
             }
         )
@@ -35,9 +36,11 @@ class StatusConsumer(AsyncWebsocketConsumer):
     async def status_update(self, event):
         status = event['status']
         username = event['username']
+        id = event['id']
 
         await self.send(text_data=json.dumps({
             'type': 'status_update',
+            'username': username,
+            'id': id,
             'status': status,
-            'username': username
         }))

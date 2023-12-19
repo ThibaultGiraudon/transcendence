@@ -55,6 +55,7 @@ def sign_in(request):
 					{
 						'type': 'status_update',
 						'username': user.username,
+						'id': user.id,
 						'status': 'online'
 					}
 				)
@@ -113,6 +114,7 @@ def sign_up(request):
 				{
 					'type': 'status_update',
 					'username': request.user.username,
+					'id': request.user.id,
 					'status': 'online'
 				}
 			)
@@ -158,6 +160,7 @@ def sign_out(request):
 		{
 			'type': 'status_update',
 			'username': request.user.username,
+			'id': request.user.id,
 			'status': 'offline'
 		}
 	)
@@ -216,6 +219,7 @@ def	connect_42_user(request, response_data):
 			{
 				'type': 'status_update',
 				'username': user.username,
+				'id': user.id,
 				'status': 'online'
 			}
 		)
