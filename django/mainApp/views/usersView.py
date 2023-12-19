@@ -13,11 +13,13 @@ from django.core.files.storage import default_storage
 from django.views.decorators.csrf import csrf_protect
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-from ..models import Notification
+from ..models import Notification, Channel
+
 
 # 42 API
 API_USER = 'https://api.intra.42.fr/v2/me'
 token = '690c107e335181f7039f3792799aebb1fa4d55b320bd232dd68877c0cc13545d'
+
 
 # Functions
 @csrf_protect
@@ -66,6 +68,7 @@ def sign_in(request):
 
 		return redirect('sign_in')
 
+
 @csrf_protect
 def sign_up(request):
 	"""
@@ -113,6 +116,16 @@ def sign_up(request):
 					'status': 'online'
 				}
 			)
+
+			# Join the general channel
+			try:
+				channel = Channel.objects.get(name="general")
+				channel.users.add(user)
+			except Channel.DoesNotExist:
+				channel = Channel.objects.create(name="general", room_name="general")
+				channel.users.set([user])
+				channel.save()
+
 			return redirect('pong')
 
 		else:
@@ -123,6 +136,7 @@ def sign_up(request):
 			else:
 				messages.error(request, "You need to provide all fields")
 	return redirect('sign_up')
+
 
 def sign_out(request):
 	"""
@@ -153,6 +167,7 @@ def sign_out(request):
 	
 	return redirect('sign_in')
 
+
 def ft_api(request):
 	protocol = request.scheme
 	port = '%3A8001' if protocol == "https" else '%3A8000'
@@ -160,6 +175,7 @@ def ft_api(request):
 	protocol + "%3A%2F%2Flocalhost" + \
 	port + "%2Fcheck_authorize%2F&response_type=code"
 	return redirect(api_url)
+
 
 def	check_authorize(request):
 	"""
@@ -180,6 +196,7 @@ def	check_authorize(request):
 	response_data = make_api_request_with_token(API_USER, response_token)
 	connect_42_user(request, response_data)
 	return redirect('pong')
+
 
 def	connect_42_user(request, response_data):
 	"""
@@ -220,6 +237,16 @@ def	connect_42_user(request, response_data):
 		user = authenticate_42_user(email=response_data['email'])
 		if user:
 			login(request, user)
+		
+		# Join the general channel
+		try:
+			channel = Channel.objects.get(name="general")
+			channel.users.add(user)
+		except Channel.DoesNotExist:
+			channel = Channel.objects.create(name="general", room_name="general")
+			channel.users.set([user])
+			channel.save()
+
 
 def make_api_request_with_token(api_url, token):
 	"""
@@ -251,6 +278,7 @@ def make_api_request_with_token(api_url, token):
 	except requests.RequestException as e:
 		logging.error(f"Erreur de requête API: {e}")
 		return None
+
 
 def handle_42_callback(request, code):
 	"""
@@ -285,6 +313,7 @@ def handle_42_callback(request, code):
 		logging.info(f" error: {response.text}")
 		return None
 
+
 def authenticate_custom_user(email, password):
 	"""
 	Authenticate function with email and password
@@ -307,6 +336,7 @@ def authenticate_custom_user(email, password):
 	except User.DoesNotExist:
 		return None
 
+
 def authenticate_42_user(email):
 	"""
 	Authenticate function without password
@@ -327,10 +357,12 @@ def authenticate_42_user(email):
 	except User.DoesNotExist:
 		return None
 
+
 def profile_me(request):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
 	return redirect('profile', username=request.user.username)
+
 
 @csrf_protect
 def profile(request, username):
@@ -339,13 +371,14 @@ def profile(request, username):
 
 	photo_name = request.user.photo.name
 	User = get_user_model()
-	user_to = User.objects.get(username=username)
 
+	# get the room_name where the user is
 	room = None
-	for id, channel in request.user.channels.items():
-		if int(id) == user_to.id:
-			room = channel
-			break
+	try:
+		channel = Channel.objects.get(users__id=request.user.id)
+		room = channel.room_name
+	except Channel.DoesNotExist:
+		pass
 
 	try:
 		user = User.objects.get(username=username)
@@ -386,6 +419,7 @@ def profile(request, username):
 
 	return redirect('profile', username=username)
 
+
 def users(request):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
@@ -402,6 +436,7 @@ def users(request):
 		return render(request, 'users.html', context)
 	elif request.method == 'POST':
 		return redirect('users')
+
 
 def follow(request, id):
 	if not request.user.is_authenticated:
@@ -420,7 +455,9 @@ def follow(request, id):
  
 	request.user.follows.append(id)
 	request.user.save()
+	
 	return redirect('profile', username=userTo.username)
+
 
 def unfollow(request, id):
 	if not request.user.is_authenticated:
@@ -436,4 +473,49 @@ def unfollow(request, id):
 
 	request.user.follows.remove(id)
 	request.user.save()
+
+	return redirect('profile', username=userTo.username)
+
+
+def block(request, id):
+	if not request.user.is_authenticated:
+		return redirect('sign_in')
+
+	# Check if the user exist and if he is not already blocked
+	User = get_user_model()
+	try:
+		userTo = User.objects.get(id=id)
+		if id in request.user.blockedUsers:
+			raise ValueError
+	except (User.DoesNotExist, ValueError):
+		return redirect('users')
+	
+	# Unfollow the user if he is in the follows list
+	if id in request.user.follows:
+		request.user.follows.remove(id)
+ 
+	# Block the user
+	request.user.blockedUsers.append(id)
+	request.user.save()
+
+	return redirect('profile', username=userTo.username)
+
+
+def unblock(request, id):
+	if not request.user.is_authenticated:
+		return redirect('sign_in')
+	
+	# Check if the user exist and if he is blocked
+	User = get_user_model()
+	try:
+		userTo = User.objects.get(id=id)
+		if id not in request.user.blockedUsers:
+			raise ValueError
+	except (User.DoesNotExist, ValueError):
+		return redirect('users')
+
+	# Unblock the user
+	request.user.blockedUsers.remove(id)
+	request.user.save()
+
 	return redirect('profile', username=userTo.username)
