@@ -79,7 +79,10 @@ async def handle_ball_move(consumer):
 		paddle = consumer.gameSettings.paddles[paddleID]
 		if (paddleID >= 0):
 			if (paddle.score == 9):
-				paddle.isAlive = False
+				if (consumer.gameSettings.nbPaddles == 2):
+					consumer.gameSettings.paddles[paddle.id ^ 1].isAlive = False
+				else:
+					paddle.isAlive = False
 				paddle.color = "0x212121"
 			
 			await sendInitPaddlePosition(consumer)	
