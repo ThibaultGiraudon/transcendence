@@ -14,3 +14,5 @@ probleme heure notifications: -1h
 connexion https:
     - https://localhost:8001: impossible de charger des fichier externe (css, js), mais web socket fonctionnent parfaitement
     - https://localhost:8443: fichier css et js charges normalement mais pas de websocket
+
+    pas afficher channel si user blocked
