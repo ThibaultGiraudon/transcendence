@@ -18,5 +18,5 @@ def custom_404(request, exception):
 	return render(request, 'errors/404.html', status=404)
 
 def translate(request):
-	text = _("Welcome to my site.")
+	text = _("Hello World")
 	return render(request, 'translate.html', {'text': text})

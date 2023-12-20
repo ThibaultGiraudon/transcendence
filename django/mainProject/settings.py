@@ -30,7 +30,7 @@ DEFAULT_IMAGE_PATH = '/usr/src/app/static/users_app/img/default.jpg'
 
 TIME_ZONE = 'Europe/Paris'
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'nl'
 
 USE_I18N = True
 
