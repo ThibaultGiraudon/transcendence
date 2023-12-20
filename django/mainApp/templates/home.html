@@ -1,17 +1,18 @@
-{% extends 'base.html' %}
-
-{% block css %}
+<!DOCTYPE html>
+<html lang="en">
 {% load static %}
-<link rel="stylesheet" href="{% static 'pong_app/css/style.css' %}">
-{% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Application SPA</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
 
-{% block title %}
-Home
-{% endblock %}
+<body>
+    <div id="app"></div>
+</body>
 
-{% block content %}
-
-<h1>Home page</h1>
-<p>Welcome on our website !</p>
-
-{% endblock %}
+<foot>
+    <script src="{% static 'js/main.js' %}"></script>
+</foot>
+</html>
