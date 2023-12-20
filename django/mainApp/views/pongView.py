@@ -19,3 +19,9 @@ def practice(request):
 		return redirect('sign_in')
 
 	return render(request, 'pong_elements/practice.html')
+
+def game(request, gameMode):
+	if not request.user.is_authenticated:
+		return redirect('sign_in')
+
+	return render(request, 'pong_elements/pong.html', {'gameMode': gameMode})

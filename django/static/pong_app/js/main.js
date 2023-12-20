@@ -19,7 +19,7 @@ const   keyState = {
 };
 
 // EVENTS
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {    
     document.addEventListener('keydown', function(event) {
         if (!keyState[event.key] && keyState.hasOwnProperty(event.key)) {
             keyState[event.key] = true;
@@ -51,8 +51,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     socket.addEventListener('open', (event) => {
+        console.log('Connected to websocket server');
+        const gameMode = JSON.parse(document.getElementById('game_mode').textContent);
+        console.log(gameMode);
         const message = {
-            type: 'init_game',
+            type: gameMode,
         };
         socket.send(JSON.stringify(message));
     });
