@@ -49,8 +49,8 @@
 
 	<script>
 		let     WSProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-		let     WSPort = window.location.protocol === 'https:' ? '' : '';
-		const   WsocketUrl = WSProtocol + '//' + window.location.host + WSPort + '/ws/notifications/';
+		let     WSPort = window.location.protocol === 'https:' ? ':8001' : ':8000';
+		const   WsocketUrl = WSProtocol + '//' + window.location.hostname + WSPort + '/ws/notifications/';
 		const   Wsocket = new WebSocket(WsocketUrl);
 		
 		Wsocket.onmessage = function(e) {
