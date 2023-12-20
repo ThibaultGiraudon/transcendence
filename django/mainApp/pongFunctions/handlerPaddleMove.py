@@ -83,9 +83,6 @@ async def calculateAimPosition(consumer):
 				ballY = limit
 				angle = -angle	
 
-	print("x=", ballX, "y=", ballY, "angle=", angle)	
-	print("collisionXtop=", collisionXtop, "collisionXbottom=", collisionXbottom)
-	print("collisionYright=", collisionYright, "collisionYleft=", collisionYleft)
 	print("CRASH AVOID\n")
 	return (height)
 
