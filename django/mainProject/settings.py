@@ -29,6 +29,13 @@ handler404 = 'mainApp.views.custom_404'
 DEFAULT_IMAGE_PATH = '/usr/src/app/static/users_app/img/default.jpg'
 
 TIME_ZONE = 'Europe/Paris'
+
+LANGUAGE_CODE = 'en-us'
+
+USE_I18N = True
+
+USE_L10N = True
+
 USE_TZ = True
 
 # Quick-start development settings - unsuitable for production
