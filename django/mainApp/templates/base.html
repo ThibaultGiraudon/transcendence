@@ -48,9 +48,12 @@
 	</body>
 
 	<script>
-		var socket = new WebSocket('ws://' + window.location.host + '/ws/notifications/');
+		let     WSProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+		let     WSPort = window.location.protocol === 'https:' ? '' : '';
+		const   WsocketUrl = WSProtocol + '//' + window.location.host + WSPort + '/ws/notifications/';
+		const   Wsocket = new WebSocket(WsocketUrl);
 		
-		socket.onmessage = function(e) {
+		Wsocket.onmessage = function(e) {
 			var data = JSON.parse(e.data);
 			var message = data['message'];
 		
