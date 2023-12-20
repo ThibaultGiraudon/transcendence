@@ -5,6 +5,7 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
+from django.utils import timezone
 
 
 class Player(models.Model):
@@ -80,7 +81,7 @@ class CustomUser(AbstractUser):
 class Notification(models.Model):
 	user = models.ForeignKey(CustomUser, related_name='notifications', on_delete=models.CASCADE)
 	message = models.TextField()
-	date = models.DateTimeField(auto_now_add=True)
+	date = models.DateTimeField(default=timezone.now)
 	read = models.BooleanField(default=False)
 
 	def save(self, *args, **kwargs):

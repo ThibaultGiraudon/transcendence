@@ -28,6 +28,8 @@ handler404 = 'mainApp.views.custom_404'
 
 DEFAULT_IMAGE_PATH = '/usr/src/app/static/users_app/img/default.jpg'
 
+TIME_ZONE = 'Europe/Paris'
+USE_TZ = True
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
