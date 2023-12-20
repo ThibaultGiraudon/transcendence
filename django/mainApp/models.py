@@ -95,6 +95,7 @@ class Notification(models.Model):
 
 class Channel(models.Model):
 	room_name = models.CharField(max_length=150)
+	other_name = models.CharField(max_length=150)
 	name = models.CharField(max_length=150)
 	users = models.ManyToManyField(CustomUser, related_name='channels')
 	messages = ArrayField(models.JSONField(), default=list)
