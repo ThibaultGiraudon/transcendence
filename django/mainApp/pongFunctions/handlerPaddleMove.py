@@ -32,6 +32,10 @@ async def keydownLoop(direction, paddle, consumer):
 		await asyncio.sleep(0.01) # TODO change to global var for speed
 
 async def moveAiToAim(paddle, consumer, aimPosition):
+	if (aimPosition < consumer.gameSettings.limit):
+		aimPosition = consumer.gameSettings.limit
+	elif (aimPosition > consumer.gameSettings.squareSize - consumer.gameSettings.paddleSize - consumer.gameSettings.limit):
+		aimPosition = consumer.gameSettings.squareSize - consumer.gameSettings.paddleSize - consumer.gameSettings.limit
 	while (True):
 		if (aimPosition - 10 < paddle.position < aimPosition + 10):
 			paddle.position = round(aimPosition)
@@ -44,13 +48,14 @@ async def moveAiToAim(paddle, consumer, aimPosition):
 		await asyncio.sleep(0.01)
 
 async def calculateAimPosition(consumer):
+	limit = consumer.gameSettings.limit
 	ball = consumer.gameSettings.ball
 	angle = ball.angle
-	ballX = ball.x - 30
+	ballX = ball.x - limit
 	ballY = ball.y
 
-	width = consumer.gameSettings.squareSize - 60
-	height = consumer.gameSettings.squareSize
+	width = consumer.gameSettings.squareSize - limit * 2
+	height = consumer.gameSettings.squareSize - limit
 
 	for _ in range(5):
 		angle = angle % (2 * math.pi)
@@ -58,37 +63,33 @@ async def calculateAimPosition(consumer):
 		collisionYleft = ballY + (-ballX * math.tan(angle))
 
 		if (math.pi / 2 < angle < 3 * math.pi / 2):
-			if (0 < collisionYleft < height):
+			if (limit < collisionYleft < height):
 				return (collisionYleft)
 		else:
-			if (0 < collisionYright < height):
+			if (limit < collisionYright < height):
 				return (collisionYright)
 
 		collisionXtop = ballX + (0 - ballY) / math.tan(angle)
 		collisionXbottom = ballX + (height - ballY) / math.tan(angle)
 
 		if (0 < angle < math.pi):
-			if (30 < collisionXbottom < width):
+			if (limit < collisionXbottom < width):
 				ballX = collisionXbottom
 				ballY = height
 				angle = -angle	
 		else:
-			if (30 < collisionXtop < width):
+			if (limit < collisionXtop < width):
 				ballX = collisionXtop
-				ballY = 0
+				ballY = limit
 				angle = -angle	
 
-	print("x=", ballX, "y=", ballY, "angle=", angle)	
-	print("collisionXtop=", collisionXtop, "collisionXbottom=", collisionXbottom)
-	print("collisionYright=", collisionYright, "collisionYleft=", collisionYleft)
 	print("CRASH AVOID\n")
 	return (height)
 
 async def aiLoop(consumer, paddle):
 	while (True):
 		collisionPosition = await calculateAimPosition(consumer)
-
-		aimPosition = collisionPosition - consumer.gameSettings.paddleSize / 2 + random.randint(-20, 20)
+		aimPosition = collisionPosition - consumer.gameSettings.paddleSize / 2 + random.randint(-10, 10)
 	
 		# TODO move this in class
 		moveTask = asyncio.create_task(moveAiToAim(paddle, consumer, aimPosition))
@@ -99,7 +100,10 @@ async def handle_paddle_move(message, consumer):
 	direction = message['direction']
 	paddle = consumer.gameSettings.paddles[int(message['id'])]
 
-	if (paddle.isAI == False):
+	if (paddle.id == 1 and paddle.aiTask == None):
+		paddle.aiTask = asyncio.create_task(aiLoop(consumer, paddle))
+
+	if (paddle.isAI == False and paddle.isAlive == True):
 		if (message['key'] == 'keydown'):
 			if (direction == 'up'):
 				paddle.keyState[direction] = True;

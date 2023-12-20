@@ -1,5 +1,4 @@
 idee elias powershot ratio (je me comprends) (% de powershot)
-pour le mode 4 joueeur si tas plus de vie tes elimine et ton cote devient un mur 
 Pas de photo de profile en https
 mettre les balises scripts dans un .js
 mettre un countdown au mileu au reset pour pas quon crois que cest un lag
@@ -16,3 +15,4 @@ connexion https:
     - https://localhost:8443: fichier css et js charges normalement mais pas de websocket
 
     pas afficher channel si user blocked
+mettre un countdown au mileu au reset pour pas quon crois que cest un lag
