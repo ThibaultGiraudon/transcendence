@@ -8,6 +8,7 @@ urlpatterns = [
     path('pong/', pongView.pong, name='pong'),
     path('pong/ranked/', pongView.ranked, name='ranked'),
     path('pong/practice/', pongView.practice, name='practice'),
+    path('pong/game/<str:gameMode>/', pongView.game, name='game'),
 
     path('notifications', notificationsView.notifications, name='notifications'),
     path('delete_notification/<int:notification_id>/', notificationsView.delete_notification, name='delete_notification'),
