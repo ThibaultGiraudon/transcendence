@@ -61,21 +61,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		return channel.messages
 
 
-	# filter the messages to send only the message of none blocked users
-	@database_sync_to_async
-	def filter_messages(self, messages):
-		user = self.scope['user']
-		filtered_messages = []
-		for message in messages:
-			for id in user.blockedUsers:
-				if id != int(message['sender']):
-					filtered_messages.append(message)
-		return filtered_messages
-
 	async def send_previous_messages(self):
 		# Get messages and sort them
 		previous_messages = await self.get_previous_messages()
-		# previous_messages = await self.filter_messages(previous_messages)
 		if previous_messages is None or len(previous_messages) == 0:
 			return
 		previous_messages.sort(key=lambda msg: msg['timestamp'])
