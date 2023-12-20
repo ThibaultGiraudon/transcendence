@@ -3,46 +3,87 @@ from django.shortcuts import redirect
 from django.contrib.auth import get_user_model
 import uuid
 
+from mainApp.models import Channel
+
+
 def chat(request):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
+
+	# Get the channels
+	chats = list(request.user.channels.all())
 	
-	users = get_user_model().objects.all()
+	return render(request, "chat/chat.html", { 'chats': chats })
 
-	return render(request, "chat/chat.html", {'channels': request.user.channels, 'users': users})
 
-def create_channel(request, user_to):
+def create_channel(request):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
 	
-	room_name = str(uuid.uuid1())
+	# Get the ids
+	ids = []
+	for id in request.GET.getlist('id'):
+		try:
+			ids.append(int(id))
+		except ValueError:
+			continue
+
+	# Create a default channel name
+	channel_name = "group"
+	other_name = ""
 	
-	try:
-		user_to = get_user_model().objects.get(username=user_to)
-	except get_user_model().DoesNotExist:
-		return redirect('users')
+	# Channel informations
+	room_name = str(uuid.uuid1())
+	users = []
 
-	request.user.channels.update({user_to.get_username(): room_name})
-	request.user.save()
+	# Get the users
+	User = get_user_model()
+	for id in ids:
+		try:
+			user = User.objects.get(id=id)
+		except User.DoesNotExist:
+			continue
+		users.append(user)
+	
+	# Check if the channel is empty
+	if len(users) == 0:
+		return redirect('chat')
+	
+	# Adapt the channel name
+	elif len(users) == 2:
+		for user in users:
+			if user.id != request.user.id:
+				channel_name = user.username
+			else:
+				other_name = request.user.username
+				break
 
-	user_to.channels.update({request.user.get_username(): room_name})
-	user_to.save()
+	# Create the channel
+	channel = Channel.objects.create(name=channel_name, room_name=room_name, other_name=other_name)
+	channel.users.set(users)
+	channel.save()
 
 	return redirect('room', room_name=room_name)
+
 
 def room(request, room_name):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
-	user_to = None
-	for user, channel in request.user.channels.items():
-		if channel == room_name:
-			user_to = get_user_model().objects.get(username=user)
-			break
 
-	if user_to is None:
+	# Get the channel
+	try:
+		channel = Channel.objects.get(room_name=room_name)
+	except Channel.DoesNotExist:
 		return redirect('chat')
+	
+	# Get the users in the channel
+	users = list(channel.users.all())
+	
+	# Get the blocked users
+	blocked_users = request.user.blockedUsers
 
-	request.user.status = f"chat:{user_to.get_username()}"
+	# Update the status of the current user
+	request.user.status = f"chat:{room_name}"
 	request.user.save()
  
-	return render(request, "chat/room.html", {"room_name": room_name, "user_to": user_to})
+	return render(request, "chat/room.html", {"room_name": room_name, "blocked_users": blocked_users, "users": users})
