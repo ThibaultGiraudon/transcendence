@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'pong_app/css/style.css' %}">
+{% endblock %}
+
+{% block title %}
+Ranked Game
+{% endblock %}
+
+{% block content %}
+
+<h1>Pong game</h1>
+
+<button id="solo-game">1 VS 1</button>
+<button id="death-game">DEATH GAME</button>
+<button id="tournament-game">TOURNAMENT</button>
+
+<script type="module" src="{% static 'pong_app/js/main.js' %}"></script>
+
+{% endblock %}

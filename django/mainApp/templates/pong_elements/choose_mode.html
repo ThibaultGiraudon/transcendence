@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'pong_app/css/style.css' %}">
+{% endblock %}
+
+{% block title %}
+Pong game
+{% endblock %}
+
+{% block content %}
+
+<h1>Pong game</h1>
+
+<a href="/pong/ranked" class="choose-btn">Ranked Mode</a>
+<a href="/pong/practice" class="choose-btn">Practice Mode</a>
+
+{% endblock %}

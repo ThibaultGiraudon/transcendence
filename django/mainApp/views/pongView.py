@@ -6,4 +6,16 @@ def pong(request):
 
 	if request.method == 'GET' and 'error' in request.GET:
 		return redirect('sign_in')
-	return render(request, 'pong_elements/pong.html')
+	return render(request, 'pong_elements/choose_mode.html')
+
+def ranked(request):
+	if not request.user.is_authenticated:
+		return redirect('sign_in')
+
+	return render(request, 'pong_elements/ranked.html')
+
+def practice(request):
+	if not request.user.is_authenticated:
+		return redirect('sign_in')
+
+	return render(request, 'pong_elements/practice.html')
