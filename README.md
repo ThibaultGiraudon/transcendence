@@ -34,14 +34,14 @@ tournaments.
 Module majeur : Clavardage en direct
 Vous devez créer un système de clavardage (chat) pour vos utilisateurs dans ce
 module :
-◦ L’utilisateur doit pouvoir envoyer des messages directs à d’autres utilisateurs.
+◦ L’utilisateur doit pouvoir envoyer des messages directs à d’autres utilisateurs.✅
 ◦ L’utilisateur doit pouvoir en bloquer d’autres. Ainsi, l’utilisateur ne verra plus
-les messages provenant du compte qu’il a bloqué.
+les messages provenant du compte qu’il a bloqué.✅
 ◦ L’utilisateur doit pouvoir inviter d’autres utilisateurs à jouer une partie de
 Pong à partir de l’interface de Chat.
 ◦ Le système de tournoi doit pouvoir avertir les utilisateurs qui sont attendus
 pour la prochaine partie.
-◦ L’utilisateur doit pouvoir accéder aux profiles d’autres joueurs à partir de l’interface de Chat.
+◦ L’utilisateur doit pouvoir accéder aux profiles d’autres joueurs à partir de l’interface de Chat.✅
 
 
 Module majeur : Joueurs multiples
@@ -69,27 +69,27 @@ procurant à celui-ci une façon simple et sécuritaire d’accéder à l’appl
 
 Module majeur : Gestion d’utilisateurs standard, authentification et utilisateurs
 en tournois.
-◦ Les utilisateurs peuvent s’inscrire au site web de manière sécuritaire.
-◦ Les utilisateurs enregistrés peuvent s’authentifier de manière sécuritaire.
-◦ Les utilisateurs peuvent choisir un nom d’affichage unique pour jouer en tournoi.
-◦ Les utilisateurs peuvent mettre à jour leurs informations.
+◦ Les utilisateurs peuvent s’inscrire au site web de manière sécuritaire.✅
+◦ Les utilisateurs enregistrés peuvent s’authentifier de manière sécuritaire.✅
+◦ Les utilisateurs peuvent choisir un nom d’affichage unique pour jouer en tournoi.✅
+◦ Les utilisateurs peuvent mettre à jour leurs informations.✅
 ◦ Les utilisateurs peuvent téléverser un avatar, mais un avatar par défaut existe
-si aucun n’est fourni.
+si aucun n’est fourni.✅
 ◦ Les utilisateurs peuvent ajouter d’autres utilisateurs comme amis et voir leur
-statut (en ligne / hors-ligne / en partie).
+statut (en ligne / hors-ligne / en partie).✅
 ◦ Les profils d’utilisateurs affichent des statistiques, comme les victoires et défaites.
 ◦ Chaque utilisateur a un Historique des parties incluant les parties 1v1, les
 dates et autres détails pertinents, accessibles aux utilisateurs authentifiés.
 
 
-Module mineur : Utiliser une base de données pour le backend -et plus.
+Module mineur : Utiliser une base de données pour le backend -et plus.✅
 La base de données désignée pour toutes les instances de base de données
 dans votre projet est PostgreSQL . Ce choix garantit la cohérence des données et
 la compatibilité entre tous les composants du projet et peut être une condition
 préalable pour d’autres modules, tels que le Module Framework backend.
 
 
-Module majeur : Utiliser un Framework en backend.
+Module majeur : Utiliser un Framework en backend.✅
 Dans ce module majeur, vous devez utiliser un framework web spécifique pour
 le développement de votre backend, et ce framework est Django .
 

@@ -3,9 +3,6 @@ pour le mode 4 joueeur si tas plus de vie tes elimine et ton cote devient un mur
 Pas de photo de profile en https
 mettre les balises scripts dans un .js
 mettre un countdown au mileu au reset pour pas quon crois que cest un lag
-
-mettre le ws en wss pour les notifs
-
 ca sert a quoi tests.py ya un import a selenium je vois pas pk on a besoin de selenium
 
 mettre gameObjects dans un dossier
