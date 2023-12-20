@@ -14,10 +14,14 @@ Chat Room
 <h2>Participants</h2>
 
 {% for user in users %}
-	<div class="container">
-		<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
-		<h3>{{ user.username }}</h3>
-	</div>
+	{% if user.id != request.user.id %}
+	<a href="/profile/{{ user.username }}">
+		<div class="container">
+			<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
+			<h3>{{ user.username }}</h3>
+		</div>
+	</a>
+	{% endif %}
 {% endfor %}
 
 <div id="chat-log" class="chat-log"></div>
