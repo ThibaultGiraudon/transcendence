@@ -3,7 +3,7 @@ import * as utils from './utils.js';
 // TODO separer dans des fichiers differents
 
 let     websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-let     websocketPort = window.location.protocol === 'https:' ? ':8001' : '';
+let     websocketPort = window.location.protocol === 'https:' ? '' : '';
 const   socketUrl = websocketProtocol + '//' + window.location.host + websocketPort + '/ws/some_path/';
 const   socket = new WebSocket(socketUrl);
 
