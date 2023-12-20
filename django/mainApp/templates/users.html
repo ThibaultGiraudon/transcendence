@@ -49,7 +49,7 @@ All users
 
 <script>
 	let     websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-	let     websocketPort = window.location.protocol === 'https:' ? ':8001' : '';
+	let     websocketPort = window.location.protocol === 'https:' ? '' : '';
 	const   socketUrl = websocketProtocol + '//' + window.location.host + websocketPort + '/ws/status/';
 	const   socket = new WebSocket(socketUrl);
 
