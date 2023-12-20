@@ -376,18 +376,29 @@ def profile(request, username):
 	photo_name = request.user.photo.name
 	User = get_user_model()
 
-	# get the room_name where the user is
-	room = None
-	try:
-		channel = Channel.objects.get(users__id=request.user.id)
-		room = channel.room_name
-	except Channel.DoesNotExist:
-		pass
-
 	try:
 		user = User.objects.get(username=username)
 	except User.DoesNotExist:
 		return redirect('users')
+
+	# get the room_name where the user is
+	room = None
+	channels = list(request.user.channels.all())
+	for channel in channels:
+		if channel.other_name == user.username or channel.name == user.username:
+			room = channel.room_name
+			break
+	# try:
+	# 	# get the room where only the user and I are
+	# 	from django.db.models import Count
+	# 	channel = Channel.objects.annotate(user_count=Count('users')).filter(user_count=2)
+	# 	logging.info("-------------------")
+	# 	logging.info(channel)
+	# 	if not channel is None:
+	# 		room = channel.name
+	# 	logging.info(room)
+	# except Channel.DoesNotExist:
+	# 	logging.info("No room found")
 
 	if request.method == 'GET':
 		form = EditProfileForm(instance=request.user)

@@ -18,8 +18,11 @@ Chat Rooms
 	{% for chat in chats %}
 		<a href={{ chat.room_name }}>
 			<div class="container">
-				{% comment %} <img src={{ chat.user.photo.url }} alt="profile picture" width="60" height="60"> {% endcomment %}
-				<h3>{{ chat.name }}</h3>
+				{% if chat.name == request.user.username %}
+					<h3>{{ chat.other_name }}</h3>
+				{% else %}
+					<h3>{{ chat.name }}</h3>
+				{% endif %}
 			</div>
 		</a>
 	{% endfor %}

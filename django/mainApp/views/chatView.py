@@ -29,10 +29,8 @@ def create_channel(request):
 			continue
 
 	# Create a default channel name
-	if (len(ids) == 2):
-		channel_name = "private channel"
-	else:
-		channel_name = "group channel"
+	channel_name = "group"
+	other_name = ""
 	
 	# Channel informations
 	room_name = str(uuid.uuid1())
@@ -55,11 +53,13 @@ def create_channel(request):
 	elif len(users) == 2:
 		for user in users:
 			if user.id != request.user.id:
-				channel_name = user.username + " & " + request.user.username
+				channel_name = user.username
+			else:
+				other_name = request.user.username
 				break
 
 	# Create the channel
-	channel = Channel.objects.create(name=channel_name, room_name=room_name)
+	channel = Channel.objects.create(name=channel_name, room_name=room_name, other_name=other_name)
 	channel.users.set(users)
 	channel.save()
 
