@@ -11,6 +11,8 @@ async def sendInitsquareSize(consumer):
 async def sendInitPaddlePosition(consumer):
 	gameSettings = consumer.gameSettings
 	for paddle in consumer.gameSettings.paddles:
+		if (paddle.isAlive == False):
+			continue
 		if (paddle.id == 2 or paddle.id == 3):
 			paddleThickness, paddleSize = gameSettings.paddleSize, gameSettings.paddleThickness
 			offset, position = paddle.position, paddle.offset
@@ -25,15 +27,19 @@ async def sendInitPaddlePosition(consumer):
 			'height': paddleSize,
 			'color': paddle.color,
             'id': paddle.id,
+			'limit': consumer.gameSettings.limit
         }
 		await consumer.send(json.dumps(message))
 
 async def sendInitScore(consumer, nbPaddles):
 	for paddle in consumer.gameSettings.paddles:
+		if (consumer.gameSettings.nbPaddles == 2 and paddle.id >= 2):
+			continue
+		score = paddle.score
 		message = {
 			'type': 'init_score',
 			'nbPaddles': nbPaddles,
-			'score': paddle.score,
+			'score': score,
 			'id': paddle.id,
 		}
 		await consumer.send(json.dumps(message))
@@ -49,12 +55,19 @@ async def sendUpdateBallPosition(consumer, ball):
 	await consumer.send(json.dumps(message))
 
 async def sendUpdateScore(consumer, paddleID):
-	consumer.gameSettings.paddles[paddleID].score += 1
+	if (consumer.gameSettings.nbPaddles == 2):
+		consumer.gameSettings.paddles[paddleID ^ 1].score += 1
+		score = consumer.gameSettings.paddles[paddleID ^ 1].score
+		id = consumer.gameSettings.paddles[paddleID ^ 1].id
+	else:
+		consumer.gameSettings.paddles[paddleID].score += 1
+		score = consumer.gameSettings.paddles[paddleID].score
+		id = consumer.gameSettings.paddles[paddleID].id
 	message = {
 		'type': 'update_score',
+		'score': score,	
 		'nbPaddles': consumer.gameSettings.nbPaddles,
-		'score': consumer.gameSettings.paddles[paddleID].score,	
-		'id': consumer.gameSettings.paddles[paddleID].id,
+		'id': id,
 	}
 	await consumer.send(json.dumps(message))
 
@@ -75,7 +88,10 @@ async def handle_ball_move(consumer):
 		paddle = consumer.gameSettings.paddles[paddleID]
 		if (paddleID >= 0):
 			if (paddle.score == 9):
-				paddle.isAlive = False
+				if (consumer.gameSettings.nbPaddles == 2):
+					consumer.gameSettings.paddles[paddle.id ^ 1].isAlive = False
+				else:
+					paddle.isAlive = False
 				paddle.color = "0x212121"
 			
 			await sendInitPaddlePosition(consumer)	
