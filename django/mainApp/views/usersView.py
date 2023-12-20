@@ -1,4 +1,4 @@
-import logging
+import logging, os
 import requests
 from PIL import Image
 from io import BytesIO
@@ -13,28 +13,18 @@ from django.core.files.storage import default_storage
 from django.views.decorators.csrf import csrf_protect
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-from ..models import Notification
+from ..models import Notification, Channel
+
 
 # 42 API
-API_URL = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fcheck_authorize%2F&response_type=code"
-API_URR = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=https%3A%2F%2Flocalhost%3A8001%2Fcheck_authorize%2F&response_type=code"
-API_URU = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=https%3A%2F%2Flocalhost%3A8001%2Fcheck_authorize%2F&response_type=code"
 API_USER = 'https://api.intra.42.fr/v2/me'
-token = '690c107e335181f7039f3792799aebb1fa4d55b320bd232dd68877c0cc13545d'
+CLIENT_ID = os.environ.get('CLIENT_ID')
+CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
+
 
 # Functions
 @csrf_protect
 def sign_in(request):
-	"""
-	Try to login in the user
- 
-	Arguments:
-		request: ???
-	Returns:
-		pong page : the credential are good
-		sign_in page : the credential are wrong
-	"""
-
 	if request.method == 'GET':
 		form = LoginForm()
 		return render(request, 'users/sign_in.html', {'form': form})
@@ -47,15 +37,17 @@ def sign_in(request):
 			password = form.cleaned_data['password']
 			user = authenticate_custom_user(email=email, password=password)
 			if user:
+				# Update the user status
 				user.status = "online"
 				user.save()
+				# Send the status to the channel layer
 				channel_layer = get_channel_layer()
-
 				async_to_sync(channel_layer.group_send)(
 					'status',
 					{
 						'type': 'status_update',
 						'username': user.username,
+						'id': user.id,
 						'status': 'online'
 					}
 				)
@@ -69,18 +61,9 @@ def sign_in(request):
 
 		return redirect('sign_in')
 
+
 @csrf_protect
 def sign_up(request):
-	"""
-	Create a new user
- 
-	Arguments:
-		request: ???
-	Returns:
-		sign_in page : all fields are filled
-		sign_up page : an error occured
-	"""
-
 	if request.method == 'GET':
 		form = SignUpForm()
 		return render(request, 'users/sign_up.html', {'form': form})
@@ -89,7 +72,6 @@ def sign_up(request):
 		form = SignUpForm(request.POST)
 
 		if form.is_valid():
-
 			if CustomUser.objects.filter(email=form.cleaned_data['email']).exists():
 				messages.error(request, "This email is already taken")
 				return redirect('sign_up')
@@ -99,23 +81,34 @@ def sign_up(request):
 			elif len(form.cleaned_data['username']) < 4:
 				messages.error(request, "Your username is too short (4 characters minimum)")
 				return redirect('sign_up')
-			
+			# Create the user
 			user = CustomUser.objects.create_user(
 					username=form.cleaned_data['username'],
 					email=form.cleaned_data['email'],
 					password=form.cleaned_data['password'])
 			user.save()
 			login(request, user)
+			# Send the status to the channel layer
 			channel_layer = get_channel_layer()
-
 			async_to_sync(channel_layer.group_send)(
 				'status',
 				{
 					'type': 'status_update',
 					'username': request.user.username,
+					'id': request.user.id,
 					'status': 'online'
 				}
 			)
+
+			# Join the general channel
+			try:
+				channel = Channel.objects.get(name="general")
+				channel.users.add(user)
+			except Channel.DoesNotExist:
+				channel = Channel.objects.create(name="general", room_name="general")
+				channel.users.set([user])
+				channel.save()
+
 			return redirect('pong')
 
 		else:
@@ -127,54 +120,38 @@ def sign_up(request):
 				messages.error(request, "You need to provide all fields")
 	return redirect('sign_up')
 
-def sign_out(request):
-	"""
-	Log out the user
- 
-	Arguments:
-		request: ???
-	Returns:
-		sign_in page
-	"""
 
+def sign_out(request):
 	request.user.status = "offline"
 	request.user.save()
- 
+	# Send the status to the channel layer
 	channel_layer = get_channel_layer()
-
 	async_to_sync(channel_layer.group_send)(
-        'status',
-        {
-            'type': 'status_update',
-            'username': request.user.username,
-            'status': 'offline'
-        }
-    )
+		'status',
+		{
+			'type': 'status_update',
+			'username': request.user.username,
+			'id': request.user.id,
+			'status': 'offline'
+		}
+	)
  
 	if request.user.is_authenticated:
 		logout(request)
 	
 	return redirect('sign_in')
 
+
 def ft_api(request):
 	protocol = request.scheme
 	port = '%3A8001' if protocol == "https" else '%3A8000'
-	api_url = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=" + \
+	api_url = "https://api.intra.42.fr/oauth/authorize?client_id=" + CLIENT_ID + "&redirect_uri=" + \
 	protocol + "%3A%2F%2Flocalhost" + \
 	port + "%2Fcheck_authorize%2F&response_type=code"
 	return redirect(api_url)
 
-def	check_authorize(request):
-	"""
-	Check if the user authorize the 42's connection or not
- 
-	Arguments:
-		request: ???
-	Returns:
-		pong page : the user authorize the connection
-		sign_in page : the user refuse the connection
-	"""
 
+def	check_authorize(request):
 	if request.method == 'GET' and 'error' in request.GET:
 		return redirect('sign_in')
 	if request.method == 'GET' and 'code' in request.GET:
@@ -184,15 +161,8 @@ def	check_authorize(request):
 	connect_42_user(request, response_data)
 	return redirect('pong')
 
+
 def	connect_42_user(request, response_data):
-	"""
-	Create user if the user connect for the first time
-
-	Arguments:
-		request : ????
-		response_data : json data
-	"""
-
 	user = authenticate_42_user(email=response_data['email'])
 	if user:
 		user.status = "online"
@@ -202,6 +172,7 @@ def	connect_42_user(request, response_data):
 			{
 				'type': 'status_update',
 				'username': user.username,
+				'id': user.id,
 				'status': 'online'
 			}
 		)
@@ -223,20 +194,18 @@ def	connect_42_user(request, response_data):
 		user = authenticate_42_user(email=response_data['email'])
 		if user:
 			login(request, user)
+		
+		# Join the general channel
+		try:
+			channel = Channel.objects.get(name="general")
+			channel.users.add(user)
+		except Channel.DoesNotExist:
+			channel = Channel.objects.create(name="general", room_name="general")
+			channel.users.set([user])
+			channel.save()
+
 
 def make_api_request_with_token(api_url, token):
-	"""
-	Request for 42 api
- 
-	Arguments:
-		api_url : the api url request
-		token : token to access the api
-
-	Returns:
-		None : the request faild
-		json data : the request succeed
-	"""
-
 	headers = {
 		'Authorization': f'Bearer {token}',
 	}
@@ -255,24 +224,15 @@ def make_api_request_with_token(api_url, token):
 		logging.error(f"Erreur de requête API: {e}")
 		return None
 
+
 def handle_42_callback(request, code):
-	"""
-	Ask 42 api for token thanks to the code replied after the redirection
- 
-	Arguments:
-		request : ???
-		code : the replied code from 42 redirection
-	Returns:
-		None : the request failed
-		token : the requet succeed
-	"""
 	port = '8001' if request.scheme == 'https' else '8000'
 	redirect_uri = request.scheme + '://localhost:' + port + '/check_authorize/'
 	token_url = "https://api.intra.42.fr/oauth/token"
 	token_params = {
 		'grant_type': 'authorization_code',
-		'client_id': 'u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c',
-		'client_secret': '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',
+		'client_id': CLIENT_ID,
+		'client_secret': CLIENT_SECRET,
 		'code': code,
 		'redirect_uri': redirect_uri
 	}
@@ -288,19 +248,8 @@ def handle_42_callback(request, code):
 		logging.info(f" error: {response.text}")
 		return None
 
+
 def authenticate_custom_user(email, password):
-	"""
-	Authenticate function with email and password
- 
-	Arguments:
-		email : the email of the user who want to connect
-		password : the password of the user who want to connect
-
-	Returns:
-		None : the user isn't registered
-		user : the user exist
-	"""
-
 	User = get_user_model()
 
 	try:
@@ -310,18 +259,8 @@ def authenticate_custom_user(email, password):
 	except User.DoesNotExist:
 		return None
 
+
 def authenticate_42_user(email):
-	"""
-	Authenticate function without password
- 
-	Arguments:
-		email : the email of the 42 user who want to connect
-
-	Returns:
-		None : the user isn't registered
-		user : the user exist
-	"""
-
 	User = get_user_model()
 
 	try:
@@ -330,10 +269,12 @@ def authenticate_42_user(email):
 	except User.DoesNotExist:
 		return None
 
+
 def profile_me(request):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
 	return redirect('profile', username=request.user.username)
+
 
 @csrf_protect
 def profile(request, username):
@@ -341,17 +282,21 @@ def profile(request, username):
 		return redirect('sign_in')
 
 	photo_name = request.user.photo.name
-	User = get_user_model()
 
-	room = None
-	for user, channel in request.user.channels.items():
-		if user == username:
-			room = channel
-			break
+	# get the user
+	User = get_user_model()
 	try:
 		user = User.objects.get(username=username)
 	except User.DoesNotExist:
 		return redirect('users')
+
+	# get the room_name where the user and I are
+	room = None
+	channels = list(request.user.channels.all())
+	for channel in channels:
+		if channel.other_name == user.username or channel.name == user.username:
+			room = channel.room_name
+			break
 
 	if request.method == 'GET':
 		form = EditProfileForm(instance=request.user)
@@ -372,10 +317,10 @@ def profile(request, username):
 			elif len(form.cleaned_data['username']) < 4:
 				messages.error(request, "Your username is too short (4 characters minimum)")
 				return redirect('profile', username=username)
-	
 			form.save()
 			messages.success(request, 'Your informations have been updated')
 			return redirect('profile', username=request.user.username)
+		
 		else:
 			if 'photo' in form.errors:
 				messages.error(request, 'Please enter a valid picture')
@@ -387,16 +332,20 @@ def profile(request, username):
 
 	return redirect('profile', username=username)
 
+
 def users(request):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
 	
+	# Get all users and the friends
 	User = get_user_model()
 	all_users = User.objects.all()
+
 	friends = []
 	for user in all_users:
-		if user.username in request.user.follows:
+		if user.id in request.user.follows:
 			friends.append(user)
+
 	context = {'all_users':all_users, 'friends':friends}
 
 	if request.method == 'GET':
@@ -404,23 +353,87 @@ def users(request):
 	elif request.method == 'POST':
 		return redirect('users')
 
-def follow(request, username):
+
+def follow(request, id):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
 
+	# Check if the user exist and if he is not already followed
 	User = get_user_model()
-	userTo = User.objects.get(username=username)
-	notification = Notification(user=userTo, message=f"{username} is now following you.")
+	try:
+		userTo = User.objects.get(id=id)
+		if id in request.user.follows:
+			raise ValueError
+	except (User.DoesNotExist, ValueError):
+		return redirect('users')
+	
+	notification = Notification(user=userTo, message=f"{request.user.username} is now following you.")
 	notification.save()
  
-	request.user.follows.append(username)
+	request.user.follows.append(id)
 	request.user.save()
-	return redirect('profile', username=username)
+	
+	return redirect('profile', username=userTo.username)
 
-def unfollow(request, username):
+
+def unfollow(request, id):
+	if not request.user.is_authenticated:
+		return redirect('sign_in')
+	
+	# Check if the user exist and if he is followed
+	User = get_user_model()
+	try:
+		userTo = User.objects.get(id=id)
+		if id not in request.user.follows:
+			raise ValueError
+	except (User.DoesNotExist, ValueError):
+		return redirect('users')
+
+	request.user.follows.remove(id)
+	request.user.save()
+
+	return redirect('profile', username=userTo.username)
+
+
+def block(request, id):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
 
-	request.user.follows.remove(username)
+	# Check if the user exist and if he is not already blocked
+	User = get_user_model()
+	try:
+		userTo = User.objects.get(id=id)
+		if id in request.user.blockedUsers:
+			raise ValueError
+	except (User.DoesNotExist, ValueError):
+		return redirect('users')
+	
+	# Unfollow the user if he is in the follows list
+	if id in request.user.follows:
+		request.user.follows.remove(id)
+ 
+	# Block the user
+	request.user.blockedUsers.append(id)
 	request.user.save()
-	return redirect('profile', username=username)
+
+	return redirect('profile', username=userTo.username)
+
+
+def unblock(request, id):
+	if not request.user.is_authenticated:
+		return redirect('sign_in')
+	
+	# Check if the user exist and if he is blocked
+	User = get_user_model()
+	try:
+		userTo = User.objects.get(id=id)
+		if id not in request.user.blockedUsers:
+			raise ValueError
+	except (User.DoesNotExist, ValueError):
+		return redirect('users')
+
+	# Unblock the user
+	request.user.blockedUsers.remove(id)
+	request.user.save()
+
+	return redirect('profile', username=userTo.username)

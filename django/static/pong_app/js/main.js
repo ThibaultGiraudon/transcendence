@@ -3,8 +3,8 @@ import * as utils from './utils.js';
 // TODO separer dans des fichiers differents
 
 let     websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-let     websocketPort = window.location.protocol === 'https:' ? ':8001' : '';
-const   socketUrl = websocketProtocol + '//' + window.location.host + websocketPort + '/ws/some_path/';
+let     websocketPort = window.location.protocol === 'https:' ? ':8001' : ':8000';
+const   socketUrl = websocketProtocol + '//' + window.location.hostname + websocketPort + '/ws/some_path/';
 const   socket = new WebSocket(socketUrl);
 
 const   keyState = {

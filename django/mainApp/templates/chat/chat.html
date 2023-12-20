@@ -14,17 +14,16 @@ Chat Rooms
 <h1>Private chats</h1>
 <br>
 
-{% if channels.items %}
-	{% for key, value in channels.items %}
-		<a href="{{ value }}">
-				{% for user in users %}
-					{% if user.username == key %}
-						<div class="container">
-							<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
-							<h3>{{ user.username }}</h3>
-						</div>
-					{% endif %}
-				{% endfor %}
+{% if chats %}
+	{% for chat in chats %}
+		<a href={{ chat.room_name }}>
+			<div class="container">
+				{% if chat.name == request.user.username %}
+					<h3>{{ chat.other_name }}</h3>
+				{% else %}
+					<h3>{{ chat.name }}</h3>
+				{% endif %}
+			</div>
 		</a>
 	{% endfor %}
 {% else %}
