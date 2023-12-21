@@ -1,16 +1,3 @@
-{% extends 'base.html' %}
-
-{% block css %}
-{% load static %}
-<link rel="stylesheet" href="{% static 'chat_app/css/style.css' %}">
-{% endblock %}
-
-{% block title %}
-All users
-{% endblock %}
-
-{% block content %}
-
 <h1>Friends</h1>
 <div class="list">
 	{% for x in friends %}
@@ -82,5 +69,3 @@ All users
 		});
 	});
 </script>
-
-{% endblock %}

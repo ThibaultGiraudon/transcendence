@@ -1,48 +1,33 @@
-{% extends 'base.html' %}
-
-{% block css %}
-{% load static %}
-<link rel="stylesheet" href="{% static 'users_app/css/style.css' %}">
-{% endblock %}
-
-{% block title %}
-Sign in
-{% endblock %}
-
-{% block content %}
-
 {% if request.user.is_authenticated %}
 
 <p>You are already connected, please log out before log in.</p>
 <a href="#" data-route="{% url 'sign_out' %}" onclick="navigateTo(event, this.dataset.route)">
-	<button>Log out</button>
+    <button>Log out</button>
 </a>
 
 {% else %}
 
 <div class="form-div">
-	<form method="POST" novalidate class="sign-form">
-		{% csrf_token %}
+    <form method="POST" novalidate class="sign-form" onsubmit="submitFormWithAjax(event)">
+        {% csrf_token %}
 
-		<h3 class="sign-title">Sign in</h3>
+        <h3 class="sign-title">Sign in</h3>
 
-		{{form.as_p}}
-		
-		{% for message in messages %}
-		<div class="error-alert">
-			<a data-dismiss="alert">⚠️</a>
-			<p>{{ message }}</p>
-		</div>
-		{% endfor %}
-		
-		<input type="submit" value="Login"/>
-	</form>
+        {{form.as_p}}
+        
+        {% for message in messages %}
+        <div class="error-alert">
+            <a data-dismiss="alert">⚠️</a>
+            <p>{{ message }}</p>
+        </div>
+        {% endfor %}
+        
+        <input type="submit" value="Login"/>
+    </form>
 
-	<a href="#" class="sign-42-button" data-route="{% url 'ft_api' %}" onclick="navigateTo(event, this.dataset.route)">
+	<a href="{% url 'ft_api' %}" class="sign-42-button">
 		<input type="submit" value="Sign in with 42">
 	</a>
 </div>
 
 {% endif %}
-
-{% endblock %}

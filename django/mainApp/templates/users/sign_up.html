@@ -1,16 +1,3 @@
-{% extends 'base.html' %}
-
-{% block css %}
-{% load static %}
-<link rel="stylesheet" href="{% static 'users_app/css/style.css' %}">
-{% endblock %}
-
-{% block title %}
-Sign up
-{% endblock %}
-
-{% block content %}
-
 {% if request.user.is_authenticated %}
 
 <p>You are already connected, please log out before creating a new user.</p>
@@ -21,9 +8,11 @@ Sign up
 {% else %}
 
 <div class="form-div">
-	<form method="POST" novalidate class="sign-form">
+	<form method="POST" novalidate class="sign-form" onsubmit="submitFormWithAjax(event)">
 		{% csrf_token %}
+
 		<h3 class="sign-title">Sign up</h3>
+		
 		{{form.as_p}}
 
 		{% for message in messages %}
@@ -38,5 +27,3 @@ Sign up
 </div>
 
 {% endif %}
-
-{% endblock %}

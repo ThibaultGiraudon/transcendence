@@ -1,22 +1,9 @@
-{% extends 'base.html' %}
-
-{% block css %}
-{% load static %}
-<link rel="stylesheet" href="{% static 'pong_app/css/style.css' %}">
-{% endblock %}
-
-{% block title %}
-Chat Rooms
-{% endblock %}
-
-{% block content %}
-
 <h1>Private chats</h1>
 <br>
 
 {% if chats %}
 	{% for chat in chats %}
-		<a href="#" data-route="{% url 'room' chat.room_name %}" onclick="navigateTo(event, this.dataset.route)">
+		<a href="javascript:void(0)" data-route="{% url 'room' chat.room_name %}" onclick="navigateTo(event, this.dataset.route)">
 			<div class="container">
 				{% if chat.name == request.user.username %}
 					<h3>{{ chat.other_name }}</h3>
@@ -35,5 +22,3 @@ Chat Rooms
 		border-radius: 50%;
 	}
 </style>
-
-{% endblock %}

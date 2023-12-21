@@ -1,15 +1,4 @@
-{% extends 'base.html' %}
-
-{% block css %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'pong_app/css/style.css' %}">
-{% endblock %}
-
-{% block title %}
-Ranked
-{% endblock %}
-
-{% block content %}
 
 <h1>Pong game</h1>
 
@@ -18,5 +7,3 @@ Ranked
 <button id="tournament-game">TOURNAMENT</button>
 
 <script type="module" src="{% static 'pong_app/js/main.js' %}"></script>
-
-{% endblock %}
