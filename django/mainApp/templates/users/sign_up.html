@@ -14,7 +14,7 @@ Sign up
 {% if request.user.is_authenticated %}
 
 <p>You are already connected, please log out before creating a new user.</p>
-<a href="/sign_out">
+<a href="#" data-route="{% url 'sign_out' %}" onclick="navigateTo(event, this.dataset.route)">
 	<button>Log out</button>
 </a>
 

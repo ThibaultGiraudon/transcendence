@@ -15,7 +15,7 @@ Chat Room
 
 {% for user in users %}
 	{% if user.id != request.user.id %}
-	<a href="/profile/{{ user.username }}">
+	<a href="#" data-route="{% url 'profile' user.username %}" onclick="navigateTo(event, this.dataset.route)">
 		<div class="container">
 			<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
 			<h3>{{ user.username }}</h3>
@@ -39,6 +39,7 @@ Chat Room
 	let		websocketPort = window.location.protocol === 'https:' ? ':8001' : ':8000';
 	const	socketUrl = websocketProtocol + '//' + window.location.hostname + websocketPort + '/ws/chat/' + roomName + "/";
 	const	chatSocket = new WebSocket(socketUrl);
+	console.log(chatSocket)
 
 	chatSocket.onmessage = function(e) {
 		const data = JSON.parse(e.data);
