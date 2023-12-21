@@ -50,11 +50,11 @@
 	</br>
 
 	{% if user.id in request.user.blockedUsers %}
-	<a href="/unblock/{{ user.id }}">
+	<a href="#" data-route="{% url 'unblock' user.id %}" onclick="navigateTo(event, this.dataset.route)">
 		<button>Unblock</button>
 	</a>
 	{% else %}
-	<a href="/block/{{ user.id }}">
+	<a href="#" data-route="{% url 'block' user.id %}" onclick="navigateTo(event, this.dataset.route)">
 		<button>Block</button>
 	</a>
 	{% endif %}
@@ -65,21 +65,21 @@
 
 	{% else %}
 		{% if user.id in request.user.follows %}
-			<a href="/unfollow/{{ user.id }}">
+			<a href="#" data-route="{% url 'unfollow' user.id %}" onclick="navigateTo(event, this.dataset.route)">
 				<button>Unfollow</button>
 			</a>
 		{% else %}
-			<a href="/follow/{{ user.id }}">
+			<a href="#" data-route="{% url 'follow' user.id %}" onclick="navigateTo(event, this.dataset.route)">
 				<button>Follow</button>
 			</a>
 		{% endif %}
 
 		{% if room %}
-			<a href="/chat/{{ room }}">
+			<a href="#" data-route="{% url 'room' room %}" onclick="navigateTo(event, this.dataset.route)">
 				<button>Send a chat</button>
 			</a>
 		{% else %}
-			<a href="/create_channel/?id={{ user.id }}&id={{ request.user.id }}">
+			<a href="#" data-route="{% url 'create_channel' ids %}" onclick="navigateTo(event, this.dataset.route)">
 				<button>Send a chat</button>
 			</a>
 		{% endif%}

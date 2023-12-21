@@ -289,6 +289,8 @@ def profile(request, username):
 		user = User.objects.get(username=username)
 	except User.DoesNotExist:
 		return redirect('users')
+	
+	ids = str(user.id) + ',' + str(request.user.id)
 
 	# get the room_name where the user and I are
 	room = None
@@ -302,14 +304,16 @@ def profile(request, username):
 		form = EditProfileForm(instance=request.user)
 		context = {	'form':form,
 					'user':user,
-					'room':room}
+					'room':room,
+					'ids': ids}
 		return render(request, 'profile.html', context)
 	
 	elif request.method == 'POST':
 		form = EditProfileForm(request.POST, request.FILES, instance=request.user)
 		context = {	'form':form,
 					'user':user,
-					'room':room}
+					'room':room,
+					'ids': ids}
 		
 		if form.is_valid():
 			if request.user.photo and request.user.photo.name != photo_name:

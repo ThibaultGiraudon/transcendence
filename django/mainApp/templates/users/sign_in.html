@@ -14,7 +14,7 @@ Sign in
 {% if request.user.is_authenticated %}
 
 <p>You are already connected, please log out before log in.</p>
-<a href="/sign_out">
+<a href="#" data-route="{% url 'sign_out' %}" onclick="navigateTo(event, this.dataset.route)">
 	<button>Log out</button>
 </a>
 
@@ -38,7 +38,7 @@ Sign in
 		<input type="submit" value="Login"/>
 	</form>
 
-	<a href="/ft_api" class="sign-42-button">
+	<a href="#" class="sign-42-button" data-route="{% url 'ft_api' %}" onclick="navigateTo(event, this.dataset.route)">
 		<input type="submit" value="Sign in with 42">
 	</a>
 </div>

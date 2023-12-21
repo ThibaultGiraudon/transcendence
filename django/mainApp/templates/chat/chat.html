@@ -16,7 +16,7 @@ Chat Rooms
 
 {% if chats %}
 	{% for chat in chats %}
-		<a href={{ chat.room_name }}>
+		<a href="#" data-route="{% url 'room' chat.room_name %}" onclick="navigateTo(event, this.dataset.route)">
 			<div class="container">
 				{% if chat.name == request.user.username %}
 					<h3>{{ chat.other_name }}</h3>

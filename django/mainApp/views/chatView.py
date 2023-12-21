@@ -16,17 +16,12 @@ def chat(request):
 	return render(request, "chat/chat.html", { 'chats': chats })
 
 
-def create_channel(request):
+def create_channel(request, ids):
 	if not request.user.is_authenticated:
 		return redirect('sign_in')
 	
 	# Get the ids
-	ids = []
-	for id in request.GET.getlist('id'):
-		try:
-			ids.append(int(id))
-		except ValueError:
-			continue
+	ids = [int(id) for id in ids.split(',')]
 
 	# Create a default channel name
 	channel_name = "group"
