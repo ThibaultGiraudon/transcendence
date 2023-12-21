@@ -1,20 +1,4 @@
-{% extends 'base.html' %}
-
-{% block css %}
-{% load static %}
-<link rel="stylesheet" href="{% static 'pong_app/css/style.css' %}">
-{% endblock %}
-
-{% block title %}
-Pong game
-{% endblock %}
-
-{% block content %}
-
 <h1>Pong game</h1>
-{% comment %} 
-<a href="/pong/ranked" class="choose-btn">Ranked Mode</a>
-<a href="/pong/practice" class="choose-btn">Practice Mode</a> {% endcomment %}
 
 <a href="#" data-route="{% url 'ranked' %}" onclick="navigateTo(event, this.dataset.route)" class="choose-btn">
     Ranked Mode
@@ -22,5 +6,3 @@ Pong game
 <a href="#" data-route="{% url 'practice' %}" onclick="navigateTo(event, this.dataset.route)" class="choose-btn">
     Practice Mode
 </a>
-
-{% endblock %}

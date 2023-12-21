@@ -1,16 +1,3 @@
-{% extends 'base.html' %}
-
-{% block css %}
-{% load static %}
-<link rel="stylesheet" href="{% static 'pong_app/css/style.css' %}">
-{% endblock %}
-
-{% block title %}
-{{ user.username }} profile
-{% endblock %}
-
-{% block content %}
-
 <img src={{ user.photo.url }} alt="profile picture" width="100" height="100">
 <p>{{ user.username }}</p>
 
@@ -50,11 +37,11 @@
 	</br>
 
 	{% if user.id in request.user.blockedUsers %}
-	<a href="#" data-route="{% url 'unblock' user.id %}" onclick="navigateTo(event, this.dataset.route)">
+	<a href="/unblock/{{ user.id }}">
 		<button>Unblock</button>
 	</a>
 	{% else %}
-	<a href="#" data-route="{% url 'block' user.id %}" onclick="navigateTo(event, this.dataset.route)">
+	<a href="/block/{{ user.id }}">
 		<button>Block</button>
 	</a>
 	{% endif %}
@@ -65,26 +52,24 @@
 
 	{% else %}
 		{% if user.id in request.user.follows %}
-			<a href="#" data-route="{% url 'unfollow' user.id %}" onclick="navigateTo(event, this.dataset.route)">
+			<a href="/unfollow/{{ user.id }}">
 				<button>Unfollow</button>
 			</a>
 		{% else %}
-			<a href="#" data-route="{% url 'follow' user.id %}" onclick="navigateTo(event, this.dataset.route)">
+			<a href="/follow/{{ user.id }}">
 				<button>Follow</button>
 			</a>
 		{% endif %}
 
 		{% if room %}
-			<a href="#" data-route="{% url 'room' room %}" onclick="navigateTo(event, this.dataset.route)">
+			<a href="/chat/{{ room }}">
 				<button>Send a chat</button>
 			</a>
 		{% else %}
-			<a href="#" data-route="{% url 'create_channel' ids %}" onclick="navigateTo(event, this.dataset.route)">
+			<a href="/create_channel/?id={{ user.id }}&id={{ request.user.id }}">
 				<button>Send a chat</button>
 			</a>
 		{% endif%}
 	{% endif %}
 
 {% endif %}
-
-{% endblock %}

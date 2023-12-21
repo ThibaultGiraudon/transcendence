@@ -2,23 +2,25 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib.auth import get_user_model
 import uuid
+from django.http import JsonResponse
 
 from mainApp.models import Channel
+from mainApp.views.utils import renderPage
 
 
 def chat(request):
 	if not request.user.is_authenticated:
-		return redirect('sign_in')
+		return JsonResponse({'redirect': '/sign_in/'})
 
 	# Get the channels
 	chats = list(request.user.channels.all())
 	
-	return render(request, "chat/chat.html", { 'chats': chats })
+	return renderPage(request, 'chat/chat.html', { 'chats': chats })
 
 
 def create_channel(request, ids):
 	if not request.user.is_authenticated:
-		return redirect('sign_in')
+		return JsonResponse({'redirect': '/sign_in/'})
 	
 	# Get the ids
 	ids = [int(id) for id in ids.split(',')]
@@ -42,7 +44,7 @@ def create_channel(request, ids):
 	
 	# Check if the channel is empty
 	if len(users) == 0:
-		return redirect('chat')
+		return JsonResponse({'redirect': '/chat/'})
 	
 	# Adapt the channel name
 	elif len(users) == 2:
@@ -58,18 +60,18 @@ def create_channel(request, ids):
 	channel.users.set(users)
 	channel.save()
 
-	return redirect('room', room_name=room_name)
+	return JsonResponse({'redirect': '/chat/room/' + room_name + '/'})
 
 
 def room(request, room_name):
 	if not request.user.is_authenticated:
-		return redirect('sign_in')
+		return JsonResponse({'redirect': '/sign_in/'})
 
 	# Get the channel
 	try:
 		channel = Channel.objects.get(room_name=room_name)
 	except Channel.DoesNotExist:
-		return redirect('chat')
+		return JsonResponse({'redirect': '/chat/'})
 	
 	# Get the users in the channel
 	users = list(channel.users.all())
@@ -81,4 +83,11 @@ def room(request, room_name):
 	request.user.status = f"chat:{room_name}"
 	request.user.save()
  
-	return render(request, "chat/room.html", {"room_name": room_name, "blocked_users": blocked_users, "users": users})
+	# Context
+	context = {
+		'room_name': room_name,
+		'users': users,
+		'blocked_users': blocked_users,
+	}
+	
+	return renderPage(request, 'chat/room.html', context)

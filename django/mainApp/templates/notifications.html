@@ -1,11 +1,3 @@
-{% extends 'base.html' %}
-
-{% block title %}
-Notifications
-{% endblock %}
-
-{% block content %}
-
 <h1>Notifications</h1>
 
 <form method="post" action="{% url 'delete_all_notifications' %}">
@@ -30,5 +22,3 @@ Notifications
 {% empty %}
 	<p>No notifications.</p>
 {% endfor %}
-
-{% endblock %}
