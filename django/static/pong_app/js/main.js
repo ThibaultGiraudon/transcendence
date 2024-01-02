@@ -156,17 +156,7 @@ function initScore(message) {
     }
     scoreSpans[message.id].textContent = message.score;
     scoreSpans[message.id].style.backgroundColor = backgroundColors[message.id];
-    if (message.score >= 10) {
-        if (message.nbPaddles == 4) {
-            scoreSpans[message.id].style.backgroundColor = '#212121';
-            scoreSpans[message.id].style.color = '#DADADA';
-            elements.paddles[message.id].setVisible(false);
-        } else if (message.nbPaddles == 2) {
-            scoreSpans[message.id ^ 1].style.backgroundColor = '#212121';
-            scoreSpans[message.id ^ 1].style.color = '#DADADA';
-            elements.paddles[message.id ^ 1].setVisible(false);
-        }
-    }
+    changeAllScores(message);
 }
 
 function updatePaddlePosition(message) {
@@ -192,7 +182,10 @@ function updateBallPosition(message) {
 function updateScore(message) {
     const scoreSpans = document.querySelectorAll('.player_score');
     scoreSpans[message.id].textContent = message.score;
-    // TODO a mettre dans un fucntion car on a pareil dans initScore
+    changeAllScores(message);
+}
+
+function changeAllScores(message) {
     if (message.score >= 10) {
         if (message.nbPaddles == 4) {
             scoreSpans[message.id].style.backgroundColor = '#212121';
