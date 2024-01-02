@@ -1,5 +1,4 @@
-from django.http import HttpResponse, JsonResponse
-
+from django.http import JsonResponse
 from mainApp.views.utils import renderPage
 
 def pong(request):
@@ -10,8 +9,6 @@ def pong(request):
 		return JsonResponse({'redirect': '/sign_in/'})
 	
 	return renderPage(request, 'pong_elements/choose_mode.html')
-	
-
 
 def ranked(request):
 	if not request.user.is_authenticated:
@@ -19,17 +16,14 @@ def ranked(request):
 	
 	return renderPage(request, 'pong_elements/ranked.html')
 
-
 def practice(request):
 	if not request.user.is_authenticated:
 		return JsonResponse({'redirect': '/sign_in/'})
 	
 	return renderPage(request, 'pong_elements/practice.html')
 
-
-
 def game(request, gameMode):
 	if not request.user.is_authenticated:
 		return JsonResponse({'redirect': '/sign_in/'})
 	
-	return renderPage(request, 'pong_elements/choose_mode.html', { 'gameMode': gameMode })
+	return renderPage(request, 'pong_elements/modes.html', {'gameMode': gameMode})

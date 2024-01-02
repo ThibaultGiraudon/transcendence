@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     socket.addEventListener('open', (event) => {
         console.log('Connected to websocket server');
-        const gameMode = JSON.parse(document.getElementById('game_mode').textContent);
+        const gameMode = window.gameMode;
         console.log(gameMode);
         const message = {
             type: gameMode,
