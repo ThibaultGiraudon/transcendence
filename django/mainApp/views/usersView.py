@@ -75,19 +75,9 @@ def sign_up(request):
 		return renderPage(request, 'users/sign_up.html', {'form': form})
 	
 	elif request.method == 'POST':
-		data = json.loads(request.body)
-		form = SignUpForm(data)
+		form = SignUpForm(request.POST)
 
 		if form.is_valid():
-			if CustomUser.objects.filter(email=form.cleaned_data['email']).exists():
-				messages.error(request, "This email is already taken")
-				return JsonResponse({'redirect': '/sign_up/'})
-			elif CustomUser.objects.filter(username=form.cleaned_data['username']).exists():
-				messages.error(request, "This username is already taken")
-				return JsonResponse({'redirect': '/sign_up/'})
-			elif len(form.cleaned_data['username']) < 4:
-				messages.error(request, "Your username is too short (4 characters minimum)")
-				return JsonResponse({'redirect': '/sign_up/'})
 			# Create the user
 			user = CustomUser.objects.create_user(
 					username=form.cleaned_data['username'],
@@ -95,6 +85,7 @@ def sign_up(request):
 					password=form.cleaned_data['password'])
 			user.save()
 			login(request, user)
+
 			# Send the status to the channel layer
 			channel_layer = get_channel_layer()
 			async_to_sync(channel_layer.group_send)(
@@ -116,17 +107,12 @@ def sign_up(request):
 				channel.users.set([user])
 				channel.save()
 
-			return JsonResponse({'redirect': '/pong/'})
+			return JsonResponse({'success': True, 'redirect': '/pong/'})
 
 		else:
-			if 'username' in form.errors:
-				messages.error(request, "Your username can't have special characters")
-			elif 'email' in form.errors:
-				messages.error(request, "You need to provide a valid email")
-			else:
-				messages.error(request, "You need to provide all fields")
+			return JsonResponse({'success': False, 'errors': form.errors.get_json_data()})
 
-	return JsonResponse({'redirect': '/sign_up/'})
+	return JsonResponse({'success': False, 'redirect': '/sign_up/'})
 
 
 def sign_out(request):
