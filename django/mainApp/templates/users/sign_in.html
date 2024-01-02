@@ -8,7 +8,7 @@
 {% else %}
 
 <div class="form-div">
-    <form method="POST" novalidate class="sign-form" onsubmit="submitFormWithAjax(event)">
+    <form method="POST" novalidate class="sign-form" onsubmit="signIn()">
         {% csrf_token %}
 
         <h3 class="sign-title">Sign in</h3>
