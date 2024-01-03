@@ -10,10 +10,11 @@ from django.contrib.auth import login, logout
 from django.contrib.auth import get_user_model
 from ..forms import LoginForm, SignUpForm, EditProfileForm
 from django.core.files.storage import default_storage
-from django.views.decorators.csrf import csrf_protect
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from ..models import Notification, Channel
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.core import serializers
 from django.http import JsonResponse
 import json
 
@@ -26,26 +27,25 @@ CLIENT_ID = os.environ.get('CLIENT_ID')
 CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
 
 
-# Functions
-@csrf_protect
+# Views
+@ensure_csrf_cookie
 def sign_in(request):
 	if request.method == 'GET':
-		form = LoginForm()
-
-		return renderPage(request, 'users/sign_in.html', {'form': form})
+		return renderPage(request, 'users/sign_in.html', {'form': LoginForm()})
 	
 	elif request.method == 'POST':
-		data = json.loads(request.body)
-		form = LoginForm(data)
+		form = LoginForm(request.POST)
 		
 		if form.is_valid():
 			email = form.cleaned_data['email']
 			password = form.cleaned_data['password']
 			user = authenticate_custom_user(email=email, password=password)
+
 			if user:
 				# Update the user status
 				user.status = "online"
 				user.save()
+
 				# Send the status to the channel layer
 				channel_layer = get_channel_layer()
 				async_to_sync(channel_layer.group_send)(
@@ -58,21 +58,24 @@ def sign_in(request):
 					}
 				)
 
+				# Login the user
 				login(request, user)
 
-				return JsonResponse({'redirect': '/pong/'})
+				return JsonResponse({'success': True, 'redirect': '/pong/'})
+			
 			else:
-				return JsonResponse({'error': 'Invalid credentials', 'redirect': '/sign_in/'})
+				form.add_error('password', 'Invalid credentials')
+				return JsonResponse({'success': False, 'errors': form.errors.get_json_data()})
 		
-		return JsonResponse({'error': 'Invalid credentials', 'redirect': '/sign_in/'})
+		else:
+			form.add_error('password', 'Invalid credentials')
+			return JsonResponse({'success': False, 'errors': form.errors.get_json_data()})
 
 
-@csrf_protect
+@ensure_csrf_cookie
 def sign_up(request):
 	if request.method == 'GET':
-		form = SignUpForm()
-
-		return renderPage(request, 'users/sign_up.html', {'form': form})
+		return renderPage(request, 'users/sign_up.html', {'form': SignUpForm()})
 	
 	elif request.method == 'POST':
 		form = SignUpForm(request.POST)
@@ -111,8 +114,6 @@ def sign_up(request):
 
 		else:
 			return JsonResponse({'success': False, 'errors': form.errors.get_json_data()})
-
-	return JsonResponse({'success': False, 'redirect': '/sign_up/'})
 
 
 def sign_out(request):
@@ -273,7 +274,6 @@ def profile_me(request):
 	return JsonResponse({'redirect': '/profile/' + request.user.username})
 
 
-@csrf_protect
 def profile(request, username):
 	if not request.user.is_authenticated:
 		return JsonResponse({'redirect': '/sign_in/'})
@@ -299,12 +299,18 @@ def profile(request, username):
 
 	if request.method == 'GET':
 		form = EditProfileForm(instance=request.user)
-		context = {	'form':form,
-					'user':user,
-					'room':room,
-					'ids': ids}
+		photo_url = request.build_absolute_uri(user.photo.url) if user.photo and user.photo.url else None
+		context = {
+			'form': form.initial,
+			'username': user.username,
+			'photo_url': photo_url,
+			'user_id': user.id,
+			'email': user.email,
+			'room': room,
+			'ids': ids
+		}
 		
-		return renderPage(request, 'profile.html', context)
+		return JsonResponse(context)
 	
 	elif request.method == 'POST':
 		form = EditProfileForm(request.POST, request.FILES, instance=request.user)

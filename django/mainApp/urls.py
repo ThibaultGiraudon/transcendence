@@ -32,5 +32,7 @@ urlpatterns = [
     path("chat/<str:room_name>/", chatView.room, name="room"),
     path('create_channel/<str:ids>/', chatView.create_channel, name='create_channel'),
 
-    path("translate/", mainView.translate, name="translate")
+    path("translate/", mainView.translate, name="translate"),
+
+    path('headerView/', mainView.headerView, name='headerView'),
 ]

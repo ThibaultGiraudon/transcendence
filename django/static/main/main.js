@@ -1,10 +1,17 @@
+/*
+	I swear that I almost died trying to make this work.
+	For the love of god, don't touch it,
+											 Leon Pupier
+*/
+
+
 // --------------------------------------------------------------------------------
-// ----------------------------- Navigation & Routing -----------------------------
+// ---------------------------------- Cookies -------------------------------------
 // --------------------------------------------------------------------------------
 
-// Return the value of the given cookie name
+
+// Return the value of the given cookie name (from the offical Django documentation)
 function getCookie(name) {
-	
 	let cookieValue = null;
 
 	if (document.cookie && document.cookie !== '') {
@@ -17,57 +24,53 @@ function getCookie(name) {
 			}
 		}
 	}
-
+	
 	return cookieValue;
 }
 
 
+// Get the CSRF token from the cookie
+let csrfToken = getCookie('csrftoken');
+
+
+// --------------------------------------------------------------------------------
+// ----------------------------- Navigation & Routing -----------------------------
+// --------------------------------------------------------------------------------
+
+
 // When the user clicks on a link, navigate to the given route
-function navigateTo(event, route) {
+async function navigateTo(event, route) {
 	event.preventDefault();
 
-	fetch(route, {
-		headers: {
-			'X-Requested-With': 'XMLHttpRequest'
-		}
-	})
-	.then(response => {
-		if (!response.ok) {
-			throw new Error('Network response was not ok');
-		}
-		return response.json();
-	})
-	.then(data => {
+	try {
+		const response = await fetch(route, {
+			method: 'GET',
+			headers: {
+				'X-Requested-With': 'XMLHttpRequest',
+				'X-CSRFToken': csrfToken
+			},
+			credentials: 'same-origin'
+		});
+	
+		const data = await response.json();
+
 		if (data.redirect) {
-			window.location.href = data.redirect;
+			navigateTo(event, data.redirect);
 		} else if (data.html) {
 			document.querySelector('#page-content').innerHTML = data.html;
+			if (data.header) {
+				console.log("Updating header content");
+				document.querySelector('#header').innerHTML = data.header;
+			}
+			csrfToken = getCookie('csrftoken');
 		} else {
 			console.error('Unexpected response:', data);
 		}
-	})
-	.catch(error => {
+	} catch (error) {
 		console.error('Error:', error);
-	});
+	}
 
 	history.pushState(null, null, route);
-}
-
-
-// Update the header menu of the website
-function updateHeader() {
-	fetch('/header_view/', {
-		method: 'GET',
-		headers: {
-			'X-Requested-With': 'XMLHttpRequest',
-			'Accept': 'application/json'
-		}
-	})
-	.then(response => response.text())
-	.then(data => {
-		const header = document.querySelector('header');
-		header.innerHTML = data;
-	});
 }
 
 
@@ -76,57 +79,52 @@ function updateHeader() {
 // --------------------------------------------------------------------------------
 
 
-// Form submit handler
-function handleFormSubmit(event) {
+// Handle form submission
+async function handleFormSubmit(event) {
 	event.preventDefault();
 
-	const form = event.target;
-	const formData = new FormData(form);
+	console.log("Form submitted");
 
-	sendRequest(form.action, form.method, formData)
-		.then(handleResponse)
-		.catch(handleError);
-}
+	// Get the form data
+	let formData = new FormData(event.target);
 
-
-function sendRequest(url, method, formData) {
-	return fetch(url, {
-		method: method,
-		body: new URLSearchParams(formData),
+	// Create the fetch options
+	let fetchOptions = {
+		method: 'POST',
+		body: formData,
 		headers: {
 			'X-Requested-With': 'XMLHttpRequest',
-			'X-CSRFToken': getCookie('csrftoken')
+			'X-CSRFToken': csrfToken
 		},
 		credentials: 'same-origin'
-	}).then(response => response.json());
-}
+	};
 
+	// Fetch the data
+	try {
+		const data = await fetch(event.target.action, fetchOptions);
+		const jsonData = await data.json();
 
-function handleResponse(data) {
-	if (data.success) {
-		if (data.redirect) {
-			window.location.href = data.redirect;
-		} else if (data.html) {
-			document.querySelector('#page-content').innerHTML = data.html;
-		}
-	} else if (data.errors) {
-		Object.keys(data.errors).forEach(field => {
-			const errorDiv = document.querySelector(`#error-${field}`);
-			if (errorDiv) {
-				const errorMessages = data.errors[field].map(error => error.message);
-				errorDiv.innerHTML = errorMessages.join(', ');
-			} else {
-				console.warn(`No error div found for field ${field}`);
+		console.log("Response received");
+
+		if (jsonData.redirect) {
+			console.log("Redirecting to", jsonData.redirect);
+			navigateTo(event, jsonData.redirect);
+		} else if (jsonData.html) {
+			console.log("Updating page content");
+			document.querySelector('#page-content').innerHTML = jsonData.html;
+			if (jsonData.header) {
+				console.log("Updating header content");
+				document.querySelector('#header').innerHTML = jsonData.header;
 			}
-		});
-	} else {
-		console.error('Unexpected response:', data);
+			csrfToken = getCookie('csrftoken');
+		} else {
+			console.error('Unexpected response:', jsonData);
+		}
+
+		console.log("Form submission successful");
+	} catch (error) {
+		console.error('Error:', error);
 	}
-}
-
-
-function handleError(error) {
-	console.error("Error:", error);
 }
 
 
@@ -136,23 +134,35 @@ function handleError(error) {
 
 
 // When the user navigates back or forward in the browser history
-window.addEventListener('popstate', function(event) {
+window.addEventListener('popstate', async function(event) {
 	const currentUrl = window.location.pathname;
 	
-	fetch(currentUrl, {
-		headers: {
-			'X-Requested-With': 'XMLHttpRequest'
-		}
-	})
-	.then(response => response.json())
-	.then(data => {
+	try {
+		const response = await fetch(currentUrl, {
+			method: 'GET',
+			headers: {
+				'X-Requested-With': 'XMLHttpRequest'
+			},
+			credentials: 'same-origin'
+		});
+	
+		const data = await response.json();
 		document.querySelector('#page-content').innerHTML = data.html;
-	});
+		if (data.header) {
+			console.log("Updating header content");
+			document.querySelector('#header').innerHTML = data.header;
+		}
+	} catch (error) {
+		console.error('Error:', error);
+	}
 });
 
 
-// Add event listener to all forms
-const forms = document.querySelectorAll('form');
-forms.forEach(form => {
-	form.addEventListener('submit', handleFormSubmit);
+document.addEventListener('DOMContentLoaded', (event) => {
+	// Add event listener to all forms
+	const forms = document.querySelectorAll('form');
+	forms.forEach(form => {
+		console.log("Adding event listener to form", form);
+		form.addEventListener('submit', handleFormSubmit);
+	});
 });

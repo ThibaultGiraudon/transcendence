@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 from mainApp.views.utils import renderPage
 
 
-def header_view(request):
+def headerView(request):
     return renderPage(request, 'header.html')
 
 
