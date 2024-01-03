@@ -5,22 +5,22 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Website</title>
+		
 		<link rel="stylesheet" href="{% static 'main/main.css' %}">
 		<link rel="stylesheet" href="{% static 'chat_app/css/style.css' %}">
 		<link rel="stylesheet" href="{% static 'pong_app/css/style.css' %}">
 		<link rel="stylesheet" href="{% static 'users_app/css/style.css' %}">
+		
+		<script src="{% static 'main/main.js' %}"></script>
 	</head>
 	
 	<body>
-		<header>
-			{% include 'header.html' %}
+		<header id="header">
+			{{ header|safe }}
 		</header>
-		
+
 		<div id="page-content">
 			{{ page_content|safe }}
 		</div>
-		
-		<!-- Dont' move this line or nothing work :| -->
-		<script src="{% static 'main/main.js' %}"></script>
 	</body>
 </html>

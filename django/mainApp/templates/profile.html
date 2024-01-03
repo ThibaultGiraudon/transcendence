@@ -1,75 +1,75 @@
-<img src={{ user.photo.url }} alt="profile picture" width="100" height="100">
-<p>{{ user.username }}</p>
+<img src="{{ photo_url }}" alt="profile picture" width="100" height="100">
+<p>{{ username }}</p>
 
-{% if user.id == request.user.id %}
+{% if user_id == request.user.id %}
 
-	<p>{{ user.email}}</p>
+    <p>{{ email }}</p>
 
-	<form method="POST" enctype="multipart/form-data" novalidate>
-		{% csrf_token %}
+    <form method="POST" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
 
-		<h2>Edit informations</h2>
+        <h2>Edit informations</h2>
 
-	<h4>Change username</h4>
-		{{form.username}}
+    <h4>Change username</h4>
+        {{form.username}}
 
-	<h4>Change profile picture</h4>
-	{{form.photo}}
+    <h4>Change profile picture</h4>
+    {{form.photo}}
 
-	</br>
-		
-		{% for message in messages %}
-			<div>
-				{% if message.tags == 'success' %}
-					<a data-dismiss="alert">✅</a>
-				{% else %}
-					<a data-dismiss="alert">⚠️</a>
-				{% endif %}
-				{{ message }}
-			</div>
-		{% endfor %}
-		
-		<input type="submit" value="Accept modifications"/>
-	</form>
+    </br>
+        
+        {% for message in messages %}
+            <div>
+                {% if message.tags == 'success' %}
+                    <a data-dismiss="alert">✅</a>
+                {% else %}
+                    <a data-dismiss="alert">⚠️</a>
+                {% endif %}
+                {{ message }}
+            </div>
+        {% endfor %}
+        
+        <input type="submit" value="Accept modifications"/>
+    </form>
 
 {% else %}
 
-	</br>
+    </br>
 
-	{% if user.id in request.user.blockedUsers %}
-	<a href="/unblock/{{ user.id }}">
-		<button>Unblock</button>
-	</a>
-	{% else %}
-	<a href="/block/{{ user.id }}">
-		<button>Block</button>
-	</a>
-	{% endif %}
+    {% if user_id in request.user.blockedUsers %}
+    <a href="/unblock/{{ user_id }}">
+        <button>Unblock</button>
+    </a>
+    {% else %}
+    <a href="/block/{{ user_id }}">
+        <button>Block</button>
+    </a>
+    {% endif %}
 
 
-	{% if user.id in request.user.blockedUsers %}
-		<p>You can't send a chat or follow this user</p>
+    {% if user_id in request.user.blockedUsers %}
+        <p>You can't send a chat or follow this user</p>
 
-	{% else %}
-		{% if user.id in request.user.follows %}
-			<a href="/unfollow/{{ user.id }}">
-				<button>Unfollow</button>
-			</a>
-		{% else %}
-			<a href="/follow/{{ user.id }}">
-				<button>Follow</button>
-			</a>
-		{% endif %}
+    {% else %}
+        {% if user_id in request.user.follows %}
+            <a href="/unfollow/{{ user_id }}">
+                <button>Unfollow</button>
+            </a>
+        {% else %}
+            <a href="/follow/{{ user_id }}">
+                <button>Follow</button>
+            </a>
+        {% endif %}
 
-		{% if room %}
-			<a href="/chat/{{ room }}">
-				<button>Send a chat</button>
-			</a>
-		{% else %}
-			<a href="/create_channel/?id={{ user.id }}&id={{ request.user.id }}">
-				<button>Send a chat</button>
-			</a>
-		{% endif%}
-	{% endif %}
+        {% if room %}
+            <a href="/chat/{{ room }}">
+                <button>Send a chat</button>
+            </a>
+        {% else %}
+            <a href="/create_channel/?id={{ user_id }}&id={{ request.user.id }}">
+                <button>Send a chat</button>
+            </a>
+        {% endif%}
+    {% endif %}
 
 {% endif %}

@@ -8,19 +8,16 @@
 {% else %}
 
 <div class="form-div">
-    <form method="POST" novalidate class="sign-form" onsubmit="signIn()">
+    <form method="POST" class="sign-form">
         {% csrf_token %}
 
         <h3 class="sign-title">Sign in</h3>
 
-        {{form.as_p}}
-        
-        {% for message in messages %}
-        <div class="error-alert">
-            <a data-dismiss="alert">⚠️</a>
-            <p>{{ message }}</p>
-        </div>
-        {% endfor %}
+        {% for field in form %}
+			{{ field.label_tag }}
+			{{ field }}
+			<div class="error-alert" id="error-{{ field.name }}"></div>
+		{% endfor %}
         
         <input type="submit" value="Login"/>
     </form>
