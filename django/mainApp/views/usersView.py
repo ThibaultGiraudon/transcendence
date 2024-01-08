@@ -81,11 +81,27 @@ def sign_up(request):
 		form = SignUpForm(request.POST)
 
 		if form.is_valid():
+			username = form.cleaned_data.get('username')
+			email = form.cleaned_data.get('email')
+			password = form.cleaned_data.get('password')
+
+			if CustomUser.objects.filter(email=email).exists():
+				form.add_error('email', "This email is already taken")
+				return JsonResponse({'success': False, 'errors': form.errors.get_json_data()})
+
+			if CustomUser.objects.filter(username=username).exists():
+				form.add_error('username', "This username is already taken")
+				return JsonResponse({'success': False, 'errors': form.errors.get_json_data()})
+
+			if len(username) < 4:
+				form.add_error('username', 'Your username is too short (4 characters minimum)')
+				return JsonResponse({'success': False, 'errors': form.errors.get_json_data()})
+	
 			# Create the user
 			user = CustomUser.objects.create_user(
-					username=form.cleaned_data['username'],
-					email=form.cleaned_data['email'],
-					password=form.cleaned_data['password'])
+					username=username,
+					email=email,
+					password=password)
 			user.save()
 			login(request, user)
 
@@ -106,7 +122,7 @@ def sign_up(request):
 				channel = Channel.objects.get(name="general")
 				channel.users.add(user)
 			except Channel.DoesNotExist:
-				channel = Channel.objects.create(name="general", room_name="general")
+				channel = Channel.objects.create(name="general", room_id="general")
 				channel.users.set([user])
 				channel.save()
 
@@ -198,7 +214,7 @@ def	connect_42_user(request, response_data):
 			channel = Channel.objects.get(name="general")
 			channel.users.add(user)
 		except Channel.DoesNotExist:
-			channel = Channel.objects.create(name="general", room_name="general")
+			channel = Channel.objects.create(name="general", room_id="general")
 			channel.users.set([user])
 			channel.save()
 
@@ -274,71 +290,63 @@ def profile_me(request):
 	return JsonResponse({'redirect': '/profile/' + request.user.username})
 
 
+@ensure_csrf_cookie
 def profile(request, username):
 	if not request.user.is_authenticated:
 		return JsonResponse({'redirect': '/sign_in/'})
 
+	# Get the photo name to delete it if the user change his photo
 	photo_name = request.user.photo.name
 
-	# Get the user
+	# Get the user of the profile
 	User = get_user_model()
 	try:
 		user = User.objects.get(username=username)
 	except User.DoesNotExist:
 		return JsonResponse({'redirect': '/users/'})
-	
-	ids = str(user.id) + ',' + str(request.user.id)
 
-	# Get the room_name where the user and me are
+	# Get the private chat between the request.user and the user
 	room = None
 	channels = list(request.user.channels.all())
 	for channel in channels:
-		if channel.other_name == user.username or channel.name == user.username:
-			room = channel.room_name
+		if channel.private and len(channel.users.all()) == 2 and user in channel.users.all():
+			room = channel.room_id
 			break
 
 	if request.method == 'GET':
 		form = EditProfileForm(instance=request.user)
-		photo_url = request.build_absolute_uri(user.photo.url) if user.photo and user.photo.url else None
 		context = {
-			'form': form.initial,
-			'username': user.username,
-			'photo_url': photo_url,
-			'user_id': user.id,
-			'email': user.email,
-			'room': room,
-			'ids': ids
+			'form': form,
+			'user': user,
+			'room': room
 		}
 		
-		return JsonResponse(context)
+		return renderPage(request, 'profile.html', context)
 	
 	elif request.method == 'POST':
 		form = EditProfileForm(request.POST, request.FILES, instance=request.user)
-		context = {	'form':form,
-					'user':user,
-					'room':room,
-					'ids': ids}
 		
 		if form.is_valid():
 			if request.user.photo and request.user.photo.name != photo_name:
 				default_storage.delete(request.user.photo.path)
 			elif len(form.cleaned_data['username']) < 4:
-				messages.error(request, "Your username is too short (4 characters minimum)")
-				return JsonResponse({'redirect': '/profile/' + username})
+				form.add_error('username', 'Your username is too short (4 characters minimum)')
+				return JsonResponse({'success': True, 'redirect': '/profile/' + username})
+			
 			form.save()
-			messages.success(request, 'Your informations have been updated')
-			return JsonResponse({'redirect': '/profile/' + username})
+			return JsonResponse({'success': True, 'redirect': '/profile/' + username})
 		
 		else:
 			if 'photo' in form.errors:
-				messages.error(request, 'Please enter a valid picture')
+				form.add_error('photo', 'Please enter a valid picture')
 			elif User.objects.filter(username=request.POST['username']).exists():
-				messages.error(request, 'This username is already taken')
+				form.add_error('username', 'This username is already taken')
 			else:
-				messages.error(request, 'Please enter a valid username')
-			return JsonResponse({'redirect': '/profile/' + username})
+				form.add_error('username', 'Please enter a valid username')
 
-	return JsonResponse({'redirect': '/profile/' + username})
+			return JsonResponse({'success': False, 'redirect': '/profile/' + username})
+
+	return JsonResponse({'success': False, 'redirect': '/profile/' + username})
 
 
 def users(request):
@@ -349,15 +357,20 @@ def users(request):
 	User = get_user_model()
 	all_users = User.objects.all()
 
-	friends = []
-	for user in all_users:
-		if user.id in request.user.follows:
-			friends.append(user)
-
-	context = {'all_users':all_users, 'friends':friends}
+	# Hide the current user
+	all_users = all_users.exclude(id=request.user.id)
 
 	if request.method == 'GET':
+		friends = []
+
+		for user in all_users:
+			if user.id in request.user.follows:
+				friends.append(user)
+
+		context = {'all_users':all_users, 'friends':friends}
+
 		return renderPage(request, 'users.html', context)
+	
 	elif request.method == 'POST':
 		return JsonResponse({'redirect': '/users/'})
 
@@ -381,7 +394,7 @@ def follow(request, id):
 	request.user.follows.append(id)
 	request.user.save()
 	
-	return JsonResponse('/profile/', username=userTo.username)
+	return JsonResponse({'redirect': '/profile/' + userTo.username})
 
 
 def unfollow(request, id):
@@ -400,7 +413,7 @@ def unfollow(request, id):
 	request.user.follows.remove(id)
 	request.user.save()
 
-	return JsonResponse('/profile/', username=userTo.username)
+	return JsonResponse({'redirect': '/profile/' + userTo.username})
 
 
 def block(request, id):

@@ -20,6 +20,7 @@ def notifications(request):
 
 	return renderPage(request, 'notifications.html', { 'notifs':notifs })
 
+
 @require_POST
 def delete_notification(request, notification_id):
 	if not request.user.is_authenticated:
@@ -32,6 +33,7 @@ def delete_notification(request, notification_id):
 
 	notification.delete()
 	return JsonResponse({'redirect': '/notifications/'})
+
 
 @require_POST
 def delete_all_notifications(request):
