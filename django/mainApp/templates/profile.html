@@ -1,20 +1,25 @@
-<img src="{{ photo_url }}" alt="profile picture" width="100" height="100">
-<p>{{ username }}</p>
+<img src="{{ user.photo.url }}" alt="profile picture" width="100" height="100">
+<p>{{ user.username }}</p>
 
-{% if user_id == request.user.id %}
+{% if user.id == request.user.id %}
 
-    <p>{{ email }}</p>
+    <p>{{ user.email }}</p>
 
     <form method="POST" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
 
         <h2>Edit informations</h2>
-
-    <h4>Change username</h4>
-        {{form.username}}
-
-    <h4>Change profile picture</h4>
-    {{form.photo}}
+    
+        {% for field in form %}
+            {% if field.name == 'username' %}
+                <h4>Change username</h4>
+            {% endif %}
+            {% if field.name == 'photo' %}
+                <h4>Change profile picture</h4>
+            {% endif %}
+            {{ field }}
+            <div class="error-alert" id="error-{{ field.name }}"></div>
+        {% endfor %}
 
     </br>
         
@@ -36,37 +41,37 @@
 
     </br>
 
-    {% if user_id in request.user.blockedUsers %}
-    <a href="/unblock/{{ user_id }}">
+    {% if user.id in request.user.blockedUsers %}
+    <a href="#" data-route="{% url 'unblock' user.id %}" onclick="navigateTo(event, this.dataset.route)">
         <button>Unblock</button>
     </a>
     {% else %}
-    <a href="/block/{{ user_id }}">
+    <a href="#" data-route="{% url 'block' user.id %}" onclick="navigateTo(event, this.dataset.route)">
         <button>Block</button>
     </a>
     {% endif %}
 
 
-    {% if user_id in request.user.blockedUsers %}
+    {% if user.id in request.user.blockedUsers %}
         <p>You can't send a chat or follow this user</p>
 
     {% else %}
-        {% if user_id in request.user.follows %}
-            <a href="/unfollow/{{ user_id }}">
+        {% if user.id in request.user.follows %}
+            <a href="#" data-route="{% url 'unfollow' user.id %}" onclick="navigateTo(event, this.dataset.route)">
                 <button>Unfollow</button>
             </a>
         {% else %}
-            <a href="/follow/{{ user_id }}">
+            <a href="#" data-route="{% url 'follow' user.id %}" onclick="navigateTo(event, this.dataset.route)">
                 <button>Follow</button>
             </a>
         {% endif %}
 
         {% if room %}
-            <a href="/chat/{{ room }}">
+            <a href="#" data-route="{% url 'room' room %}" onclick="navigateTo(event, this.dataset.route)">
                 <button>Send a chat</button>
             </a>
         {% else %}
-            <a href="/create_channel/?id={{ user_id }}&id={{ request.user.id }}">
+            <a href="#" data-route="{% url 'create_channel' %}?user_ids={{ user.id }}&user_ids={{ request.user.id }}&private=True" onclick="navigateTo(event, this.dataset.route)">
                 <button>Send a chat</button>
             </a>
         {% endif%}

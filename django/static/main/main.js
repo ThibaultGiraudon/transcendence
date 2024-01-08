@@ -59,7 +59,6 @@ async function navigateTo(event, route) {
 		} else if (data.html) {
 			document.querySelector('#page-content').innerHTML = data.html;
 			if (data.header) {
-				console.log("Updating header content");
 				document.querySelector('#header').innerHTML = data.header;
 			}
 			csrfToken = getCookie('csrftoken');
@@ -83,12 +82,8 @@ async function navigateTo(event, route) {
 async function handleFormSubmit(event) {
 	event.preventDefault();
 
-	console.log("Form submitted");
-
-	// Get the form data
 	let formData = new FormData(event.target);
 
-	// Create the fetch options
 	let fetchOptions = {
 		method: 'POST',
 		body: formData,
@@ -99,29 +94,31 @@ async function handleFormSubmit(event) {
 		credentials: 'same-origin'
 	};
 
-	// Fetch the data
 	try {
 		const data = await fetch(event.target.action, fetchOptions);
 		const jsonData = await data.json();
 
-		console.log("Response received");
-
-		if (jsonData.redirect) {
-			console.log("Redirecting to", jsonData.redirect);
-			navigateTo(event, jsonData.redirect);
-		} else if (jsonData.html) {
-			console.log("Updating page content");
-			document.querySelector('#page-content').innerHTML = jsonData.html;
-			if (jsonData.header) {
-				console.log("Updating header content");
-				document.querySelector('#header').innerHTML = jsonData.header;
+		if (jsonData.success) {
+			if (jsonData.redirect) {
+				navigateTo(event, jsonData.redirect);
+			} else if (jsonData.html) {
+				document.querySelector('#page-content').innerHTML = jsonData.html;
+				if (jsonData.header) {
+					document.querySelector('#header').innerHTML = jsonData.header;
+				}
+				csrfToken = getCookie('csrftoken');
+			} else {
+				console.error('Unexpected response:', jsonData);
 			}
-			csrfToken = getCookie('csrftoken');
 		} else {
-			console.error('Unexpected response:', jsonData);
+			for (const field in jsonData.errors) {
+				const errorElement = document.querySelector(`#error-${field}`);
+				if (errorElement) {
+					errorElement.textContent = jsonData.errors[field][0].message;
+				}
+			}
 		}
 
-		console.log("Form submission successful");
 	} catch (error) {
 		console.error('Error:', error);
 	}
@@ -149,7 +146,6 @@ window.addEventListener('popstate', async function(event) {
 		const data = await response.json();
 		document.querySelector('#page-content').innerHTML = data.html;
 		if (data.header) {
-			console.log("Updating header content");
 			document.querySelector('#header').innerHTML = data.header;
 		}
 	} catch (error) {
@@ -158,11 +154,10 @@ window.addEventListener('popstate', async function(event) {
 });
 
 
-document.addEventListener('DOMContentLoaded', (event) => {
-	// Add event listener to all forms
-	const forms = document.querySelectorAll('form');
-	forms.forEach(form => {
-		console.log("Adding event listener to form", form);
-		form.addEventListener('submit', handleFormSubmit);
-	});
-});
+// When the user submits a form
+document.addEventListener('submit', function(event) {
+	const target = event.target;
+	if (target && target.matches('form')) {
+		handleFormSubmit(event);
+	}
+}, true);

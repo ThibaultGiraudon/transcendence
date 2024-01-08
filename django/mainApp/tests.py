@@ -74,11 +74,11 @@
 
 #     # === Utility ===
 
-#     def _enter_chat_room(self, room_name):
+#     def _enter_chat_room(self, room_id):
 #         self.driver.get(self.live_server_url + "/chat/")
-#         ActionChains(self.driver).send_keys(room_name, Keys.ENTER).perform()
+#         ActionChains(self.driver).send_keys(room_id, Keys.ENTER).perform()
 #         WebDriverWait(self.driver, 2).until(
-#             lambda _: room_name in self.driver.current_url
+#             lambda _: room_id in self.driver.current_url
 #         )
 
 #     def _open_new_window(self):

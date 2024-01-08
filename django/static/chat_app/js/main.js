@@ -1,60 +1,153 @@
-const roomName = JSON.parse(document.getElementById('room-name').textContent);
-    
-let		websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-let		websocketPort = window.location.protocol === 'https:' ? ':8001' : ':8000';
-const	socketUrl = websocketProtocol + '//' + window.location.hostname + websocketPort + '/ws/chat/' + roomName + "/";
-const	chatSocket = new WebSocket(socketUrl);
+// Global variables
+let chatSockets = {};
+let currentRoomID = '';
 
-document.addEventListener('DOMContentLoaded', (event) => {
-    // Votre code ici
-	console.log(chatSocket)
 
-	chatSocket.onmessage = function(e) {
-		const data = JSON.parse(e.data);
-		const blockedUsers = JSON.parse(document.getElementById('blocked-users').textContent);
+// Check changes on the chat page
+function handleMutation() {
+	const roomIDElement = document.getElementById('room-id');
+
+	if (roomIDElement) {
+		const roomID = JSON.parse(roomIDElement.textContent);
 		
-		if (!blockedUsers.includes(parseInt(data.sender, 10))) {
-			const messageContainer = document.createElement('p');
-			messageContainer.textContent = data.username + ': ' + data.message;
-			messageContainer.className = data.sender === "{{ request.user.id }}" ? 'my-message' : 'other-message';
-			document.querySelector('#chat-log').appendChild(messageContainer);
-			var chatLog = document.querySelector('.chat-log');
-			chatLog.scrollTop = chatLog.scrollHeight;
+		// Change the room if the room ID has changed
+		if (roomID !== currentRoomID) {
+			currentRoomID = roomID;
+			
+			// Create a new socket if it doesn't exist
+			if (!chatSockets[currentRoomID]) {
+				let websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+				let websocketPort = window.location.protocol === 'https:' ? ':8001' : ':8000';
+				const socketUrl = websocketProtocol + '//' + window.location.hostname + websocketPort + '/ws/chat/' + roomID + "/";
+
+				chatSockets[roomID] = {
+					socket: new WebSocket(socketUrl),
+					url: socketUrl,
+					shouldClose: false
+				};
+
+			}
 		}
-	};
 
-	chatSocket.onopen = function(e) {
-		document.querySelector('#chat-log').innerHTML = '';
-	};
-
-	chatSocket.onclose = function(e) {
-		console.error('Chat socket closed unexpectedly');
-	};
-
-	chatSocket.onerror = function(e) {
-		console.error('WebSocket error: ', e);
-	};
-
-	document.querySelector('#chat-message-input').focus();
-	document.querySelector('#chat-message-input').onkeyup = function(e) {
-		if (e.key === 'Enter') {
-			document.querySelector('#chat-message-submit').click();
+		// Fetch the message history if the chat log is empty
+		const chatLog = document.querySelector('#chat-log');
+		if (chatLog && chatLog.innerHTML === '') {
+			fetchMessageHistory(currentRoomID);
 		}
-	};
 
-	document.querySelector('#chat-message-submit').onclick = null;
-	document.querySelector('#chat-message-submit').onclick = function(e) {
-		const messageInputDom = document.querySelector('#chat-message-input');
-		const message = messageInputDom.value.trim();
-		if (!message)
-		return;
-	const sender = "{{ request.user.id }}";
-		const username = "{{ request.user.username }}";
-		chatSocket.send(JSON.stringify({
-			'message': message,
-			'sender': sender,
-			'username': username,
-		}));
-		messageInputDom.value = '';
-	};
-});
+
+		// Fetch the message history
+		function fetchMessageHistory(ID) {
+			fetch('/api/chat/history/' + ID)
+			.then(response => response.json())
+			.then(messages => {
+
+				const blockedUsersElement = document.getElementById('blocked-users');
+				const blockedUsers = blockedUsersElement ? JSON.parse(blockedUsersElement.textContent) : [];
+				
+				const isPrivateElement = document.getElementById('is-private');
+				const isPrivate = isPrivateElement ? JSON.parse(isPrivateElement.textContent) : false;
+
+				// Display the messages
+				for (const message of messages) {
+					if (blockedUsers.includes(parseInt(message.sender, 10)))
+						continue;
+
+					const messageContainer = document.createElement('p');
+
+					const username = typeof message.username === 'string' ? message.username.replace(/"/g, '') : '';
+					messageContainer.textContent = isPrivate ? message.message : username + ': ' + message.message;
+					
+					const idElement = document.getElementById('id');
+					messageContainer.className = idElement && message.sender === idElement.textContent ? 'my-message' : 'other-message';
+					
+					const chatLog = document.querySelector('#chat-log');
+					if (chatLog) {
+						chatLog.appendChild(messageContainer);
+						chatLog.scrollTop = chatLog.scrollHeight;
+					}
+				}
+			});
+		}
+
+
+		// Handle incoming messages
+		chatSockets[currentRoomID].socket.onmessage = function(e) {
+			const data = JSON.parse(e.data);
+			
+			const blockedUsersElement = document.getElementById('blocked-users');
+			const blockedUsers = blockedUsersElement ? JSON.parse(blockedUsersElement.textContent) : [];
+			
+			const isPrivateElement = document.getElementById('is-private');
+			const isPrivate = isPrivateElement ? JSON.parse(isPrivateElement.textContent) : false;
+
+			if (data.sender && !blockedUsers.includes(parseInt(data.sender, 10))) {
+				const messageContainer = document.createElement('p');
+
+				const username = typeof data.username === 'string' ? data.username.replace(/"/g, '') : '';
+				messageContainer.textContent = isPrivate ? data.message : username + ': ' + data.message;
+				
+				const idElement = document.getElementById('id');
+				messageContainer.className = idElement && data.sender === idElement.textContent ? 'my-message' : 'other-message';
+				
+				const chatLog = document.querySelector('#chat-log');
+				if (chatLog) {
+					chatLog.appendChild(messageContainer);
+					chatLog.scrollTop = chatLog.scrollHeight;
+				}
+			}
+		};
+		
+
+		// Handle closing the socket
+		chatSockets[currentRoomID].socket.onclose = function(e) {
+			if (!this.shouldClose) {
+				chatSockets[currentRoomID].socket = new WebSocket(chatSockets[currentRoomID].url);
+
+				const chatLog = document.querySelector('#chat-log');
+				if (chatLog) {
+					chatLog.innerHTML = '';
+				}
+
+				fetchMessageHistory(currentRoomID);
+			}
+		};
+		
+
+		// Get the enter key to submit the message
+		document.querySelector('#chat-message-input').focus();
+		document.querySelector('#chat-message-input').onkeyup = function(e) {
+			if (e.key === 'Enter') {
+				document.querySelector('#chat-message-submit').click();
+			}
+		};
+
+
+		// Send the message
+		document.querySelector('#chat-message-submit').onclick = function(e) {
+			const messageInputDom = document.querySelector('#chat-message-input');
+			const message = messageInputDom.value.trim();
+			
+			if (!message)
+				return;
+
+			const sender = document.getElementById('id').textContent;
+			const username = document.getElementById('username').textContent;
+			
+			if (chatSockets[currentRoomID].socket.readyState === WebSocket.OPEN) {
+				chatSockets[currentRoomID].socket.send(JSON.stringify({
+					'message': message,
+					'sender': sender,
+					'username': username,
+				}));
+			}
+
+			messageInputDom.value = '';
+		};
+	}
+};
+
+
+// Observe changes on the chat page
+const observer = new MutationObserver(handleMutation);
+observer.observe(document, { childList: true, subtree: true });
