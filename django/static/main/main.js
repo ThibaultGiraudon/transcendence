@@ -63,11 +63,11 @@ async function navigateTo(event, route) {
 			}
 			csrfToken = getCookie('csrftoken');
 		} else {
-			console.error('Unexpected response:', data);
+			if (data.header) {
+				document.querySelector('#header').innerHTML = data.header;
+			}
 		}
-	} catch (error) {
-		console.error('Error:', error);
-	}
+	} catch (error) {}
 
 	history.pushState(null, null, route);
 }
@@ -107,8 +107,6 @@ async function handleFormSubmit(event) {
 					document.querySelector('#header').innerHTML = jsonData.header;
 				}
 				csrfToken = getCookie('csrftoken');
-			} else {
-				console.error('Unexpected response:', jsonData);
 			}
 		} else {
 			for (const field in jsonData.errors) {
@@ -119,9 +117,7 @@ async function handleFormSubmit(event) {
 			}
 		}
 
-	} catch (error) {
-		console.error('Error:', error);
-	}
+	} catch (error) {}
 }
 
 
@@ -148,9 +144,7 @@ window.addEventListener('popstate', async function(event) {
 		if (data.header) {
 			document.querySelector('#header').innerHTML = data.header;
 		}
-	} catch (error) {
-		console.error('Error:', error);
-	}
+	} catch (error) {}
 });
 
 

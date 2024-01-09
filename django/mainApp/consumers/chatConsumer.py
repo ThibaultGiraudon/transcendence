@@ -1,9 +1,10 @@
-import json, logging
+import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from channels.db import database_sync_to_async
 from datetime import datetime
+
 
 class ChatConsumer(AsyncWebsocketConsumer):
 	@database_sync_to_async
@@ -45,33 +46,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 		await self.accept()
 
-		#await self.send_previous_messages()
-	
-
-	@database_sync_to_async
-	def get_previous_messages(self):
-		from mainApp.models import Channel
-		
-		# Get the channel
-		try:
-			channel = Channel.objects.get(room_id=self.room_id)
-		except Channel.DoesNotExist:
-			return []
-		
-		return channel.messages
-
-
-	async def send_previous_messages(self):
-		# Get messages and sort them
-		previous_messages = await self.get_previous_messages()
-		if previous_messages is None or len(previous_messages) == 0:
-			return
-		previous_messages.sort(key=lambda msg: msg['timestamp'])
-
-		# Send the previous messages
-		for message in previous_messages:
-			await self.send(text_data=json.dumps(message))
-
 
 	async def disconnect(self, close_code):
 		await self.change_status_to_online()
@@ -88,9 +62,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		sender = text_data_json.get("sender")
 		username = text_data_json.get("username")
 		timestamp = datetime.now().isoformat()
-
-		# Get the user
-		user = self.scope['user']
 
 		# Save the message
 		await self.save_message(sender, username, message, timestamp)
