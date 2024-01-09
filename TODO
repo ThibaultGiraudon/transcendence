@@ -22,6 +22,3 @@ mettre un countdown au mileu au reset pour pas quon crois que cest un lag
 [LEON]
 Patcher probleme heure notifications: -1h
 Patcher la duplication de messages si requete non AJAX sur une room
-Patcher le pseudo dans une room si l'user a changer entre deux
-Patcher les caracteres autorises quand on change de pseudo
-Patcher la redirection quand on change de pseudo vers son profile et pas /users/
