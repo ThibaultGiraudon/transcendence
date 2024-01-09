@@ -1,77 +1,96 @@
-from django.shortcuts import render
-from django.shortcuts import redirect
 from django.contrib.auth import get_user_model
+from django.views.decorators.http import require_POST
 import uuid
 from django.http import JsonResponse
 
 from mainApp.models import Channel
-from mainApp.views.utils import renderPage
+from mainApp.views.utils import renderPage, redirectPage
 
 
 def chat(request):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirectPage(request, '/sign_in/')
 
 	# Get the channels
-	chats = list(request.user.channels.all())
+	channels = list(request.user.channels.all())
+
+	# Get the channels names
+	chats = []
+	for i in range(len(channels)):
+		users = list(channels[i].users.all())
+		if channels[i].private and len(users) == 2:
+			if users[0].id == request.user.id:
+				if users[1].id in request.user.blockedUsers:
+					continue
+				chats.append([channels[i], users[1].username])
+			else:
+				if users[0].id in request.user.blockedUsers:
+					continue
+				chats.append([channels[i], users[0].username])
+		else:
+			chats.append([channels[i], channels[i].name])
 	
 	return renderPage(request, 'chat/chat.html', { 'chats': chats })
 
 
-def create_channel(request, ids):
+def create_channel(request):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirectPage(request, '/sign_in/')
 	
-	# Get the ids
-	ids = [int(id) for id in ids.split(',')]
+	# Get parameters
+	private = request.GET.get('private', 'False') == 'True'
+	try:
+		user_ids = list(map(int, request.GET.getlist('user_ids')))
+	except ValueError:
+		return redirectPage(request, '/chat/')
 
 	# Create a default channel name
 	channel_name = "group"
-	other_name = ""
 	
 	# Channel informations
-	room_name = str(uuid.uuid1())
+	room_id = str(uuid.uuid1())
 	users = []
 
 	# Get the users
 	User = get_user_model()
-	for id in ids:
+	for user_id in user_ids:
 		try:
-			user = User.objects.get(id=id)
+			user = User.objects.get(id=user_id)
+			users.append(user)
 		except User.DoesNotExist:
-			continue
-		users.append(user)
+			return redirectPage(request, '/chat/')
 	
 	# Check if the channel is empty
 	if len(users) == 0:
-		return JsonResponse({'redirect': '/chat/'})
+		return redirectPage(request, '/chat/')
 	
-	# Adapt the channel name
-	elif len(users) == 2:
-		for user in users:
-			if user.id != request.user.id:
-				channel_name = user.username
-			else:
-				other_name = request.user.username
-				break
+	# Check if the channel is really private
+	if private and len(users) != 2:
+		return redirectPage(request, '/chat/')
+	
+	# Check if a private channel already exists between the two users
+	if len(users) == 2:
+		existing_channel = Channel.objects.filter(users__in=user_ids, private=True)
+		if existing_channel.exists():
+			return redirectPage(request, '/chat/' + existing_channel.first().room_id)
 
 	# Create the channel
-	channel = Channel.objects.create(name=channel_name, room_name=room_name, other_name=other_name)
+	channel = Channel.objects.create(private=private, room_id=room_id, name=channel_name)
 	channel.users.set(users)
 	channel.save()
 
-	return JsonResponse({'redirect': '/chat/room/' + room_name + '/'})
+	return redirectPage(request, '/chat/' + room_id)
 
 
-def room(request, room_name):
+def room(request, room_id):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirectPage(request, '/sign_in/')
 
 	# Get the channel
 	try:
-		channel = Channel.objects.get(room_name=room_name)
+		channel = Channel.objects.get(room_id=room_id)
 	except Channel.DoesNotExist:
-		return JsonResponse({'redirect': '/chat/'})
+		return redirectPage(request, '/chat/')
 	
 	# Get the users in the channel
 	users = list(channel.users.all())
@@ -79,15 +98,36 @@ def room(request, room_name):
 	# Get the blocked users
 	blocked_users = request.user.blockedUsers
 
+	# Check if the channel is private and the other user is blocked
+	if channel.private and len(users) == 2:
+		if users[0].id == request.user.id:
+			if users[1].id in blocked_users:
+				return redirectPage(request, '/chat/')
+		else:
+			if users[0].id in blocked_users:
+				return redirectPage(request, '/chat/')
+
 	# Update the status of the current user
-	request.user.status = f"chat:{room_name}"
+	request.user.status = f"chat:{room_id}"
 	request.user.save()
  
 	# Context
 	context = {
-		'room_name': room_name,
+		'name_channel': channel.name,
+		'room_id': room_id,
 		'users': users,
 		'blocked_users': blocked_users,
+		'private': channel.private,
 	}
-	
+
 	return renderPage(request, 'chat/room.html', context)
+
+
+def get_message_history(request, room_id):
+	try:
+		channel = Channel.objects.get(room_id=room_id)
+		messages = channel.messages
+	except Channel.DoesNotExist:
+		messages = []
+
+	return JsonResponse(messages, safe=False)

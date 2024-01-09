@@ -1,5 +1,19 @@
+/*
+	I swear that I almost died trying to make this work.
+	For the love of god, don't touch it,
+											 Leon Pupier
+*/
+
+
+// --------------------------------------------------------------------------------
+// ---------------------------------- Cookies -------------------------------------
+// --------------------------------------------------------------------------------
+
+
+// Return the value of the given cookie name (from the offical Django documentation)
 function getCookie(name) {
 	let cookieValue = null;
+
 	if (document.cookie && document.cookie !== '') {
 		const cookies = document.cookie.split(';');
 		for (let i = 0; i < cookies.length; i++) {
@@ -10,177 +24,134 @@ function getCookie(name) {
 			}
 		}
 	}
-	console.log('getCookie', name, cookieValue); // Log the cookie value
+	
 	return cookieValue;
 }
 
 
-function navigateTo(event, route) {
-	console.log('navigateTo', route);
+// Get the CSRF token from the cookie
+let csrfToken = getCookie('csrftoken');
+
+
+// --------------------------------------------------------------------------------
+// ----------------------------- Navigation & Routing -----------------------------
+// --------------------------------------------------------------------------------
+
+
+// When the user clicks on a link, navigate to the given route
+async function navigateTo(event, route) {
 	event.preventDefault();
 
-	fetch(route, {
-		headers: {
-			'X-Requested-With': 'XMLHttpRequest'
-		}
-	})
-	.then(response => {
-		if (!response.ok) {
-			throw new Error('Network response was not ok');
-		}
-		return response.json();
-	})
-	.then(data => {
-		console.log('Data:', data);  // Log the data
+	try {
+		const response = await fetch(route, {
+			method: 'GET',
+			headers: {
+				'X-Requested-With': 'XMLHttpRequest',
+				'X-CSRFToken': csrfToken
+			},
+			credentials: 'same-origin'
+		});
+	
+		const data = await response.json();
+
 		if (data.redirect) {
-			// If the response contains a redirect URL, redirect to that URL
-			window.location.href = data.redirect;
+			navigateTo(event, data.redirect);
 		} else if (data.html) {
-			// If the response contains HTML, display it in #page-content
 			document.querySelector('#page-content').innerHTML = data.html;
+			if (data.header) {
+				document.querySelector('#header').innerHTML = data.header;
+			}
+			csrfToken = getCookie('csrftoken');
 		} else {
-			// Otherwise, display an error message
-			console.error('Unexpected response:', data);
+			if (data.header) {
+				document.querySelector('#header').innerHTML = data.header;
+			}
 		}
-	})
-	.catch(error => {
-		console.error('Error:', error);
-	});
+	} catch (error) {}
 
 	history.pushState(null, null, route);
 }
 
-window.addEventListener('popstate', function(event) {
-	const currentUrl = window.location.pathname;
-	fetch(currentUrl, {
+
+// --------------------------------------------------------------------------------
+// -------------------------------- Form listeners --------------------------------
+// --------------------------------------------------------------------------------
+
+
+// Handle form submission
+async function handleFormSubmit(event) {
+	event.preventDefault();
+
+	let formData = new FormData(event.target);
+
+	let fetchOptions = {
+		method: 'POST',
+		body: formData,
 		headers: {
-			'X-Requested-With': 'XMLHttpRequest'
+			'X-Requested-With': 'XMLHttpRequest',
+			'X-CSRFToken': csrfToken
+		},
+		credentials: 'same-origin'
+	};
+
+	try {
+		const data = await fetch(event.target.action, fetchOptions);
+		const jsonData = await data.json();
+
+		if (jsonData.success) {
+			if (jsonData.redirect) {
+				navigateTo(event, jsonData.redirect);
+			} else if (jsonData.html) {
+				document.querySelector('#page-content').innerHTML = jsonData.html;
+				if (jsonData.header) {
+					document.querySelector('#header').innerHTML = jsonData.header;
+				}
+				csrfToken = getCookie('csrftoken');
+			}
+		} else {
+			for (const field in jsonData.errors) {
+				const errorElement = document.querySelector(`#error-${field}`);
+				if (errorElement) {
+					errorElement.textContent = jsonData.errors[field][0].message;
+				}
+			}
 		}
-	})
-	.then(response => response.json())
-	.then(data => {
+
+	} catch (error) {}
+}
+
+
+// --------------------------------------------------------------------------------
+// ---------------------------------- Event listeners -----------------------------
+// --------------------------------------------------------------------------------
+
+
+// When the user navigates back or forward in the browser history
+window.addEventListener('popstate', async function(event) {
+	const currentUrl = window.location.pathname;
+	
+	try {
+		const response = await fetch(currentUrl, {
+			method: 'GET',
+			headers: {
+				'X-Requested-With': 'XMLHttpRequest'
+			},
+			credentials: 'same-origin'
+		});
+	
+		const data = await response.json();
 		document.querySelector('#page-content').innerHTML = data.html;
-	});
+		if (data.header) {
+			document.querySelector('#header').innerHTML = data.header;
+		}
+	} catch (error) {}
 });
 
 
-function submitFormWithAjax(event) {
-    event.preventDefault();
-
-    const form = event.target;
-    const url = form.action;
-    const formData = new FormData(form);
-
-	// Convert FormData to JSON
-    const data = {};
-    for (let pair of formData.entries()) {
-        data[pair[0]] = pair[1];
-    }
-
-    console.log('Submitting form with URL:', url);  // Log the URL
-
-    const csrfToken = getCookie('csrftoken');
-    console.log('CSRF token:', csrfToken);  // Log the CSRF token
-
-    fetch(url, {
-        method: 'POST',
-        headers: {
-			'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRFToken': csrfToken,
-            'Accept': 'application/json',
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => {
-        // Check the content type of the response
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.indexOf('application/json') !== -1) {
-            // If it's JSON, parse it
-            return response.json();
-        } else {
-            // If it's not JSON, throw an error
-            throw new Error('Server response was not JSON: ' + contentType);
-        }
-    })
-    .then(data => {
-		console.log('Data:', data);  // Log the data
-		if (data.redirect) {
-			// If the response contains a redirect URL, redirect to that URL
-			window.location.href = data.redirect;
-		} else if (data.html) {
-			// If the response contains HTML, display it in #page-content
-			document.querySelector('#page-content').innerHTML = data.html;
-		} else {
-			// Otherwise, display an error message
-			console.error('Unexpected response:', data);
-		}
-	})
-    .catch(error => console.error('Error:', error));
-}
-
-
-function updateHeader() {
-    fetch('/header_view/', {
-        method: 'GET',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json'
-        }
-    })
-    .then(response => response.text())
-    .then(data => {
-        const header = document.querySelector('header');
-        header.innerHTML = data;
-    });
-}
-
-
-function signIn() {
-    const email = document.querySelector('#email').value;
-    const password = document.querySelector('#password').value;
-
-    fetch('/sign_in/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken
-        },
-        body: JSON.stringify({email: email, password: password})
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.redirect) {
-            window.location.href = data.redirect;
-        } else {
-			console.error('Unexpected response:', data);
-        }
-        // Call updateHeader after successful login
-        updateHeader();
-    });
-}
-
-
-function signOut() {
-    fetch('/sign_out/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.redirect) {
-            window.location.href = data.redirect;
-        } else {
-            console.error('Unexpected response:', data);
-        }
-        // Call updateHeader after successful logout
-        updateHeader();
-    });
-}
-
-
-// Add event listener for all forms to submit them with AJAX
-const forms = document.querySelectorAll('form');
-forms.forEach(form => form.addEventListener('submit', submitFormWithAjax));
+// When the user submits a form
+document.addEventListener('submit', function(event) {
+	const target = event.target;
+	if (target && target.matches('form')) {
+		handleFormSubmit(event);
+	}
+}, true);

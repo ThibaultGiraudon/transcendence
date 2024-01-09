@@ -3,21 +3,20 @@ import requests
 from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
-from django.shortcuts import render, redirect
-from django.contrib import messages
+from django.shortcuts import redirect
 from ..models import CustomUser
 from django.contrib.auth import login, logout
 from django.contrib.auth import get_user_model
 from ..forms import LoginForm, SignUpForm, EditProfileForm
 from django.core.files.storage import default_storage
-from django.views.decorators.csrf import csrf_protect
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from ..models import Notification, Channel
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
-import json
+import urllib.request
 
-from mainApp.views.utils import renderPage
+from mainApp.views.utils import renderPage, redirectPage
 
 
 # 42 API
@@ -26,26 +25,25 @@ CLIENT_ID = os.environ.get('CLIENT_ID')
 CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
 
 
-# Functions
-@csrf_protect
+# Views
+@ensure_csrf_cookie
 def sign_in(request):
 	if request.method == 'GET':
-		form = LoginForm()
-
-		return renderPage(request, 'users/sign_in.html', {'form': form})
+		return renderPage(request, 'users/sign_in.html', {'form': LoginForm()})
 	
 	elif request.method == 'POST':
-		data = json.loads(request.body)
-		form = LoginForm(data)
+		form = LoginForm(request.POST)
 		
 		if form.is_valid():
 			email = form.cleaned_data['email']
 			password = form.cleaned_data['password']
 			user = authenticate_custom_user(email=email, password=password)
+
 			if user:
 				# Update the user status
 				user.status = "online"
 				user.save()
+
 				# Send the status to the channel layer
 				channel_layer = get_channel_layer()
 				async_to_sync(channel_layer.group_send)(
@@ -58,43 +56,53 @@ def sign_in(request):
 					}
 				)
 
+				# Login the user
 				login(request, user)
 
-				return JsonResponse({'redirect': '/pong/'})
+				return JsonResponse({'success': True, 'redirect': '/pong/'})
+			
 			else:
-				return JsonResponse({'error': 'Invalid credentials', 'redirect': '/sign_in/'})
+				form.add_error('password', 'Invalid credentials')
+				return JsonResponse({'success': False, 'errors': form.errors.get_json_data()})
 		
-		return JsonResponse({'error': 'Invalid credentials', 'redirect': '/sign_in/'})
+		else:
+			form.add_error('password', 'Invalid credentials')
+			return JsonResponse({'success': False, 'errors': form.errors.get_json_data()})
 
 
-@csrf_protect
+@ensure_csrf_cookie
 def sign_up(request):
 	if request.method == 'GET':
-		form = SignUpForm()
-
-		return renderPage(request, 'users/sign_up.html', {'form': form})
+		return renderPage(request, 'users/sign_up.html', {'form': SignUpForm()})
 	
 	elif request.method == 'POST':
-		data = json.loads(request.body)
-		form = SignUpForm(data)
+		form = SignUpForm(request.POST)
 
 		if form.is_valid():
-			if CustomUser.objects.filter(email=form.cleaned_data['email']).exists():
-				messages.error(request, "This email is already taken")
-				return JsonResponse({'redirect': '/sign_up/'})
-			elif CustomUser.objects.filter(username=form.cleaned_data['username']).exists():
-				messages.error(request, "This username is already taken")
-				return JsonResponse({'redirect': '/sign_up/'})
-			elif len(form.cleaned_data['username']) < 4:
-				messages.error(request, "Your username is too short (4 characters minimum)")
-				return JsonResponse({'redirect': '/sign_up/'})
+			username = form.cleaned_data.get('username')
+			email = form.cleaned_data.get('email')
+			password = form.cleaned_data.get('password')
+
+			if CustomUser.objects.filter(email=email).exists():
+				form.add_error('email', "This email is already taken")
+				return JsonResponse({'success': False, 'errors': form.errors.get_json_data()})
+
+			if CustomUser.objects.filter(username=username).exists():
+				form.add_error('username', "This username is already taken")
+				return JsonResponse({'success': False, 'errors': form.errors.get_json_data()})
+
+			if len(username) < 4:
+				form.add_error('username', 'Your username is too short (4 characters minimum)')
+				return JsonResponse({'success': False, 'errors': form.errors.get_json_data()})
+	
 			# Create the user
 			user = CustomUser.objects.create_user(
-					username=form.cleaned_data['username'],
-					email=form.cleaned_data['email'],
-					password=form.cleaned_data['password'])
+					username=username,
+					email=email,
+					password=password)
 			user.save()
 			login(request, user)
+
 			# Send the status to the channel layer
 			channel_layer = get_channel_layer()
 			async_to_sync(channel_layer.group_send)(
@@ -112,21 +120,14 @@ def sign_up(request):
 				channel = Channel.objects.get(name="general")
 				channel.users.add(user)
 			except Channel.DoesNotExist:
-				channel = Channel.objects.create(name="general", room_name="general")
+				channel = Channel.objects.create(name="general", room_id="general")
 				channel.users.set([user])
 				channel.save()
 
-			return JsonResponse({'redirect': '/pong/'})
+			return JsonResponse({'success': True, 'redirect': '/pong/'})
 
 		else:
-			if 'username' in form.errors:
-				messages.error(request, "Your username can't have special characters")
-			elif 'email' in form.errors:
-				messages.error(request, "You need to provide a valid email")
-			else:
-				messages.error(request, "You need to provide all fields")
-
-	return JsonResponse({'redirect': '/sign_up/'})
+			return JsonResponse({'success': False, 'errors': form.errors.get_json_data()})
 
 
 def sign_out(request):
@@ -150,31 +151,37 @@ def sign_out(request):
 		# Logout the user
 		logout(request)
 	
-	return JsonResponse({'redirect': '/sign_in/'})
+	return redirectPage(request, '/sign_in/')
 
 
 def ft_api(request):
 	protocol = request.scheme
 	port = '%3A8001' if protocol == "https" else '%3A8000'
+
 	api_url = "https://api.intra.42.fr/oauth/authorize?client_id=" + CLIENT_ID + "&redirect_uri=" + \
 	protocol + "%3A%2F%2Flocalhost" + \
 	port + "%2Fcheck_authorize%2F&response_type=code"
+
 	return redirect(api_url)
 
 
 def	check_authorize(request):
 	if request.method == 'GET' and 'error' in request.GET:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirect(request, 'sign_in')
+	
 	if request.method == 'GET' and 'code' in request.GET:
 		code = request.GET['code']
+	
 	response_token = handle_42_callback(request, code)
 	response_data = make_api_request_with_token(API_USER, response_token)
 	connect_42_user(request, response_data)
+
 	return redirect('pong')
 
 
 def	connect_42_user(request, response_data):
 	user = authenticate_42_user(email=response_data['email'])
+
 	if user:
 		user.status = "online"
 		channel_layer = get_channel_layer()
@@ -189,12 +196,14 @@ def	connect_42_user(request, response_data):
 		)
 		user.save()
 		login(request, user)
+
 	else:
 		photo_url = response_data['image']['link']
-		response = requests.get(photo_url)
-		img = Image.open(BytesIO(response.content))
-		img_io = BytesIO()
-		img.save(img_io, format='JPEG')
+
+		with urllib.request.urlopen(photo_url) as url:
+			with Image.open(BytesIO(url.read())) as img:
+				img_io = BytesIO()
+				img.save(img_io, format='JPEG')
 
 		user = CustomUser.objects.create(
 			username=response_data['login'],
@@ -211,7 +220,7 @@ def	connect_42_user(request, response_data):
 			channel = Channel.objects.get(name="general")
 			channel.users.add(user)
 		except Channel.DoesNotExist:
-			channel = Channel.objects.create(name="general", room_name="general")
+			channel = Channel.objects.create(name="general", room_id="general")
 			channel.users.set([user])
 			channel.save()
 
@@ -283,96 +292,105 @@ def authenticate_42_user(email):
 
 def profile_me(request):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
-	return JsonResponse({'redirect': '/profile/' + request.user.username})
+		return redirectPage(request, '/sign_in/')
+	
+	return redirectPage(request, '/profile/' + request.user.username)
 
 
-@csrf_protect
+@ensure_csrf_cookie
 def profile(request, username):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirectPage(request, '/sign_in/')
 
+	# Get the photo name to delete it if the user change his photo
 	photo_name = request.user.photo.name
 
-	# Get the user
+	# Get the user of the profile
 	User = get_user_model()
 	try:
 		user = User.objects.get(username=username)
 	except User.DoesNotExist:
-		return JsonResponse({'redirect': '/users/'})
-	
-	ids = str(user.id) + ',' + str(request.user.id)
+		return redirectPage(request, '/users/')
 
-	# Get the room_name where the user and me are
+	# Get the private chat between the request.user and the user
 	room = None
 	channels = list(request.user.channels.all())
 	for channel in channels:
-		if channel.other_name == user.username or channel.name == user.username:
-			room = channel.room_name
+		if channel.private and len(channel.users.all()) == 2 and user in channel.users.all():
+			room = channel.room_id
 			break
 
 	if request.method == 'GET':
 		form = EditProfileForm(instance=request.user)
-		context = {	'form':form,
-					'user':user,
-					'room':room,
-					'ids': ids}
+		context = {
+			'form': form,
+			'user': user,
+			'room': room
+		}
 		
 		return renderPage(request, 'profile.html', context)
 	
 	elif request.method == 'POST':
 		form = EditProfileForm(request.POST, request.FILES, instance=request.user)
-		context = {	'form':form,
-					'user':user,
-					'room':room,
-					'ids': ids}
 		
 		if form.is_valid():
 			if request.user.photo and request.user.photo.name != photo_name:
 				default_storage.delete(request.user.photo.path)
 			elif len(form.cleaned_data['username']) < 4:
-				messages.error(request, "Your username is too short (4 characters minimum)")
-				return JsonResponse({'redirect': '/profile/' + username})
+				form.add_error('username', 'Your username is too short (4 characters minimum)')
+				return JsonResponse({'success': False, 'redirect': '/profile/' + username, 'errors': form.errors.get_json_data()})
+			elif ' ' in form.cleaned_data['username']:
+				form.add_error('username', 'Your username cannot contain space')
+				return JsonResponse({'success': False, 'redirect': '/profile/' + username, 'errors': form.errors.get_json_data()})
+			elif not form.cleaned_data['username'].isalnum():
+				form.add_error('username', 'Your username cannot contain special characters')
+				return JsonResponse({'success': False, 'redirect': '/profile/' + username, 'errors': form.errors.get_json_data()})
+			
 			form.save()
-			messages.success(request, 'Your informations have been updated')
-			return JsonResponse({'redirect': '/profile/' + username})
+			return JsonResponse({'success': True, 'redirect': '/profile/' + form.cleaned_data['username']})
 		
 		else:
 			if 'photo' in form.errors:
-				messages.error(request, 'Please enter a valid picture')
+				form.add_error('photo', 'Please enter a valid picture')
 			elif User.objects.filter(username=request.POST['username']).exists():
-				messages.error(request, 'This username is already taken')
+				form.add_error('username', 'This username is already taken')
 			else:
-				messages.error(request, 'Please enter a valid username')
-			return JsonResponse({'redirect': '/profile/' + username})
+				form.add_error('username', 'Please enter a valid username')
 
-	return JsonResponse({'redirect': '/profile/' + username})
+			return JsonResponse({'success': False, 'redirect': '/profile/' + username, 'errors': form.errors.get_json_data()})
+
+	return JsonResponse({'success': False, 'redirect': '/profile/' + username})
 
 
 def users(request):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirectPage(request, '/sign_in/')
 	
 	# Get all users and the friends
 	User = get_user_model()
 	all_users = User.objects.all()
 
-	friends = []
-	for user in all_users:
-		if user.id in request.user.follows:
-			friends.append(user)
-
-	context = {'all_users':all_users, 'friends':friends}
+	# Hide the current user
+	all_users = all_users.exclude(id=request.user.id)
 
 	if request.method == 'GET':
+		friends = []
+
+		for user in all_users:
+			if user.id in request.user.follows:
+				friends.append(user)
+
+		context = {'all_users':all_users, 'friends':friends}
+
 		return renderPage(request, 'users.html', context)
+	
 	elif request.method == 'POST':
-		return JsonResponse({'redirect': '/users/'})
+		return redirectPage(request, '/users/')
 
 
 def follow(request, id):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirectPage(request, '/sign_in/')
 
 	# Check if the user exist and if he is not already followed
 	User = get_user_model()
@@ -381,7 +399,7 @@ def follow(request, id):
 		if id in request.user.follows:
 			raise ValueError
 	except (User.DoesNotExist, ValueError):
-		return JsonResponse({'redirect': '/users/'})
+		return redirectPage(request, '/users/')
 	
 	notification = Notification(user=userTo, message=f"{request.user.username} is now following you.")
 	notification.save()
@@ -389,12 +407,12 @@ def follow(request, id):
 	request.user.follows.append(id)
 	request.user.save()
 	
-	return JsonResponse('/profile/', username=userTo.username)
+	return redirectPage(request, '/profile/' + userTo.username)
 
 
 def unfollow(request, id):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirectPage(request, '/sign_in/')
 	
 	# Check if the user exist and if he is followed
 	User = get_user_model()
@@ -403,17 +421,17 @@ def unfollow(request, id):
 		if id not in request.user.follows:
 			raise ValueError
 	except (User.DoesNotExist, ValueError):
-		return JsonResponse({'redirect': '/users/'})
+		return redirectPage(request, '/users/')
 
 	request.user.follows.remove(id)
 	request.user.save()
 
-	return JsonResponse('/profile/', username=userTo.username)
+	return redirectPage(request, '/profile/' + userTo.username)
 
 
 def block(request, id):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirectPage(request, '/sign_in/')
 
 	# Check if the user exist and if he is not already blocked
 	User = get_user_model()
@@ -422,7 +440,7 @@ def block(request, id):
 		if id in request.user.blockedUsers:
 			raise ValueError
 	except (User.DoesNotExist, ValueError):
-		return JsonResponse({'redirect': '/users/'})
+		return redirectPage(request, '/users/')
 	
 	# Unfollow the user if he is in the follows list
 	if id in request.user.follows:
@@ -432,12 +450,12 @@ def block(request, id):
 	request.user.blockedUsers.append(id)
 	request.user.save()
 
-	return JsonResponse({'redirect': '/profile/' + userTo.username})
+	return redirectPage(request, '/profile/' + userTo.username)
 
 
 def unblock(request, id):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirectPage(request, '/sign_in/')
 	
 	# Check if the user exist and if he is blocked
 	User = get_user_model()
@@ -446,10 +464,24 @@ def unblock(request, id):
 		if id not in request.user.blockedUsers:
 			raise ValueError
 	except (User.DoesNotExist, ValueError):
-		return JsonResponse({'redirect': '/users/'})
+		return redirectPage(request, '/users/')
 
 	# Unblock the user
 	request.user.blockedUsers.remove(id)
 	request.user.save()
 
-	return JsonResponse({'redirect': '/profile/' + userTo.username})
+	return redirectPage(request, '/profile/' + userTo.username)
+
+
+def get_username(request, id):
+	if not request.user.is_authenticated:
+		return None
+
+	# Check if the user exist
+	User = get_user_model()
+	try:
+		user = User.objects.get(id=id)
+	except User.DoesNotExist:
+		return redirectPage(request, '/users/')
+	
+	return JsonResponse({'username': user.username})
