@@ -1,11 +1,10 @@
-from django.shortcuts import render
 from django.db import connection
 from django.utils.translation import gettext as _
 
 from mainApp.views.utils import renderPage
 
 
-def header_view(request):
+def headerView(request):
     return renderPage(request, 'header.html')
 
 
@@ -21,10 +20,6 @@ def testDBConnection(request):
 		return renderPage(request, 'success.html')
 	except Exception as error:
 		return renderPage(request, 'error.html')
-
-
-def custom_404(request, exception):
-	return render(request, 'errors/404.html', status=404)
 
 
 def translate(request):

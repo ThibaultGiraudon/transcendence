@@ -1,14 +1,12 @@
-from django.shortcuts import render, redirect
-from django.views.decorators.http import require_POST
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import JsonResponse
 
 from ..models import Notification
-from mainApp.views.utils import renderPage
+from mainApp.views.utils import renderPage, redirectPage
+
 
 def notifications(request):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirectPage(request, '/sign_in/')
 
 	# Get notification
 	notifs = list(request.user.notifications.all().order_by('-date'))
@@ -18,25 +16,30 @@ def notifications(request):
 	# Mark all notifications as read
 	request.user.notifications.all().update(read=True)
 
-	return renderPage(request, 'notifications.html', { 'notifs':notifs })
+	return renderPage(request, 'notifications.html', { 'notifs': notifs })
 
-@require_POST
+
 def delete_notification(request, notification_id):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirectPage(request, '/sign_in/')
 
+	# Get notification
 	try:
 		notification = Notification.objects.get(id=notification_id)
 	except ObjectDoesNotExist:
-		return JsonResponse({'redirect': '/notifications/'})
+		return redirectPage(request, '/notifications/')
 
+	# Delete notification
 	notification.delete()
-	return JsonResponse({'redirect': '/notifications/'})
 
-@require_POST
+	return redirectPage(request, '/notifications/')
+
+
 def delete_all_notifications(request):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirectPage(request, '/sign_in/')
 
+	# Delete all notifications
 	request.user.notifications.all().delete()
-	return JsonResponse({'redirect': '/notifications/'})
+
+	return redirectPage(request, '/notifications/')

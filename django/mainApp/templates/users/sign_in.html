@@ -2,28 +2,25 @@
 
 <p>You are already connected, please log out before log in.</p>
 <a href="#" data-route="{% url 'sign_out' %}" onclick="navigateTo(event, this.dataset.route)">
-    <button>Log out</button>
+	<button>Log out</button>
 </a>
 
 {% else %}
 
 <div class="form-div">
-    <form method="POST" novalidate class="sign-form" onsubmit="submitFormWithAjax(event)">
-        {% csrf_token %}
+	<form method="POST" class="sign-form">
+		{% csrf_token %}
 
-        <h3 class="sign-title">Sign in</h3>
+		<h3 class="sign-title">Sign in</h3>
 
-        {{form.as_p}}
-        
-        {% for message in messages %}
-        <div class="error-alert">
-            <a data-dismiss="alert">⚠️</a>
-            <p>{{ message }}</p>
-        </div>
-        {% endfor %}
-        
-        <input type="submit" value="Login"/>
-    </form>
+		{% for field in form %}
+			{{ field.label_tag }}
+			{{ field }}
+			<div class="error-alert" id="error-{{ field.name }}"></div>
+		{% endfor %}
+		
+		<input type="submit" value="Login"/>
+	</form>
 
 	<a href="{% url 'ft_api' %}" class="sign-42-button">
 		<input type="submit" value="Sign in with 42">

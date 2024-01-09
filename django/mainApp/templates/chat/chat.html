@@ -3,22 +3,12 @@
 
 {% if chats %}
 	{% for chat in chats %}
-		<a href="javascript:void(0)" data-route="{% url 'room' chat.room_name %}" onclick="navigateTo(event, this.dataset.route)">
+		<a href="#" data-route="{% url 'room' chat.0.room_id %}" onclick="navigateTo(event, this.dataset.route)">
 			<div class="container">
-				{% if chat.name == request.user.username %}
-					<h3>{{ chat.other_name }}</h3>
-				{% else %}
-					<h3>{{ chat.name }}</h3>
-				{% endif %}
+				<h3>{{ chat.1 }}</h3>
 			</div>
 		</a>
 	{% endfor %}
 {% else %}
 	<p>No channels available.</p>
 {% endif %}
-
-<style>
-	img {
-		border-radius: 50%;
-	}
-</style>
