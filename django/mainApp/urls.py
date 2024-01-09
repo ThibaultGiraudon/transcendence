@@ -2,6 +2,7 @@ from django.urls import path
 from .views import pongView, notificationsView, mainView, usersView, chatView
 
 urlpatterns = [
+    # Website
 	path('', mainView.home, name='home'),
 	path('home', mainView.home, name='home'),
 	path('test/', mainView.testDBConnection, name='testDBConnection'),
@@ -33,5 +34,8 @@ urlpatterns = [
 	path("chat/", chatView.chat, name="chat"),
 	path('create_channel/', chatView.create_channel, name='create_channel'),
 	path("chat/<str:room_id>", chatView.room, name="room"),
+    
+	# API
+	path('api/get_username/<int:id>', usersView.get_username, name="get_username"),
 	path('api/chat/history/<str:room_id>', chatView.get_message_history, name='get_message_history'),
 ]

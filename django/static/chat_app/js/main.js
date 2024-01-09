@@ -55,19 +55,34 @@ function handleMutation() {
 					if (blockedUsers.includes(parseInt(message.sender, 10)))
 						continue;
 
-					const messageContainer = document.createElement('p');
-
-					const username = typeof message.username === 'string' ? message.username.replace(/"/g, '') : '';
-					messageContainer.textContent = isPrivate ? message.message : username + ': ' + message.message;
 					
-					const idElement = document.getElementById('id');
-					messageContainer.className = idElement && message.sender === idElement.textContent ? 'my-message' : 'other-message';
-					
-					const chatLog = document.querySelector('#chat-log');
-					if (chatLog) {
-						chatLog.appendChild(messageContainer);
-						chatLog.scrollTop = chatLog.scrollHeight;
-					}
+					// Get the username of the sender
+					fetch('/api/get_username/' + message.sender)
+					.then(response => response.json())
+					.then(data => {
+						let username = '[Anonymous]';
+						
+						if (!data)
+							username = '[Anonymous]';
+						else
+							username = data.username;
+						
+						// Create the message container
+						const messageContainer = document.createElement('p');
+						messageContainer.textContent = isPrivate ? message.message : username + ': ' + message.message;
+						
+						// Check if the message is from the current user
+						const idElement = document.getElementById('id');
+						messageContainer.className = idElement && message.sender === idElement.textContent ? 'my-message' : 'other-message';
+						
+						// Display the message
+						const chatLog = document.querySelector('#chat-log');
+						if (chatLog) {
+							chatLog.appendChild(messageContainer);
+							chatLog.scrollTop = chatLog.scrollHeight;
+						}
+					});
+			
 				}
 			});
 		}
@@ -84,19 +99,33 @@ function handleMutation() {
 			const isPrivate = isPrivateElement ? JSON.parse(isPrivateElement.textContent) : false;
 
 			if (data.sender && !blockedUsers.includes(parseInt(data.sender, 10))) {
-				const messageContainer = document.createElement('p');
+				let username = '[UserNotfound]';
 
-				const username = typeof data.username === 'string' ? data.username.replace(/"/g, '') : '';
-				messageContainer.textContent = isPrivate ? data.message : username + ': ' + data.message;
-				
-				const idElement = document.getElementById('id');
-				messageContainer.className = idElement && data.sender === idElement.textContent ? 'my-message' : 'other-message';
-				
-				const chatLog = document.querySelector('#chat-log');
-				if (chatLog) {
-					chatLog.appendChild(messageContainer);
-					chatLog.scrollTop = chatLog.scrollHeight;
-				}
+				// Get the username of the sender
+				fetch('/api/get_username/' + data.sender)
+				.then(response => response.json())
+				.then(data => {
+					if (!data)
+						username = '[UserNotfound]';
+					else
+						username = data.username;
+					
+						// Create the message container
+					const messageContainer = document.createElement('p');
+					messageContainer.textContent = isPrivate ? data.message : username + ': ' + data.message;
+					
+					// Check if the message is from the current user
+					const idElement = document.getElementById('id');
+					messageContainer.className = idElement && data.sender === idElement.textContent ? 'my-message' : 'other-message';
+					
+					// Display the message
+					const chatLog = document.querySelector('#chat-log');
+					if (chatLog) {
+						chatLog.appendChild(messageContainer);
+						chatLog.scrollTop = chatLog.scrollHeight;
+					}
+				});
+		
 			}
 		};
 		

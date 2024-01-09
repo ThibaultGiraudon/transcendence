@@ -3,8 +3,7 @@ import requests
 from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
-from django.shortcuts import render, redirect
-from django.contrib import messages
+from django.shortcuts import redirect
 from ..models import CustomUser
 from django.contrib.auth import login, logout
 from django.contrib.auth import get_user_model
@@ -14,11 +13,8 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from ..models import Notification, Channel
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.decorators.http import require_POST
-from django.core import serializers
 from django.http import JsonResponse
 import urllib.request
-import json
 
 from mainApp.views.utils import renderPage, redirectPage
 
@@ -342,10 +338,16 @@ def profile(request, username):
 				default_storage.delete(request.user.photo.path)
 			elif len(form.cleaned_data['username']) < 4:
 				form.add_error('username', 'Your username is too short (4 characters minimum)')
-				return JsonResponse({'success': True, 'redirect': '/profile/' + username})
+				return JsonResponse({'success': False, 'redirect': '/profile/' + username, 'errors': form.errors.get_json_data()})
+			elif ' ' in form.cleaned_data['username']:
+				form.add_error('username', 'Your username cannot contain space')
+				return JsonResponse({'success': False, 'redirect': '/profile/' + username, 'errors': form.errors.get_json_data()})
+			elif not form.cleaned_data['username'].isalnum():
+				form.add_error('username', 'Your username cannot contain special characters')
+				return JsonResponse({'success': False, 'redirect': '/profile/' + username, 'errors': form.errors.get_json_data()})
 			
 			form.save()
-			return JsonResponse({'success': True, 'redirect': '/profile/' + username})
+			return JsonResponse({'success': True, 'redirect': '/profile/' + form.cleaned_data['username']})
 		
 		else:
 			if 'photo' in form.errors:
@@ -355,7 +357,7 @@ def profile(request, username):
 			else:
 				form.add_error('username', 'Please enter a valid username')
 
-			return JsonResponse({'success': False, 'redirect': '/profile/' + username})
+			return JsonResponse({'success': False, 'redirect': '/profile/' + username, 'errors': form.errors.get_json_data()})
 
 	return JsonResponse({'success': False, 'redirect': '/profile/' + username})
 
@@ -469,3 +471,17 @@ def unblock(request, id):
 	request.user.save()
 
 	return redirectPage(request, '/profile/' + userTo.username)
+
+
+def get_username(request, id):
+	if not request.user.is_authenticated:
+		return None
+
+	# Check if the user exist
+	User = get_user_model()
+	try:
+		user = User.objects.get(id=id)
+	except User.DoesNotExist:
+		return redirectPage(request, '/users/')
+	
+	return JsonResponse({'username': user.username})
