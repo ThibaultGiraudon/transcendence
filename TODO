@@ -1,3 +1,4 @@
+[ELIAS]
 idee elias powershot ratio (je me comprends) (% de powershot)
 Pas de photo de profile en https
 mettre les balises scripts dans un .js
@@ -8,11 +9,19 @@ mettre gameObjects dans un dossier
 
 leger bug quand on joue a deux la paddle vivante disparait et reapparait
 
-probleme heure notifications: -1h
 
 connexion https:
-    - https://localhost:8001: impossible de charger des fichier externe (css, js), mais web socket fonctionnent parfaitement
-    - https://localhost:8443: fichier css et js charges normalement mais pas de websocket
+	- https://localhost:8001: impossible de charger des fichier externe (css, js), mais web socket fonctionnent parfaitement
+	- https://localhost:8443: fichier css et js charges normalement mais pas de websocket
 
-    pas afficher channel si user blocked
+	pas afficher channel si user blocked
+
 mettre un countdown au mileu au reset pour pas quon crois que cest un lag
+
+
+[LEON]
+Patcher probleme heure notifications: -1h
+Patcher la duplication de messages si requete non AJAX sur une room
+Patcher le pseudo dans une room si l'user a changer entre deux
+Patcher les caracteres autorises quand on change de pseudo
+Patcher la redirection quand on change de pseudo vers son profile et pas /users/

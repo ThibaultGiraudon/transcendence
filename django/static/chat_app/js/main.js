@@ -36,8 +36,10 @@ function handleMutation() {
 		}
 
 
-		// Fetch the message history
+		// Handle messages history
 		function fetchMessageHistory(ID) {
+
+			// Fetch the messages
 			fetch('/api/chat/history/' + ID)
 			.then(response => response.json())
 			.then(messages => {
