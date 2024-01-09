@@ -1,24 +1,27 @@
 <h1>Notifications</h1>
 
-<form method="post" action="{% url 'delete_all_notifications' %}">
-	{% csrf_token %}
-	<input type="submit" value="Delete All">
-</form>
+<a href="#" data-route="{% url 'delete_all_notifications' %}" onclick="navigateTo(event, this.dataset.route)">
+	Delete All
+</a>
 
 {% for notification in notifs %}
 	<div class="notification">
+	
 		<span>
-		{% if not notification.read %}
-		[NEW] 
-		{% endif %}
-		{{ notification.date }}: {{ notification.message }}
+			{% if not notification.read %}
+			[NEW] 
+			{% endif %}
+			{{ notification.date }}: {{ notification.message }}
 		</span>
-		<form method="post" action="{% url 'delete_notification' notification.id %}">
-			{% csrf_token %}
-			<input type="submit" value="Delete">
-		</form>
+
+		<a href="#" data-route="{% url 'delete_notification'  notification.id %}" onclick="navigateTo(event, this.dataset.route)">
+			Delete
+		</a>
+	
 	</div>
 	<br>
+
 {% empty %}
 	<p>No notifications.</p>
+
 {% endfor %}

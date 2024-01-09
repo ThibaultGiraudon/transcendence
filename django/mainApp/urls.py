@@ -8,7 +8,7 @@ urlpatterns = [
 	path("translate/", mainView.translate, name="translate"),
 	path('headerView/', mainView.headerView, name='headerView'),
 
-	path('notifications', notificationsView.notifications, name='notifications'),
+	path('notifications/', notificationsView.notifications, name='notifications'),
 	path('delete_notification/<int:notification_id>/', notificationsView.delete_notification, name='delete_notification'),
 	path('delete_all_notifications/', notificationsView.delete_all_notifications, name='delete_all_notifications'),
     
