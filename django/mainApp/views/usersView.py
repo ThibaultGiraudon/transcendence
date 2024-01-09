@@ -14,11 +14,13 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from ..models import Notification, Channel
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.http import require_POST
 from django.core import serializers
 from django.http import JsonResponse
+import urllib.request
 import json
 
-from mainApp.views.utils import renderPage
+from mainApp.views.utils import renderPage, redirectPage
 
 
 # 42 API
@@ -153,31 +155,37 @@ def sign_out(request):
 		# Logout the user
 		logout(request)
 	
-	return JsonResponse({'redirect': '/sign_in/'})
+	return redirectPage(request, '/sign_in/')
 
 
 def ft_api(request):
 	protocol = request.scheme
 	port = '%3A8001' if protocol == "https" else '%3A8000'
+
 	api_url = "https://api.intra.42.fr/oauth/authorize?client_id=" + CLIENT_ID + "&redirect_uri=" + \
 	protocol + "%3A%2F%2Flocalhost" + \
 	port + "%2Fcheck_authorize%2F&response_type=code"
+
 	return redirect(api_url)
 
 
 def	check_authorize(request):
 	if request.method == 'GET' and 'error' in request.GET:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirect(request, 'sign_in')
+	
 	if request.method == 'GET' and 'code' in request.GET:
 		code = request.GET['code']
+	
 	response_token = handle_42_callback(request, code)
 	response_data = make_api_request_with_token(API_USER, response_token)
 	connect_42_user(request, response_data)
+
 	return redirect('pong')
 
 
 def	connect_42_user(request, response_data):
 	user = authenticate_42_user(email=response_data['email'])
+
 	if user:
 		user.status = "online"
 		channel_layer = get_channel_layer()
@@ -192,12 +200,14 @@ def	connect_42_user(request, response_data):
 		)
 		user.save()
 		login(request, user)
+
 	else:
 		photo_url = response_data['image']['link']
-		response = requests.get(photo_url)
-		img = Image.open(BytesIO(response.content))
-		img_io = BytesIO()
-		img.save(img_io, format='JPEG')
+
+		with urllib.request.urlopen(photo_url) as url:
+			with Image.open(BytesIO(url.read())) as img:
+				img_io = BytesIO()
+				img.save(img_io, format='JPEG')
 
 		user = CustomUser.objects.create(
 			username=response_data['login'],
@@ -286,14 +296,15 @@ def authenticate_42_user(email):
 
 def profile_me(request):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
-	return JsonResponse({'redirect': '/profile/' + request.user.username})
+		return redirectPage(request, '/sign_in/')
+	
+	return redirectPage(request, '/profile/' + request.user.username)
 
 
 @ensure_csrf_cookie
 def profile(request, username):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirectPage(request, '/sign_in/')
 
 	# Get the photo name to delete it if the user change his photo
 	photo_name = request.user.photo.name
@@ -303,7 +314,7 @@ def profile(request, username):
 	try:
 		user = User.objects.get(username=username)
 	except User.DoesNotExist:
-		return JsonResponse({'redirect': '/users/'})
+		return redirectPage(request, '/users/')
 
 	# Get the private chat between the request.user and the user
 	room = None
@@ -351,7 +362,7 @@ def profile(request, username):
 
 def users(request):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirectPage(request, '/sign_in/')
 	
 	# Get all users and the friends
 	User = get_user_model()
@@ -372,12 +383,12 @@ def users(request):
 		return renderPage(request, 'users.html', context)
 	
 	elif request.method == 'POST':
-		return JsonResponse({'redirect': '/users/'})
+		return redirectPage(request, '/users/')
 
 
 def follow(request, id):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirectPage(request, '/sign_in/')
 
 	# Check if the user exist and if he is not already followed
 	User = get_user_model()
@@ -386,7 +397,7 @@ def follow(request, id):
 		if id in request.user.follows:
 			raise ValueError
 	except (User.DoesNotExist, ValueError):
-		return JsonResponse({'redirect': '/users/'})
+		return redirectPage(request, '/users/')
 	
 	notification = Notification(user=userTo, message=f"{request.user.username} is now following you.")
 	notification.save()
@@ -394,12 +405,12 @@ def follow(request, id):
 	request.user.follows.append(id)
 	request.user.save()
 	
-	return JsonResponse({'redirect': '/profile/' + userTo.username})
+	return redirectPage(request, '/profile/' + userTo.username)
 
 
 def unfollow(request, id):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirectPage(request, '/sign_in/')
 	
 	# Check if the user exist and if he is followed
 	User = get_user_model()
@@ -408,17 +419,17 @@ def unfollow(request, id):
 		if id not in request.user.follows:
 			raise ValueError
 	except (User.DoesNotExist, ValueError):
-		return JsonResponse({'redirect': '/users/'})
+		return redirectPage(request, '/users/')
 
 	request.user.follows.remove(id)
 	request.user.save()
 
-	return JsonResponse({'redirect': '/profile/' + userTo.username})
+	return redirectPage(request, '/profile/' + userTo.username)
 
 
 def block(request, id):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirectPage(request, '/sign_in/')
 
 	# Check if the user exist and if he is not already blocked
 	User = get_user_model()
@@ -427,7 +438,7 @@ def block(request, id):
 		if id in request.user.blockedUsers:
 			raise ValueError
 	except (User.DoesNotExist, ValueError):
-		return JsonResponse({'redirect': '/users/'})
+		return redirectPage(request, '/users/')
 	
 	# Unfollow the user if he is in the follows list
 	if id in request.user.follows:
@@ -437,12 +448,12 @@ def block(request, id):
 	request.user.blockedUsers.append(id)
 	request.user.save()
 
-	return JsonResponse({'redirect': '/profile/' + userTo.username})
+	return redirectPage(request, '/profile/' + userTo.username)
 
 
 def unblock(request, id):
 	if not request.user.is_authenticated:
-		return JsonResponse({'redirect': '/sign_in/'})
+		return redirectPage(request, '/sign_in/')
 	
 	# Check if the user exist and if he is blocked
 	User = get_user_model()
@@ -451,10 +462,10 @@ def unblock(request, id):
 		if id not in request.user.blockedUsers:
 			raise ValueError
 	except (User.DoesNotExist, ValueError):
-		return JsonResponse({'redirect': '/users/'})
+		return redirectPage(request, '/users/')
 
 	# Unblock the user
 	request.user.blockedUsers.remove(id)
 	request.user.save()
 
-	return JsonResponse({'redirect': '/profile/' + userTo.username})
+	return redirectPage(request, '/profile/' + userTo.username)

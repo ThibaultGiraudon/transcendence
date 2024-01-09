@@ -14,9 +14,10 @@
 {% endfor %}
 
 <div id="chat-log" class="chat-log"></div>
+
 <br>
 
-<input id="chat-message-input" type="text" size="50">
+<input id="chat-message-input" type="text" size="50" autocomplete="off">
 <input id="chat-message-submit" type="button" value="Send">
 
 {{ room_id|json_script:"room-id" }}

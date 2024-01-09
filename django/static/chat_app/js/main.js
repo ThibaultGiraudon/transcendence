@@ -107,9 +107,8 @@ function handleMutation() {
 				const chatLog = document.querySelector('#chat-log');
 				if (chatLog) {
 					chatLog.innerHTML = '';
+					fetchMessageHistory(currentRoomID);
 				}
-
-				fetchMessageHistory(currentRoomID);
 			}
 		};
 		
@@ -123,7 +122,7 @@ function handleMutation() {
 		};
 
 
-		// Send the message
+		// Send a message
 		document.querySelector('#chat-message-submit').onclick = function(e) {
 			const messageInputDom = document.querySelector('#chat-message-input');
 			const message = messageInputDom.value.trim();
