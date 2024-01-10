@@ -121,79 +121,80 @@ function changeAllScores(message) {
 }
 
 function gameProcess() {
-    if (document.getElementById('game-page')) {
-        let     websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        let     websocketPort = window.location.protocol === 'https:' ? ':8001' : ':8000';
-        const   socketUrl = websocketProtocol + '//' + window.location.hostname + websocketPort + '/ws/some_path/';
-        const   socket = new WebSocket(socketUrl);
+    let     websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    let     websocketPort = window.location.protocol === 'https:' ? ':8001' : ':8000';
+    const   socketUrl = websocketProtocol + '//' + window.location.hostname + websocketPort + '/ws/some_path/';
+    const   socket = new WebSocket(socketUrl);
 
-        document.addEventListener('keydown', function(event) {
-            if (!keyState[event.key] && keyState.hasOwnProperty(event.key)) {
-                keyState[event.key] = true;
-                const message = {
-                    type: 'paddle_move',
-                    key: 'keydown',
-                    direction: getPaddleDirection(event.key),
-                    id: getPaddleID(event.key),
-                };
-                socket.send(JSON.stringify(message));
-            }
-
-            if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-                event.preventDefault();
-            }
-        });
-
-        document.addEventListener('keyup', function(event) {
-            if (keyState.hasOwnProperty(event.key)) {
-                keyState[event.key] = false;
-                const message = {
-                    type: 'paddle_move',
-                    key: 'keyup',
-                    direction: getPaddleDirection(event.key),
-                    id: getPaddleID(event.key),
-                };
-                socket.send(JSON.stringify(message));
-            }
-        });
-            
-        socket.addEventListener('open', (event) => {
-            const gameMode = document.querySelector('script[data-game-mode]').getAttribute('data-game-mode');
-            console.log(gameMode);
+    document.addEventListener('keydown', function(event) {
+        if (!keyState[event.key] && keyState.hasOwnProperty(event.key)) {
+            keyState[event.key] = true;
             const message = {
-                type: gameMode,
+                type: 'paddle_move',
+                key: 'keydown',
+                direction: getPaddleDirection(event.key),
+                id: getPaddleID(event.key),
             };
             socket.send(JSON.stringify(message));
-        });
+        }
 
-        socket.addEventListener('message', (event) => {
-            let message = JSON.parse(event.data);
+        if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+            event.preventDefault();
+        }
+    });
 
-            if (message.type === 'init_game_size') {
-                initsquareSize(message);
-            }
+    document.addEventListener('keyup', function(event) {
+        if (keyState.hasOwnProperty(event.key)) {
+            keyState[event.key] = false;
+            const message = {
+                type: 'paddle_move',
+                key: 'keyup',
+                direction: getPaddleDirection(event.key),
+                id: getPaddleID(event.key),
+            };
+            socket.send(JSON.stringify(message));
+        }
+    });
+        
+    socket.addEventListener('open', (event) => {
+        console.log('socket open');
+        const gameMode = document.querySelector('script[data-game-mode]').getAttribute('data-game-mode');
+        // const gameMode = document.getElementById('game-mode').getAttribute('data-game-mode');
+        // const gameMode = document.getElementById('game-mode').textContent;
+        console.log(gameMode);
+        const message = {
+            type: gameMode,
+        };
+        socket.send(JSON.stringify(message));
+    });
 
-            if (message.type === 'init_paddle_position') {
-                initPaddlePosition(message, elements.paddles[message.id]);
-            }
+    socket.addEventListener('message', (event) => {
+        let message = JSON.parse(event.data);
 
-            if (message.type === 'init_score') {
-                initScore(message);
-            }
+        if (message.type === 'init_game_size') {
+            initsquareSize(message);
+        }
 
-            if (message.type === 'update_paddle_position') {
-                updatePaddlePosition(message);
-            }
+        if (message.type === 'init_paddle_position') {
+            initPaddlePosition(message, elements.paddles[message.id]);
+        }
 
-            if (message.type === 'update_ball_position') {
-                updateBallPosition(message);
-            }
+        if (message.type === 'init_score') {
+            initScore(message);
+        }
 
-            if (message.type === 'update_score') {
-                updateScore(message);
-            }
-        });
+        if (message.type === 'update_paddle_position') {
+            updatePaddlePosition(message);
+        }
 
-        console.log('game page');
-    }
+        if (message.type === 'update_ball_position') {
+            updateBallPosition(message);
+        }
+
+        if (message.type === 'update_score') {
+            updateScore(message);
+        }
+    });
+
+    console.log('game page');
 }

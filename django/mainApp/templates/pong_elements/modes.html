@@ -2,17 +2,15 @@
 
 <h2>Game Mode: {{ gameMode }}</h2>
 
-<div class="score_bar">
+<div class="score_bar" id="pong_game">
 	<span class="player_score id0"></span>
 	<span class="player_score id1"></span>
 	<span class="player_score id2"></span>
 	<span class="player_score id3"></span>
 </div>
 
-{% load static %}
+<!-- {% load static %} -->
 <script data-game-mode="{{ gameMode }}"></script>
+<!-- {{ gameMode|json_script:"game-mode" }} -->
 
-{{ gamePage|json_script:"game-page" }}
-
-<script src="{% static 'pong_app/js/phaser.min.js' %}"></script>
-<script type="module" src="{% static 'pong_app/js/main.js' %}"></script>
+<!-- {{ gamePage|json_script:"game-page" }} -->

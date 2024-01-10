@@ -160,13 +160,19 @@ document.addEventListener('submit', function(event) {
 // ---------------------------------- Observer ------------------------------------
 // --------------------------------------------------------------------------------
 
-function handleMutation() {
-	if (document.getElementById('room-id')) {
-		chatProcess();
-	}
+let bool = false;
+let bool2 = false;
 
-	if (document.getElementById('game-page')) {
+function handleMutation() {
+	if (document.getElementById('room-id') && !bool) {
+		chatProcess();
+		bool = true;
+	}
+	else {
+		bool = false; }
+	if (document.getElementById('pong_game') && !bool2) {
 		gameProcess();
+		bool2 = true;
 	}
 }
 
