@@ -165,7 +165,9 @@ function handleMutation() {
 		chatProcess();
 	}
 
-
+	if (document.getElementById('game-page')) {
+		gameProcess();
+	}
 }
 
 const observer = new MutationObserver(handleMutation);
