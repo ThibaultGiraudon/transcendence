@@ -24,63 +24,13 @@ function chatProcess() {
 			};
 
 		}
-	}
 
-	// Fetch the message history if the chat log is empty
+	}
+	
+	// Got to the bottom of the chat
 	const chatLog = document.querySelector('#chat-log');
-	if (chatLog && chatLog.innerHTML === '') {
-		fetchMessageHistory(currentRoomID);
-	}
-
-
-	// Handle messages history
-	function fetchMessageHistory(ID) {
-
-		// Fetch the messages
-		fetch('/api/chat/history/' + ID)
-		.then(response => response.json())
-		.then(messages => {
-
-			const blockedUsersElement = document.getElementById('blocked-users');
-			const blockedUsers = blockedUsersElement ? JSON.parse(blockedUsersElement.textContent) : [];
-			
-			const isPrivateElement = document.getElementById('is-private');
-			const isPrivate = isPrivateElement ? JSON.parse(isPrivateElement.textContent) : false;
-
-			// Display the messages
-			for (const message of messages) {
-				if (blockedUsers.includes(parseInt(message.sender, 10)))
-					continue;
-
-				
-				// Get the username of the sender
-				fetch('/api/get_username/' + message.sender)
-				.then(response => response.json())
-				.then(data => {
-					let username = '[Anonymous]';
-					
-					if (!data)
-						username = '[Anonymous]';
-					else
-						username = data.username;
-					
-					// Create the message container
-					const messageContainer = document.createElement('p');
-					messageContainer.textContent = isPrivate ? message.message : username + ': ' + message.message;
-					
-					// Check if the message is from the current user
-					const idElement = document.getElementById('id');
-					messageContainer.className = idElement && message.sender === idElement.textContent ? 'my-message' : 'other-message';
-					
-					// Display the message
-					const chatLog = document.querySelector('#chat-log');
-					if (chatLog) {
-						chatLog.appendChild(messageContainer);
-						chatLog.scrollTop = chatLog.scrollHeight;
-					}
-				});
-			}
-		});
+	if (chatLog) {
+		chatLog.scrollTop = chatLog.scrollHeight;
 	}
 
 
@@ -100,13 +50,13 @@ function chatProcess() {
 			// Get the username of the sender
 			fetch('/api/get_username/' + data.sender)
 			.then(response => response.json())
-			.then(data => {
-				if (!data)
+			.then(data_username => {
+				if (!data_username)
 					username = '[UserNotfound]';
 				else
-					username = data.username;
+					username = data_username.username;
 				
-					// Create the message container
+				// Create the message container
 				const messageContainer = document.createElement('p');
 				messageContainer.textContent = isPrivate ? data.message : username + ': ' + data.message;
 				
@@ -121,21 +71,14 @@ function chatProcess() {
 					chatLog.scrollTop = chatLog.scrollHeight;
 				}
 			});
-	
 		}
 	};
-	
+
 
 	// Handle closing the socket
 	chatSockets[currentRoomID].socket.onclose = function(e) {
 		if (!this.shouldClose) {
 			chatSockets[currentRoomID].socket = new WebSocket(chatSockets[currentRoomID].url);
-
-			const chatLog = document.querySelector('#chat-log');
-			if (chatLog) {
-				chatLog.innerHTML = '';
-				fetchMessageHistory(currentRoomID);
-			}
 		}
 	};
 	

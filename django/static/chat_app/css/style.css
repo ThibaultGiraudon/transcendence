@@ -19,8 +19,6 @@
 	float: right;
 	color: white;
 	background-color: #5BC0BE;
-	-webkit-border-radius:var(--border-radius);
-	-moz-border-radius:var(--border-radius);
 	border-radius: var(--border-radius);
 	text-align: right;
 	font-family: var(--font-text-regular);
@@ -28,6 +26,7 @@
 	padding: 10px 20px;
 	margin-top: 0.5vh;
 	margin-right: 0.5vw;
+	max-width: 40%;
 	clear: both;
 }
 
@@ -35,8 +34,6 @@
 	float: left;
 	color: white;
 	background-color: #3A506B;
-	-webkit-border-radius:var(--border-radius);
-	-moz-border-radius:var(--border-radius);
 	border-radius: var(--border-radius);
 	text-align: left;
 	font-family: var(--font-text-regular);
@@ -44,6 +41,19 @@
 	padding: 10px 20px;
 	margin-top: 0.5vh;
 	margin-left: 0.5vw;
+	max-width: 40%;
+	clear: both;
+}
+
+.other-username {
+	float: left;
+	color: grey;
+	text-align: left;
+	font-family: var(--font-text-regular);
+	font-size: 14px;
+	max-width: 40%;
+	padding-top: 5px;
+	padding-left: 10px;
 	clear: both;
 }
 
@@ -54,7 +64,7 @@ img {
 
 
 .list {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
 }

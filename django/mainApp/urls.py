@@ -37,5 +37,4 @@ urlpatterns = [
     
 	# API
 	path('api/get_username/<int:id>', usersView.get_username, name="get_username"),
-	path('api/chat/history/<str:room_id>', chatView.get_message_history, name='get_message_history'),
 ]
