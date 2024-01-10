@@ -2,16 +2,18 @@ import math
 import random
 
 class Ball:
-    def __init__(self):
-        self.x = 100.0
-        self.y = 100.0
+    def __init__(self, gameSettings):
+        self.x = gameSettings.squareSize / 2
+        self.y = gameSettings.squareSize / 2
         self.radius = 10
         self.color = "0xFDF3E1"
         self.speed = 5
         self.speedBase = 10
-        self.angle = 1.0
         self.task = None
-    
+
+        randomAngle = self.__getRandomAngle(gameSettings)
+        self.angle = random.choice(randomAngle)
+
     def __getReflectionAngle(self, paddle, maxAngle, reflectionAngle):
         if (paddle.id == 0):
             self.angle = max(-maxAngle, min(maxAngle, reflectionAngle))
