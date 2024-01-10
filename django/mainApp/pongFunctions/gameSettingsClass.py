@@ -15,8 +15,6 @@ class GameSettings:
 
     def setNbPaddles(self, nbPaddles):
         self.nbPaddles = nbPaddles
-        self.ball = Ball()
-
         for id in range(4):
             self.paddles.append(Paddle(id))
             self.paddles[id].position = self.squareSize / 2 - self.paddleSize / 2
@@ -27,6 +25,8 @@ class GameSettings:
 
         for id in range(self.nbPaddles):
             self.paddles[id].isAlive = True
+
+        self.ball = Ball(self)
         
     def setIsAIGame(self, isAIGame):
         self.isAIGame = isAIGame
