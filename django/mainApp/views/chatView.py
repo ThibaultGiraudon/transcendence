@@ -110,24 +110,19 @@ def room(request, room_id):
 	# Update the status of the current user
 	request.user.status = f"chat:{room_id}"
 	request.user.save()
+
+	# Sort messages by timestamp
+	messages = channel.messages
+	messages.sort(key=lambda x: x['timestamp'])
  
 	# Context
 	context = {
+		'messages': messages,
+		'users': users,
 		'name_channel': channel.name,
 		'room_id': room_id,
-		'users': users,
 		'blocked_users': blocked_users,
 		'private': channel.private,
 	}
 
 	return renderPage(request, 'chat/room.html', context)
-
-
-def get_message_history(request, room_id):
-	try:
-		channel = Channel.objects.get(room_id=room_id)
-		messages = channel.messages
-	except Channel.DoesNotExist:
-		messages = []
-
-	return JsonResponse(messages, safe=False)

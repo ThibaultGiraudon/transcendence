@@ -160,19 +160,25 @@ document.addEventListener('submit', function(event) {
 // ---------------------------------- Observer ------------------------------------
 // --------------------------------------------------------------------------------
 
-let bool = false;
-let bool2 = false;
+let chatProcessed = false;
+let pongProcessed = false;
 
 function handleMutation() {
-	if (document.getElementById('room-id') && !bool) {
+	const chatElement = document.getElementById('chat-log');
+	const pongElement = document.getElementById('pong_game');
+	
+	if (chatElement && !chatProcessed) {
 		chatProcess();
-		bool = true;
+		chatProcessed = true;
+	} else if (!chatElement) {
+		chatProcessed = false;
 	}
-	else {
-		bool = false; }
-	if (document.getElementById('pong_game') && !bool2) {
+
+	if (pongElement && !pongProcessed) {
 		gameProcess();
-		bool2 = true;
+		pongProcessed = true;
+	} else if (!pongElement) {
+		pongProcessed = false;
 	}
 }
 

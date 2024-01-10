@@ -13,7 +13,28 @@
 	{% endif %}
 {% endfor %}
 
-<div id="chat-log" class="chat-log"></div>
+<div id="chat-log" class="chat-log">
+	{% for message in messages %}
+		{% if message.sender == request.user.id|stringformat:"s" %}
+			<p class="my-message">
+		{% else %}
+			<p class="other-message">
+		{% endif %}
+
+		{{ message.message }}
+		</p>
+
+		{% if private == False %}
+			{% if message.sender != request.user.id|stringformat:'s' %}
+				{% for user in users %}
+					{% if user.id|stringformat:'s' == message.sender %}
+						<p class="other-username">{{ user.username }}</p>
+					{% endif %}
+				{% endfor %}
+			{% endif %}
+		{% endif %}
+	{% endfor %}
+</div>
 
 <br>
 
