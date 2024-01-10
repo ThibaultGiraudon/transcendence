@@ -155,3 +155,18 @@ document.addEventListener('submit', function(event) {
 		handleFormSubmit(event);
 	}
 }, true);
+
+// --------------------------------------------------------------------------------
+// ---------------------------------- Observer ------------------------------------
+// --------------------------------------------------------------------------------
+
+function handleMutation() {
+	if (document.getElementById('room-id')) {
+		chatProcess();
+	}
+
+
+}
+
+const observer = new MutationObserver(handleMutation);
+observer.observe(document, { childList: true, subtree: true });
