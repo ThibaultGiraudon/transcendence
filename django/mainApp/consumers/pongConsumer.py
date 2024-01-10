@@ -5,7 +5,7 @@ from    ..pongFunctions.gameSettingsClass import GameSettings
 import  json
 
 class PongConsumer(AsyncWebsocketConsumer):
-	gameSettings = GameSettings(2, 800)
+	gameSettings = GameSettings(800)
 
 	async def connect(self):
 		await self.accept()
@@ -17,7 +17,13 @@ class PongConsumer(AsyncWebsocketConsumer):
 	async def receive(self, text_data):
 		message = json.loads(text_data)
 
-		if (message['type'] == 'init_game'):
+		if (message['type'] == 'init_local_game'):
+			self.gameSettings.setNbPaddles(2)
+			await handle_init_game(self)
+
+		if (message['type'] == 'init_ai_game'):
+			self.gameSettings.setNbPaddles(2)
+			self.gameSettings.setIsAIGame(True)
 			await handle_init_game(self)
 
 		if (message['type'] == 'paddle_move'):
