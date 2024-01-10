@@ -100,8 +100,9 @@ async def handle_paddle_move(message, consumer):
 	direction = message['direction']
 	paddle = consumer.gameSettings.paddles[int(message['id'])]
 
-	if (consumer.gameSettings.isAIGame and paddle.id == 1 and paddle.aiTask == None):
-		paddle.aiTask = asyncio.create_task(aiLoop(consumer, paddle))
+	aiPaddle = consumer.gameSettings.paddles[1]
+	if (consumer.gameSettings.isAIGame and aiPaddle.aiTask == None):
+		aiPaddle.aiTask = asyncio.create_task(aiLoop(consumer, aiPaddle))
 
 	if (paddle.isAI == False and paddle.isAlive == True):
 		if (message['key'] == 'keydown'):
