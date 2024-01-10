@@ -100,7 +100,7 @@ async def handle_paddle_move(message, consumer):
 	direction = message['direction']
 	paddle = consumer.gameSettings.paddles[int(message['id'])]
 
-	if (paddle.id == 1 and paddle.aiTask == None):
+	if (consumer.gameSettings.isAIGame and paddle.id == 1 and paddle.aiTask == None):
 		paddle.aiTask = asyncio.create_task(aiLoop(consumer, paddle))
 
 	if (paddle.isAI == False and paddle.isAlive == True):
