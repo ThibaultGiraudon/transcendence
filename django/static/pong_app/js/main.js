@@ -120,7 +120,7 @@ function changeAllScores(message) {
     }
 }
 
-function handleMutation() {
+function gameProcess() {
     if (document.getElementById('game-page')) {
         let     websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         let     websocketPort = window.location.protocol === 'https:' ? ':8001' : ':8000';
@@ -197,6 +197,3 @@ function handleMutation() {
         console.log('game page');
     }
 }
-
-// const observer = new MutationObserver(handleMutation);
-// observer.observe(document, { childList: true, subtree: true });
