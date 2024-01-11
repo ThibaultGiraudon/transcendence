@@ -1,18 +1,112 @@
 /* CHAT APP */
-.container {
+
+
+/* chat.html */
+.chat-container {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-start;
+}
+
+
+/* room.html */
+.chat-window {
+	width: 100vw;
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: center;
+}
+
+.chat-category {
+	font-size: 3vw;
+}
+
+.chat-category-pp {
+	font-size: 3vw;
+	margin-left: 1vw;
+}
+
+.participants {
+	width: 20%;
+	height: 80vh;
+	overflow-y: auto;
+	padding-top: 5%;
+	padding-right: 10%;
+	padding-left: 1vw;
+
+}
+
+.participants-username {
+	font-size: 1.5vw;
+	padding-left: 0.5vw;
+	margin-top: 1vh;
+}
+
+.chat {
+	width: 45%;
+	overflow-y: auto;
+	margin-top: 5%;
+}
+
+.participants-container {
 	margin-top: 5%;
 	display: flex;
+	align-items: left;
+	justify-content: left;
+}
+
+.participants-img {
+	border-radius: 50%;
+	padding-right: 2%;
+	width: 3.5vw;
+	height: 3.5vw;
+}
+
+.chat-private-user {
+	display: flex;
+	flex-direction: row;
 	align-items: center;
-	justify-content: center
+	justify-content: flex-start;
+}
+
+.chat-private-img {
+	border-radius: 50%;
+	width: 4.5vw;
+	height: 4.5vw;
+}
+
+.chat-info-private {
+	font-size: 1vw;
+	font-family: var(--font-text-regular);
+	margin-top: 0.5vh;
 }
 
 .chat-log {
-	width: 50vw;
-	height: 50vh;
+	height: 60vh;
 	overflow-y: auto;
 	background-color: var(--color-light-hover);
 	border-radius: var(--border-radius);
-	margin-top: 5%;
+	margin-top: 2vh;
+}
+
+.chat-message-input {
+	width: 80%;
+	height: 2vh;
+	border-radius: var(--input-border-radius);
+	border: 1px solid var(--color-light-hover);
+}
+
+.chat-message-submit {
+	width: 15%;
+	height: 2.3vh;
+	font-size: 1vw;
+	font-family: var(--font-text-bold);
+	color: white;
+	border: 1px solid var(--color-dark);
+	border-radius: var(--input-border-radius);
+	background: var(--color-dark);
 }
 
 .my-message {
@@ -22,9 +116,12 @@
 	border-radius: var(--border-radius);
 	text-align: right;
 	font-family: var(--font-text-regular);
-	font: 15px/20px;
-	padding: 10px 20px;
-	margin-top: 0.5vh;
+	font-size: 1.5vw;
+	padding-top: 0.5vh;
+	padding-bottom: 0.5vh;
+	padding-left: 1.5vw;
+	padding-right: 1.5vw;
+	margin-bottom: 0.5vh;
 	margin-right: 0.5vw;
 	max-width: 40%;
 	clear: both;
@@ -37,9 +134,30 @@
 	border-radius: var(--border-radius);
 	text-align: left;
 	font-family: var(--font-text-regular);
-	font: 15px/20px;
-	padding: 10px 20px;
-	margin-top: 0.5vh;
+	font-size: 1.5vw;
+	padding-top: 0.5vh;
+	padding-bottom: 0.5vh;
+	padding-left: 1.5vw;
+	padding-right: 1.5vw;
+	margin-bottom: 0.5vh;
+	margin-left: 0.5vw;
+	max-width: 40%;
+	clear: both;
+}
+
+.blocked-message {
+	float: left;
+	color: white;
+	background-color: grey;
+	border-radius: var(--border-radius);
+	text-align: left;
+	font-family: var(--font-text-regular);
+	font-size: 1.5vw;
+	padding-top: 0.5vh;
+	padding-bottom: 0.5vh;
+	padding-left: 1.5vw;
+	padding-right: 1.5vw;
+	margin-bottom: 0.5vh;
 	margin-left: 0.5vw;
 	max-width: 40%;
 	clear: both;
@@ -50,16 +168,12 @@
 	color: grey;
 	text-align: left;
 	font-family: var(--font-text-regular);
-	font-size: 14px;
+	font-size: 1vw;
 	max-width: 40%;
-	padding-top: 5px;
-	padding-left: 10px;
+	padding-top: 1vh;
+	padding-bottom: 0.5vh;
+	padding-left: 1vw;
 	clear: both;
-}
-
-img {
-	border-radius: 50%;
-	padding-right: 2%;
 }
 
 
