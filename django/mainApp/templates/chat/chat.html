@@ -4,7 +4,7 @@
 {% if chats %}
 	{% for chat in chats %}
 		<a href="#" data-route="{% url 'room' chat.0.room_id %}" onclick="navigateTo(event, this.dataset.route)">
-			<div class="container">
+			<div class="chat-container">
 				<h3>{{ chat.1 }}</h3>
 			</div>
 		</a>
