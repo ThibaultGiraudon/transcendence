@@ -20,7 +20,8 @@ class Game(models.Model):
 	hour = models.TimeField()
 	duration = models.IntegerField()
 	# TODO (pas utile puisqu'on a players.size() je pense) : nbRealPlayers = models.IntegerField(min=1);
-	players = models.ManyToManyField(Player)
+	# score = models.IntegerField()
+	playerList = ArrayField(models.CharField(max_length=100))
 
 
 class Score(models.Model):
