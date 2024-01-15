@@ -46,6 +46,18 @@ function create() {
     }
 }
 
+function displayGameOver(message) {
+    elements.ball.setVisible(false);
+    elements.paddles.forEach(element => {
+        element.setVisible(false);
+    });
+    phaserGame.destroy();
+
+    // TODO add player from message
+    const route = '/pong/game_over/elias';
+    navigateTo(event, route);
+}
+
 function initsquareSize(message) {
     config.width = message.size;
     config.height = message.size;
@@ -112,11 +124,7 @@ function changeAllScores(message) {
             scoreSpans[message.id].style.backgroundColor = '#212121';
             scoreSpans[message.id].style.color = '#DADADA';
             elements.paddles[message.id].setVisible(false);
-        } else if (message.nbPaddles == 2) {
-            scoreSpans[message.id ^ 1].style.backgroundColor = '#212121';
-            scoreSpans[message.id ^ 1].style.color = '#DADADA';
-            elements.paddles[message.id ^ 1].setVisible(false);
-        }
+        } 
     }
 }
 
@@ -170,6 +178,11 @@ function gameProcess() {
 
     socket.addEventListener('message', (event) => {
         let message = JSON.parse(event.data);
+
+        if (message.type === 'game_over') {
+            console.log(message);
+            displayGameOver(message);
+        }
 
         if (message.type === 'init_game_size') {
             initsquareSize(message);
