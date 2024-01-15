@@ -1,10 +1,13 @@
-{% load static %}
+<!-- {% load static %} -->
 
-<h1>Pong game</h1>
+<h1>Ranked game</h1>
 
-<button id="solo-game">1 VS 1</button>
-<button id="death-game">DEATH GAME</button>
-<button id="tournament-game">TOURNAMENT</button>
-
-<script src="{% static 'pong_app/js/phaser.min.js' %}"></script>
-<script type="module" src="{% static 'pong_app/js/main.js' %}"></script>
+<a href="#" data-route="{% url 'game' 'init_ranked_solo_game' %}" onclick="navigateTo(event, this.dataset.route)">
+    1 VS 1 SOLO
+</a>
+<a href="#" data-route="{% url 'game' 'init_death_game' %}" onclick="navigateTo(event, this.dataset.route)">
+    DEATH GAME (4 players)
+</a>
+<a href="#" data-route="{% url 'game' 'init_tournament_game' %}" onclick="navigateTo(event, this.dataset.route)">
+	TOURNAMENT (4 players)
+</a>
