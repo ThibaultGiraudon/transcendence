@@ -19,12 +19,12 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 		if (message['type'] == 'init_local_game'):
 			self.gameSettings.setNbPaddles(2)
-			await handle_init_game(self)
+			await handle_init_game(self, message['type'])
 
 		if (message['type'] == 'init_ai_game'):
 			self.gameSettings.setNbPaddles(2)
 			self.gameSettings.setIsAIGame(True)
-			await handle_init_game(self)
+			await handle_init_game(self, message['type'])
 
 		if (message['type'] == 'paddle_move'):
 			await handle_paddle_move(message, self)

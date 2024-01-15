@@ -53,8 +53,7 @@ function displayGameOver(message) {
     });
     phaserGame.destroy();
 
-    // TODO add player from message
-    const route = '/pong/game_over/elias';
+    const route = '/pong/game_over/' + message.player;
     navigateTo(event, route);
 }
 
