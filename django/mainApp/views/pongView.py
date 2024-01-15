@@ -32,3 +32,9 @@ def gameOver(request, player):
 		return redirectPage(request, '/sign_in/')
 	
 	return renderPage(request, 'pong_elements/game_over.html', {'player': player})
+
+def waitPlayers(request, gameMode):
+	if not request.user.is_authenticated:
+		return redirectPage(request, '/sign_in/')
+	
+	return renderPage(request, 'pong_elements/wait_players.html', {'gameMode': gameMode})
