@@ -70,6 +70,15 @@ async def sendUpdateScore(consumer, paddleID):
 		'id': id,
 	}
 	await consumer.send(json.dumps(message))
+	if (score >= 10):
+		message = {
+			'type': 'game_over',
+			'nbPaddles': consumer.gameSettings.nbPaddles,
+			'id': id,
+		}
+		await asyncio.sleep(1)
+		await consumer.send(json.dumps(message))
+		consumer.gameSettings.ball.task.cancel()
 
 async def handle_ball_move(consumer):
 	await sendInitsquareSize(consumer)

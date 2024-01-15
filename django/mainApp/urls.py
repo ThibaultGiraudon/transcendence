@@ -17,6 +17,7 @@ urlpatterns = [
 	path('pong/ranked/', pongView.ranked, name='ranked'),
 	path('pong/practice/', pongView.practice, name='practice'),
 	path('pong/game/<str:gameMode>/', pongView.game, name='game'),
+	path('pong/game_over/<str:player>/', pongView.gameOver, name='game_over'),
 
 	path('sign_in/', usersView.sign_in, name='sign_in'),
 	path('sign_up/', usersView.sign_up, name='sign_up'),
