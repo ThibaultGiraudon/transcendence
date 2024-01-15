@@ -6,15 +6,15 @@ function chatProcess() {
 	const roomIDElement = document.getElementById('room-id');
 	const roomID = JSON.parse(roomIDElement.textContent);
 		
-	// Create a new socket
-	let websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-	let websocketPort = window.location.protocol === 'https:' ? ':8001' : ':8000';
-	const socketUrl = websocketProtocol + '//' + window.location.hostname + websocketPort + '/ws/chat/' + roomID + "/";
-
 	if (chatSocket !== null) {
 		chatSocket.shouldClose = true;
 		chatSocket.socket.close();
 	}
+
+	// Create a new socket
+	let websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+	let websocketPort = window.location.protocol === 'https:' ? ':8001' : ':8000';
+	const socketUrl = websocketProtocol + '//' + window.location.hostname + websocketPort + '/ws/chat/' + roomID + "/";
 
 	chatSocket = {
 		socket: new WebSocket(socketUrl),
@@ -89,8 +89,10 @@ function chatProcess() {
 
 	// Close the socket when the user leaves the page
 	window.onbeforeunload = function() {
-		chatSocket.shouldClose = true;
-		chatSocket.socket.close();
+		if (chatSocket !== null) {
+			chatSocket.shouldClose = true;
+			chatSocket.socket.close();
+		}
 	};
 
 

@@ -20,10 +20,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# Custom errors
-
-handler404 = 'mainApp.views.custom_404'
-
 # Default profile picture
 
 DEFAULT_IMAGE_PATH = '/usr/src/app/static/users_app/img/default.jpg'
@@ -45,7 +41,7 @@ USE_TZ = True
 SECRET_KEY = 'django-insecure-g-$(e79yo&zy!65wxdwy4yf$)*s33eu-g*u#4h5&z_@o-^7b$$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 

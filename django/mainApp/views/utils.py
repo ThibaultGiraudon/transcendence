@@ -39,7 +39,26 @@ def renderHeader(request):
 		return JsonResponse({'header': header_html})
 	else:
 		return renderPage(request, 'base.html')
-	
+
+
+def renderError(request, status, pageContext={}):
+	# Context
+	context = {'request': request, 'status': status}
+	if pageContext:
+		context.update(pageContext)
+
+	# Generate header HTML
+	header_html = render_to_string('header.html', context)
+	context['header'] = header_html
+
+	# AJAX and HTML response
+	if request.is_ajax():
+		html = render_to_string(f"errors.html", context)
+		return JsonResponse({'html': html, 'header': header_html})
+	else:
+		context['page_content'] = render_to_string(f"errors.html", context)
+		return render(request, "base.html", context)
+
 
 def redirectPage(request, page):
 	# AJAX and HTML response

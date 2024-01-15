@@ -7,14 +7,17 @@
 			<h2 class="chat-category">Participants</h2>
 
 			{% for user in users %}
-				{% if user.id != request.user.id %}
 				<a href="#" data-route="{% url 'profile' user.username %}" onclick="navigateTo(event, this.dataset.route)">
 					<div class="participants-container">
 						<img class="participants-img" src={{ user.photo.url }} alt="profile picture">
-						<h3 class="participants-username">{{ user.username }}</h3>
+						<h3 class="participants-username">
+							{{ user.username }}
+							{% if user.id == request.user.id %}
+								<span> (You)</span>
+							{% endif %}
+						</h3>
 					</div>
 				</a>
-				{% endif %}
 			{% endfor %}
 		</div>
 	{% endif %}
