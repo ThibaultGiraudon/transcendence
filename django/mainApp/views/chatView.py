@@ -1,7 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.views.decorators.http import require_POST
 import uuid
-from django.http import JsonResponse
 
 from mainApp.models import Channel
 from mainApp.views.utils import renderPage, redirectPage
@@ -110,24 +108,38 @@ def room(request, room_id):
 	# Update the status of the current user
 	request.user.status = f"chat:{room_id}"
 	request.user.save()
+
+	# Sort messages by timestamp
+	messages = channel.messages
+	messages.sort(key=lambda x: x['timestamp'])
+
+	# Get the name and the photo of the channel
+	if channel.private and len(users) == 2:
+		if users[0].id == request.user.id:
+			name_channel = users[1].username
+			photo_channel = users[1].photo
+		else:
+			name_channel = users[0].username
+			photo_channel = users[0].photo
+	else:
+		name_channel = channel.name
+		photo_channel = None
+
+	# Change blocked users to a list of string for the template
+	blocked_users_str = ""
+	for blocked_user in blocked_users:
+		blocked_users_str += str(blocked_user) + ","
  
 	# Context
 	context = {
-		'name_channel': channel.name,
-		'room_id': room_id,
+		'messages': messages,
 		'users': users,
+		'name_channel': name_channel,
+		'photo_channel': photo_channel,
+		'room_id': room_id,
 		'blocked_users': blocked_users,
+		'blocked_users_str': blocked_users_str,
 		'private': channel.private,
 	}
 
 	return renderPage(request, 'chat/room.html', context)
-
-
-def get_message_history(request, room_id):
-	try:
-		channel = Channel.objects.get(room_id=room_id)
-		messages = channel.messages
-	except Channel.DoesNotExist:
-		messages = []
-
-	return JsonResponse(messages, safe=False)
