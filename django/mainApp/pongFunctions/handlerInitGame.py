@@ -1,6 +1,17 @@
 import	json
 import	asyncio
 
+# TODO maybe change this in a functions.py
+def getUserName(id, gameMode):
+	if (gameMode == 'init_local_game'):
+		return 'Player ' + str(id + 1)
+	if (gameMode == 'init_ai_game'):
+		if (id == 0):
+			return ('Player 1')
+		return ('AI')
+	# TODO change this to username
+	return ('player')
+
 async def sendInitsquareSize(consumer):
 	message = {
 		'type': 'init_game_size',
@@ -71,11 +82,7 @@ async def sendUpdateScore(consumer, paddleID, gameMode):
 	}
 	await consumer.send(json.dumps(message))
 	if (score >= 10):
-		if (gameMode == 'init_local_game' or gameMode == 'init_ai_game'):
-			player = 'player ' + str(id + 1)
-		else:
-			# TODO change this to username
-			player = 'player'
+		player = getUserName(id, gameMode)
 		message = {
 			'type': 'game_over',
 			'nbPaddles': consumer.gameSettings.nbPaddles,
