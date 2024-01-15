@@ -1,24 +1,89 @@
-<h2>{{ name_channel }}</h2>
+{% load poll_extras %}
 
-<h2>Participants</h2>
+<div class="chat-window">
 
-{% for user in users %}
-	{% if user.id != request.user.id %}
-	<a href="#" data-route="{% url 'profile' user.username %}" onclick="navigateTo(event, this.dataset.route)">
-		<div class="container">
-			<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
-			<h3>{{ user.username }}</h3>
+	{% if private == False %}
+		<div class="participants">
+			<h2 class="chat-category">Participants</h2>
+
+			{% for user in users %}
+				<a href="#" data-route="{% url 'profile' user.username %}" onclick="navigateTo(event, this.dataset.route)">
+					<div class="participants-container">
+						<img class="participants-img" src={{ user.photo.url }} alt="profile picture">
+						<h3 class="participants-username">
+							{{ user.username }}
+							{% if user.id == request.user.id %}
+								<span> (You)</span>
+							{% endif %}
+						</h3>
+					</div>
+				</a>
+			{% endfor %}
 		</div>
-	</a>
 	{% endif %}
-{% endfor %}
 
-<div id="chat-log" class="chat-log"></div>
+	<div class="chat">
+		{% if private %}
+			<a class="chat-private-user" href="#" data-route="{% url 'profile' name_channel %}" onclick="navigateTo(event, this.dataset.route)">
+				<img class="chat-private-img" src={{ photo_channel.url }} alt="profile picture">
+				<h2 class="chat-category-pp">{{ name_channel }}</h2>
+			</a>
+		{% else %}
+			<h2 class="chat-category">{{ name_channel }}</h2>
+		{% endif %}
+	
+		{% if private%}
+			<p class="chat-info-private">Private channel</p>
+		{% else %}
+			<p class="chat-info-private">Group channel</p>
+		{% endif %}
 
-<br>
+		<div id="chat-log" class="chat-log">
+			{% for message in messages %}
 
-<input id="chat-message-input" type="text" size="50" autocomplete="off">
-<input id="chat-message-submit" type="button" value="Send">
+				{% if message.sender in blocked_users_str %}
+					{% for user in users %}
+						{% if user.id|stringformat:'s' == message.sender %}
+							{% if user.id|stringformat:'s' != messages|previousMessageSenderID:message %}
+								<p class="other-username">{{ user.username }}</p>
+							{% endif %}
+						{% endif %}
+					{% endfor %}
+					<p class="blocked-message">This user is blocked</p>
+
+				{% else %}
+					{% if private == False %}
+						{% if message.sender != request.user.id|stringformat:'s' %}
+							{% for user in users %}
+								{% if user.id|stringformat:'s' == message.sender %}
+									{% if user.id|stringformat:'s' != messages|previousMessageSenderID:message %}
+										<p class="other-username">{{ user.username }}</p>
+									{% endif %}
+								{% endif %}
+							{% endfor %}
+						{% endif %}
+					{% endif %}
+
+					{% if message.sender == request.user.id|stringformat:"s" %}
+						<p class="my-message" data-sender="{{ message.sender }}">
+					{% else %}
+						<p class="other-message" data-sender="{{ message.sender }}">
+					{% endif %}
+
+					{{ message.message }}
+					</p>
+
+				{% endif %}
+			{% endfor %}
+		</div>
+
+		<br>
+
+		<input class="chat-message-input" id="chat-message-input" type="text" autocomplete="off">
+		<input class="chat-message-submit" id="chat-message-submit" type="button" value="Send">
+	</div>
+
+</div>
 
 {{ room_id|json_script:"room-id" }}
 {{ blocked_users|json_script:"blocked-users" }}
