@@ -54,7 +54,7 @@ async def sendUpdateBallPosition(consumer, ball):
 	}
 	await consumer.send(json.dumps(message))
 
-async def sendUpdateScore(consumer, paddleID):
+async def sendUpdateScore(consumer, paddleID, gameMode):
 	if (consumer.gameSettings.nbPaddles == 2):
 		consumer.gameSettings.paddles[paddleID ^ 1].score += 1
 		score = consumer.gameSettings.paddles[paddleID ^ 1].score
@@ -71,16 +71,21 @@ async def sendUpdateScore(consumer, paddleID):
 	}
 	await consumer.send(json.dumps(message))
 	if (score >= 10):
+		if (gameMode == 'init_local_game' or gameMode == 'init_ai_game'):
+			player = 'player ' + str(id + 1)
+		else:
+			# TODO change this to username
+			player = 'player'
 		message = {
 			'type': 'game_over',
 			'nbPaddles': consumer.gameSettings.nbPaddles,
-			'id': id,
+			'player': player,
 		}
 		await asyncio.sleep(1)
 		await consumer.send(json.dumps(message))
 		consumer.gameSettings.ball.task.cancel()
 
-async def handle_ball_move(consumer):
+async def handle_ball_move(consumer, gameMode):
 	await sendInitsquareSize(consumer)
 	await sendInitPaddlePosition(consumer)
 	await sendInitScore(consumer, consumer.gameSettings.nbPaddles)
@@ -104,7 +109,7 @@ async def handle_ball_move(consumer):
 				paddle.color = "0x212121"
 			
 			await sendInitPaddlePosition(consumer)	
-			await sendUpdateScore(consumer, paddleID)
+			await sendUpdateScore(consumer, paddleID, gameMode)
 			ball.resetBall(consumer.gameSettings)
 			await asyncio.sleep(1)
 
@@ -112,5 +117,5 @@ async def handle_ball_move(consumer):
 		await asyncio.sleep(0.01)
 		await sendUpdateBallPosition(consumer, ball)
 
-async def handle_init_game(consumer):
-	consumer.gameSettings.ball.task = asyncio.create_task(handle_ball_move(consumer))
+async def handle_init_game(consumer, gameMode):
+	consumer.gameSettings.ball.task = asyncio.create_task(handle_ball_move(consumer, gameMode))
