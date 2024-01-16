@@ -11,7 +11,7 @@ COPY	./ ./
 
 RUN		python manage.py makemigrations --noinput
 
-CMD 	["sh", "-c", "python manage.py makemigrations mainApp & python manage.py migrate && python manage.py runserver --insecure 0.0.0.0:8000"]
+CMD 	["sh", "-c", "python manage.py makemigrations mainApp && python manage.py migrate && python manage.py runserver --insecure 0.0.0.0:8000"]
 
 # NOTE BY LEON:
 # The --insecure flag is used to serve static file in production.
