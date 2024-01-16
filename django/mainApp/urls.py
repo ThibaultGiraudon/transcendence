@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import pongView, notificationsView, mainView, usersView, chatView
+from .views import pongView, notificationsView, mainView, usersView, chatView, waitPlayersView
 
 urlpatterns = [
     # Website
@@ -18,7 +18,7 @@ urlpatterns = [
 	path('pong/practice/', pongView.practice, name='practice'),
 	path('pong/game/<str:gameMode>/', pongView.game, name='game'),
 	path('pong/game_over/<str:player>/', pongView.gameOver, name='game_over'),
-	path('pong/wait_players/<str:gameMode>/', pongView.waitPlayers, name='wait_players'),
+	path('pong/wait_players/<str:gameMode>/', waitPlayersView.waitPlayers, name='wait_players'),
 
 	path('sign_in/', usersView.sign_in, name='sign_in'),
 	path('sign_up/', usersView.sign_up, name='sign_up'),
