@@ -20,7 +20,7 @@ class Game(models.Model):
 	# score = models.IntegerField()
 	playerList = ArrayField(models.CharField(max_length=100))
 	# gameMode = models.CharField(max_length=30)
-	# isOver = models.BooleanField(default=False)
+	isOver = models.BooleanField(default=False)
 
 
 class Score(models.Model):
