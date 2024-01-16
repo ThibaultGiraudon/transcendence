@@ -42,10 +42,14 @@ def waitPlayers(request, gameMode):
 	players = Player.objects.get_or_create(username=request.user.username)
 	player = players[0]
 
-# TODO check if there is a game with only one player
 	# TODO ici changer par 2 ou 4 selon le mode de jeu
-	waitingGames = Game.objects.filter(playerList__len__lt=2).exclude(playerList__contains=[player.username])
+	waitingGames = Game.objects.filter(playerList__len__lt=2).exclude(playerList__contains=[player.username]).exclude(isOver=True)
 	
+	if (player.currentGameID):
+		game = Game.objects.get(id=player.currentGameID)
+		if (game.isOver == False):
+			return renderPage(request, 'pong_elements/wait_players.html', {'gameMode': gameMode, 'gameID': game.id})
+
 	if (waitingGames.exists()):
 		game = waitingGames.first()
 		game.playerList.append(player.username)
