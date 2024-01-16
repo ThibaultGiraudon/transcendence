@@ -9,20 +9,18 @@ from django.utils import timezone
 
 
 class Player(models.Model):
-	firstName = models.CharField(max_length=20)
-	name = models.CharField(max_length=20)
-	idName = models.CharField(max_length=20)
-	# TODO : img = models.ImageField(upload_to='images/')
+	username = models.CharField(max_length=150, unique=True, default=None)
+	currentGameID = models.IntegerField(default=None, null=True)
 
 
 class Game(models.Model):
 	date = models.DateField()
 	hour = models.TimeField()
 	duration = models.IntegerField()
-	# TODO (pas utile puisqu'on a players.size() je pense) : nbRealPlayers = models.IntegerField(min=1);
 	# score = models.IntegerField()
 	playerList = ArrayField(models.CharField(max_length=100))
 	# gameMode = models.CharField(max_length=30)
+	# isOver = models.BooleanField(default=False)
 
 
 class Score(models.Model):

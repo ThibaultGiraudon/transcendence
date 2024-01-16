@@ -1,6 +1,6 @@
 import	datetime
 from	mainApp.views.utils import renderPage, redirectPage
-from	mainApp.models import Game
+from	mainApp.models import Player, Game
 
 def pong(request):
 	if not request.user.is_authenticated:
@@ -39,19 +39,22 @@ def waitPlayers(request, gameMode):
 	if not request.user.is_authenticated:
 		return redirectPage(request, '/sign_in/')
 
-	player1 = request.user
+	players = Player.objects.get_or_create(username=request.user.username)
+	player = players[0]
 
+# TODO check if there is a game with only one player
 	# TODO ici changer par 2 ou 4 selon le mode de jeu
-	waitingGames = Game.objects.filter(playerList__len__lt=2).exclude(playerList__contains=[player1])
+	waitingGames = Game.objects.filter(playerList__len__lt=2).exclude(playerList__contains=[player.username])
 	
 	if (waitingGames.exists()):
-		print("game exist")
 		game = waitingGames.first()
-		game.playerList.append(player1)
+		game.playerList.append(player.username)
 		game.save()
 		gameID = game.id
 	else:
-		print("pas de game")
-		newGame = Game.objects.create(date=datetime.date.today(), hour=datetime.datetime.now().time(), duration=0, playerList=[player1])
+		newGame = Game.objects.create(date=datetime.date.today(), hour=datetime.datetime.now().time(), duration=0, playerList=[player.username])
 		gameID = newGame.id
+		
+	player.currentGameID = gameID
+	player.save()
 	return renderPage(request, 'pong_elements/wait_players.html', {'gameMode': gameMode, 'gameID': gameID})
