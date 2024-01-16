@@ -5,20 +5,22 @@
 	{% if private == False %}
 		<div class="participants">
 			<h2 class="chat-category">Participants</h2>
-
-			{% for user in users %}
-				<a href="#" data-route="{% url 'profile' user.username %}" onclick="navigateTo(event, this.dataset.route)">
-					<div class="participants-container">
-						<img class="participants-img" src={{ user.photo.url }} alt="profile picture">
-						<h3 class="participants-username">
-							{{ user.username }}
-							{% if user.id == request.user.id %}
-								<span> (You)</span>
-							{% endif %}
-						</h3>
-					</div>
-				</a>
-			{% endfor %}
+			
+			<div class="list-participants">
+				{% for user in users %}
+					<a href="#" data-route="{% url 'profile' user.username %}" onclick="navigateTo(event, this.dataset.route)">
+						<div class="participants-container">
+							<img class="participants-img" src={{ user.photo.url }} alt="profile picture">
+							<h3 class="participants-username">
+								{{ user.username }}
+								{% if user.id == request.user.id %}
+									<span> (You)</span>
+								{% endif %}
+							</h3>
+						</div>
+					</a>
+				{% endfor %}
+			</div>
 		</div>
 	{% endif %}
 
@@ -79,8 +81,10 @@
 
 		<br>
 
-		<input class="chat-message-input" id="chat-message-input" type="text" autocomplete="off">
-		<input class="chat-message-submit" id="chat-message-submit" type="button" value="Send">
+		<div class="chat-buttons">
+			<input class="chat-message-input" id="chat-message-input" type="text" autocomplete="off">
+			<input class="chat-message-submit" id="chat-message-submit" type="button" value="Send">
+		</div>
 	</div>
 
 </div>

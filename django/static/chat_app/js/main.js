@@ -39,7 +39,7 @@ function chatProcess() {
 		const isPrivateElement = document.getElementById('is-private');
 		const isPrivate = isPrivateElement ? JSON.parse(isPrivateElement.textContent) : false;
 
-		if (data.sender && !blockedUsers.includes(parseInt(data.sender, 10))) {
+		if (data.sender) {
 			let username = '[UserNotfound]';
 
 			// Get the username of the sender
@@ -63,8 +63,13 @@ function chatProcess() {
 
 				// Check if the message is from the current user
 				const idElement = document.getElementById('id');
-				messageContainer.className = idElement && data.sender === idElement.textContent ? 'my-message' : 'other-message';
-				
+
+				if (blockedUsers.includes(parseInt(data.sender, 10))) {
+					messageContainer.className = 'blocked-message';
+					messageContainer.textContent = 'This user is blocked';
+				} else {
+					messageContainer.className = idElement && data.sender === idElement.textContent ? 'my-message' : 'other-message';
+				}
 
 				// Display the message
 				const chatLog = document.querySelector('#chat-log');

@@ -84,10 +84,13 @@ def room(request, room_id):
 	if not request.user.is_authenticated:
 		return redirectPage(request, '/sign_in/')
 
+	print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>", room_id)
+
 	# Get the channel
 	try:
 		channel = Channel.objects.get(room_id=room_id)
 	except Channel.DoesNotExist:
+		print(">>>>>>>>>>>>>>>>>>>>>>>>>>>> bordel de queue")
 		return redirectPage(request, '/chat/')
 	
 	# Get the users in the channel

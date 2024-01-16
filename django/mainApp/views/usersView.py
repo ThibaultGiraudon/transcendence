@@ -16,7 +16,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
 import urllib.request
 
-from mainApp.views.utils import renderPage, redirectPage
+from mainApp.views.utils import renderPage, redirectPage, renderError
 
 
 # 42 API
@@ -28,6 +28,7 @@ CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
 # Views
 @ensure_csrf_cookie
 def sign_in(request):
+	print("REQUEST URL", request.build_absolute_uri())
 	if request.method == 'GET':
 		return renderPage(request, 'users/sign_in.html', {'form': LoginForm()})
 	
@@ -115,12 +116,12 @@ def sign_up(request):
 				}
 			)
 
-			# Join the general channel
+			# Join the General channel
 			try:
-				channel = Channel.objects.get(name="general")
+				channel = Channel.objects.get(room_id="general")
 				channel.users.add(user)
-			except Channel.DoesNotExist:
-				channel = Channel.objects.create(name="general", room_id="general")
+			except Exception as e:
+				channel = Channel.objects.create(name="General", room_id="general")
 				channel.users.set([user])
 				channel.save()
 
@@ -156,24 +157,34 @@ def sign_out(request):
 
 def ft_api(request):
 	protocol = request.scheme
-	port = '%3A8001' if protocol == "https" else '%3A8000'
+	port = '%3A8443' if protocol == "https" else '%3A8000'
 
 	api_url = "https://api.intra.42.fr/oauth/authorize?client_id=" + CLIENT_ID + "&redirect_uri=" + \
 	protocol + "%3A%2F%2Flocalhost" + \
 	port + "%2Fcheck_authorize%2F&response_type=code"
+	print("REQUEST URL", request.build_absolute_uri())
+	scheme = request.is_secure() and "https" or "http"
+	print("SCHEME", scheme)
+	print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>", api_url)
 
 	return redirect(api_url)
 
 
 def	check_authorize(request):
 	if request.method == 'GET' and 'error' in request.GET:
-		return redirect(request, 'sign_in')
+		return redirect('sign_in')
 	
 	if request.method == 'GET' and 'code' in request.GET:
 		code = request.GET['code']
 	
 	response_token = handle_42_callback(request, code)
+	if response_token is None:
+		return renderError(request, 498, {'title':"The token has expired", 'infos':"Please contact the administrator"})
+	
 	response_data = make_api_request_with_token(API_USER, response_token)
+	if response_data is None:
+		return renderError(request, 401, {'title':"The 42 API is down", 'infos':"Please contact the administrator"})
+	
 	connect_42_user(request, response_data)
 
 	return redirect('pong')
@@ -215,12 +226,12 @@ def	connect_42_user(request, response_data):
 		if user:
 			login(request, user)
 		
-		# Join the general channel
+		# Join the General channel
 		try:
-			channel = Channel.objects.get(name="general")
+			channel = Channel.objects.get(room_id="general")
 			channel.users.add(user)
-		except Channel.DoesNotExist:
-			channel = Channel.objects.create(name="general", room_id="general")
+		except Exception as e:
+			channel = Channel.objects.create(name="General", room_id="general")
 			channel.users.set([user])
 			channel.save()
 
@@ -237,17 +248,15 @@ def make_api_request_with_token(api_url, token):
 			data = response.json()
 			return data
 		else:
-			logging.error(f"Erreur de requête API: {response.status_code}")
-			logging.error(response.text)
 			return None
 	except requests.RequestException as e:
-		logging.error(f"Erreur de requête API: {e}")
 		return None
 
 
 def handle_42_callback(request, code):
-	port = '8001' if request.scheme == 'https' else '8000'
+	port = '8443' if request.scheme == 'https' else '8000'
 	redirect_uri = request.scheme + '://localhost:' + port + '/check_authorize/'
+	print(">>>>>>>>", redirect_uri)
 	token_url = "https://api.intra.42.fr/oauth/token"
 	token_params = {
 		'grant_type': 'authorization_code',
@@ -264,8 +273,6 @@ def handle_42_callback(request, code):
 		access_token = token_data['access_token']
 		return access_token 
 	else:
-		logging.info(f" error: {response.status_code}")
-		logging.info(f" error: {response.text}")
 		return None
 
 
@@ -475,7 +482,7 @@ def unblock(request, id):
 
 def get_username(request, id):
 	if not request.user.is_authenticated:
-		return None
+		return redirectPage(request, '/sign_in/')
 
 	# Check if the user exist
 	User = get_user_model()

@@ -20,6 +20,15 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
+
+
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+SECURE_SSL_REDIRECT = False
+
+
+
 # Default profile picture
 
 DEFAULT_IMAGE_PATH = '/usr/src/app/static/users_app/img/default.jpg'
