@@ -21,3 +21,9 @@ mettre un countdown au mileu au reset pour pas quon crois que cest un lag
 
 [LEON]
 Patcher probleme heure notifications: -1h
+Les messages renvoient une promesse non tenu des fois
+
+[TIBO]
+Redirection apres login avec 42 en http au lieu de https ??????
+Mettre a offline tout les users quand on shutdown le serveur
+Regler la reception de websocket en HTTPS
