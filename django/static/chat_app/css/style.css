@@ -39,10 +39,16 @@
 
 .list-participants {
 	height: 87%;
+	overflow-y: auto;
 	background-color: var(--color-light-hover);
 	border-radius: var(--border-radius);
 	margin-top: 2%;
 	padding: 5%;
+}
+
+.list-participants::-webkit-scrollbar {
+	width: 0px;
+	background: transparent;
 }
 
 .chat-category {
@@ -67,7 +73,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-
+	
 }
 
 .participants-img {
@@ -104,6 +110,11 @@
 	margin-top: 2%;
 	padding-top: 0.75%;
 	padding-bottom: 0.5%;
+}
+
+.chat-log::-webkit-scrollbar {
+	width: 0px;
+	background: transparent;
 }
 
 .chat-buttons {
