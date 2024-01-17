@@ -9,7 +9,6 @@ from django.utils import timezone
 
 
 class Player(models.Model):
-	username = models.CharField(max_length=150, unique=True, default=None)
 	currentGameID = models.IntegerField(default=None, null=True)
 
 
@@ -35,8 +34,9 @@ class CustomUserManager(BaseUserManager):
 		if not email:
 			raise ValueError('The Email field must be set')
 		email = self.normalize_email(email)
-  
-		user = self.model(email=email, username=username, **extra_fields)
+
+		player = Player.objects.create(currentGameID=None)
+		user = self.model(email=email, username=username, player=player, **extra_fields)
 
 		if photo is None:
 			with open(settings.DEFAULT_IMAGE_PATH, 'rb') as default_image_file:
@@ -63,6 +63,7 @@ class CustomUser(AbstractUser):
 	status = models.CharField(max_length=150, default="online")
 	nbNewNotifications = models.IntegerField(default=0)
 	blockedUsers = ArrayField(models.IntegerField(), default=list)
+	player = models.OneToOneField(Player, on_delete=models.CASCADE, related_name='user', null=True)
 
 	# Use the custom manager
 	objects = CustomUserManager()

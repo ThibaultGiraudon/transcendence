@@ -15,7 +15,7 @@ from ..models import Notification, Channel
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
 import urllib.request
-
+from mainApp.models import Player
 from mainApp.views.utils import renderPage, redirectPage
 
 
@@ -205,9 +205,11 @@ def	connect_42_user(request, response_data):
 				img_io = BytesIO()
 				img.save(img_io, format='JPEG')
 
+		player = Player.objects.create(currentGameID=None)
 		user = CustomUser.objects.create(
 			username=response_data['login'],
-			email=response_data['email']
+			email=response_data['email'],
+			player=player
 		)
 		user.photo.save(f"{response_data['email']}.jpg", ContentFile(img_io.getvalue()), save=True)
 		user.save()
