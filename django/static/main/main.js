@@ -162,10 +162,12 @@ document.addEventListener('submit', function(event) {
 
 let chatProcessed = false;
 let pongProcessed = false;
+let statusProcessed = false;
 
 function handleMutation() {
 	const chatElement = document.getElementById('chat-log');
 	const pongElement = document.getElementById('pong_game');
+	const statusElement = document.getElementById('status-log');
 	
 	if (chatElement && !chatProcessed) {
 		chatProcess();
@@ -179,6 +181,13 @@ function handleMutation() {
 		pongProcessed = true;
 	} else if (!pongElement) {
 		pongProcessed = false;
+	}
+
+	if (statusElement && !statusProcessed) {
+		statusProcess();
+		statusProcessed = true;
+	} else if (!statusElement) {
+		statusProcessed = false;
 	}
 }
 

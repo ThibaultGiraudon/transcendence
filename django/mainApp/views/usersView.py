@@ -28,7 +28,6 @@ CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
 # Views
 @ensure_csrf_cookie
 def sign_in(request):
-	print("REQUEST URL", request.build_absolute_uri())
 	if request.method == 'GET':
 		return renderPage(request, 'users/sign_in.html', {'form': LoginForm()})
 	
@@ -162,10 +161,8 @@ def ft_api(request):
 	api_url = "https://api.intra.42.fr/oauth/authorize?client_id=" + CLIENT_ID + "&redirect_uri=" + \
 	protocol + "%3A%2F%2Flocalhost" + \
 	port + "%2Fcheck_authorize%2F&response_type=code"
-	print("REQUEST URL", request.build_absolute_uri())
+
 	scheme = request.is_secure() and "https" or "http"
-	print("SCHEME", scheme)
-	print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>", api_url)
 
 	return redirect(api_url)
 
@@ -192,7 +189,7 @@ def	check_authorize(request):
 
 def	connect_42_user(request, response_data):
 	user = authenticate_42_user(email=response_data['email'])
-
+	
 	if user:
 		user.status = "online"
 		channel_layer = get_channel_layer()
@@ -256,7 +253,6 @@ def make_api_request_with_token(api_url, token):
 def handle_42_callback(request, code):
 	port = '8443' if request.scheme == 'https' else '8000'
 	redirect_uri = request.scheme + '://localhost:' + port + '/check_authorize/'
-	print(">>>>>>>>", redirect_uri)
 	token_url = "https://api.intra.42.fr/oauth/token"
 	token_params = {
 		'grant_type': 'authorization_code',
