@@ -89,10 +89,13 @@ class Notification(models.Model):
 		super(Notification, self).save(*args, **kwargs)
 		self.user.nbNewNotifications += 1
 		self.user.save()
+		self.send_notification()
+	
+	def send_notification(self):		
 		channel_layer = get_channel_layer()
-		async_to_sync(channel_layer.group_send)(
-			f"notifications_{self.user.id}", {"type": "notification.message", "message": "You have a new notification"}
-		)
+		# async_to_sync(channel_layer.group_send)(
+		# 	f"notifications_{self.user.id}", {"type": "notification_message"}
+		# )
 
 
 class Channel(models.Model):

@@ -1,16 +1,12 @@
 <div id="status-log" class="status-log">
 	<h1>Friends</h1>
 	<div class="list">
-		{% for x in friends %}
-			<a href="#" data-route="{% url 'profile' x.username %}" onclick="navigateTo(event, this.dataset.route)">
-				<div class="container" data-user-id="{{ x.id }}">
-				<img src={{ x.photo.url }} alt="profile picture" width="60" height="60">
-				<h3>{{ x.username }}</h3>
-				{% if x.status != 'offline' %}
-					<p class="status">🟢</p>
-				{% else %}
-					<p class="status">🔴</p>
-				{% endif %}
+		{% for user in friends %}
+			<a href="#" data-route="{% url 'profile' user.username %}" onclick="navigateTo(event, this.dataset.route)">
+				<div class="container" data-user-id="{{ user.id }}">
+					<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
+					<h3>{{ user.username }}</h3>
+					<p class="status"></p>
 				</div>
 			</a>
 	{% endfor %}
@@ -18,20 +14,19 @@
 
 	<h1>All users</h1>
 	<div class="list">
-		{% for x in all_users %}
-			<a href="#" data-route="{% url 'profile' x.username %}" onclick="navigateTo(event, this.dataset.route)">
-			{% if x.id != user.id and not x in friends%}
-				<div class="container" data-user-id="{{ x.id }}">
-					<img src={{ x.photo.url }} alt="profile picture" width="60" height="60">
-					<h3>{{ x.username }}</h3>
-					{% if x.status != 'offline' %}
-						<p class="status">🟢</p>
-					{% else %}
-						<p class="status">🔴</p>
-					{% endif %}
+		{% for user in users %}
+			<a href="#" data-route="{% url 'profile' user.username %}" onclick="navigateTo(event, this.dataset.route)">
+				<div class="container" data-user-id="{{ user.id }}">
+					<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
+					<h3>{{ user.username }}</h3>
+					<p class="status">{{ user.status }}</p>
 				</div>
-			{% endif %}
 			</a>
 		{% endfor %}
 	</div>
 </div>
+
+{% comment %}
+{{ friends|json_script:"friends" }}
+{{ users|json_script:"users" }}
+{% endcomment %}

@@ -46,15 +46,15 @@ def sign_in(request):
 
 				# Send the status to the channel layer
 				channel_layer = get_channel_layer()
-				async_to_sync(channel_layer.group_send)(
-					'status',
-					{
-						'type': 'status_update',
-						'username': user.username,
-						'id': user.id,
-						'status': 'online'
-					}
-				)
+				# async_to_sync(channel_layer.group_send)(
+				# 	'status',
+				# 	{
+				# 		'type': 'status_update',
+				# 		'username': user.username,
+				# 		'id': user.id,
+				# 		'status': 'online'
+				# 	}
+				# )
 
 				# Login the user
 				login(request, user)
@@ -105,15 +105,15 @@ def sign_up(request):
 
 			# Send the status to the channel layer
 			channel_layer = get_channel_layer()
-			async_to_sync(channel_layer.group_send)(
-				'status',
-				{
-					'type': 'status_update',
-					'username': request.user.username,
-					'id': request.user.id,
-					'status': 'online'
-				}
-			)
+			# async_to_sync(channel_layer.group_send)(
+			# 	'status',
+			# 	{
+			# 		'type': 'status_update',
+			# 		'username': request.user.username,
+			# 		'id': request.user.id,
+			# 		'status': 'online'
+			# 	}
+			# )
 
 			# Join the General channel
 			try:
@@ -138,15 +138,15 @@ def sign_out(request):
 
 		# Send the status to the channel layer
 		channel_layer = get_channel_layer()
-		async_to_sync(channel_layer.group_send)(
-			'status',
-			{
-				'type': 'status_update',
-				'username': request.user.username,
-				'id': request.user.id,
-				'status': 'offline'
-			}
-		)
+		# async_to_sync(channel_layer.group_send)(
+		# 	'status',
+		# 	{
+		# 		'type': 'status_update',
+		# 		'username': request.user.username,
+		# 		'id': request.user.id,
+		# 		'status': 'offline'
+		# 	}
+		# )
 	
 		# Logout the user
 		logout(request)
@@ -193,15 +193,15 @@ def	connect_42_user(request, response_data):
 	if user:
 		user.status = "online"
 		channel_layer = get_channel_layer()
-		async_to_sync(channel_layer.group_send)(
-			'status',
-			{
-				'type': 'status_update',
-				'username': user.username,
-				'id': user.id,
-				'status': 'online'
-			}
-		)
+		# async_to_sync(channel_layer.group_send)(
+		# 	'status',
+		# 	{
+		# 		'type': 'status_update',
+		# 		'username': user.username,
+		# 		'id': user.id,
+		# 		'status': 'online'
+		# 	}
+		# )
 		user.save()
 		login(request, user)
 
@@ -369,21 +369,28 @@ def users(request):
 	if not request.user.is_authenticated:
 		return redirectPage(request, '/sign_in/')
 	
-	# Get all users and the friends
-	User = get_user_model()
-	all_users = User.objects.all()
-
-	# Hide the current user
-	all_users = all_users.exclude(id=request.user.id)
-
 	if request.method == 'GET':
+		# Get all users
+		User = get_user_model()
+		all_users = User.objects.all()
+
+		# Separate the users in two lists: friends and users
 		friends = []
+		users = []
 
 		for user in all_users:
-			if user.id in request.user.follows:
+			if user.id == request.user.id:
+				continue
+			elif user.id in request.user.follows:
 				friends.append(user)
+			else:
+				users.append(user)
 
-		context = {'all_users':all_users, 'friends':friends}
+		# Context
+		context = {
+			'friends': friends,
+			'users': users
+		}
 
 		return renderPage(request, 'users.html', context)
 	
