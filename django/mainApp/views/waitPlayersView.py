@@ -40,9 +40,14 @@ def waitPlayers(request, gameMode):
 		game = Game.objects.get(id=player.currentGameID)
 		if (game.isOver == False):
 			gameMode = game.gameMode
+			if (game.playerList.__len__() == nbPlayersToWait):
+				return redirectPage(request, '/pong/game/' + gameMode + '/')
 			return renderPage(request, 'pong_elements/wait_players.html', {'gameMode': gameMode, 'gameID': game.id})
 
 	gameID = createOrJoinGame(waitingGamesList, player, gameMode)
 	player.currentGameID = gameID
 	player.save()
+	game = Game.objects.get(id=gameID)
+	if (game.playerList.__len__() == nbPlayersToWait):
+		return redirectPage(request, '/pong/game/' + gameMode + '/')
 	return renderPage(request, 'pong_elements/wait_players.html', {'gameMode': gameMode, 'gameID': gameID})
