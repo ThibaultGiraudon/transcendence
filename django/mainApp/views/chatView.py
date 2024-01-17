@@ -105,10 +105,6 @@ def room(request, room_id):
 			if users[0].id in blocked_users:
 				return redirectPage(request, '/chat/')
 
-	# Update the status of the current user
-	request.user.status = f"chat:{room_id}"
-	request.user.save()
-
 	# Sort messages by timestamp
 	messages = channel.messages
 	messages.sort(key=lambda x: x['timestamp'])
@@ -142,4 +138,4 @@ def room(request, room_id):
 		'private': channel.private,
 	}
 
-	return renderPage(request, 'chat/room.html', context)
+	return renderPage(request, 'chat/room.html', context, userStatus=f"chat:{room_id}")

@@ -6,8 +6,8 @@ urlpatterns = [
 	path('', mainView.home, name='home'),
 	path('home', mainView.home, name='home'),
 	path('test/', mainView.testDBConnection, name='testDBConnection'),
-	path("translate/", mainView.translate, name="translate"),
 	path('headerView/', mainView.headerView, name='headerView'),
+    path('ken', mainView.ken, name='ken'),
 
 	path('notifications/', notificationsView.notifications, name='notifications'),
 	path('delete_notification/<int:notification_id>/', notificationsView.delete_notification, name='delete_notification'),

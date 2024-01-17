@@ -7,10 +7,10 @@ def is_ajax(request):
 	return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
 
-def renderPage(request, page, pageContext={}):
+def renderPage(request, page, pageContext={}, userStatus="online"):
 	# Set user status to online
 	if request.user.is_authenticated:
-		request.user.status = 'online'
+		request.user.status = userStatus
 		request.user.save()
 
 	# Context

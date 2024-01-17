@@ -93,9 +93,9 @@ class Notification(models.Model):
 	
 	def send_notification(self):		
 		channel_layer = get_channel_layer()
-		# async_to_sync(channel_layer.group_send)(
-		# 	f"notifications_{self.user.id}", {"type": "notification_message"}
-		# )
+		async_to_sync(channel_layer.group_send)(
+			f"notifications_{self.user.id}", {"type": "notification_message"}
+		)
 
 
 class Channel(models.Model):

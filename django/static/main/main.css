@@ -247,3 +247,34 @@ img {
 	color: white;
 	opacity: 0.5;
 }
+
+/* KEN PAGE */
+
+.ken-img {
+	width: 100%;
+	height: 100%;
+	border-radius: 0;
+	padding: 0;
+	margin: 0;
+}
+
+.ken-link {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	padding: 1%;
+	margin: 0;
+	transform: translate(-50%, -50%);
+	font-size: 1vw;
+	font-family: var(--font-text-bold);
+	color: white;
+	border: 1px solid var(--color-dark);
+	border-radius: var(--input-border-radius);
+	background: var(--color-dark);
+	text-align: center;
+	vertical-align: middle;
+}
+
+.ken-link:hover {
+	opacity: 0.3;
+}
