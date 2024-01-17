@@ -1,36 +1,13 @@
 [ELIAS]
 idee elias powershot ratio (je me comprends) (% de powershot)
-Pas de photo de profile en https
-mettre les balises scripts dans un .js
-mettre un countdown au mileu au reset pour pas quon crois que cest un lag
-ca sert a quoi tests.py ya un import a selenium je vois pas pk on a besoin de selenium
-
 mettre gameObjects dans un dossier
-
 leger bug quand on joue a deux la paddle vivante disparait et reapparait
-
-
-connexion https:
-	- https://localhost:8001: impossible de charger des fichier externe (css, js), mais web socket fonctionnent parfaitement
-	- https://localhost:8443: fichier css et js charges normalement mais pas de websocket
-
-	pas afficher channel si user blocked
-
 mettre un countdown au mileu au reset pour pas quon crois que cest un lag
 
 
 [LEON]
-Patcher probleme heure notifications: -1h
 Les messages renvoient une promesse non tenu des fois
 
+
 [TIBO]
-Redirection apres login avec 42 en http au lieu de https ??????
-Mettre a offline tout les users quand on up le serveur -> erreur car base de donnee pas encore cree
-Regler la reception de websocket en HTTPS -> si connecte en https pas de reception mais sinon http-http ok et https-http ok
-
-
-
-
-Cannot sign_up in https
-Uncaught ReferenceError: navigateTo is not defined
-    at HTMLAnchorElement.onclick ((index):36:108) -> http://localhost:8000/pong/#
+Regler la reception de status websocket en HTTPS

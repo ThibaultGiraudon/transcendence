@@ -159,7 +159,7 @@ def ft_api(request):
 	port = '%3A8443' if protocol == "https" else '%3A8000'
 
 	api_url = "https://api.intra.42.fr/oauth/authorize?client_id=" + CLIENT_ID + "&redirect_uri=" + \
-	protocol + "%3A%2F%2Flocalhost" + \
+	protocol + f"%3A%2F%2F{request.get_host()}" + \
 	port + "%2Fcheck_authorize%2F&response_type=code"
 
 	scheme = request.is_secure() and "https" or "http"
@@ -252,7 +252,7 @@ def make_api_request_with_token(api_url, token):
 
 def handle_42_callback(request, code):
 	port = '8443' if request.scheme == 'https' else '8000'
-	redirect_uri = request.scheme + '://localhost:' + port + '/check_authorize/'
+	redirect_uri = request.scheme + f"://{request.get_host()}:" + port + '/check_authorize/'
 	token_url = "https://api.intra.42.fr/oauth/token"
 	token_params = {
 		'grant_type': 'authorization_code',
