@@ -39,6 +39,7 @@ def waitPlayers(request, gameMode):
 	if (player.currentGameID):
 		game = Game.objects.get(id=player.currentGameID)
 		if (game.isOver == False):
+			gameMode = game.gameMode
 			return renderPage(request, 'pong_elements/wait_players.html', {'gameMode': gameMode, 'gameID': game.id})
 
 	gameID = createOrJoinGame(waitingGamesList, player, gameMode)
