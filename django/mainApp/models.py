@@ -18,7 +18,7 @@ class Game(models.Model):
 	duration = models.IntegerField()
 	# score = models.IntegerField()
 	playerList = ArrayField(models.IntegerField())
-	# gameMode = models.CharField(max_length=30)
+	gameMode = models.CharField(max_length=30)
 	isOver = models.BooleanField(default=False)
 
 
