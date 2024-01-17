@@ -21,12 +21,11 @@ STATICFILES_DIRS = [
 ]
 
 
+# HTTPS redirect for 42 API
 
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
 SECURE_SSL_REDIRECT = False
-
 
 
 # Default profile picture
@@ -34,8 +33,6 @@ SECURE_SSL_REDIRECT = False
 DEFAULT_IMAGE_PATH = '/usr/src/app/static/users_app/img/default.jpg'
 
 TIME_ZONE = 'Europe/Paris'
-
-LANGUAGE_CODE = 'nl'
 
 USE_I18N = True
 
@@ -57,6 +54,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

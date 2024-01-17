@@ -3,6 +3,10 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 
 
+def is_ajax(request):
+	return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+
 def renderPage(request, page, pageContext={}):
 	# Set user status to online
 	if request.user.is_authenticated:
@@ -19,7 +23,7 @@ def renderPage(request, page, pageContext={}):
 	context['header'] = header_html
 
 	# AJAX and HTML response
-	if request.is_ajax():
+	if is_ajax(request):
 		html = render_to_string(page, context)
 		return JsonResponse({'html': html, 'header': header_html})
 	else:
@@ -35,7 +39,7 @@ def renderHeader(request):
 	header_html = render_to_string('header.html', context)
 
 	# AJAX and HTML response
-	if request.is_ajax():
+	if is_ajax(request):
 		return JsonResponse({'header': header_html})
 	else:
 		return renderPage(request, 'base.html')
@@ -52,7 +56,7 @@ def renderError(request, status, pageContext={}):
 	context['header'] = header_html
 
 	# AJAX and HTML response
-	if request.is_ajax():
+	if is_ajax(request):
 		html = render_to_string(f"errors.html", context)
 		return JsonResponse({'html': html, 'header': header_html})
 	else:
@@ -62,7 +66,7 @@ def renderError(request, status, pageContext={}):
 
 def redirectPage(request, page):
 	# AJAX and HTML response
-	if request.is_ajax():
+	if is_ajax(request):
 		return JsonResponse({'redirect': page})
 	else:
 		return redirect(page)
