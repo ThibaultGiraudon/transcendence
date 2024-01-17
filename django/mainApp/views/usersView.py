@@ -46,15 +46,15 @@ def sign_in(request):
 
 				# Send the status to the channel layer
 				channel_layer = get_channel_layer()
-				# async_to_sync(channel_layer.group_send)(
-				# 	'status',
-				# 	{
-				# 		'type': 'status_update',
-				# 		'username': user.username,
-				# 		'id': user.id,
-				# 		'status': 'online'
-				# 	}
-				# )
+				async_to_sync(channel_layer.group_send)(
+					'status',
+					{
+						'type': 'status_update',
+						'username': user.username,
+						'id': user.id,
+						'status': 'online'
+					}
+				)
 
 				# Login the user
 				login(request, user)
@@ -105,15 +105,15 @@ def sign_up(request):
 
 			# Send the status to the channel layer
 			channel_layer = get_channel_layer()
-			# async_to_sync(channel_layer.group_send)(
-			# 	'status',
-			# 	{
-			# 		'type': 'status_update',
-			# 		'username': request.user.username,
-			# 		'id': request.user.id,
-			# 		'status': 'online'
-			# 	}
-			# )
+			async_to_sync(channel_layer.group_send)(
+				'status',
+				{
+					'type': 'status_update',
+					'username': request.user.username,
+					'id': request.user.id,
+					'status': 'online'
+				}
+			)
 
 			# Join the General channel
 			try:
@@ -138,15 +138,15 @@ def sign_out(request):
 
 		# Send the status to the channel layer
 		channel_layer = get_channel_layer()
-		# async_to_sync(channel_layer.group_send)(
-		# 	'status',
-		# 	{
-		# 		'type': 'status_update',
-		# 		'username': request.user.username,
-		# 		'id': request.user.id,
-		# 		'status': 'offline'
-		# 	}
-		# )
+		async_to_sync(channel_layer.group_send)(
+			'status',
+			{
+				'type': 'status_update',
+				'username': request.user.username,
+				'id': request.user.id,
+				'status': 'offline'
+			}
+		)
 	
 		# Logout the user
 		logout(request)
@@ -193,15 +193,15 @@ def	connect_42_user(request, response_data):
 	if user:
 		user.status = "online"
 		channel_layer = get_channel_layer()
-		# async_to_sync(channel_layer.group_send)(
-		# 	'status',
-		# 	{
-		# 		'type': 'status_update',
-		# 		'username': user.username,
-		# 		'id': user.id,
-		# 		'status': 'online'
-		# 	}
-		# )
+		async_to_sync(channel_layer.group_send)(
+			'status',
+			{
+				'type': 'status_update',
+				'username': user.username,
+				'id': user.id,
+				'status': 'online'
+			}
+		)
 		user.save()
 		login(request, user)
 

@@ -23,9 +23,8 @@ def testDBConnection(request):
 		return renderPage(request, 'error.html')
 
 
-def translate(request):
-	text = _("Hello World")
-	return renderPage(request, 'translate.html', {'text': text})
+def ken(request):
+	return renderPage(request, 'ken.html')
 
 
 # Custom errors
