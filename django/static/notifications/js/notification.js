@@ -10,31 +10,25 @@ document.addEventListener('DOMContentLoaded', function () {
 		shouldClose: false
 	};
 
-	console.log('Notifications socket created', notificationSocket.socket);
 
 	// Update the notification count
 	notificationSocket.socket.onmessage = function(e) {
-		console.log('Notification received', e.data);
 		document.getElementById('notification-count').textContent = parseInt(
 			document.getElementById('notification-count').textContent
 		) + 1;
 	};
 
+	
 	// Close the socket
 	notificationSocket.socket.onclose = function(e) {
 		if (!notificationSocket.shouldClose) {
-			console.error('Notification socket closed unexpectedly');
 			notificationSocket.socket = new WebSocket(notificationSocket.url);
-			console.log('Notification socket recreated', notificationSocket.socket);
-		} else {
-			console.log('Notification socket closed');
-		
 		}
 	};
 
+
 	// Close the socket when the user leaves the page
 	window.onbeforeunload = function() {
-		console.log('Leaving the page so close the socket:');
 		notificationSocket.shouldClose = true;
 		notificationSocket.socket.close();
 	}
