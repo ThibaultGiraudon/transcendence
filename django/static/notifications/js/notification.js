@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		shouldClose: false
 	};
 
+	console.log('Notification socket created', notificationSocket.socket);
 
 	// Update the notification count
 	notificationSocket.socket.onmessage = function(e) {
@@ -22,7 +23,12 @@ document.addEventListener('DOMContentLoaded', function () {
 	// Close the socket
 	notificationSocket.socket.onclose = function(e) {
 		if (!notificationSocket.shouldClose) {
+			console.log('Notification socket closed. Reconnecting...');
 			notificationSocket.socket = new WebSocket(notificationSocket.url);
+			console.log('Notification socket recreated', notificationSocket.socket);
+		}
+		else {
+			console.log('Notification socket closed');
 		}
 	};
 
