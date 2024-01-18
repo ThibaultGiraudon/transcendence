@@ -1,80 +1,70 @@
-<img src="{{ user.photo.url }}" alt="profile picture" width="100" height="100">
-<p>{{ user.username }}</p>
+<div class="profile">
+    <img class="profile-img" src="{{ user.photo.url }}" alt="profile picture" width="100" height="100">
+    <div class="profile-infos">
+        <p class="profile-username">{{ user.username }}</p>
 
 {% if user.id == request.user.id %}
 
-    <p>{{ user.email }}</p>
+        <p class="profile-email">{{ user.email }}</p>
+    </div>
+</div>
 
-    <form method="POST" enctype="multipart/form-data" novalidate>
-        {% csrf_token %}
+    <div class="form-div">
+        <form class="sign-form" method="POST" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
 
-        <h2>Edit informations</h2>
-    
-        {% for field in form %}
-            {% if field.name == 'username' %}
-                <h4>Change username</h4>
-            {% endif %}
-            {% if field.name == 'photo' %}
-                <h4>Change profile picture</h4>
-            {% endif %}
-            {{ field }}
-            <div class="error-alert" id="error-{{ field.name }}"></div>
-        {% endfor %}
-
-    </br>
+            <h3 class="sign-title">Edit informations</h2>
         
-        {% for message in messages %}
-            <div>
-                {% if message.tags == 'success' %}
-                    <a data-dismiss="alert">✅</a>
-                {% else %}
-                    <a data-dismiss="alert">⚠️</a>
+            {% for field in form %}
+                {% if field.name == 'username' %}
+                    <h4>Change username</h4>
                 {% endif %}
-                {{ message }}
-            </div>
-        {% endfor %}
-        
-        <input type="submit" value="Accept modifications"/>
-    </form>
+                {% if field.name == 'photo' %}
+                    <h4>Change profile picture</h4>
+                {% endif %}
+                {{ field }}
+                <div class="error-alert" id="error-{{ field.name }}"></div>
+            {% endfor %}
+            
+            <input type="submit" value="Accept modifications"/>
+        </form>
+    </div>
 
 {% else %}
-
-    </br>
-
-    {% if user.id in request.user.blockedUsers %}
-    <a href="#" data-route="{% url 'unblock' user.id %}" onclick="navigateTo(event, this.dataset.route)">
-        <button>Unblock</button>
-    </a>
-    {% else %}
-    <a href="#" data-route="{% url 'block' user.id %}" onclick="navigateTo(event, this.dataset.route)">
-        <button>Block</button>
-    </a>
-    {% endif %}
-
+    
+    </div>
+</div>
 
     {% if user.id in request.user.blockedUsers %}
-        <p>You can't send a chat or follow this user</p>
+        <a class="profile-button" href="#" data-route="{% url 'unblock' user.id %}" onclick="navigateTo(event, this.dataset.route)">
+            Unblock
+        </a>
+
+        <p class="profile-blocked">You can't send a chat or follow this user</p>
 
     {% else %}
-        {% if user.id in request.user.follows %}
-            <a href="#" data-route="{% url 'unfollow' user.id %}" onclick="navigateTo(event, this.dataset.route)">
-                <button>Unfollow</button>
-            </a>
-        {% else %}
-            <a href="#" data-route="{% url 'follow' user.id %}" onclick="navigateTo(event, this.dataset.route)">
-                <button>Follow</button>
-            </a>
-        {% endif %}
+        <div class="profile-actions">
+            {% if user.id in request.user.follows %}
+                <a class="profile-button" href="#" data-route="{% url 'unfollow' user.id %}" onclick="navigateTo(event, this.dataset.route)">
+                    Unfollow
+                </a>
+            {% else %}
+                <a class="profile-button" href="#" data-route="{% url 'follow' user.id %}" onclick="navigateTo(event, this.dataset.route)">
+                    Follow
+                </a>
+            {% endif %}
 
-        {% if room %}
-            <a href="#" data-route="{% url 'room' room %}" onclick="navigateTo(event, this.dataset.route)">
-                <button>Send a chat</button>
+            {% if room %}
+                <a class="profile-button" href="#" data-route="{% url 'room' room %}" onclick="navigateTo(event, this.dataset.route)">
+            {% else %}
+                <a class="profile-button" href="#" data-route="{% url 'create_channel' %}?user_ids={{ user.id }}&user_ids={{ request.user.id }}&private=True" onclick="navigateTo(event, this.dataset.route)">
+            {% endif%}
+                    Send a chat
+                </a>
+            <a class="profile-button" href="#" data-route="{% url 'block' user.id %}" onclick="navigateTo(event, this.dataset.route)">
+                Block
             </a>
-        {% else %}
-            <a href="#" data-route="{% url 'create_channel' %}?user_ids={{ user.id }}&user_ids={{ request.user.id }}&private=True" onclick="navigateTo(event, this.dataset.route)">
-                <button>Send a chat</button>
-            </a>
-        {% endif%}
+        </div>
     {% endif %}
 
 {% endif %}

@@ -6,8 +6,8 @@ mettre un countdown au mileu au reset pour pas quon crois que cest un lag
 
 
 [LEON]
-Les messages renvoient une promesse non tenu des fois
+Bresom la socket notif qui warning si on Ctrl+R ultra vite plein de fois
 
 
 [TIBO]
-Regler la reception de status websocket en HTTPS
+Regler la reception de status websocket

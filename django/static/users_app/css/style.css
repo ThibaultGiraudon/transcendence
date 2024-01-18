@@ -3,7 +3,7 @@
 .form-div {
 	margin: 50px 0;
 	padding: 0 40px;
-	width: 30%;
+	width: 30em;
 	height: auto;
 	background-color: var(--color-light-hover);
 	border-radius: var(--border-radius);
@@ -62,8 +62,8 @@
 
 .sign-form .error-alert {
 	display: flex;
-	align-items: center;
-	justify-content: center;
+	align-items: left;
+	justify-content: left;
 }
 
 .sign-form .error-alert p {
@@ -108,23 +108,21 @@
 	padding-bottom: 1.5vh;
 	display: flex;
 	align-items: left;
-	justify-content: center;
+	justify-content: left;
 	flex-direction: column;
 	background-color: var(--color-light-hover);
 	border-radius: var(--border-radius);
 }
 
 .notification-new {
-	width: 5%;
+	font-size: 1em;
+	font-family: var(--font-text-regular);
 	padding-left: 0.5vw;
 	margin-bottom: 1vh;
 	display: flex;
 	align-items: left;
 	justify-content: center;
 	flex-direction: column;
-	background-color: var(--color-light-hover);
-	border-radius: var(--border-radius);
-	border: 1px solid var(--color-dark);
 }
 
 .notification-date {
@@ -143,9 +141,7 @@
 
 .notification-delete {
 	width: 10%;
-	height: 2.3vh;
-	line-height: 2.3vh;
-	font-size: 1vw;
+	font-size: 1em;
 	font-family: var(--font-text-bold);
 	color: white;
 	border: 1px solid var(--color-dark);
@@ -156,10 +152,8 @@
 }
 
 .notification-delete-all {
-	width: 8%;
-	height: 2.5vh;
-	line-height: 2.5vh;
-	font-size: 1vw;
+	padding: 0.5em;
+	font-size: 1em;
 	font-family: var(--font-text-bold);
 	color: white;
 	border: 1px solid var(--color-dark);
@@ -220,4 +214,68 @@
 .list::-webkit-scrollbar {
 	width: 0px;
 	background: transparent;
+}
+
+
+/* PROFILE */
+
+.profile {
+	margin-top: 2%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.profile-img {
+	width: 10em;
+	height: 10em;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.profile-username {
+	margin-left: 10%;
+	font-family: var(--font-text-bold);
+	font-size: var(--h3-size);
+	color: var(--color-dark);
+}
+
+.profile-email {
+	margin-left: 10%;
+	font-family: var(--font-text-regular);
+	font-size: var(--h4-size);
+	color: var(--color-dark-hover);
+}
+
+.profile-actions {
+	display: flex;
+	align-items: left;
+	justify-content: left;
+	flex-direction: flex-start;
+}
+
+.profile-button {
+	font-size: 1em;
+	padding: 0.5em;
+	margin-right: 0.5em;
+	margin-top: 2em;
+	margin-bottom: 0.5em;
+	font-family: var(--font-text-bold);
+	color: white;
+	border: 1px solid var(--color-dark);
+	border-radius: var(--input-border-radius);
+	background: var(--color-dark);
+	text-align: center;
+	vertical-align: middle;
+}
+
+.profile-blocked {
+	font-size: 1em;
+	margin-top: 0.5em;
+	margin-right: 0.5em;
+	font-family: var(--font-text-bold);
+	color: var(--color-dark-hover);
+	text-align: center;
+	vertical-align: middle;
 }

@@ -6,6 +6,7 @@ from django.forms import FileInput
 class LoginForm(forms.Form):
 	email = forms.EmailField(widget=forms.EmailInput)
 	password = forms.CharField(max_length=65, widget=forms.PasswordInput)
+	password.widget.attrs.update({'autocomplete':'off'})
 
 
 class SignUpForm(forms.Form):
@@ -21,6 +22,7 @@ class SignUpForm(forms.Form):
 	)
 	email = forms.EmailField(widget=forms.EmailInput)
 	password = forms.CharField(max_length=65, widget=forms.PasswordInput)
+	password.widget.attrs.update({'autocomplete':'off'})
 
 
 class EditProfileForm(forms.ModelForm):
@@ -29,7 +31,13 @@ class EditProfileForm(forms.ModelForm):
 		model = CustomUser
 		fields = ['username', 'photo']
 		widgets = {
-			'photo': FileInput(),
+			'photo': FileInput(
+				attrs={
+					'class': 'photo-input',
+					'accept': 'image',
+					'placeholder': 'Select a photo'
+				}
+			),
 		}
 		validators={
 			'username': [
