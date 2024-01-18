@@ -21,8 +21,6 @@ function chatProcess() {
 		url: socketUrl,
 		shouldClose: false
 	};
-	
-	console.log('Chat socket created', chatSocket.socket);
 
 	// Got to the bottom of the chat
 	const chatLog = document.querySelector('#chat-log');

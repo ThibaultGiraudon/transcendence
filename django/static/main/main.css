@@ -202,8 +202,8 @@ header .header-menu .menu-link:first-child {
 }
 
 img {
-	width: 4vw;
-	height: 4vw;
+	width: 4em;
+	height: 4em;
 	border-radius: 50%;
 }
 

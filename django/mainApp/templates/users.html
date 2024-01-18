@@ -7,10 +7,14 @@
 					<div class="container" data-user-id="{{ user.id }}">
 						<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
 						<h3>{{ user.username }}</h3>
-						<p class="status"></p>
+						{% if "chat" not in user.status %}
+							<p class="status">{{ user.status }}</p>
+						{% else %}
+							<p class="status">online</p>
+						{% endif %}
 					</div>
 				</a>
-		{% endfor %}
+			{% endfor %}
 		</div>
 	</div>
 
@@ -22,7 +26,11 @@
 					<div class="container" data-user-id="{{ user.id }}">
 						<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
 						<h3>{{ user.username }}</h3>
-						<p class="status">{{ user.status }}</p>
+						{% if "chat" not in user.status %}
+							<p class="status">{{ user.status }}</p>
+						{% else %}
+							<p class="status">online</p>
+						{% endif %}
 					</div>
 				</a>
 			{% endfor %}
