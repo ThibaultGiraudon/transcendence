@@ -4,7 +4,7 @@ from    ..pongFunctions.handlerPaddleMove import handle_paddle_move
 from    ..pongFunctions.gameSettingsClass import GameSettings
 import  json
 
-class PongConsumer(AsyncWebsocketConsumer):
+class GameConsumer(AsyncWebsocketConsumer):
 	gameSettings = GameSettings(800)
 
 	async def connect(self):

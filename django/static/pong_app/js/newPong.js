@@ -26,6 +26,53 @@ function createGameCanvas() {
 	return (gameCanvas, gameContext)	
 }
 
-function gameProcess() {
+function getSocket(gameID) {
+	let socketUrl;
+	if (window.location.protocol === 'https:') {
+		socketUrl = 'wss://localhost:8001/wss/game/';
+	} else {
+		socketUrl = 'ws://localhost:8000/ws/game/';
+	}
+	socketUrl += gameID + '/';
+
+	socket = {
+		socket: new WebSocket(socketUrl),
+		url: socketUrl,
+		shouldClose: false
+	};
+	return (socket)
+}
+
+function gameProcessLoaded() {
 	gameCanvas, gameContext = createGameCanvas();
+
+	const gameIDElement = document.getElementById('game_id');
+	const gameModeElement = document.getElementById('game_mode');
+	const gameID = JSON.parse(gameIDElement.textContent);
+	const gameMode = JSON.parse(gameModeElement.textContent);
+
+	const socket = getSocket(gameID);
+
+    socket.socket.onopen = function() {
+        const message = {
+            type: gameMode,
+        };
+        socket.socket.send(JSON.stringify(message));
+    };
+
+    socket.socket.onmessage = function(event) {
+        const message = JSON.parse(event.data);
+        console.log('Message reçu:', message);
+        // Traiter le message reçu
+    };
+
+    socket.socket.onclose = function(event) {
+        console.log('Connexion WebSocket fermée', event);
+    };
+}
+
+function gameProcess() {
+	document.addEventListener('DOMContentLoaded', function() {
+		gameProcessLoaded();
+	});
 }
