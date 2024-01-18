@@ -1,27 +1,31 @@
 <div id="status-log" class="status-log">
-	<h1>Friends</h1>
-	<div class="list">
-		{% for user in friends %}
-			<a href="#" data-route="{% url 'profile' user.username %}" onclick="navigateTo(event, this.dataset.route)">
-				<div class="container" data-user-id="{{ user.id }}">
-					<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
-					<h3>{{ user.username }}</h3>
-					<p class="status"></p>
-				</div>
-			</a>
-	{% endfor %}
+	<div class="friend">
+		<h1>Friends</h1>
+		<div class="list">
+			{% for user in friends %}
+				<a href="#" data-route="{% url 'profile' user.username %}" onclick="navigateTo(event, this.dataset.route)">
+					<div class="container" data-user-id="{{ user.id }}">
+						<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
+						<h3>{{ user.username }}</h3>
+						<p class="status"></p>
+					</div>
+				</a>
+		{% endfor %}
+		</div>
 	</div>
 
-	<h1>All users</h1>
-	<div class="list">
-		{% for user in users %}
-			<a href="#" data-route="{% url 'profile' user.username %}" onclick="navigateTo(event, this.dataset.route)">
-				<div class="container" data-user-id="{{ user.id }}">
-					<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
-					<h3>{{ user.username }}</h3>
-					<p class="status">{{ user.status }}</p>
-				</div>
-			</a>
-		{% endfor %}
+	<div class="all-users">
+		<h1>All users</h1>
+		<div class="list">
+			{% for user in users %}
+				<a href="#" data-route="{% url 'profile' user.username %}" onclick="navigateTo(event, this.dataset.route)">
+					<div class="container" data-user-id="{{ user.id }}">
+						<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
+						<h3>{{ user.username }}</h3>
+						<p class="status">{{ user.status }}</p>
+					</div>
+				</a>
+			{% endfor %}
+		</div>
 	</div>
 </div>

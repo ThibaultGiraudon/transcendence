@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
 	// Init the socket
-	let websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-	let websocketPort = window.location.protocol === 'https:' ? ':8001' : ':8000';
-	const socketUrl = websocketProtocol + '//' + window.location.hostname + websocketPort + '/ws/notifications/';
+	// let websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+	// let websocketPort = window.location.protocol === 'https:' ? ':8001' : ':8000';
+	// const socketUrl = websocketProtocol + '//' + window.location.hostname + websocketPort + '/ws/notifications/';
+	const socketUrl = window.location.protocole === 'https' ? 'wss://localhost:8001/ws/notifications_secure/' : 'ws://localhost:8000/ws/notifications/';
 
 	notificationSocket = {
 		socket: new WebSocket(socketUrl),
