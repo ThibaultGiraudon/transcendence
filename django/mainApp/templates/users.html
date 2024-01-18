@@ -1,64 +1,31 @@
-<h1>Friends</h1>
-<div class="list">
-	{% for x in friends %}
-		<a href="#" data-route="{% url 'profile' x.username %}" onclick="navigateTo(event, this.dataset.route)">
-			<div class="container" data-user-id="{{ x.id }}">
-			<img src={{ x.photo.url }} alt="profile picture" width="60" height="60">
-			<h3>{{ x.username }}</h3>
-			{% if x.status != 'offline' %}
-				<p class="status">🟢</p>
-			{% else %}
-				<p class="status">🔴</p>
-			{% endif %}
-			</div>
-		</a>
-{% endfor %}
+<div id="status-log" class="status-log">
+	<div class="friend">
+		<h1>Friends</h1>
+		<div class="list">
+			{% for user in friends %}
+				<a href="#" data-route="{% url 'profile' user.username %}" onclick="navigateTo(event, this.dataset.route)">
+					<div class="container" data-user-id="{{ user.id }}">
+						<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
+						<h3>{{ user.username }}</h3>
+						<p class="status"></p>
+					</div>
+				</a>
+		{% endfor %}
+		</div>
+	</div>
+
+	<div class="all-users">
+		<h1>All users</h1>
+		<div class="list">
+			{% for user in users %}
+				<a href="#" data-route="{% url 'profile' user.username %}" onclick="navigateTo(event, this.dataset.route)">
+					<div class="container" data-user-id="{{ user.id }}">
+						<img src={{ user.photo.url }} alt="profile picture" width="60" height="60">
+						<h3>{{ user.username }}</h3>
+						<p class="status">{{ user.status }}</p>
+					</div>
+				</a>
+			{% endfor %}
+		</div>
+	</div>
 </div>
-
-<h1>All users</h1>
-<div class="list">
-	{% for x in all_users %}
-		<a href="#" data-route="{% url 'profile' x.username %}" onclick="navigateTo(event, this.dataset.route)">
-		{% if x.id != user.id and not x in friends%}
-			<div class="container" data-user-id="{{ x.id }}">
-				<img src={{ x.photo.url }} alt="profile picture" width="60" height="60">
-				<h3>{{ x.username }}</h3>
-				{% if x.status != 'offline' %}
-					<p class="status">🟢</p>
-				{% else %}
-					<p class="status">🔴</p>
-				{% endif %}
-			</div>
-		{% endif %}
-		</a>
-	{% endfor %}
-</div>
-
-<script>
-	let     websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-	let     websocketPort = window.location.protocol === 'https:' ? ':8001' : ':8000';
-	const   socketUrl = websocketProtocol + '//' + window.location.hostname + websocketPort + '/ws/status/';
-	const   socket = new WebSocket(socketUrl);
-	
-	// Listen for messages
-	document.addEventListener('DOMContentLoaded', (event) => {
-		socket.addEventListener('message', function (event) {
-			console.log('Message from server ', event.data);
-
-			var message = JSON.parse(event.data);
-
-			if (message.type === 'status_update') {
-				console.log('status_update');
-				var userElement = document.querySelector('.container[data-user-id="' + message.id + '"]');
-				console.log(userElement);
-
-				if (userElement) {
-					var statusElement = userElement.querySelector('.status');
-					if (statusElement) {
-						statusElement.textContent = message.status === 'online' ? '🟢' : '🔴';
-					}
-				}
-			}
-		});
-	});
-</script>
