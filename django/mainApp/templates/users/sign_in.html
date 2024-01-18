@@ -25,6 +25,10 @@
 	<a href="{% url 'ft_api' %}" class="sign-42-button">
 		<input type="submit" value="Sign in with 42">
 	</a>
+
+	{% if error42 %}
+		<p class="error-42">{{ error42 }}</p>
+	{% endif %}
 </div>
 
 {% endif %}
