@@ -182,3 +182,42 @@
 	background-color: var(--color-light-hover);
 	border-radius: var(--border-radius);
 }
+
+/* USERS */
+#status-log {
+	width: 100%;
+	height: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.friend {
+    width: 50%;
+	height: 100%;
+	margin-left: 1%;
+    /* Ajoutez des marges ou du padding si nécessaire */
+}
+
+.all-users {
+	width: 50%;
+	height: 100%;
+	/* background-color: blueviolet; */
+}
+
+.list {
+	height: 30%;
+	width: 45%;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	overflow-y: auto;
+	background-color: var(--color-light-hover);
+	border-radius: var(--border-radius);
+	margin-top: 2%;
+	padding: 5%;
+}
+
+.list::-webkit-scrollbar {
+	width: 0px;
+	background: transparent;
+}
