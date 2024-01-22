@@ -1,8 +1,12 @@
 <h1>Wait for players {{ gameMode }}</h1>
 
-<div class="score_bar" id="pong_game"></div>
+<!-- TODO clean this -->
+<div class="score_bar" id="wait_player"></div>
+<div id="pong_game"></div>
 
 <p>{{ gameID }}</p>
 
 {{ gameMode|json_script:"game_mode" }}
 {{ gameID|json_script:"game_id" }}
+<!-- TODO genre peut etre comme ca -->
+<!-- {{ true|json_script:"is_wait"}} -->

@@ -43,9 +43,7 @@ function getSocket(gameID) {
 	return (socket)
 }
 
-function gameProcessLoaded() {
-	gameCanvas, gameContext = createGameCanvas();
-
+function gameProcessLoaded(isWaitingPage) {
 	const gameIDElement = document.getElementById('game_id');
 	const gameModeElement = document.getElementById('game_mode');
 	const gameID = JSON.parse(gameIDElement.textContent);
@@ -69,10 +67,15 @@ function gameProcessLoaded() {
     socket.socket.onclose = function(event) {
         console.log('Connexion WebSocket fermée', event);
     };
+
+	if (!isWaitingPage) {
+		gameCanvas, gameContext = createGameCanvas();
+	}
 }
 
-function gameProcess() {
+function gameProcess(isWaitingPage) {
+	console.log("game process" + isWaitingPage);
 	document.addEventListener('DOMContentLoaded', function() {
-		gameProcessLoaded();
+		gameProcessLoaded(isWaitingPage);
 	});
 }
