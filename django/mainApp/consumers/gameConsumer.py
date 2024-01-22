@@ -8,25 +8,23 @@ class GameConsumer(AsyncWebsocketConsumer):
 	gameSettings = GameSettings(800)
 
 	async def connect(self):
+		await self.channel_layer.group_add('game', self.channel_name)
 		await self.accept()
 
 	async def disconnect(self, close_code):
 		# if (self.gameSettings.ball.task):
 			# self.gameSettings.ball.task.cancel()
-		pass
+		await self.channel_layer.group_discard('game', self.channel_name)
 
 	async def receive(self, text_data):
 		message = json.loads(text_data)
 		print(message)
+		await self.channel_layer.group_send('game', {
+			'type': 'reload_page',
+			'message': 'reload'
+		})
 
-		# if (message['type'] == 'init_local_game'):
-		# 	self.gameSettings.setNbPaddles(2)
-		# 	await handle_init_game(self, message['type'])
-
-		# if (message['type'] == 'init_ai_game'):
-		# 	self.gameSettings.setNbPaddles(2)
-		# 	self.gameSettings.setIsAIGame(True)
-		# 	await handle_init_game(self, message['type'])
-
-		# if (message['type'] == 'paddle_move'):
-		# 	await handle_paddle_move(message, self)
+	async def reload_page(self, event):
+		# Envoyez le message "reload" à tous les clients
+		message = json.dumps(event['message'])
+		await self.send(text_data=message)

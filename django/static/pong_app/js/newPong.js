@@ -54,16 +54,16 @@ function gameProcessLoaded() {
 	const socket = getSocket(gameID);
 
     socket.socket.onopen = function() {
-        const message = {
-            type: gameMode,
-        };
-        socket.socket.send(JSON.stringify(message));
+		const message = {
+			type: 'Nouveau joueur connecté'
+		};
+		socket.socket.send(JSON.stringify(message));
+        console.log('Message envoyé :', message);
     };
 
     socket.socket.onmessage = function(event) {
         const message = JSON.parse(event.data);
         console.log('Message reçu:', message);
-        // Traiter le message reçu
     };
 
     socket.socket.onclose = function(event) {

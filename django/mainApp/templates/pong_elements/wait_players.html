@@ -1,3 +1,8 @@
 <h1>Wait for players {{ gameMode }}</h1>
 
+<div class="score_bar" id="pong_game"></div>
+
 <p>{{ gameID }}</p>
+
+{{ gameMode|json_script:"game_mode" }}
+{{ gameID|json_script:"game_id" }}
