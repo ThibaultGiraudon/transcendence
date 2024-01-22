@@ -168,6 +168,7 @@ let statusProcessed = false;
 function handleMutation() {
 	const chatElement = document.getElementById('chat-log');
 	const pongElement = document.getElementById('pong_game');
+	const waitPlayerElement = document.getElementById('wait_player');
 	const statusElement = document.getElementById('status-log');
 	
 	if (chatElement && !chatProcessed) {
@@ -178,7 +179,11 @@ function handleMutation() {
 	}
 
 	if (pongElement && !pongProcessed) {
-		gameProcess();
+		isWaitingPage = false;
+		if (waitPlayerElement) {
+			isWaitingPage = true;
+		}
+		gameProcess(isWaitingPage);
 		pongProcessed = true;
 	} else if (!pongElement) {
 		pongProcessed = false;
