@@ -6,6 +6,7 @@
 
 <p>{{ gameID }}</p>
 
+{{ request.user.player.id|json_script:"player_id" }}
 {{ gameMode|json_script:"game_mode" }}
 {{ gameID|json_script:"game_id" }}
 <!-- TODO genre peut etre comme ca -->
