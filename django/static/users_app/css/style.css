@@ -178,6 +178,7 @@
 }
 
 /* USERS */
+
 #status-log {
 	width: 100%;
 	height: 100%;
@@ -221,9 +222,6 @@
 
 .profile {
 	margin-top: 2%;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
 }
 
 .profile-img {
@@ -235,14 +233,14 @@
 }
 
 .profile-username {
-	margin-left: 10%;
+	text-align: center;
 	font-family: var(--font-text-bold);
 	font-size: var(--h3-size);
 	color: var(--color-dark);
 }
 
 .profile-email {
-	margin-left: 10%;
+	text-align: center;
 	font-family: var(--font-text-regular);
 	font-size: var(--h4-size);
 	color: var(--color-dark-hover);

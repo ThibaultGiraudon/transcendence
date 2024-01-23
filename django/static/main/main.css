@@ -32,7 +32,7 @@
 
 	/* Sizes */
 	--header-width: 100vw;
-	--header-height: 10vh;
+	--header-height: 6.5em;
 	--border-radius: 24px;
 	--border-radius-inner: 16px;
 	--input-border-radius: 10px;
@@ -157,55 +157,72 @@ header .header-menu {
 	justify-content: center;
 }
 
-header .header-menu .menu-link {
-	height: 100%;
+.menu-windows {
+	position: absolute;
+	left: 0;
+	text-align: left;
+	justify-content: left;
+	margin-left: 3%;
+}
+
+.menu-profile {
 	font-family: var(--font-text-bold);
-	display: flex;
-	align-items: center;
-	justify-content: center;
 	color: var(--color-light);
-	margin-right: var(--menu-link-margin);
-}
-
-header .header-menu .menu-link:hover {
-	color: var(--color-light-hover);
-}
-
-header .header-menu .menu-link:last-child {
-	margin-right: 0;
-}
-
-header .header-menu .menu-link:first-child {
-	margin-left: 5%;
-}
-
-.menu-link-right {
-	margin-left: auto;
-	height: 100%;
-	font-family: var(--font-text-bold);
 	display: flex;
 	align-items: center;
+}
+
+.menu-username {
+	font-size: 1.5em;
+	font-family: var(--font-text-bold);
+	color: var(--color-light);
+	text-align: right;
+	margin-right: 0.5em;
+}
+
+.menu-link {
+	font-size: 1.5em;
+	font-family: var(--font-text-bold);
+	color: var(--color-light);
+	margin-left: var(--menu-link-margin);
+}
+
+.menu-pictures {
+	position: absolute;
+	right: 0;
+	margin-right: 3%;
+	display: flex;
+	align-items: right;
 	justify-content: right;
-	color: var(--color-light);
-	margin-right: var(--menu-link-margin);
 }
 
 .notification-count {
-	position: absolute;
-	top: 0;
-	right: 0;
 	background-color: red;
 	color: white;
 	border-radius: 50%;
-	padding: 5px;
-	font-size: 14px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding-left: 0.3em;
+	padding-right: 0.3em;
+	padding-top: 0.1em;
+	padding-bottom: 0.1em;
+	font-size: 1em;
+	font-family: var(--font-text-bold);
 }
 
-img {
+.menu-img-user, .menu-img-notifs {
 	width: 4em;
 	height: 4em;
 	border-radius: 50%;
 }
+
+.menu-img-user {
+	margin-right: 2em;
+}
+
+
+/* container */
 
 .container {
 	margin-top: 5%;
