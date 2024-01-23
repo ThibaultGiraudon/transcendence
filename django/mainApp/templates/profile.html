@@ -30,6 +30,8 @@
         </form>
     </div>
 
+    <a class="profile-button" href="#" id="sign-out" data-route="{% url 'sign_out' %}" onclick="navigateTo(event, this.dataset.route)">Sign out</a>
+
 {% else %}
     
     </div>
@@ -68,3 +70,5 @@
     {% endif %}
 
 {% endif %}
+
+{{ request.user.id|json_script:"request-user-id" }}

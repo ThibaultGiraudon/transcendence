@@ -163,12 +163,14 @@ document.addEventListener('submit', function(event) {
 
 let chatProcessed = false;
 let pongProcessed = false;
-let statusProcessed = false;
+let signOutProcessed = false;
+let signInProcessed = false;
 
 function handleMutation() {
 	const chatElement = document.getElementById('chat-log');
 	const pongElement = document.getElementById('pong_game');
-	const statusElement = document.getElementById('status-log');
+	const signOutElement = document.getElementById('sign-out');
+	const signInElement = document.getElementById('set-status-online');
 	
 	if (chatElement && !chatProcessed) {
 		chatProcess();
@@ -184,11 +186,18 @@ function handleMutation() {
 		pongProcessed = false;
 	}
 
-	if (statusElement && !statusProcessed) {
-		statusProcess();
-		statusProcessed = true;
-	} else if (!statusElement) {
-		statusProcessed = false;
+	if (signOutElement && !signOutProcessed) {
+		SignOutProcess();
+		signOutProcessed = true;
+	} else if (!signOutElement) {
+		signOutProcessed = false;
+	}
+
+	if (signInElement && !signInProcessed) {
+		SignInProcess();
+		signInProcessed = true;
+	} else if (!signInElement) {
+		signInProcessed = false;
 	}
 }
 
