@@ -46,6 +46,10 @@ function getSocket(gameID) {
 function gameProcessLoaded(isWaitingPage) {
 	const gameIDElement = document.getElementById('game_id');
 	const gameModeElement = document.getElementById('game_mode');
+	if (!gameIDElement || !gameModeElement) {
+		setTimeout(function() {gameProcessLoaded(isWaitingPage)}, 200);
+		return;
+	}
 	const gameID = JSON.parse(gameIDElement.textContent);
 	const gameMode = JSON.parse(gameModeElement.textContent);
 
@@ -74,8 +78,5 @@ function gameProcessLoaded(isWaitingPage) {
 }
 
 function gameProcess(isWaitingPage) {
-	console.log("game process" + isWaitingPage);
-	document.addEventListener('DOMContentLoaded', function() {
-		gameProcessLoaded(isWaitingPage);
-	});
+	gameProcessLoaded(isWaitingPage);
 }
