@@ -2,11 +2,43 @@
 
 
 /* CHAT.HTML */
+.chat-scrollable {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin-top: 3%;
+}
+
 .chat-container {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 	justify-content: flex-start;
+	background-color: var(--color-light-hover);
+	border-radius: var(--border-radius);
+	width: 40%;
+	padding: 1%;
+	margin-bottom: 1.5%;
+}
+
+.chat-last-message-sender {
+	font-size: 1em;
+	font-family: var(--font-text-regular);
+	margin-top: 0.5vh;
+}
+
+.chat-last-message-timestamp {
+	font-size: 1em;
+	font-family: var(--font-text-regular);
+	margin-top: 0.5vh;
+}
+
+.chat-last-message {
+	font-size: 1em;
+	font-family: var(--font-text-bold);
+	margin-top: 0.5vh;
 }
 
 
@@ -23,7 +55,7 @@
 
 .participants {
 	width: 25%;
-	height: 90%;
+	height: 50em;
 	padding-left: 1%;
 	margin-left: 1%;
 	margin-right: 5%;
@@ -32,7 +64,7 @@
 
 .chat {
 	width: 65%;
-	height: 90%;
+	height: 50em;
 	margin-right: 5%;
 	margin-top: 3%;
 }

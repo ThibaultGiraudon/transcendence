@@ -16,17 +16,34 @@ def chat(request):
 	chats = []
 	for i in range(len(channels)):
 		users = list(channels[i].users.all())
+		
+		# Get the username of the sender
+		sender = channels[i].messages[-1]['sender']
+		if sender == request.user.id:
+			sender = request.user.username
+		else:
+			for user in users:
+				if user.id == int(sender):
+					sender = user.username
+					break
+
+		last_message = {
+			'sender': sender,
+			'message': channels[i].messages[-1]['message'],
+			'timestamp': channels[i].messages[-1]['timestamp'],
+		}
+		
 		if channels[i].private and len(users) == 2:
 			if users[0].id == request.user.id:
 				if users[1].id in request.user.blockedUsers:
 					continue
-				chats.append([channels[i], users[1].username])
+				chats.append([channels[i], users[1].username, last_message])
 			else:
 				if users[0].id in request.user.blockedUsers:
 					continue
-				chats.append([channels[i], users[0].username])
+				chats.append([channels[i], users[0].username, last_message])
 		else:
-			chats.append([channels[i], channels[i].name])
+			chats.append([channels[i], channels[i].name, last_message])
 	
 	return renderPage(request, 'chat/chat.html', { 'chats': chats })
 

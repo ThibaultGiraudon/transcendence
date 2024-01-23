@@ -173,7 +173,7 @@ header .header-menu {
 }
 
 .menu-username {
-	font-size: 1.5em;
+	font-size: 1.2em;
 	font-family: var(--font-text-bold);
 	color: var(--color-light);
 	text-align: right;
@@ -229,6 +229,12 @@ header .header-menu {
 	display: flex;
 	align-items: center;
 	justify-content: center
+}
+
+img {
+	width: 4em;
+	height: 4em;
+	border-radius: 50%;
 }
 
 

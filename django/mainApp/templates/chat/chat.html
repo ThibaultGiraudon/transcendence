@@ -1,14 +1,16 @@
-<h1>Private chats</h1>
-<br>
+<h1>Chats</h1>
 
 {% if chats %}
-	{% for chat in chats %}
-		<a href="#" data-route="{% url 'room' chat.0.room_id %}" onclick="navigateTo(event, this.dataset.route)">
-			<div class="chat-container">
-				<h3>{{ chat.1 }}</h3>
-			</div>
-		</a>
-	{% endfor %}
+	<div class="chat-scrollable">
+		{% for chat in chats %}
+			<a class="chat-container" href="#" data-route="{% url 'room' chat.0.room_id %}" onclick="navigateTo(event, this.dataset.route)">
+				<h3 class="chat-name">{{ chat.1 }}</h3>
+				<p class="chat-last-message-sender">{{ chat.2.sender }}</p>
+				<p class="chat-last-message-timestamp">{{ chat.2.timestamp }}</p>
+				<p class="chat-last-message">{{ chat.2.message }}</p>
+			</a>
+		{% endfor %}
+	</div>
 {% else %}
 	<p>No channels available.</p>
 {% endif %}
