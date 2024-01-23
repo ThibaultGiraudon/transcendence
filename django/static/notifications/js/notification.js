@@ -2,11 +2,11 @@ document.addEventListener('DOMContentLoaded', function () {
 	// Init the socket
 	let websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 	let websocketPort = window.location.protocol === 'https:' ? ':8001' : ':8000';
-	const socketUrl = websocketProtocol + '//' + window.location.hostname + websocketPort + '/ws/notifications/';
+	const notificationSocketUrl = websocketProtocol + '//' + window.location.hostname + websocketPort + '/ws/notifications/';
 
-	notificationSocket = {
-		socket: new WebSocket(socketUrl),
-		url: socketUrl,
+	let notificationSocket = {
+		socket: new WebSocket(notificationSocketUrl),
+		url: notificationSocketUrl,
 		shouldClose: false
 	};
 

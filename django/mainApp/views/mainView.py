@@ -9,10 +9,6 @@ def headerView(request):
     return renderPage(request, 'header.html')
 
 
-def home(request):
-	return renderPage(request, 'home.html')
-
-
 def testDBConnection(request):
 	try:
 		with connection.cursor() as cursor:

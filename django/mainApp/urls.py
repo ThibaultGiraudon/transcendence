@@ -3,8 +3,7 @@ from .views import pongView, notificationsView, mainView, usersView, chatView, w
 
 urlpatterns = [
     # Website
-	path('', mainView.home, name='home'),
-	path('home', mainView.home, name='home'),
+	path('', pongView.pong, name='pong'),
 	path('test/', mainView.testDBConnection, name='testDBConnection'),
 	path('headerView/', mainView.headerView, name='headerView'),
     path('ken', mainView.ken, name='ken'),

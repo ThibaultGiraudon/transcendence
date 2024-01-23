@@ -77,6 +77,22 @@ class CustomUser(AbstractUser):
 	
 	def save(self, *args, **kwargs):
 		super(CustomUser, self).save(*args, **kwargs)
+	
+	def set_status(self, status):
+		self.status = status
+		self.save()
+		# self.send_status()
+	
+	# def send_status(self):
+	# 	channel_layer = get_channel_layer()
+	# 	async_to_sync(channel_layer.group_send)(
+	# 		"status",
+	# 		{
+	# 			"type": "status_update",
+	# 			"id": self.id,
+	# 			"status": self.status
+	# 		}
+	# 	)
 
 
 class Notification(models.Model):
@@ -94,7 +110,10 @@ class Notification(models.Model):
 	def send_notification(self):		
 		channel_layer = get_channel_layer()
 		async_to_sync(channel_layer.group_send)(
-			f"notifications_{self.user.id}", {"type": "notification_message"}
+			f"notifications_{self.user.id}",
+			{
+				"type": "notification_message"
+			}
 		)
 
 

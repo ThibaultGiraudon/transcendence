@@ -37,10 +37,10 @@
 	color: var(--color-dark-hover);
 	padding: var(--input-padding);
 	width: calc(100% - var(--input-padding) * 2 - 2px);
-    border: 1px solid var(--color-dark);
+	border: 1px solid var(--color-dark);
 	border-radius: var(--input-border-radius);
-    color: var(--color-dark-hover);
-    background: transparent;
+	color: var(--color-dark-hover);
+	background: transparent;
 }
 
 .sign-form input[type="submit"] {
@@ -50,14 +50,14 @@
 	width: 100%;
 	background-color: var(--color-dark);
 	color: var(--color-light);
-    transition: background-color 0.3s ease;
+	transition: background-color 0.3s ease;
 }
 
 .sign-form input[type="submit"]:hover {
-    color: var(--color-dark);
+	color: var(--color-dark);
 	padding: calc(var(--input-padding) + 1px);
 	background: transparent;
-    border: 1px solid var(--color-dark);
+	border: 1px solid var(--color-dark);
 }
 
 .sign-form .error-alert {
@@ -88,14 +88,14 @@
 	background-color: var(--color-dark);
 	color: var(--color-light);
 	font-family: var(--font-text-bold);
-    transition: background-color 0.3s ease;
+	transition: background-color 0.3s ease;
 }
 
 .sign-42-button input:hover {
-    color: var(--color-dark);
+	color: var(--color-dark);
 	padding: calc(var(--input-padding) + 1px);
 	background: transparent;
-    border: 1px solid var(--color-dark);
+	border: 1px solid var(--color-dark);
 }
 
 
@@ -181,15 +181,15 @@
 #status-log {
 	width: 100%;
 	height: 100%;
-    display: flex;
-    justify-content: space-between;
+	display: flex;
+	justify-content: space-between;
 }
 
 .friend {
-    width: 50%;
+	width: 50%;
 	height: 100%;
 	margin-left: 1%;
-    /* Ajoutez des marges ou du padding si nécessaire */
+	/* Ajoutez des marges ou du padding si nécessaire */
 }
 
 .all-users {

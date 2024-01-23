@@ -1,4 +1,4 @@
-import logging, os
+import os
 import requests
 from PIL import Image
 from io import BytesIO
@@ -9,8 +9,6 @@ from django.contrib.auth import login, logout
 from django.contrib.auth import get_user_model
 from ..forms import LoginForm, SignUpForm, EditProfileForm
 from django.core.files.storage import default_storage
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
 from ..models import Notification, Channel
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
@@ -41,19 +39,7 @@ def sign_in(request):
 
 			if user:
 				# Update the user status
-				user.status = "online"
-				user.save()
-
-				# Send the status to the channel layer
-				channel_layer = get_channel_layer()
-				async_to_sync(channel_layer.group_send)(
-					'status',
-					{
-						'type': 'status_update',
-						'id': user.id,
-						'status': 'online'
-					}
-				)
+				user.set_status("online")
 
 				# Login the user
 				login(request, user)
@@ -103,15 +89,7 @@ def sign_up(request):
 			login(request, user)
 
 			# Send the status to the channel layer
-			channel_layer = get_channel_layer()
-			async_to_sync(channel_layer.group_send)(
-				'status',
-				{
-					'type': 'status_update',
-					'id': request.user.id,
-					'status': 'online'
-				}
-			)
+			user.set_status("online")
 
 			# Join the General channel
 			try:
@@ -131,19 +109,7 @@ def sign_up(request):
 def sign_out(request):
 	if request.user.is_authenticated:
 		# Update the user status
-		request.user.status = "offline"
-		request.user.save()
-
-		# Send the status to the channel layer
-		channel_layer = get_channel_layer()
-		async_to_sync(channel_layer.group_send)(
-			'status',
-			{
-				'type': 'status_update',
-				'id': request.user.id,
-				'status': 'offline'
-			}
-		)
+		request.user.set_status("offline")
 	
 		# Logout the user
 		logout(request)
@@ -186,17 +152,8 @@ def	connect_42_user(request, response_data):
 	user = authenticate_42_user(email=response_data['email'])
 	
 	if user:
-		user.status = "online"
-		channel_layer = get_channel_layer()
-		async_to_sync(channel_layer.group_send)(
-			'status',
-			{
-				'type': 'status_update',
-				'id': user.id,
-				'status': 'online'
-			}
-		)
-		user.save()
+		user.set_status("online")
+
 		login(request, user)
 
 	else:

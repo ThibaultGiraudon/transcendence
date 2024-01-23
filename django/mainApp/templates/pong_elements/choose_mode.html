@@ -1,4 +1,4 @@
-<h1>Pong game</h1>
+<h1 id="set-status-online">Pong game</h1>
 
 <a href="#" data-route="{% url 'ranked' %}" onclick="navigateTo(event, this.dataset.route)" class="choose-btn">
     Ranked Mode
@@ -6,3 +6,5 @@
 <a href="#" data-route="{% url 'practice' %}" onclick="navigateTo(event, this.dataset.route)" class="choose-btn">
     Practice Mode
 </a>
+
+{{ request.user.id|json_script:"request-user-id" }}

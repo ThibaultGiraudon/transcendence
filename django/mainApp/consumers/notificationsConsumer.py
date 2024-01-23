@@ -4,10 +4,12 @@ import json
 class NotificationConsumer(AsyncWebsocketConsumer):
 	async def connect(self):
 		self.user = self.scope["user"]
+
 		await self.channel_layer.group_add(
 			f"notifications_{self.user.id}",
 			self.channel_name
 		)
+		
 		await self.accept()
 
 	
