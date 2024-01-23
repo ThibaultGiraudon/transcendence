@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-import uuid
+import uuid, logging
 
 from mainApp.models import Channel
 from mainApp.views.utils import renderPage, redirectPage
@@ -55,21 +55,27 @@ def create_channel(request):
 		try:
 			user = User.objects.get(id=user_id)
 			users.append(user)
+			logging.info(f"User {user.username} added to the channel")
 		except User.DoesNotExist:
+			logging.info(f"User {user_id} does not exist")
 			return redirectPage(request, '/chat/')
 	
 	# Check if the channel is empty
 	if len(users) == 0:
+		logging.info("No user in the channel")
 		return redirectPage(request, '/chat/')
 	
 	# Check if the channel is really private
 	if private and len(users) != 2:
+		logging.info("Private channel with more than 2 users")
 		return redirectPage(request, '/chat/')
 	
 	# Check if a private channel already exists between the two users
 	if len(users) == 2:
-		existing_channel = Channel.objects.filter(users__in=user_ids, private=True)
+		# check if users[0] and users[1] have a private channel
+		existing_channel = Channel.objects.filter(private=True, users=users[0]).filter(users=users[1])
 		if existing_channel.exists():
+			logging.info("Private channel already exists")
 			return redirectPage(request, '/chat/' + existing_channel.first().room_id)
 
 	# Create the channel

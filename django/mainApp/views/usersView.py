@@ -273,9 +273,11 @@ def profile(request, username):
 	room = None
 	channels = list(request.user.channels.all())
 	for channel in channels:
-		if channel.private and len(channel.users.all()) == 2 and user in channel.users.all():
-			room = channel.room_id
-			break
+		if channel.private and len(channel.users.all()) == 2:
+			other_user = channel.users.exclude(username=request.user.username).first()
+			if other_user == user:
+				room = channel.room_id
+				break
 
 	if request.method == 'GET':
 		form = EditProfileForm(instance=request.user)
