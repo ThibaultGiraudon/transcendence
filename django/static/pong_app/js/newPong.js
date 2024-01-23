@@ -46,18 +46,22 @@ function getSocket(gameID) {
 function gameProcessLoaded(isWaitingPage) {
 	const gameIDElement = document.getElementById('game_id');
 	const gameModeElement = document.getElementById('game_mode');
-	if (!gameIDElement || !gameModeElement) {
+	const playerIDELement = document.getElementById('player_id');
+	if (!gameIDElement || !gameModeElement || !playerIDELement) {
 		setTimeout(function() {gameProcessLoaded(isWaitingPage)}, 200);
 		return;
 	}
 	const gameID = JSON.parse(gameIDElement.textContent);
 	const gameMode = JSON.parse(gameModeElement.textContent);
+	const playerID = JSON.parse(playerIDELement.textContent);
 
 	const socket = getSocket(gameID);
 
     socket.socket.onopen = function() {
 		const message = {
-			type: 'Nouveau joueur connecté'
+			type: gameMode,
+			playerID: playerID,
+			action: 'newPlayer'
 		};
 		socket.socket.send(JSON.stringify(message));
         console.log('Message envoyé :', message);

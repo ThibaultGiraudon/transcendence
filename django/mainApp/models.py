@@ -10,6 +10,11 @@ from django.utils import timezone
 
 class Player(models.Model):
 	currentGameID = models.IntegerField(default=None, null=True)
+	isReady = models.BooleanField(default=False)	
+
+	def join_game(self):
+		self.isReady = True
+		self.save()
 
 
 class Game(models.Model):
