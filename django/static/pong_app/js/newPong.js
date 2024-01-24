@@ -26,9 +26,9 @@ function createGameField(gameContext, size) {
     gameContext.fillRect(gameField.x, gameField.y, gameField.width, gameField.height);
 }
 
-function createPaddle(gameContext, paddleID) {
-	const paddleXpos = [10, 770, 350, 350];
-	const paddleYpos = [350, 350, 10, 770];
+function createPaddle(gameContext, paddleID, position) {
+	const paddleXpos = [10, 770, position, position];
+	const paddleYpos = [position, position, 10, 770];
     const paddleColors = ['#E21E59', '#1598E9', '#2FD661', '#F19705'];
 
 	posX = paddleXpos[paddleID];
@@ -81,6 +81,10 @@ function gameProcessLoaded(isWaitingPage) {
 	const gameMode = JSON.parse(gameModeElement.textContent);
 	const playerID = JSON.parse(playerIDELement.textContent);
 
+	if (!isWaitingPage) {
+		gameCanvas, gameContext = createGameCanvas();
+	}
+
 	const socket = getSocket(gameID);
 
     socket.socket.onopen = function() {
@@ -98,20 +102,17 @@ function gameProcessLoaded(isWaitingPage) {
 
     socket.socket.onmessage = function(event) {
         const message = JSON.parse(event.data);
+
+		if (message.type === 'init_paddle_position') {
+			createPaddle(gameContext, message.id, message.position);
+		}
+
         console.log('Message reçu:', message);
     };
 
     socket.socket.onclose = function(event) {
         console.log('Connexion WebSocket fermée', event);
     };
-
-	if (!isWaitingPage) {
-		gameCanvas, gameContext = createGameCanvas();
-		createPaddle(gameContext, 0);
-		createPaddle(gameContext, 1);
-		createPaddle(gameContext, 2);
-		createPaddle(gameContext, 3);
-	}
 }
 
 function gameProcess(isWaitingPage) {
