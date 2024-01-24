@@ -1,15 +1,3 @@
-function createGameField(gameContext, size) {
-	fieldSize = 30;
-    const gameField = {
-        x: fieldSize,
-        y: fieldSize,
-        width: size - fieldSize * 2,
-        height: size - fieldSize * 2
-    };
-    gameContext.fillStyle = "#404040";
-    gameContext.fillRect(gameField.x, gameField.y, gameField.width, gameField.height);
-}
-
 function createGameCanvas() {
 	const canvasSize = 800;
 
@@ -24,6 +12,44 @@ function createGameCanvas() {
 	createGameField(gameContext, canvasSize);
 
 	return (gameCanvas, gameContext)	
+}
+
+function createGameField(gameContext, size) {
+	fieldSize = 30;
+    const gameField = {
+        x: fieldSize,
+        y: fieldSize,
+        width: size - fieldSize * 2,
+        height: size - fieldSize * 2
+    };
+    gameContext.fillStyle = "#404040";
+    gameContext.fillRect(gameField.x, gameField.y, gameField.width, gameField.height);
+}
+
+function createPaddle(gameContext, paddleID) {
+	const paddleXpos = [10, 770, 350, 350];
+	const paddleYpos = [350, 350, 10, 770];
+    const paddleColors = ['#E21E59', '#1598E9', '#2FD661', '#F19705'];
+
+	posX = paddleXpos[paddleID];
+	posY = paddleYpos[paddleID];
+	color = paddleColors[paddleID];
+
+	paddleWidth = 20;
+	paddleHeight = 100;
+	if (paddleID >= 2) {
+		paddleWidth = 100;
+		paddleHeight = 20;
+	}
+
+	const paddle = {
+		x: posX,
+		y: posY,
+		width: paddleWidth,
+		height: paddleHeight
+	};
+	gameContext.fillStyle = color;
+	gameContext.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
 }
 
 function getSocket(gameID) {
@@ -81,6 +107,10 @@ function gameProcessLoaded(isWaitingPage) {
 
 	if (!isWaitingPage) {
 		gameCanvas, gameContext = createGameCanvas();
+		createPaddle(gameContext, 0);
+		createPaddle(gameContext, 1);
+		createPaddle(gameContext, 2);
+		createPaddle(gameContext, 3);
 	}
 }
 
