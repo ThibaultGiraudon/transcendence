@@ -3,15 +3,12 @@ from 	channels.db import database_sync_to_async
 from    ..pongFunctions.handlerInitGame import handle_init_game
 from    ..pongFunctions.handlerPaddleMove import handle_paddle_move
 from    ..pongFunctions.gameSettingsClass import GameSettings
-import  json, asyncio
-from asgiref.sync import sync_to_async
+import  json
 from asgiref.sync import async_to_sync
 
 class GameConsumer(AsyncWebsocketConsumer):
-	gameSettings = GameSettings(800)
-
-	def sendInitPadlePosition(self):
-		for paddle in self.gameSettings.paddles:
+	def sendInitPadlePosition(self, gameSettings):
+		for paddle in gameSettings.paddles:
 			print(paddle.position)
 			async_to_sync(self.channel_layer.group_send)('game', {
 				'type': 'init_paddle_position',
@@ -20,9 +17,9 @@ class GameConsumer(AsyncWebsocketConsumer):
 			})
 
 	def launchRankedSoloGame(self, gameID, gameMode):
-		self.gameSettings.setNbPaddles(2)
-		print('-----------------------------///launchRankedSoloGame')
-		self.sendInitPadlePosition()
+		gameSettings = GameSettings(800)
+		gameSettings.setNbPaddles(2)
+		self.sendInitPadlePosition(gameSettings)
 
 	# TODO peutetre inutile si on fait tout dans la premiere fonction
 	# def launchDeathGame(self):
