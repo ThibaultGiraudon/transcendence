@@ -9,16 +9,6 @@ class GameSettings:
         self.ball = None
         self.paddleSize = 100
 
-        # self.nbPaddles = None
-        # self.squareSize = size
-        # self.paddles = []
-        # self.ball = None
-        # self.offset = 20
-        # self.paddleThickness = 20
-        # self.paddleSize = 100
-        # self.limit = self.offset + self.paddleThickness
-        # self.isAIGame = False
-
     def setNbPaddles(self, nbPaddles):
         self.nbPaddles = nbPaddles
         for id in range(nbPaddles):
@@ -28,6 +18,9 @@ class GameSettings:
         
     # def setIsAIGame(self, isAIGame):
     #     self.isAIGame = isAIGame
+
+
+
 
 # class GameSettings:
     # def __init__(self, size):
