@@ -1,27 +1,33 @@
 from    channels.generic.websocket import AsyncWebsocketConsumer
-# from	..models import Game
+from 	channels.db import database_sync_to_async
 from    ..pongFunctions.handlerInitGame import handle_init_game
 from    ..pongFunctions.handlerPaddleMove import handle_paddle_move
 from    ..pongFunctions.gameSettingsClass import GameSettings
 import  json
 
-async def handleInitGame(consumer, gameID, gameMode, playerID):
-	# try:
-		# game = Game.objects.get(id=gameID)
-	# except Game.DoesNotExist:
-		# return (False)
-	# if playerID not in game.playerList:
-	# 	return (False)
-	# consumer.playerList.append(playerID)
-
-	# for player in consumer.playerList:
-	# 	print(player)
-	
-	return (True)
-
 class GameConsumer(AsyncWebsocketConsumer):
 	gameSettings = GameSettings(800)
-	playerList = []
+
+	@database_sync_to_async
+	def handleInitGame(self, gameID, gameMode, playerID):
+		# TODO ici si tout les joeurs sont prêt on lance le jeu
+		from mainApp.models import Game, Player
+		game = Game.objects.get(id=gameID)
+		if playerID not in game.playerList:
+			print("player not in game")
+			return (False)
+
+		player = Player.objects.get(id=playerID)
+		player.isReady = True
+		player.save()
+
+		for playerID in game.playerList:
+			player = Player.objects.get(id=playerID)
+			if (player.isReady == False):
+				return (False)
+
+		# TODO ici on lance le jeu
+		return (True)
 
 	async def connect(self):
 		await self.channel_layer.group_add('game', self.channel_name)
@@ -38,7 +44,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		print(message)
 
 		if (message['type'] == 'init_ranked_solo_game'):
-			await handleInitGame(self, gameID, message['type'], message['playerID'])
+			await self.handleInitGame(gameID, message['type'], message['playerID'])
 
 		await self.channel_layer.group_send('game', {
 			'type': 'reload_page',

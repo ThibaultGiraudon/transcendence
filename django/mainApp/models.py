@@ -26,6 +26,9 @@ class Game(models.Model):
 	gameMode = models.CharField(max_length=30)
 	isOver = models.BooleanField(default=False)
 
+	def save(self, *args, **kwargs):
+		super(Game, self).save(*args, **kwargs)
+
 
 class Score(models.Model):
 	players = models.ForeignKey(Player, on_delete=models.CASCADE)
