@@ -3,19 +3,33 @@ from 	channels.db import database_sync_to_async
 from    ..pongFunctions.handlerInitGame import handle_init_game
 from    ..pongFunctions.handlerPaddleMove import handle_paddle_move
 from    ..pongFunctions.gameSettingsClass import GameSettings
-import  json
+import  json, asyncio
+from asgiref.sync import sync_to_async
+from asgiref.sync import async_to_sync
 
 class GameConsumer(AsyncWebsocketConsumer):
 	gameSettings = GameSettings(800)
 
-	def launchRankedSoloGame(self):
+	def sendInitPadlePosition(self):
+		for paddle in self.gameSettings.paddles:
+			print(paddle.position)
+			async_to_sync(self.channel_layer.group_send)('game', {
+				'type': 'init_paddle_position',
+				'position': paddle.position,
+				'id': paddle.id,
+			})
+
+	def launchRankedSoloGame(self, gameID, gameMode):
+		self.gameSettings.setNbPaddles(2)
 		print('-----------------------------///launchRankedSoloGame')
+		self.sendInitPadlePosition()
 
-	def launchDeathGame(self):
-		print('-----------------------------///launchDeathGame')
+	# TODO peutetre inutile si on fait tout dans la premiere fonction
+	# def launchDeathGame(self):
+	# 	print('-----------------------------///launchDeathGame')
 
-	def launchTournamentGame(self):
-		print('-----------------------------///launchTournamentGame')
+	# def launchTournamentGame(self):
+	# 	print('-----------------------------///launchTournamentGame')
 
 	@database_sync_to_async
 	def handleInitGame(self, gameID, gameMode, playerID):
@@ -34,7 +48,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 				return (False)
 
 		if (gameMode == 'init_ranked_solo_game'):
-			self.launchRankedSoloGame()
+			self.launchRankedSoloGame(gameID, gameMode)
 		elif (gameMode == 'init_death_game'):
 			self.launchDeathGame()
 		elif (gameMode == 'init_tournament_game'):
@@ -64,13 +78,16 @@ class GameConsumer(AsyncWebsocketConsumer):
 			# await handle_paddle_move(self, message['paddleID'], message['direction'])
 
 		# TODO use this to send reload to waiting players
-		# await self.channel_layer.group_send('game', {
-		# 	'type': 'reload_page',
-		# 	'message': 'reload'
-		# })
+		await self.channel_layer.group_send('game', {
+			'type': 'reload_page',
+			'message': 'reload'
+		})
 
 	# TODO use this to send reload to waiting players
-	# async def reload_page(self, event):
-	# 	# Envoyez le message "reload" à tous les clients
-	# 	message = json.dumps(event['message'])
-	# 	await self.send(text_data=message)
+	async def reload_page(self, event):
+		message = json.dumps(event['message'])
+		await self.send(text_data=message)
+
+	async def init_paddle_position(self, event):
+		message = json.dumps(event)
+		await self.send(text_data=message)
