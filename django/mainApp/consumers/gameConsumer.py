@@ -10,11 +10,9 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 	@database_sync_to_async
 	def handleInitGame(self, gameID, gameMode, playerID):
-		# TODO ici si tout les joeurs sont prêt on lance le jeu
 		from mainApp.models import Game, Player
 		game = Game.objects.get(id=gameID)
 		if playerID not in game.playerList:
-			print("player not in game")
 			return (False)
 
 		player = Player.objects.get(id=playerID)
@@ -24,8 +22,10 @@ class GameConsumer(AsyncWebsocketConsumer):
 		for playerID in game.playerList:
 			player = Player.objects.get(id=playerID)
 			if (player.isReady == False):
+				print("--------player not ready")
 				return (False)
 
+		print("---------all players are ready")
 		# TODO ici on lance le jeu
 		return (True)
 

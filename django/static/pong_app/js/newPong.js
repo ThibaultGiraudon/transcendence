@@ -58,6 +58,9 @@ function gameProcessLoaded(isWaitingPage) {
 	const socket = getSocket(gameID);
 
     socket.socket.onopen = function() {
+		if (isWaitingPage) {
+			return;
+		}
 		const message = {
 			type: gameMode,
 			playerID: playerID,
