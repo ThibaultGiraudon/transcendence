@@ -5,9 +5,13 @@
 		{% for chat in chats %}
 			<a class="chat-container" href="#" data-route="{% url 'room' chat.0.room_id %}" onclick="navigateTo(event, this.dataset.route)">
 				<h3 class="chat-name">{{ chat.1 }}</h3>
-				<p class="chat-last-message-sender">{{ chat.2.sender }}</p>
-				<p class="chat-last-message-timestamp">{{ chat.2.timestamp }}</p>
-				<p class="chat-last-message">{{ chat.2.message }}</p>
+				{% if chat.2 != None %}
+				<p class="chat-last-message-timestamp">{{ chat.2.timestamp}}</p>
+				<div class="chat-last-message-container">
+					<p class="chat-last-message-sender">{{ chat.2.sender }}: </p>
+					<p class="chat-last-message">{{ chat.2.message }}</p>
+				</div>
+				{% endif %}
 			</a>
 		{% endfor %}
 	</div>

@@ -56,13 +56,13 @@ Module majeur : Implémenter une authentification à distance.
 Dans ce module majeur, le but est d’implémenter le système d’authentification
 suivant : OAuth 2.0 authentication with 42 . Les fonctionnalités à inclure sont :
 ◦ Intégrer un système d’authentification permettant aux utilisateurs d’accéder
-au site en toute sécurité.
+au site en toute sécurité.✅
 ◦ Obtenir les informations et permissions nécessaires de l’autorité afin d’activer
-une authentification sécuritaire.
+une authentification sécuritaire.✅
 ◦ Mettez en place des flux de connexion et d’autorisation conviviaux pour les
-utilisateurs, conformes aux meilleures pratiques et normes de sécurité.
+utilisateurs, conformes aux meilleures pratiques et normes de sécurité.✅
 ◦ Assurez-vous de l’échange sécurisé des jetons (tokens) d’authentification et des
-informations de l’utilisateur entre l’application web et le fournisseur d’authentification.
+informations de l’utilisateur entre l’application web et le fournisseur d’authentification.✅
 Ce module majeur vise à obtenir une authentification distante de l’utilisateur,
 procurant à celui-ci une façon simple et sécuritaire d’accéder à l’application web.
 

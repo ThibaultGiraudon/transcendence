@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
-import uuid, logging
+import uuid, logging, time
+from django.utils.timezone import now
 
 from mainApp.models import Channel
 from mainApp.views.utils import renderPage, redirectPage
@@ -17,21 +18,25 @@ def chat(request):
 	for i in range(len(channels)):
 		users = list(channels[i].users.all())
 		
-		# Get the username of the sender
-		sender = channels[i].messages[-1]['sender']
-		if sender == request.user.id:
-			sender = request.user.username
-		else:
-			for user in users:
-				if user.id == int(sender):
-					sender = user.username
-					break
+		#Check if there are some messages in the channel
+		if len(channels[i].messages) != 0:
+			# Get the username of the sender
+			sender = channels[i].messages[-1]['sender']
+			if sender == request.user.id:
+				sender = request.user.username
+			else:
+				for user in users:
+					if user.id == int(sender):
+						sender = user.username
+						break
 
-		last_message = {
-			'sender': sender,
-			'message': channels[i].messages[-1]['message'],
-			'timestamp': channels[i].messages[-1]['timestamp'],
-		}
+			last_message = {
+				'sender': "You" if sender == request.user.username else sender,
+				'message': channels[i].messages[-1]['message'],
+				'timestamp':channels[i].messages[-1]['timestamp'],
+			}
+		else:
+			last_message = None
 		
 		if channels[i].private and len(users) == 2:
 			if users[0].id == request.user.id:

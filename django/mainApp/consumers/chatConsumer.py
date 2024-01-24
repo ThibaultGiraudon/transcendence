@@ -61,7 +61,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		message = text_data_json.get("message")
 		sender = text_data_json.get("sender")
 		username = text_data_json.get("username")
-		timestamp = datetime.now().isoformat()
+		timestamp = datetime.now().strftime("%d/%m/%Y %H:%M")
 
 		# Save the message
 		await self.save_message(sender, username, message, timestamp)

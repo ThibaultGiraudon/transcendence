@@ -23,6 +23,34 @@
 	margin-bottom: 1.5%;
 }
 
+.chat-last-message-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.chat-last-message-timestamp {
+    font-size: 1em;
+    font-family: var(--font-text-regular);
+    margin-top: 0.5vh;
+    width: 100%;
+}
+
+.chat-last-message-sender {
+    font-size: 1em;
+    font-family: var(--font-text-regular);
+    margin-top: 0.5vh;
+	margin-right: 0.25em;
+}
+
+.chat-last-message {
+    font-size: 1em;
+    font-family: var(--font-text-bold);
+    margin-top: 0.5vh;
+}
+
 .chat-last-message-sender {
 	font-size: 1em;
 	font-family: var(--font-text-regular);
