@@ -1,3 +1,8 @@
+const elements = {
+	paddles: [],
+	ball: null,
+}
+
 function createGameCanvas() {
 	const canvasSize = 800;
 
@@ -13,6 +18,12 @@ function createGameCanvas() {
 
 	return (gameCanvas, gameContext)	
 }
+
+// function clearGameContext(gameCanvas, gameContext) {
+// 	gameContext.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+// 	gameCanvas, gameContext = createGameCanvas();
+// 	return (gameCanvas, gameContext)
+// }
 
 function createGameField(gameContext, size) {
 	fieldSize = 30;
@@ -42,14 +53,18 @@ function createPaddle(gameContext, paddleID, position) {
 		paddleHeight = 20;
 	}
 
-	const paddle = {
-		x: posX,
-		y: posY,
-		width: paddleWidth,
-		height: paddleHeight
-	};
-	gameContext.fillStyle = color;
-	gameContext.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+	if (elements.paddles[paddleID] == null) {
+		elements.paddles[paddleID] = {
+			x: posX,
+			y: posY,
+			width: paddleWidth,
+			height: paddleHeight
+		};
+		paddle = elements.paddles[paddleID];
+
+		gameContext.fillStyle = color;
+		gameContext.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+	}
 }
 
 function getSocket(gameID) {
