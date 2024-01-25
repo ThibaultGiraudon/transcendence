@@ -1,38 +1,27 @@
-from django.db import connection
 from django.utils.translation import gettext as _
+from django.shortcuts import render
 import random
 
-from mainApp.views.utils import renderPage, renderError
+from mainApp.views.utils import renderError
 
 
-def headerView(request):
-    return renderPage(request, 'header.html')
-
-
-def testDBConnection(request):
-	try:
-		with connection.cursor() as cursor:
-			cursor.execute("SELECT 1")
-		connection.close()
-		return renderPage(request, 'success.html')
-	except Exception as error:
-		return renderPage(request, 'error.html')
+def base(request):
+	return render(request, 'base.html')
 
 
 def ken(request):
-	return renderPage(request, 'ken.html')
+	if request.method == 'GET':
+		return render(request, 'base.html')
 
 
 # Custom errors
-
-
 def custom404(request, exception):
 	context = {
 		'title':"Page not found",
 		'infos':"Please check the URL and try again."
 	}
 
-	# 1 chance to get a funny message
+	# One chance to get a funny message
 	if random.randint(1, 10) == 1:
 		context['infos'] = "You are lost in the woods. You should have listened to your mother and stayed on the path."
 

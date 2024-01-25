@@ -73,6 +73,8 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = 'mainApp.CustomUser'
 
+APPEND_SLASH=False
+
 
 # Logging gestion
 LOGGING = {
