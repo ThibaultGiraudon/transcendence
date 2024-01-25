@@ -1,68 +1,19 @@
 from    channels.generic.websocket import AsyncWebsocketConsumer
 from 	channels.db import database_sync_to_async
-from    ..pongFunctions.handlerInitGame import handle_init_game
-from    ..pongFunctions.handlerPaddleMove import handle_paddle_move
+# from    ..pongFunctions.handlerInitGame import handle_init_game
+# from    ..pongFunctions.handlerPaddleMove import handle_paddle_move
 from    ..pongFunctions.gameSettingsClass import GameSettings
 import  json
 from	asgiref.sync import async_to_sync
 
 from	.gameConsumerUtils.sendInitPaddlePosition import sendInitPadlePosition
-
-# TODO code de copilot
-# gameSettings = None
-
+from 	.gameConsumerUtils.handlePaddleMove import handlePaddleMove
 
 class GameConsumer(AsyncWebsocketConsumer):
-	# TODO code de copilot
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		if not hasattr(self, 'gameSettings') or self.gameSettings is None:
 			self.gameSettings = GameSettings(800)
-
-	async def handlePaddleMove(self, message):
-		direction = message['direction']
-		for paddle in self.gameSettings.paddles:
-			print("paddle = ", paddle.id)
-		paddle = self.gameSettings.paddles[int(message['id'])]
-		print("pad = ", paddle.position)
-
-		await self.channel_layer.group_send('game', {
-			'type': 'update_paddle_position',
-			'position': paddle.position - 20,
-			'id': paddle.id,
-		})
-		# message = json.dumps({
-			# 'type': 'update_paddle_position',
-			# 'position': paddle.position - 20,
-			# 'id': paddle.id,
-		# })
-		# await self.send(text_data=message)
-
-		# if (paddle.isAlive == True):
-		# 	if (message['key'] == 'keydown'):
-		# 		if (direction == 'up'):
-		# 			paddle.keyState[direction] = True;
-		# 		elif (direction == 'down'):
-		# 			paddle.keyState[direction] = True;
-				# paddle.taskAsyncio[direction] = asyncio.create_task(keydownLoop(direction, paddle, consumer))
-
-			# elif (message['key'] == 'keyup'):
-				# keyupReset(direction, paddle)
-
-		# aiPaddle = consumer.gameSettings.paddles[1]
-		# if (consumer.gameSettings.isAIGame and aiPaddle.aiTask == None):
-		# 	aiPaddle.aiTask = asyncio.create_task(aiLoop(consumer, aiPaddle))
-
-		# if (paddle.isAI == False and paddle.isAlive == True):
-		# 	if (message['key'] == 'keydown'):
-		# 		if (direction == 'up'):
-		# 			paddle.keyState[direction] = True;
-		# 		elif (direction == 'down'):
-		# 			paddle.keyState[direction] = True;
-		# 		paddle.taskAsyncio[direction] = asyncio.create_task(keydownLoop(direction, paddle, consumer))
-
-		# 	elif (message['key'] == 'keyup'):
-		# 		keyupReset(direction, paddle)
 
 	def launchRankedSoloGame(self, gameID, gameMode):
 		self.gameSettings = GameSettings(800)
@@ -121,7 +72,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 			# await handle_paddle_move(self, message['paddleID'], message['direction'])
 
 		if (message['type'] == 'paddle_move'):
-			await self.handlePaddleMove(message)
+			await handlePaddleMove(self, message)
 
 		# TODO use this to send reload to waiting players
 		# await self.channel_layer.group_send('game', {

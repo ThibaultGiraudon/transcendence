@@ -34,6 +34,7 @@ class Paddle {
 		this.x = paddleXpos[paddleID];
 		this.y = paddleYpos[paddleID];
 		this.color = paddleColors[paddleID];
+		this.id = paddleID;
 		this.width = 20;
 		this.height = 100;
 		if (paddleID >= 2) {
@@ -49,7 +50,15 @@ class Paddle {
 	
 	clear(context) {
 		context.fillStyle = "#212121";
-		context.fillRect(this.x, this.y, this.width, this.height);
+		const clearXList = [0, 770, 0, 0]
+		const clearYList = [0, 0, 0, 770]
+		const clearWidthList = [30, 30, 800, 800]
+		const clearHeightList = [800, 800, 30, 30]
+		const clearX = clearXList[this.id]
+		const clearY = clearYList[this.id]
+		const clearWidth = clearWidthList[this.id]
+		const clearHeight = clearHeightList[this.id]
+		context.fillRect(clearX, clearY, clearWidth, clearHeight);
 	}
 }
 
