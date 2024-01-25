@@ -6,8 +6,11 @@ from    ..pongFunctions.gameSettingsClass import GameSettings
 import  json
 from	asgiref.sync import async_to_sync
 
+from	.gameConsumerUtils.sendInitPaddlePosition import sendInitPadlePosition
+
 # TODO code de copilot
 # gameSettings = None
+
 
 class GameConsumer(AsyncWebsocketConsumer):
 	# TODO code de copilot
@@ -61,18 +64,10 @@ class GameConsumer(AsyncWebsocketConsumer):
 		# 	elif (message['key'] == 'keyup'):
 		# 		keyupReset(direction, paddle)
 
-	def sendInitPadlePosition(self):
-		for paddle in self.gameSettings.paddles:
-			async_to_sync(self.channel_layer.group_send)('game', {
-				'type': 'init_paddle_position',
-				'position': paddle.position,
-				'id': paddle.id,
-			})
-
 	def launchRankedSoloGame(self, gameID, gameMode):
 		self.gameSettings = GameSettings(800)
 		self.gameSettings.setNbPaddles(2)
-		self.sendInitPadlePosition()
+		sendInitPadlePosition(self)
 
 	# TODO peut-etre inutile si on fait tout dans la premiere fonction
 	# def launchDeathGame(self):
