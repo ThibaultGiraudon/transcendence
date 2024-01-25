@@ -1,18 +1,22 @@
 import os
 import requests
+import imghdr
 from PIL import Image
 from io import BytesIO
+from django.core.files import File
 from django.core.files.base import ContentFile
 from django.shortcuts import redirect
 from ..models import CustomUser
-from django.contrib.auth import login, logout
+from django.contrib.auth import login
 from django.contrib.auth import get_user_model
-from ..forms import LoginForm, SignUpForm, EditProfileForm
 from django.core.files.storage import default_storage
 from ..models import Notification, Channel
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.shortcuts import render
 from django.http import JsonResponse
-import urllib.request
+import urllib.request, json, base64
+
+
 from mainApp.models import Player
 from mainApp.views.utils import renderPage, redirectPage, renderError
 
@@ -27,94 +31,132 @@ CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
 @ensure_csrf_cookie
 def sign_in(request):
 	if request.method == 'GET':
-		return renderPage(request, 'users/sign_in.html', {'form': LoginForm()})
-	
+		return render(request, 'base.html')
+
 	elif request.method == 'POST':
-		form = LoginForm(request.POST)
-		
-		if form.is_valid():
-			email = form.cleaned_data['email']
-			password = form.cleaned_data['password']
-			user = authenticate_custom_user(email=email, password=password)
+		# Get the data
+		data = json.loads(request.body)
+		email = data.get('email')
+		password = data.get('password')
 
-			if user:
-				# Update the user status
-				user.set_status("online")
+		# Authenticate the user
+		user = authenticate_custom_user(email=email, password=password)
 
-				# Login the user
-				login(request, user)
-
-				return JsonResponse({'success': True, 'redirect': '/pong/'})
-			
-			else:
-				form.add_error('password', 'Invalid credentials')
-				return JsonResponse({'success': False, 'errors': form.errors.get_json_data()})
-		
+		if user == 'emailError':
+			return JsonResponse({"success": False, "email": "Invalid email"})
+		elif user == 'passwordError':
+			return JsonResponse({"success": False, "password": "Invalid password"})
 		else:
-			form.add_error('password', 'Invalid credentials')
-			return JsonResponse({'success': False, 'errors': form.errors.get_json_data()})
+			login(request, user)
+
+			# Update the user status
+			user.set_status("online")
+
+			return JsonResponse({"success": True, "message": "Successful login"})
 
 
 @ensure_csrf_cookie
 def sign_up(request):
 	if request.method == 'GET':
-		return renderPage(request, 'users/sign_up.html', {'form': SignUpForm()})
+		return render(request, 'base.html')
 	
 	elif request.method == 'POST':
-		form = SignUpForm(request.POST)
+		# Get the data
+		data = json.loads(request.body)
+		username = data.get('username')
+		email = data.get('email')
+		password = data.get('password')
 
-		if form.is_valid():
-			username = form.cleaned_data.get('username')
-			email = form.cleaned_data.get('email')
-			password = form.cleaned_data.get('password')
+		if CustomUser.objects.filter(email=email).exists():
+			return JsonResponse({"success": False, "email": "This email is already taken"})
 
-			if CustomUser.objects.filter(email=email).exists():
-				form.add_error('email', "This email is already taken")
-				return JsonResponse({'success': False, 'errors': form.errors.get_json_data()})
+		if CustomUser.objects.filter(username=username).exists():
+			return JsonResponse({"success": False, "username": "This username is already taken"})
+		
+		elif len(username) < 4:
+			return JsonResponse({"success": False, "username": "Your username is too short (4 characters minimum)"})
 
-			if CustomUser.objects.filter(username=username).exists():
-				form.add_error('username', "This username is already taken")
-				return JsonResponse({'success': False, 'errors': form.errors.get_json_data()})
+		# Create the user
+		user = CustomUser.objects.create_user(
+				username=username,
+				email=email,
+				password=password)
+		
+		user.save()
 
-			if len(username) < 4:
-				form.add_error('username', 'Your username is too short (4 characters minimum)')
-				return JsonResponse({'success': False, 'errors': form.errors.get_json_data()})
-	
-			# Create the user
-			user = CustomUser.objects.create_user(
-					username=username,
-					email=email,
-					password=password)
-			user.save()
-			login(request, user)
+		# Login the user
+		login(request, user)
 
-			# Send the status to the channel layer
-			user.set_status("online")
+		user.set_status("online")
 
-			# Join the General channel
-			try:
-				channel = Channel.objects.get(room_id="general")
-				channel.users.add(user)
-			except Exception as e:
-				channel = Channel.objects.create(name="General", room_id="general")
-				channel.users.set([user])
-				channel.save()
+		# Join the General channel
+		try:
+			channel = Channel.objects.get(room_id="general")
+			channel.users.add(user)
+		except Exception as e:
+			channel = Channel.objects.create(name="General", room_id="general")
+			channel.users.set([user])
+			channel.save()
 
-			return JsonResponse({'success': True, 'redirect': '/pong/'})
+		return JsonResponse({"success": True, "message": "Successful sign up"})
 
+
+@ensure_csrf_cookie
+def profile(request, username):
+	if request.method == 'GET':
+		return render(request, 'base.html')
+
+	elif request.method == 'POST':
+		# Get the data
+		data = json.loads(request.body)
+		new_username = data.get('new_username')
+		photo = data.get('photo')
+
+		# Check if the username is valid
+		if new_username == request.user.username:
+			pass
+		elif len(new_username) < 4:
+			return JsonResponse({"success": False, "username": "This username is too short (4 characters minimum)"})
+		elif ' ' in new_username:
+			return JsonResponse({"success": False, "username": "This username cannot contain space"})
+		elif any(char.isdigit() for char in new_username):
+			return JsonResponse({"success": False, "username": "This username cannot contain special characters"})
+		elif CustomUser.objects.filter(username=new_username).exists():
+			return JsonResponse({"success": False, "username": "This username is already taken"})
 		else:
-			return JsonResponse({'success': False, 'errors': form.errors.get_json_data()})
+			request.user.username = new_username
+			request.user.save()
+		
+		# Check if the photo is valid
+		if photo:
+			# Delete the old photo
+			if request.user.photo and request.user.photo.path != 'static/main/img/default.jpg':
+				default_storage.delete(request.user.photo.path)
+			
+			# Decode the Base64 photo
+			try:
+				photo_data = base64.b64decode(photo)
+				photo_image = Image.open(BytesIO(photo_data))
+			except Exception as e:
+				return JsonResponse({"success": False, "message": "Invalid image file"})
 
+			# Determine the image file type
+			image_type = imghdr.what(None, photo_data)
+			if image_type is None:
+				return JsonResponse({"success": False, "message": "Invalid image file"})
+			
+			# Save the new photo
+			photo_temp = BytesIO()
+			photo_image.save(photo_temp, format=image_type.upper())
+			photo_temp.seek(0)
+			request.user.photo.save(f"{request.user.email}.{image_type}", File(photo_temp), save=True)
+			request.user.save()
 
-def sign_out(request):
-	if request.user.is_authenticated:
-		# Update the user status
-		request.user.set_status("offline")
+		return JsonResponse({"success": True, "message": "Successful profile update"})
 	
-		# Logout the user
-		logout(request)
+	else:
+		return JsonResponse({"success": False, "message": "Method not allowed"}, status=405)
 	
-	return redirectPage(request, '/sign_in/')
 
 
 def ft_api(request):
@@ -129,9 +171,6 @@ def ft_api(request):
 
 
 def	check_authorize(request):
-	if request.method == 'GET' and 'error' in request.GET:
-		return redirect('sign_in')
-	
 	if request.method == 'GET' and 'code' in request.GET:
 		code = request.GET['code']
 	
@@ -233,8 +272,10 @@ def authenticate_custom_user(email, password):
 		user = User.objects.get(email=email)
 		if user.check_password(password):
 			return user
+		else:
+			return 'passwordError'
 	except User.DoesNotExist:
-		return None
+		return 'emailError'
 
 
 def authenticate_42_user(email):
@@ -247,111 +288,9 @@ def authenticate_42_user(email):
 		return None
 
 
-def profile_me(request):
-	if not request.user.is_authenticated:
-		return redirectPage(request, '/sign_in/')
-	
-	return redirectPage(request, '/profile/' + request.user.username)
-
-
-@ensure_csrf_cookie
-def profile(request, username):
-	if not request.user.is_authenticated:
-		return redirectPage(request, '/sign_in/')
-
-	# Get the photo name to delete it if the user change his photo
-	photo_name = request.user.photo.name
-
-	# Get the user of the profile
-	User = get_user_model()
-	try:
-		user = User.objects.get(username=username)
-	except User.DoesNotExist:
-		return redirectPage(request, '/users/')
-
-	# Get the private chat between the request.user and the user
-	room = None
-	channels = list(request.user.channels.all())
-	for channel in channels:
-		if channel.private and len(channel.users.all()) == 2:
-			other_user = channel.users.exclude(username=request.user.username).first()
-			if other_user == user:
-				room = channel.room_id
-				break
-
-	if request.method == 'GET':
-		form = EditProfileForm(instance=request.user)
-		context = {
-			'form': form,
-			'user': user,
-			'room': room
-		}
-		
-		return renderPage(request, 'profile.html', context)
-	
-	elif request.method == 'POST':
-		form = EditProfileForm(request.POST, request.FILES, instance=request.user)
-		
-		if form.is_valid():
-			if request.user.photo and request.user.photo.name != photo_name:
-				default_storage.delete(request.user.photo.path)
-			elif len(form.cleaned_data['username']) < 4:
-				form.add_error('username', 'Your username is too short (4 characters minimum)')
-				return JsonResponse({'success': False, 'redirect': '/profile/' + username, 'errors': form.errors.get_json_data()})
-			elif ' ' in form.cleaned_data['username']:
-				form.add_error('username', 'Your username cannot contain space')
-				return JsonResponse({'success': False, 'redirect': '/profile/' + username, 'errors': form.errors.get_json_data()})
-			elif not form.cleaned_data['username'].isalnum():
-				form.add_error('username', 'Your username cannot contain special characters')
-				return JsonResponse({'success': False, 'redirect': '/profile/' + username, 'errors': form.errors.get_json_data()})
-			
-			form.save()
-			return JsonResponse({'success': True, 'redirect': '/profile/' + form.cleaned_data['username']})
-		
-		else:
-			if 'photo' in form.errors:
-				form.add_error('photo', 'Please enter a valid picture')
-			elif User.objects.filter(username=request.POST['username']).exists():
-				form.add_error('username', 'This username is already taken')
-			else:
-				form.add_error('username', 'Please enter a valid username')
-
-			return JsonResponse({'success': False, 'redirect': '/profile/' + username, 'errors': form.errors.get_json_data()})
-
-	return JsonResponse({'success': False, 'redirect': '/profile/' + username})
-
-
 def users(request):
-	if not request.user.is_authenticated:
-		return redirectPage(request, '/sign_in/')
-	
 	if request.method == 'GET':
-		# Get all users
-		User = get_user_model()
-		all_users = User.objects.all()
-
-		# Separate the users in two lists: friends and users
-		friends = []
-		users = []
-
-		for user in all_users:
-			if user.id == request.user.id:
-				continue
-			elif user.id in request.user.follows:
-				friends.append(user)
-			else:
-				users.append(user)
-
-		# Context
-		context = {
-			'friends': friends,
-			'users': users
-		}
-
-		return renderPage(request, 'users.html', context)
-	
-	elif request.method == 'POST':
-		return redirectPage(request, '/users/')
+		return render(request, 'base.html')
 
 
 def follow(request, id):
@@ -437,17 +376,3 @@ def unblock(request, id):
 	request.user.save()
 
 	return redirectPage(request, '/profile/' + userTo.username)
-
-
-def get_username(request, id):
-	if not request.user.is_authenticated:
-		return redirectPage(request, '/sign_in/')
-
-	# Check if the user exist
-	User = get_user_model()
-	try:
-		user = User.objects.get(id=id)
-	except User.DoesNotExist:
-		return redirectPage(request, '/users/')
-	
-	return JsonResponse({'username': user.username})

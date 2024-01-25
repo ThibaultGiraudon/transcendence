@@ -1,12 +1,12 @@
 /* FONTS */
 @font-face {
 	font-family: 'Identidad Bold';
-	src: url('fonts/identidad-extrabold.otf') format('opentype');
+	src: url('../fonts/identidad-extrabold.otf') format('opentype');
 	font-weight: bold;
 }
 @font-face {
 	font-family: 'Identidad Regular';
-	src: url('fonts/identidad-extralight.ttf') format('truetype');
+	src: url('../fonts/identidad-extralight.ttf') format('truetype');
 	font-weight: normal;
 }
 
@@ -106,6 +106,7 @@ a {
 	transition: all 0.3s ease-in-out;
 	margin: 0;
 	padding: 0;
+	cursor: pointer;
 }
 
 a:hover {
@@ -134,7 +135,7 @@ body {
 
 
 /* PAGE CONTENT */
-#page-content {
+#app {
 	width: 100%;
 	height: calc(100vh - var(--header-height));
 	display: flex;
@@ -143,6 +144,22 @@ body {
 }
 
 /* HEADER */
+.menu-windows.auth, .menu-windows.guest {
+    display: none;
+}
+
+.user-authenticated .menu-windows.auth {
+    display: block;
+}
+
+.user-guest .menu-windows.guest {
+    display: block;
+}
+
+.user-guest .menu-pictures {
+    display: none;
+}
+
 header {
 	width: var(--header-width);
 	height: var(--header-height);
@@ -178,13 +195,25 @@ header .header-menu {
 	color: var(--color-light);
 	text-align: right;
 	margin-right: 0.5em;
+	pointer-events: none;
 }
 
-.menu-link {
-	font-size: 1.5em;
+button {
+	font-size: 1em;
 	font-family: var(--font-text-bold);
 	color: var(--color-light);
-	margin-left: var(--menu-link-margin);
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+	text-decoration: none;
+	transition: all 0.3s ease-in-out;
+	margin-right: var(--menu-link-margin);
+	padding: 0;
+	pointer-events: all;
+}
+
+button:hover {
+	opacity: 0.5;
 }
 
 .menu-pictures {
@@ -215,10 +244,12 @@ header .header-menu {
 	width: 4em;
 	height: 4em;
 	border-radius: 50%;
+	pointer-events: none;
 }
 
 .menu-img-user {
 	margin-right: 2em;
+	pointer-events: none;
 }
 
 
@@ -228,13 +259,15 @@ header .header-menu {
 	margin-top: 5%;
 	display: flex;
 	align-items: center;
-	justify-content: center
+	justify-content: center;
+	pointer-events: none;
 }
 
 img {
 	width: 4em;
 	height: 4em;
 	border-radius: 50%;
+	pointer-events: none;
 }
 
 

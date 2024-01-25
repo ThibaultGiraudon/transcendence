@@ -1,34 +1,38 @@
-from	mainApp.views.utils import renderPage, redirectPage
+from django.shortcuts import render
+
 
 def pong(request):
-	if not request.user.is_authenticated:
-		return redirectPage(request, '/sign_in/')
+	if request.method == 'GET':
+		return render(request, 'base.html')
 
-	if request.method == 'GET' and 'error' in request.GET:
-		return redirectPage(request, '/sign_in/')
-	
-	return renderPage(request, 'pong_elements/choose_mode.html')
 
 def ranked(request):
-	if not request.user.is_authenticated:
-		return redirectPage(request, '/sign_in/')
+	# if not request.user.is_authenticated:
+	# 	return redirectPage(request, '/sign_in/')
 	
-	return renderPage(request, 'pong_elements/ranked.html')
+	# return renderPage(request, 'pong_elements/ranked.html')
+	pass
+
 
 def practice(request):
-	if not request.user.is_authenticated:
-		return redirectPage(request, '/sign_in/')
+	# if not request.user.is_authenticated:
+	# 	return redirectPage(request, '/sign_in/')
 	
-	return renderPage(request, 'pong_elements/practice.html')
+	# return renderPage(request, 'pong_elements/practice.html')
+	pass
+
 
 def game(request, gameMode, gameID):
-	if not request.user.is_authenticated:
-		return redirectPage(request, '/sign_in/')
+	# if not request.user.is_authenticated:
+	# 	return redirectPage(request, '/sign_in/')
 	
-	return renderPage(request, 'pong_elements/modes.html', {'gameMode': gameMode, 'gameID': gameID})
+	# return renderPage(request, 'pong_elements/modes.html', {'gameMode': gameMode, 'gameID': gameID})
+	pass
+
 
 def gameOver(request, player):
-	if not request.user.is_authenticated:
-		return redirectPage(request, '/sign_in/')
+	# if not request.user.is_authenticated:
+	# 	return redirectPage(request, '/sign_in/')
 	
-	return renderPage(request, 'pong_elements/game_over.html', {'player': player})
+	# return renderPage(request, 'pong_elements/game_over.html', {'player': player})
+	pass
