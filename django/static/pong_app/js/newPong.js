@@ -1,4 +1,5 @@
 const elements = {
+	field: null,
 	paddles: [],
 	ball: null,
 }
@@ -9,6 +10,20 @@ const   keyState = {
     o: false,
     l: false,
 };
+
+class Field {
+	constructor(size) {
+		this.x = 30;
+		this.y = 30;
+		this.width = size - 60;
+		this.height = size - 60;
+	}
+
+	draw(context) {
+		context.fillStyle = "#404040";
+		context.fillRect(this.x, this.y, this.width, this.height);
+	}
+}
 
 class Paddle {
 	constructor(paddleID, position) {
@@ -65,27 +80,10 @@ function createGameCanvas() {
     gameContext.fillStyle = "#212121";
     gameContext.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
 
-	createGameField(gameContext, canvasSize);
+	elements.field = new Field(canvasSize);
+	elements.field.draw(gameContext);
 
 	return (gameCanvas, gameContext)
-}
-
-// function clearGameContext(gameCanvas, gameContext) {
-// 	gameContext.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-// 	gameCanvas, gameContext = createGameCanvas();
-// 	return (gameCanvas, gameContext)
-// }
-
-function createGameField(gameContext, size) {
-	fieldSize = 30;
-    const gameField = {
-        x: fieldSize,
-        y: fieldSize,
-        width: size - fieldSize * 2,
-        height: size - fieldSize * 2
-    };
-    gameContext.fillStyle = "#404040";
-    gameContext.fillRect(gameField.x, gameField.y, gameField.width, gameField.height);
 }
 
 function initPaddlePosition(gameContext, paddleID, position) {
