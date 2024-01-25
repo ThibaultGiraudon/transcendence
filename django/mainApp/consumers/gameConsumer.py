@@ -4,12 +4,65 @@ from    ..pongFunctions.handlerInitGame import handle_init_game
 from    ..pongFunctions.handlerPaddleMove import handle_paddle_move
 from    ..pongFunctions.gameSettingsClass import GameSettings
 import  json
-from asgiref.sync import async_to_sync
+from	asgiref.sync import async_to_sync
+
+# TODO code de copilot
+# gameSettings = None
 
 class GameConsumer(AsyncWebsocketConsumer):
-	def sendInitPadlePosition(self, gameSettings):
-		for paddle in gameSettings.paddles:
-			print(paddle.position)
+	# TODO code de copilot
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		if not hasattr(self, 'gameSettings') or self.gameSettings is None:
+			self.gameSettings = GameSettings(800)
+
+	async def handlePaddleMove(self, message):
+		direction = message['direction']
+		for paddle in self.gameSettings.paddles:
+			print("paddle = ", paddle.id)
+		paddle = self.gameSettings.paddles[int(message['id'])]
+		print("pad = ", paddle.position)
+
+		await self.channel_layer.group_send('game', {
+			'type': 'update_paddle_position',
+			'position': paddle.position - 20,
+			'id': paddle.id,
+		})
+		# message = json.dumps({
+			# 'type': 'update_paddle_position',
+			# 'position': paddle.position - 20,
+			# 'id': paddle.id,
+		# })
+		# await self.send(text_data=message)
+
+		# if (paddle.isAlive == True):
+		# 	if (message['key'] == 'keydown'):
+		# 		if (direction == 'up'):
+		# 			paddle.keyState[direction] = True;
+		# 		elif (direction == 'down'):
+		# 			paddle.keyState[direction] = True;
+				# paddle.taskAsyncio[direction] = asyncio.create_task(keydownLoop(direction, paddle, consumer))
+
+			# elif (message['key'] == 'keyup'):
+				# keyupReset(direction, paddle)
+
+		# aiPaddle = consumer.gameSettings.paddles[1]
+		# if (consumer.gameSettings.isAIGame and aiPaddle.aiTask == None):
+		# 	aiPaddle.aiTask = asyncio.create_task(aiLoop(consumer, aiPaddle))
+
+		# if (paddle.isAI == False and paddle.isAlive == True):
+		# 	if (message['key'] == 'keydown'):
+		# 		if (direction == 'up'):
+		# 			paddle.keyState[direction] = True;
+		# 		elif (direction == 'down'):
+		# 			paddle.keyState[direction] = True;
+		# 		paddle.taskAsyncio[direction] = asyncio.create_task(keydownLoop(direction, paddle, consumer))
+
+		# 	elif (message['key'] == 'keyup'):
+		# 		keyupReset(direction, paddle)
+
+	def sendInitPadlePosition(self):
+		for paddle in self.gameSettings.paddles:
 			async_to_sync(self.channel_layer.group_send)('game', {
 				'type': 'init_paddle_position',
 				'position': paddle.position,
@@ -17,11 +70,11 @@ class GameConsumer(AsyncWebsocketConsumer):
 			})
 
 	def launchRankedSoloGame(self, gameID, gameMode):
-		gameSettings = GameSettings(800)
-		gameSettings.setNbPaddles(2)
-		self.sendInitPadlePosition(gameSettings)
+		self.gameSettings = GameSettings(800)
+		self.gameSettings.setNbPaddles(2)
+		self.sendInitPadlePosition()
 
-	# TODO peutetre inutile si on fait tout dans la premiere fonction
+	# TODO peut-etre inutile si on fait tout dans la premiere fonction
 	# def launchDeathGame(self):
 	# 	print('-----------------------------///launchDeathGame')
 
@@ -57,8 +110,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 		await self.accept()
 
 	async def disconnect(self, close_code):
-		# if (self.gameSettings.ball.task):
-			# self.gameSettings.ball.task.cancel()
 		await self.channel_layer.group_discard('game', self.channel_name)
 
 	async def receive(self, text_data):
@@ -74,11 +125,14 @@ class GameConsumer(AsyncWebsocketConsumer):
 		# else if (message['type'] == 'init_solooo'):
 			# await handle_paddle_move(self, message['paddleID'], message['direction'])
 
+		if (message['type'] == 'paddle_move'):
+			await self.handlePaddleMove(message)
+
 		# TODO use this to send reload to waiting players
-		await self.channel_layer.group_send('game', {
-			'type': 'reload_page',
-			'message': 'reload'
-		})
+		# await self.channel_layer.group_send('game', {
+		# 	'type': 'reload_page',
+		# 	'message': 'reload'
+		# })
 
 	# TODO use this to send reload to waiting players
 	async def reload_page(self, event):
@@ -86,5 +140,9 @@ class GameConsumer(AsyncWebsocketConsumer):
 		await self.send(text_data=message)
 
 	async def init_paddle_position(self, event):
+		message = json.dumps(event)
+		await self.send(text_data=message)
+
+	async def update_paddle_position(self, event):
 		message = json.dumps(event)
 		await self.send(text_data=message)
