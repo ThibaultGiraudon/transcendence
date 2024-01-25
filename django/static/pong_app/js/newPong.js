@@ -10,6 +10,33 @@ const   keyState = {
     l: false,
 };
 
+class Paddle {
+	constructor(paddleID, position) {
+		const paddleXpos = [10, 770, position, position];
+		const paddleYpos = [position, position, 10, 770];
+		const paddleColors = ['#E21E59', '#1598E9', '#2FD661', '#F19705'];
+
+		this.x = paddleXpos[paddleID];
+		this.y = paddleYpos[paddleID];
+		this.color = paddleColors[paddleID];
+		this.width = 20;
+		this.height = 100;
+		if (paddleID >= 2) {
+			this.width = 100;
+			this.height = 20;
+		}
+	}
+
+	draw(context) {
+		context.fillStyle = this.color;
+		context.fillRect(this.x, this.y, this.width, this.height);
+	}
+	
+	clear(context) {
+		context.clearRect(this.x, this.y, this.width, this.height);
+	}
+}
+
 function getPaddleID(key) {
 	if (key === 'w' || key === 's') {
 		return '0';
@@ -60,34 +87,9 @@ function createGameField(gameContext, size) {
     gameContext.fillRect(gameField.x, gameField.y, gameField.width, gameField.height);
 }
 
-function createPaddle(gameContext, paddleID, position) {
-	const paddleXpos = [10, 770, position, position];
-	const paddleYpos = [position, position, 10, 770];
-    const paddleColors = ['#E21E59', '#1598E9', '#2FD661', '#F19705'];
-
-	posX = paddleXpos[paddleID];
-	posY = paddleYpos[paddleID];
-	color = paddleColors[paddleID];
-
-	paddleWidth = 20;
-	paddleHeight = 100;
-	if (paddleID >= 2) {
-		paddleWidth = 100;
-		paddleHeight = 20;
-	}
-
-	if (elements.paddles[paddleID] == null) {
-		elements.paddles[paddleID] = {
-			x: posX,
-			y: posY,
-			width: paddleWidth,
-			height: paddleHeight
-		};
-		paddle = elements.paddles[paddleID];
-
-		gameContext.fillStyle = color;
-		gameContext.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
-	}
+function initPaddlePosition(gameContext, paddleID, position) {
+	elements.paddles[paddleID] = new Paddle(paddleID, position);
+	elements.paddles[paddleID].draw(gameContext);
 }
 
 function updatePaddlePosition(gameContext, paddleID, position) {
@@ -151,7 +153,7 @@ function gameProcessLoaded(isWaitingPage) {
         const message = JSON.parse(event.data);
 
 		if (message.type === 'init_paddle_position') {
-			createPaddle(gameContext, message.id, message.position);
+			initPaddlePosition(gameContext, message.id, message.position);
 		}
 
 		if (message.type === 'update_paddle_position') {
