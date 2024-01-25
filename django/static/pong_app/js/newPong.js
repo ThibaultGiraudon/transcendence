@@ -33,7 +33,8 @@ class Paddle {
 	}
 	
 	clear(context) {
-		context.clearRect(this.x, this.y, this.width, this.height);
+		context.fillStyle = "#212121";
+		context.fillRect(this.x, this.y, this.width, this.height);
 	}
 }
 
@@ -66,7 +67,7 @@ function createGameCanvas() {
 
 	createGameField(gameContext, canvasSize);
 
-	return (gameCanvas, gameContext)	
+	return (gameCanvas, gameContext)
 }
 
 // function clearGameContext(gameCanvas, gameContext) {
@@ -93,12 +94,9 @@ function initPaddlePosition(gameContext, paddleID, position) {
 }
 
 function updatePaddlePosition(gameContext, paddleID, position) {
-	paddle = elements.paddles[paddleID];
-	gameContext.clearRect(paddle.x, paddle.y, paddle.width, paddle.height);
-	// paddle.y = position;
-	// gameContext.fillStyle = "#E21E59";
-	// gameContext.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
-
+	elements.paddles[paddleID].clear(gameContext);
+	elements.paddles[paddleID].y = position;
+	elements.paddles[paddleID].draw(gameContext);
 }
 
 function getSocket(gameID) {
