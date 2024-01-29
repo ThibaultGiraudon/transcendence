@@ -1,13 +1,12 @@
 from    channels.generic.websocket import AsyncWebsocketConsumer
 from 	channels.db import database_sync_to_async
-# from    ..pongFunctions.handlerInitGame import handle_init_game
-# from    ..pongFunctions.handlerPaddleMove import handle_paddle_move
-from    ..pongFunctions.gameSettingsClass import GameSettings
 import  json
 from	asgiref.sync import async_to_sync
 
+from    .gameConsumerUtils.classes.gameSettings import GameSettings
 from	.gameConsumerUtils.sendInitPaddlePosition import sendInitPadlePosition
 from 	.gameConsumerUtils.handlePaddleMove import handlePaddleMove
+from	.gameConsumerUtils.handleBallMove import handleBallMove
 
 class GameConsumer(AsyncWebsocketConsumer):
 	def __init__(self, *args, **kwargs):
@@ -19,6 +18,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 		self.gameSettings = GameSettings(800)
 		self.gameSettings.setNbPaddles(2)
 		sendInitPadlePosition(self)
+		print('---------------------de')
+		handleBallMove(self, gameMode)
 
 	# TODO peut-etre inutile si on fait tout dans la premiere fonction
 	# def launchDeathGame(self):

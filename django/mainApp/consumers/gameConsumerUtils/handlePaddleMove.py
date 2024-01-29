@@ -1,4 +1,4 @@
-import	json, asyncio
+import	asyncio
 
 def keyupReset(direction, paddle):
 	paddle.keyState[direction] = False;
@@ -17,8 +17,6 @@ async def keydownLoop(direction, paddle, consumer):
 		paddle.keyState['down'] = False;
 	elif (direction == 'down'):
 		paddle.keyState['up'] = False;
-
-	print('keydownLoop')
 
 	while (paddle.keyState[direction] or paddle.keyState[direction]):
 		if (paddle.keyState[direction] and direction == 'up' and paddle.position > 30):
