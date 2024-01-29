@@ -13,18 +13,16 @@ def singleton(class_):
 
 @singleton
 class GameSettings:
-    def __init__(self, size):
+    def __init__(self, nbPaddles):
         print('GameSettings init')
-        self.nbPaddles = None
-        self.squareSize = size
+        self.nbPaddles = nbPaddles
+        self.squareSize = 800
         self.paddles = []
-        self.ball = None
         self.paddleSize = 100
 
-    def setNbPaddles(self, nbPaddles):
-        self.nbPaddles = nbPaddles
         for id in range(nbPaddles):
             self.paddles.append(Paddle(id))
             self.paddles[id].position = self.squareSize / 2 - self.paddleSize / 2
             self.paddles[id].isAlive = True
+
         self.ball = Ball(self)
