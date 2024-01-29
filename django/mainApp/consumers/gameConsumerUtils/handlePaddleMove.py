@@ -27,9 +27,11 @@ async def keydownLoop(direction, paddle, consumer):
 		await sendUpdatePaddleMessage(consumer, paddle)
 		await asyncio.sleep(0.01) # TODO change to global var for speed
 
-async def handlePaddleMove(consumer, message):
+async def handlePaddleMove(consumer, message, gameSettings):
 	direction = message['direction']
-	paddle = consumer.gameSettings.paddles[int(message['id'])]
+	# paddle = consumer.gameSettings.paddles[int(message['id'])]
+	paddle = gameSettings.paddles[int(message['id'])]
+	
 
 	if (paddle.isAlive == True):
 		print('handlePaddleMove')
