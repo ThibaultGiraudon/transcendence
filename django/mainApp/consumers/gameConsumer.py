@@ -7,17 +7,35 @@ from	.gameConsumerUtils.sendInitPaddlePosition import sendInitPadlePosition
 from 	.gameConsumerUtils.handlePaddleMove import handlePaddleMove
 from	.gameConsumerUtils.handleBallMove import handleBallMove
 
-class GameConsumer(AsyncWebsocketConsumer):
-	gameSettings = None
+gameSettings_instances = {}
 
+class GameConsumer(AsyncWebsocketConsumer):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		if not hasattr(self, 'gameSettings') or self.gameSettings is None:
-			self.gameSettings = GameSettings(800)
+		self.gameSettings_instances = gameSettings_instances
+
+	# gameSettings = GameSettings(800)
+	# gameSettings.setNbPaddles(2)
+	# print('gameSettings pos', gameSettings.paddles[0].position)
+	# def __init__(self, *args, **kwargs):
+		# super().__init__(*args, **kwargs)
+		# self.gameSettings = GameSettings(800)
+	# def __init__(self, *args, **kwargs):
+	# 	super().__init__(*args, **kwargs)
+	# 	if not hasattr(self, 'gameSettings') or self.gameSettings is None:
+	# 		self.gameSettings = self.gameSettings_instances.get(self.scope['url_route']['kwargs']['game_id'])
+	# 		# self.gameSettings = GameSettings(800)
+	# 		self.gameSettings.setNbPaddles(2)
 
 	async def launchRankedSoloGame(self, gameID, gameMode):
-		self.gameSettings.setNbPaddles(2)
-		await sendInitPadlePosition(self)
+		if gameID not in self.gameSettings_instances:
+			self.gameSettings_instances[gameID] = GameSettings(800)
+			self.gameSettings_instances[gameID].setNbPaddles(2)
+
+		gameSettings = self.gameSettings_instances[gameID]
+		await sendInitPadlePosition(self, gameSettings)
+			# self.gameSettings.setNbPaddles(2)
+			# await sendInitPadlePosition(self)
 		# await handleBallMove(self, gameMode)
 
 	# TODO peut-etre inutile si on fait tout dans la premiere fonction
@@ -84,7 +102,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 		# 	# await handle_paddle_move(self, message['paddleID'], message['direction'])
 
 		if (message['type'] == 'paddle_move'):
-			await handlePaddleMove(self, message)
+			gameSettings = self.gameSettings_instances[gameID]
+			await handlePaddleMove(self, message, gameSettings)
 
 		# print('receive from consumer ----')
 		# # TODO use this to send reload to waiting players
