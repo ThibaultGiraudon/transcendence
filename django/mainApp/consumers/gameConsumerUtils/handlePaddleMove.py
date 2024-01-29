@@ -29,9 +29,7 @@ async def keydownLoop(direction, paddle, consumer):
 
 async def handlePaddleMove(consumer, message, gameSettings):
 	direction = message['direction']
-	# paddle = consumer.gameSettings.paddles[int(message['id'])]
 	paddle = gameSettings.paddles[int(message['id'])]
-	
 
 	if (paddle.isAlive == True):
 		print('handlePaddleMove')
