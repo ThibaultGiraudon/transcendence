@@ -55,6 +55,12 @@ async def sendInitScore(consumer, nbPaddles):
 		await consumer.send(json.dumps(message))
 
 async def sendUpdateBallPosition(consumer, ball):
+	# TODO test
+	if ball.x < 0:
+		ball.x = 700
+	ball.x = ball.x - 20
+	
+
 	await consumer.channel_layer.group_send('game', {
 		'type': 'update_ball_position',
 		'x': ball.x,
@@ -130,4 +136,6 @@ async def startBall(consumer, gameSettings):
 		await asyncio.sleep(1)
 
 async def handleBallMove(consumer, gameMode, gameSettings):
+	if (gameSettings.ball.task):
+		gameSettings.ball.task.cancel()
 	gameSettings.ball.task = asyncio.create_task(startBall(consumer, gameSettings))
