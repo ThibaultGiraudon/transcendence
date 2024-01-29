@@ -24,18 +24,11 @@ class GameConsumer(AsyncWebsocketConsumer):
 				'position': paddle.position,
 				'id': paddle.id,
 			})		
-			# await self.send(json.dumps({
-			# 	'type': 'init_paddle_position',
-			# 	'position': paddle.position,
-			# 	'id': paddle.id,
-			# }))
-
 
 	async def launchRankedSoloGame(self, gameID, gameMode):
-		# self.gameSettings.setNbPaddles(2)
+		self.gameSettings.setNbPaddles(2)
 		await self.sendInitPadlePosition()
-		print('---------------------de')
-		await handleBallMove(self, gameMode)
+		# await handleBallMove(self, gameMode)
 
 	# TODO peut-etre inutile si on fait tout dans la premiere fonction
 	# def launchDeathGame(self):
@@ -61,7 +54,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 	async def handleInitGame(self, gameID, gameMode, playerID):
 		game = await self.__getGame(gameID)
 		if playerID not in game.playerList:
-			return False
+			return (False)
 
 		player = await self.__getPlayer(playerID)
 		player.isReady = True
@@ -70,7 +63,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		for playerID in game.playerList:
 			player = await self.__getPlayer(playerID)
 			if not player.isReady:
-				return False
+				return (False)
 
 		if (gameMode == 'init_ranked_solo_game'):
 			await self.launchRankedSoloGame(gameID, gameMode)
@@ -93,31 +86,29 @@ class GameConsumer(AsyncWebsocketConsumer):
 		print(message)
 
 		if (message['type'] == 'init_ranked_solo_game' or \
-	  		message['type'] == 'init_death_game' or \
-	  		message['type'] == 'init_tournament_game'):
-			await self.handleInitGame(gameID, message['type'], message['playerID'])
-		# TODO add other local game modes
-		# else if (message['type'] == 'init_solooo'):
-			# await handle_paddle_move(self, message['paddleID'], message['direction'])
+			message['type'] == 'init_death_game' or \
+			message['type'] == 'init_tournament_game'):
+				await self.handleInitGame(gameID, message['type'], message['playerID'])
+		# # TODO add other local game modes
+		# # else if (message['type'] == 'init_solooo'):
+		# 	# await handle_paddle_move(self, message['paddleID'], message['direction'])
 
 		if (message['type'] == 'paddle_move'):
 			await handlePaddleMove(self, message)
 
-		print('receive from consumer ----')
-		# TODO use this to send reload to waiting players
-		await self.channel_layer.group_send('game', {
-			'type': 'reload_page',
-			'message': 'reload'
-		})
+		# print('receive from consumer ----')
+		# # TODO use this to send reload to waiting players
+		# await self.channel_layer.group_send('game', {
+		# 	'type': 'reload_page',
+		# 	'message': 'reload'
+		# })
 
 	# TODO use this to send reload to waiting players
 	async def reload_page(self, event):
-		print('reload_page from consumer ----')
-		message = json.dumps(event['message'])
+		message = json.dumps(event)
 		await self.send(text_data=message)
 
 	async def init_paddle_position(self, event):
-		print('init_paddle_position from consumer ----')
 		message = json.dumps(event)
 		await self.send(text_data=message)
 
