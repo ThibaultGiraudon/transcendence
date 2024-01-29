@@ -1,10 +1,9 @@
 from    channels.generic.websocket import AsyncWebsocketConsumer
 from 	channels.db import database_sync_to_async
 import  json
-from	asgiref.sync import async_to_sync
 
 from    .gameConsumerUtils.classes.gameSettings import GameSettings
-# from	.gameConsumerUtils.sendInitPaddlePosition import sendInitPadlePosition
+from	.gameConsumerUtils.sendInitPaddlePosition import sendInitPadlePosition
 from 	.gameConsumerUtils.handlePaddleMove import handlePaddleMove
 from	.gameConsumerUtils.handleBallMove import handleBallMove
 
@@ -16,18 +15,9 @@ class GameConsumer(AsyncWebsocketConsumer):
 		if not hasattr(self, 'gameSettings') or self.gameSettings is None:
 			self.gameSettings = GameSettings(800)
 
-	async def sendInitPadlePosition(self):
-		for paddle in self.gameSettings.paddles:
-			print('sendInitPadlePosition')
-			await self.channel_layer.group_send('game', {
-				'type': 'init_paddle_position',
-				'position': paddle.position,
-				'id': paddle.id,
-			})		
-
 	async def launchRankedSoloGame(self, gameID, gameMode):
 		self.gameSettings.setNbPaddles(2)
-		await self.sendInitPadlePosition()
+		await sendInitPadlePosition(self)
 		# await handleBallMove(self, gameMode)
 
 	# TODO peut-etre inutile si on fait tout dans la premiere fonction
