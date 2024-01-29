@@ -1,11 +1,10 @@
 from    channels.generic.websocket import AsyncWebsocketConsumer
-from 	channels.db import database_sync_to_async
+# from 	channels.db import database_sync_to_async
 import  json
 
 from    .gameConsumerUtils.classes.gameSettings import GameSettings
-from	.gameConsumerUtils.sendInitPaddlePosition import sendInitPadlePosition
 from 	.gameConsumerUtils.handlePaddleMove import handlePaddleMove
-from	.gameConsumerUtils.handleBallMove import handleBallMove
+from	.gameConsumerUtils.handleInitGame import handleInitGame
 
 gameSettingsInstances = {}
 
@@ -14,56 +13,12 @@ class GameConsumer(AsyncWebsocketConsumer):
 		super().__init__(*args, **kwargs)
 		self.gameSettingsInstances = gameSettingsInstances
 
-	async def launchRankedSoloGame(self, gameID, gameMode):
-		if gameID not in self.gameSettingsInstances:
-			self.gameSettingsInstances[gameID] = GameSettings(2)
-
-		gameSettings = self.gameSettingsInstances[gameID]
-		await sendInitPadlePosition(self, gameSettings)
-		# await handleBallMove(self, gameMode)
-
 	# TODO peut-etre inutile si on fait tout dans la premiere fonction
 	# def launchDeathGame(self):
 	# 	print('-----------------------------///launchDeathGame')
 
 	# def launchTournamentGame(self):
 	# 	print('-----------------------------///launchTournamentGame')
-
-	@database_sync_to_async
-	def __getGame(self, gameID):
-		from mainApp.models import Game
-		return Game.objects.get(id=gameID)
-
-	@database_sync_to_async
-	def __getPlayer(self, playerID):
-		from mainApp.models import Player
-		return Player.objects.get(id=playerID)
-
-	@database_sync_to_async
-	def __savePlayer(self, player):
-		player.save()
-
-	async def handleInitGame(self, gameID, gameMode, playerID):
-		game = await self.__getGame(gameID)
-		if playerID not in game.playerList:
-			return (False)
-
-		player = await self.__getPlayer(playerID)
-		player.isReady = True
-		await self.__savePlayer(player)
-
-		for playerID in game.playerList:
-			player = await self.__getPlayer(playerID)
-			if not player.isReady:
-				return (False)
-
-		if (gameMode == 'init_ranked_solo_game'):
-			await self.launchRankedSoloGame(gameID, gameMode)
-		# elif (gameMode == 'init_death_game'):
-		# 	self.launchDeathGame()
-		# elif (gameMode == 'init_tournament_game'):
-		# 	self.launchTournamentGame()
-		return (True)
 
 	async def connect(self):
 		await self.channel_layer.group_add('game', self.channel_name)
@@ -80,7 +35,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		if (message['type'] == 'init_ranked_solo_game' or \
 			message['type'] == 'init_death_game' or \
 			message['type'] == 'init_tournament_game'):
-				await self.handleInitGame(gameID, message['type'], message['playerID'])
+				await handleInitGame(self, gameID, message['type'], message['playerID'])
 		# # TODO add other local game modes
 		# # else if (message['type'] == 'init_solooo'):
 		# 	# await handle_paddle_move(self, message['paddleID'], message['direction'])
