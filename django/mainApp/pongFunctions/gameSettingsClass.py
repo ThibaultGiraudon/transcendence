@@ -1,5 +1,5 @@
-from .paddleClass import Paddle
-from .ballClass import Ball
+# from .paddleClass import Paddle
+# from .ballClass import Ball
 
 class GameSettings:
     def __init__(self, size):
