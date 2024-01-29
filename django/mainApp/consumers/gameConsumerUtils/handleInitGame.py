@@ -1,6 +1,7 @@
 from 	channels.db import database_sync_to_async
 from 	.classes.gameSettings import GameSettings
 from	.senders.sendInitPaddlePosition import sendInitPadlePosition
+from 	.handleBallMove import handleBallMove
 
 @database_sync_to_async
 def getGame(gameID):
@@ -22,7 +23,7 @@ async def launchRankedSoloGame(consumer, gameID, gameMode):
 
 	gameSettings = consumer.gameSettingsInstances[gameID]
 	await sendInitPadlePosition(consumer, gameSettings)
-	# await handleBallMove(consumer, gameMode)
+	await handleBallMove(consumer, gameMode, gameSettings)
 
 async def handleInitGame(consumer, gameID, gameMode, playerID):
 	game = await getGame(gameID)

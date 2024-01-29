@@ -62,3 +62,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 	async def update_paddle_position(self, event):
 		message = json.dumps(event)
 		await self.send(text_data=message)
+
+	async def update_ball_position(self, event):
+		message = json.dumps(event)
+		await self.send(text_data=message)
