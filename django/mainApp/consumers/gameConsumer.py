@@ -4,22 +4,38 @@ import  json
 from	asgiref.sync import async_to_sync
 
 from    .gameConsumerUtils.classes.gameSettings import GameSettings
-from	.gameConsumerUtils.sendInitPaddlePosition import sendInitPadlePosition
+# from	.gameConsumerUtils.sendInitPaddlePosition import sendInitPadlePosition
 from 	.gameConsumerUtils.handlePaddleMove import handlePaddleMove
 from	.gameConsumerUtils.handleBallMove import handleBallMove
 
 class GameConsumer(AsyncWebsocketConsumer):
+	gameSettings = None
+
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		if not hasattr(self, 'gameSettings') or self.gameSettings is None:
 			self.gameSettings = GameSettings(800)
 
-	def launchRankedSoloGame(self, gameID, gameMode):
-		self.gameSettings = GameSettings(800)
-		self.gameSettings.setNbPaddles(2)
-		sendInitPadlePosition(self)
+	async def sendInitPadlePosition(self):
+		for paddle in self.gameSettings.paddles:
+			print('sendInitPadlePosition')
+			await self.channel_layer.group_send('game', {
+				'type': 'init_paddle_position',
+				'position': paddle.position,
+				'id': paddle.id,
+			})		
+			# await self.send(json.dumps({
+			# 	'type': 'init_paddle_position',
+			# 	'position': paddle.position,
+			# 	'id': paddle.id,
+			# }))
+
+
+	async def launchRankedSoloGame(self, gameID, gameMode):
+		# self.gameSettings.setNbPaddles(2)
+		await self.sendInitPadlePosition()
 		print('---------------------de')
-		handleBallMove(self, gameMode)
+		await handleBallMove(self, gameMode)
 
 	# TODO peut-etre inutile si on fait tout dans la premiere fonction
 	# def launchDeathGame(self):
@@ -29,27 +45,39 @@ class GameConsumer(AsyncWebsocketConsumer):
 	# 	print('-----------------------------///launchTournamentGame')
 
 	@database_sync_to_async
-	def handleInitGame(self, gameID, gameMode, playerID):
-		from mainApp.models import Game, Player
-		game = Game.objects.get(id=gameID)
-		if playerID not in game.playerList:
-			return (False)
+	def __getGame(self, gameID):
+		from mainApp.models import Game
+		return Game.objects.get(id=gameID)
 
-		player = Player.objects.get(id=playerID)
-		player.isReady = True
+	@database_sync_to_async
+	def __getPlayer(self, playerID):
+		from mainApp.models import Player
+		return Player.objects.get(id=playerID)
+
+	@database_sync_to_async
+	def __savePlayer(self, player):
 		player.save()
 
+	async def handleInitGame(self, gameID, gameMode, playerID):
+		game = await self.__getGame(gameID)
+		if playerID not in game.playerList:
+			return False
+
+		player = await self.__getPlayer(playerID)
+		player.isReady = True
+		await self.__savePlayer(player)
+
 		for playerID in game.playerList:
-			player = Player.objects.get(id=playerID)
-			if (player.isReady == False):
-				return (False)
+			player = await self.__getPlayer(playerID)
+			if not player.isReady:
+				return False
 
 		if (gameMode == 'init_ranked_solo_game'):
-			self.launchRankedSoloGame(gameID, gameMode)
-		elif (gameMode == 'init_death_game'):
-			self.launchDeathGame()
-		elif (gameMode == 'init_tournament_game'):
-			self.launchTournamentGame()
+			await self.launchRankedSoloGame(gameID, gameMode)
+		# elif (gameMode == 'init_death_game'):
+		# 	self.launchDeathGame()
+		# elif (gameMode == 'init_tournament_game'):
+		# 	self.launchTournamentGame()
 		return (True)
 
 	async def connect(self):
@@ -75,18 +103,21 @@ class GameConsumer(AsyncWebsocketConsumer):
 		if (message['type'] == 'paddle_move'):
 			await handlePaddleMove(self, message)
 
+		print('receive from consumer ----')
 		# TODO use this to send reload to waiting players
-		# await self.channel_layer.group_send('game', {
-		# 	'type': 'reload_page',
-		# 	'message': 'reload'
-		# })
+		await self.channel_layer.group_send('game', {
+			'type': 'reload_page',
+			'message': 'reload'
+		})
 
 	# TODO use this to send reload to waiting players
 	async def reload_page(self, event):
+		print('reload_page from consumer ----')
 		message = json.dumps(event['message'])
 		await self.send(text_data=message)
 
 	async def init_paddle_position(self, event):
+		print('init_paddle_position from consumer ----')
 		message = json.dumps(event)
 		await self.send(text_data=message)
 

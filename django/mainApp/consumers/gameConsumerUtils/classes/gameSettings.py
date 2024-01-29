@@ -15,3 +15,4 @@ class GameSettings:
             self.paddles.append(Paddle(id))
             self.paddles[id].position = self.squareSize / 2 - self.paddleSize / 2
             self.paddles[id].isAlive = True
+        self.ball = Ball(self)

@@ -14,6 +14,19 @@ class Ball:
         randomAngle = self.__getRandomAngle(gameSettings)
         self.angle = random.choice(randomAngle)
 
+    def __getRandomAngle(self, gameSettings):
+        randomAngle = []
+        for paddle in gameSettings.paddles:
+            if paddle.isAlive and paddle.id == 0:
+                randomAngle.append(math.pi)
+            elif paddle.isAlive and paddle.id == 1:
+                randomAngle.append(0)
+            elif paddle.isAlive and paddle.id == 2:
+                randomAngle.append(-math.pi / 2)
+            elif paddle.isAlive and paddle.id == 3:
+                randomAngle.append(math.pi / 2)
+        return (randomAngle)
+
     def move(self):
         deltaX = self.speed * math.cos(self.angle) 
         deltaY = self.speed * math.sin(self.angle)
