@@ -1,6 +1,6 @@
 from 	channels.db import database_sync_to_async
 from 	.classes.gameSettings import GameSettings
-from	.sendInitPaddlePosition import sendInitPadlePosition
+from	.senders.sendInitPaddlePosition import sendInitPadlePosition
 
 @database_sync_to_async
 def getGame(gameID):
