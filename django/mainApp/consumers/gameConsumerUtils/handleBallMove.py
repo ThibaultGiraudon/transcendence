@@ -89,15 +89,15 @@ async def sendUpdateScore(consumer, paddleID, gameMode):
 		consumer.gameSettings.ball.task.cancel()
 
 # async def handle_ball_move(consumer, gameMode):
-async def startBall(consumer, gameMode):
-	ball = consumer.gameSettings.ball
-	while (True):
-		# TODO maybe change this to bottom (ball.move)
-		ball.move()
+# async def startBall(consumer, gameMode):
+# 	ball = consumer.gameSettings.ball
+# 	while (True):
+# 		# TODO maybe change this to bottom (ball.move)
+# 		ball.move()
 
-		# TODO change to global var for fps
-		await asyncio.sleep(1)
-		await sendUpdateBallPosition(consumer, ball)
+# 		# TODO change to global var for fps
+# 		await asyncio.sleep(1)
+# 		await sendUpdateBallPosition(consumer, ball)
 
 		# for paddle in consumer.gameSettings.paddles:
 		# 	ball.checkPaddleCollision(paddle, consumer.gameSettings)
@@ -121,13 +121,13 @@ async def startBall(consumer, gameMode):
 		# await asyncio.sleep(0.01)
 		# await sendUpdateBallPosition(consumer, ball)
 
-async def handleBallMove(consumer, gameMode):
-	print('handleBallMove launched')
-	ball = consumer.gameSettings.ball
+async def startBall(consumer, gameSettings):
+	ball = gameSettings.ball
 	while (True):
-		# ball.move()
+		print('test update ball')
 
+		await sendUpdateBallPosition(consumer, ball)
 		await asyncio.sleep(1)
-		print('sendUpdateBallPosition')
-		sendUpdateBallPosition(consumer, ball)
-	# consumer.gameSettings.ball.task = asyncio.create_task(startBall(consumer, gameMode))
+
+async def handleBallMove(consumer, gameMode, gameSettings):
+	gameSettings.ball.task = asyncio.create_task(startBall(consumer, gameSettings))
