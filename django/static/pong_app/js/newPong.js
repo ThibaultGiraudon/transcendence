@@ -62,6 +62,30 @@ class Paddle {
 	}
 }
 
+class Ball {
+	constructor(x, y, color, radius) {
+		this.x = x;
+		this.y = y;
+		this.color = color;
+		this.radius = radius;
+	}
+
+	draw(context) {
+		context.fillStyle = this.color;
+		context.beginPath();
+		context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+		context.fill();
+	}
+
+	clear(context) {
+		context.fillStyle = "#212121";
+		context.beginPath();
+		context.arc(this.x, this.y, this.radius + 1, 0, 2 * Math.PI);
+		context.fill();
+	}
+}
+
+
 function getPaddleID(key) {
 	if (key === 'w' || key === 's') {
 		return '0';
@@ -104,6 +128,14 @@ function updatePaddlePosition(gameContext, paddleID, position) {
 	elements.paddles[paddleID].clear(gameContext);
 	elements.paddles[paddleID].y = position;
 	elements.paddles[paddleID].draw(gameContext);
+}
+
+function updateBallPosition(gameContext, x, y) {
+	if (elements.ball) {
+		elements.ball.clear(gameContext);
+	}
+	elements.ball = new Ball(x, y, '#FFFFFF', 10);
+	elements.ball.draw(gameContext);
 }
 
 function getSocket(gameID) {
@@ -164,6 +196,11 @@ function gameProcessLoaded(isWaitingPage) {
 		if (message.type === 'update_paddle_position') {
 			updatePaddlePosition(gameContext, message.id, message.position);
 		}
+
+		if (message.type === 'update_ball_position') {
+			updateBallPosition(gameContext, message.x, message.y);
+		}
+
 
         console.log('Message reçu:', message);
     };

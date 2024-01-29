@@ -24,6 +24,10 @@ class GameConsumer(AsyncWebsocketConsumer):
 		await self.accept()
 
 	async def disconnect(self, close_code):
+		gameID = self.scope['url_route']['kwargs']['game_id']
+		GameSettings = self.gameSettingsInstances[gameID]
+		if (GameSettings.ball.task):
+			GameSettings.ball.task.cancel()
 		await self.channel_layer.group_discard('game', self.channel_name)
 
 	async def receive(self, text_data):
