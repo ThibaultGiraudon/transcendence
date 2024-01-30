@@ -64,7 +64,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		timestamp = datetime.now().strftime("%d/%m/%Y %H:%M")
 
 		# Save the message
-		await self.save_message(sender, username, message, timestamp)
+		await self.save_message(sender, message)
 
 		# Get the channel
 		channel = await self.get_channel()
@@ -98,21 +98,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 
 	@database_sync_to_async
-	def save_message(self, sender, username, message, timestamp):
-		from mainApp.models import Channel
+	def save_message(self, sender, message):
+		from mainApp.models import Channel, Message
 		
 		# Get the channel
 		try:
 			channel = Channel.objects.get(room_id=self.room_id)
 		except Channel.DoesNotExist:
 			return
-		
-		if channel.messages is None:
-			channel.messages = []
 
 		# Save the message
-		channel.messages.append({ "sender": sender, "username": username, "message": message, "timestamp": timestamp })
-		channel.save()
+		Message.objects.create(sender_id=sender, message=message, channel=channel)
 
 
 	async def chat_message(self, event):

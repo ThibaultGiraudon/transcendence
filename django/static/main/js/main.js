@@ -21,8 +21,11 @@ const router = {
 		'/pong/': renderChooseModePage,
 
 		// Chat
+		'/chat/': renderChatPage,
+		'/chat/:id': renderRoomPage,
 
 		// Notifications
+		'/notifications/': renderNotificationsPage,
 
 		// Errors
 	},
@@ -68,10 +71,6 @@ function getCookie(name) {
 	
 	return cookieValue;
 }
-
-
-// Get the CSRF token from the cookie
-let csrfToken = getCookie('csrftoken');
 
 
 // --------------------------------------------------------------------------------
@@ -136,7 +135,7 @@ function renderField(field) {
 	return `
 		<label for="${field.name}">${field.label}</label>
 		<input type="${field.type}" id="${field.name}" name="${field.name}" autocomplete="on" value="${field.value || ''}" accept="${field.accept || ''}"/>
-		<div class="error-alert" id="error-${field.name}"></div>
+		<p class="error-alert" id="error-${field.name}"></p>
 	`;
 }
 
@@ -158,10 +157,7 @@ function fetchAPI(url) {
 
 
 const elementsToProcess = {
-	'chat-log': chatProcess,
 	'pong_game': gameProcess,
-	'sign-out': SignOutProcess,
-	'set-status-online': SignInProcess
 };
 
 
@@ -183,4 +179,18 @@ observer.observe(document, { childList: true, subtree: true });
 window.addEventListener('DOMContentLoaded', (event) => {
 	router.navigate(window.location.pathname);
 	renderHeader();
+
+	// Generate a new CSRF token if it doesn't exist
+	if (!getCookie('csrftoken')) {
+		fetch('/api/generate_csrf_token/', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		})
+		.then(response => response.json())
+		.then(data => {
+			document.cookie = `csrftoken=${data.token};path=/`;
+		});
+	} 
 });

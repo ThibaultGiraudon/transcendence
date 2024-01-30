@@ -12,13 +12,14 @@ from django.contrib.auth import get_user_model
 from django.core.files.storage import default_storage
 from ..models import Notification, Channel
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.middleware.csrf import get_token
 from django.shortcuts import render
 from django.http import JsonResponse
 import urllib.request, json, base64
 
 
 from mainApp.models import Player
-from mainApp.views.utils import renderPage, redirectPage, renderError
+from mainApp.views.utils import redirectPage, renderError
 
 
 # 42 API
@@ -31,6 +32,7 @@ CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
 @ensure_csrf_cookie
 def sign_in(request):
 	if request.method == 'GET':
+		get_token(request)
 		return render(request, 'base.html')
 
 	elif request.method == 'POST':
@@ -58,6 +60,7 @@ def sign_in(request):
 @ensure_csrf_cookie
 def sign_up(request):
 	if request.method == 'GET':
+		get_token(request)
 		return render(request, 'base.html')
 	
 	elif request.method == 'POST':
@@ -293,86 +296,6 @@ def users(request):
 		return render(request, 'base.html')
 
 
-def follow(request, id):
-	if not request.user.is_authenticated:
-		return redirectPage(request, '/sign_in/')
-
-	# Check if the user exist and if he is not already followed
-	User = get_user_model()
-	try:
-		userTo = User.objects.get(id=id)
-		if id in request.user.follows:
-			raise ValueError
-	except (User.DoesNotExist, ValueError):
-		return redirectPage(request, '/users/')
-	
-	notification = Notification(user=userTo, message=f"{request.user.username} is now following you.")
-	notification.save()
- 
-	request.user.follows.append(id)
-	request.user.save()
-	
-	return redirectPage(request, '/profile/' + userTo.username)
-
-
-def unfollow(request, id):
-	if not request.user.is_authenticated:
-		return redirectPage(request, '/sign_in/')
-	
-	# Check if the user exist and if he is followed
-	User = get_user_model()
-	try:
-		userTo = User.objects.get(id=id)
-		if id not in request.user.follows:
-			raise ValueError
-	except (User.DoesNotExist, ValueError):
-		return redirectPage(request, '/users/')
-
-	request.user.follows.remove(id)
-	request.user.save()
-
-	return redirectPage(request, '/profile/' + userTo.username)
-
-
-def block(request, id):
-	if not request.user.is_authenticated:
-		return redirectPage(request, '/sign_in/')
-
-	# Check if the user exist and if he is not already blocked
-	User = get_user_model()
-	try:
-		userTo = User.objects.get(id=id)
-		if id in request.user.blockedUsers:
-			raise ValueError
-	except (User.DoesNotExist, ValueError):
-		return redirectPage(request, '/users/')
-	
-	# Unfollow the user if he is in the follows list
-	if id in request.user.follows:
-		request.user.follows.remove(id)
- 
-	# Block the user
-	request.user.blockedUsers.append(id)
-	request.user.save()
-
-	return redirectPage(request, '/profile/' + userTo.username)
-
-
-def unblock(request, id):
-	if not request.user.is_authenticated:
-		return redirectPage(request, '/sign_in/')
-	
-	# Check if the user exist and if he is blocked
-	User = get_user_model()
-	try:
-		userTo = User.objects.get(id=id)
-		if id not in request.user.blockedUsers:
-			raise ValueError
-	except (User.DoesNotExist, ValueError):
-		return redirectPage(request, '/users/')
-
-	# Unblock the user
-	request.user.blockedUsers.remove(id)
-	request.user.save()
-
-	return redirectPage(request, '/profile/' + userTo.username)
+def notifications(request):
+	if request.method == 'GET':
+		return render(request, 'base.html')

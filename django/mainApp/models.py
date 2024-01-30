@@ -110,10 +110,22 @@ class Channel(models.Model):
 	room_id = models.CharField(max_length=150, unique=True)
 	name = models.CharField(max_length=150)
 	users = models.ManyToManyField(CustomUser, related_name='channels')
-	messages = ArrayField(models.JSONField(), default=list)
- 
+
 	def __str__(self):
 		return self.name
 	
 	def save(self, *args, **kwargs):
 		super(Channel, self).save(*args, **kwargs)
+
+
+class Message(models.Model):
+	sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+	message = models.TextField()
+	timestamp = models.DateTimeField(auto_now_add=True)
+	channel = models.ForeignKey(Channel, related_name='messages', on_delete=models.CASCADE)
+
+	def __str__(self):
+		return self.message
+	
+	def save(self, *args, **kwargs):
+		super(Message, self).save(*args, **kwargs)

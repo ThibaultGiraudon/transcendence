@@ -1,6 +1,6 @@
 function renderChooseModePage() {
 
-	fetchAPI('/api/is_authenticated').then(data => {
+	fetchAPI('/api/isAuthenticated').then(data => {
 
 		// If the user is connected
 		if (data.isAuthenticated) {
@@ -13,7 +13,13 @@ function renderChooseModePage() {
 					Practice Mode
 				</a>
 			`;
-		
+			fetchAPI('/api/get_user').then(dataUser => {
+				if (!dataUser.isAuthenticated) {
+					router.navigate('/sign_in/');
+					return;
+				}
+				SignInProcess(dataUser.user.id);
+			});
 		// If the user is not connected
 		} else {
 			router.navigate('/sign_in/');

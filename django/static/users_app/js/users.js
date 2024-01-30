@@ -12,11 +12,14 @@ document.addEventListener('DOMContentLoaded', function () {
 		shouldClose: false
 	};
 
+
 	// Update the status of users
 	statusSocket.socket.onmessage = function(e) {
 		const data = JSON.parse(e.data);
 		const id = data.id;
 		const status = data.status;
+
+		console.log("data " + data);
 
 		// Dont display if the user is in a chat
 		if (status.indexOf('chat') !== -1) {
@@ -52,43 +55,29 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-function SignOutProcess() {
+function SignOutProcess(id) {
 	// Send a message to the websocket when the user logged out
 	var signOutButton = document.getElementById('sign-out');
 	if (signOutButton) {
-		
-		signOutButton.addEventListener('click', function() {
-			requestUserIDElement = document.getElementById('request-user-id');
-			
-			if (!requestUserIDElement) {
-				return;
-			} else {
-				requestUserID = JSON.parse(requestUserIDElement.textContent);
-			}
-			
+		console.log('signOutButton');
+		// signOutButton.addEventListener('click', function() {
 			statusSocket.socket.send(JSON.stringify({
-				'id': requestUserID,
+				'id': id,
 				'status': 'offline'
 			}));
-		});
+		// });
 	}
 }
 
-function SignInProcess() {
+function SignInProcess(id) {
 	// Send a message to the websocket when the user logged in
 	var signInButton = document.getElementById('set-status-online');
 	if (signInButton) {
-		requestUserIDElement = document.getElementById('request-user-id');
-		
-		if (!requestUserIDElement) {
-			return;
-		} else {
-			requestUserID = JSON.parse(requestUserIDElement.textContent);
-		}
-
+		console.log('signInButton');
 		var socketConnectedPromise = new Promise(function(resolve, reject) {
 			var checkSocketStatus = setInterval(function() {
 				if (statusSocket.socket.readyState === WebSocket.OPEN) {
+					console.log('send');
 					clearInterval(checkSocketStatus);
 					resolve();
 				} else if (statusSocket.socket.readyState === WebSocket.CLOSED || statusSocket.socket.readyState === WebSocket.CLOSING) {
@@ -100,9 +89,11 @@ function SignInProcess() {
 
 		socketConnectedPromise.then(function() {
 			statusSocket.socket.send(JSON.stringify({
-				'id': requestUserID,
+				'id': id,
 				'status': 'online'
 			}));
-		}).catch(function(error) {});
+		}).catch(function(error) {
+			console.error("Erreur de connexion WebSocket : ", error);
+		});
 	}
 }

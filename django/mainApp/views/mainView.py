@@ -1,10 +1,12 @@
 from django.utils.translation import gettext as _
 from django.shortcuts import render
+from django.views.decorators.csrf import ensure_csrf_cookie
 import random
 
 from mainApp.views.utils import renderError
 
 
+@ensure_csrf_cookie
 def base(request):
 	return render(request, 'base.html')
 
