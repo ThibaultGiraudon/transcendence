@@ -78,10 +78,14 @@ class Ball {
 	}
 
 	clear(context) {
-		context.fillStyle = "#212121";
-		context.beginPath();
-		context.arc(this.x, this.y, this.radius + 1, 0, 2 * Math.PI);
-		context.fill();
+		// Here we add 10px because the ball is 20px diameter
+		if (this.x < 40 || this.x > 760 || this.y < 40 || this.y > 760) {
+			context.fillStyle = "#212121";
+			context.beginPath();
+			context.arc(this.x, this.y, this.radius + 1, 0, 2 * Math.PI);
+			context.fill();
+		}
+		elements.field.draw(context);
 	}
 }
 
