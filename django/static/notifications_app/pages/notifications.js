@@ -29,26 +29,31 @@ function renderNotificationsPage() {
 			`;
 
 		} else {
-			
-			for (notification in data.notifications) {
-				document.getElementById('app').innerHTML += `
+			console.log(data.notifications);
+			for (notification of Object.values(data.notifications)) {
+				console.log(notification);
+				
+				let html = `
 					<div class="notification">
 				`;
-
+			
 				if (!notification.read) {
-					document.getElementById('app').innerHTML += `
+					html += `
 						<span class="notification-new">New</span>
 					`;
 				}
-
-				document.getElementById('app').innerHTML += `
-					<span class="notification-date">${notification.date}:</span>
-					<span class="notification-message">${notification.message}</span>
-
-					<a class="notification-delete" data-notification-id=${notification.id}>
-						Delete
-					</a>
+			
+				html += `
+						<span class="notification-date">${notification.date}</span>
+						<span class="notification-message">${notification.message}</span>
+			
+						<a class="notification-delete" data-notification-id=${notification.id}>
+							Delete
+						</a>
+					</div>
 				`;
+			
+				document.getElementById('app').innerHTML += html;
 			}
 		};
 
