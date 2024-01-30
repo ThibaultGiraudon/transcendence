@@ -2,10 +2,7 @@
 let chatSocket = null;
 
 // Check changes on the chat page
-function chatProcess() {
-	const roomIDElement = document.getElementById('room-id');
-	const roomID = JSON.parse(roomIDElement.textContent);
-		
+function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
 	if (chatSocket !== null) {
 		chatSocket.shouldClose = true;
 		chatSocket.socket.close();
@@ -22,7 +19,7 @@ function chatProcess() {
 		shouldClose: false
 	};
 
-	// Got to the bottom of the chat
+	// Go to the bottom of the chat
 	const chatLog = document.querySelector('#chat-log');
 	if (chatLog) {
 		chatLog.scrollTop = chatLog.scrollHeight;
@@ -31,13 +28,8 @@ function chatProcess() {
 
 	// Handle incoming messages
 	chatSocket.socket.onmessage = function(e) {
+
 		const data = JSON.parse(e.data);
-		
-		const blockedUsersElement = document.getElementById('blocked-users');
-		const blockedUsers = blockedUsersElement ? JSON.parse(blockedUsersElement.textContent) : [];
-		
-		const isPrivateElement = document.getElementById('is-private');
-		const isPrivate = isPrivateElement ? JSON.parse(isPrivateElement.textContent) : false;
 
 		if (data.sender) {
 			let username = '[UserNotfound]';
@@ -62,20 +54,20 @@ function chatProcess() {
 				usernameContainer.className = 'other-username';
 
 				// Check if the message is from the current user
-				const idElement = document.getElementById('id');
+				const idElement = sender;
 
 				if (blockedUsers.includes(parseInt(data.sender, 10))) {
 					messageContainer.className = 'blocked-message';
 					messageContainer.textContent = 'This user is blocked';
 				} else {
-					messageContainer.className = idElement && data.sender === idElement.textContent ? 'my-message' : 'other-message';
+					messageContainer.className = data.sender === sender ? 'my-message' : 'other-message';
 				}
 
 				// Display the message
 				const chatLog = document.querySelector('#chat-log');
 				if (chatLog) {
 					// Display the username of the sender
-					if (data.sender !== idElement.textContent && !isPrivate) {
+					if (data.sender !== sender && !isPrivate) {
 						if (chatLog.lastElementChild && chatLog.lastElementChild.dataset.sender !== data.sender) {
 							chatLog.appendChild(usernameContainer);
 						}
@@ -126,9 +118,6 @@ function chatProcess() {
 		if (!message)
 			return;
 
-		const sender = document.getElementById('id').textContent;
-		const username = document.getElementById('username').textContent;
-		
 		if (chatSocket.socket.readyState === WebSocket.OPEN) {
 			chatSocket.socket.send(JSON.stringify({
 				'message': message,

@@ -1,14 +1,26 @@
 function renderSignUpPage() {
 
-	fetchAPI('/api/is_authenticated').then(data => {
+	fetchAPI('/api/isAuthenticated').then(data => {
 		// If the user is already connected
 		if (data.isAuthenticated) {
 			document.getElementById('app').innerHTML = `
 				<div class="already-log-in">
-					<p class="log-in-message">You are already connected, please log out before creating a new user.</p>
-					<a class="log-in-button" href="#" onclick="navigateTo(event, '/sign_out')">Sign out</a>
+					<p class="log-in-message">You are already connected, please log out before log in.</p>
+					<button class="log-in-button" id="sign-out">Sign out</button>
 				</div>
 			`;
+
+			// Add an event listener on the sign-out button
+			document.getElementById('sign-out').addEventListener('click', async function(event) {
+
+				// Logout the user
+				fetchAPI('/api/sign_out').then(data => {
+					renderHeader();
+					
+					router.navigate('/sign_in/');
+					return ;
+				});
+			});
 		
 		// If the user is not connected
 		} else {
@@ -52,23 +64,24 @@ function renderSignUpPage() {
 				// Validate the data
 				if (!username) {
 					document.getElementById('error-username').textContent = 'This field is required.';
-					return;
 				}
 				if (!email) {
 					document.getElementById('error-email').textContent = 'This field is required.';
-					return;
 				}
 				if (!password) {
 					document.getElementById('error-password').textContent = 'This field is required.';
-					return;
+				}
+
+				if (!username || !email || !password) {
+					return ;
 				}
 
 				// Send data to the server
-				const response = await fetch('/sign_in/', {
+				const response = await fetch('/sign_up/', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
-						'X-CSRFToken': csrfToken
+						'X-CSRFToken': getCookie('csrftoken'),
 					},
 					body: JSON.stringify({ username, email, password })
 				});
@@ -81,7 +94,7 @@ function renderSignUpPage() {
 						renderHeader();
 
 						// Redirect the user
-						router.navigate('/users/');
+						router.navigate('/pong/');
 					
 					} else {
 						// If the connection failed, display the error message

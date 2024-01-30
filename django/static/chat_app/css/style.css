@@ -81,6 +81,13 @@
 	justify-content: center;
 }
 
+.you-text {
+	font-size: 0.5em;
+	font-family: var(--font-text-bold);
+	opacity: 0.6;
+	margin-left: 0.5em;
+}
+
 .participants {
 	width: 25%;
 	height: 50em;

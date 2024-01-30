@@ -1,6 +1,6 @@
 function renderSignInPage() {
 
-	fetchAPI('/api/is_authenticated').then(data => {
+	fetchAPI('/api/isAuthenticated').then(data => {
 		// If the user is already connected
 		if (data.isAuthenticated) {
 			document.getElementById('app').innerHTML = `
@@ -16,7 +16,9 @@ function renderSignInPage() {
 				// Logout the user
 				fetchAPI('/api/sign_out').then(data => {
 					renderHeader();
+					
 					router.navigate('/sign_in/');
+					return ;
 				});
 			});
 		
@@ -76,7 +78,7 @@ function renderSignInPage() {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
-						'X-CSRFToken': csrfToken
+						'X-CSRFToken': getCookie('csrftoken'),
 					},
 					body: JSON.stringify({ email, password })
 				});

@@ -22,7 +22,7 @@
 		<script src="{% static 'pong_app/js/utils.js' %}"></script>
 		<script src="{% static 'pong_app/js/pong.js' %}"></script>
 		<script src="{% static 'chat_app/js/chat.js' %}"></script>
-		<script src="{% static 'notifications/js/notification.js' %}"></script>
+		<script src="{% static 'notifications_app/js/notification.js' %}"></script>
 		<script src="{% static 'users_app/js/users.js' %}"></script>
 		<script src="{% static 'main/js/header.js' %}"></script>
 
@@ -35,6 +35,11 @@
 		<script src="{% static 'users_app/pages/users.js' %}"></script>
 
 		<script src="{% static 'pong_app/pages/choose_mode.js' %}"></script>
+
+		<script src="{% static 'chat_app/pages/chat.js' %}"></script>
+		<script src="{% static 'chat_app/pages/room.js' %}"></script>
+		
+		<script src="{% static 'notifications_app/pages/notifications.js' %}"></script>
 
 		<!-- Main -->
 		<script src="{% static 'main/js/main.js' %}"></script>
@@ -54,12 +59,12 @@
 			</div>
 			<div class="menu-pictures">
 				<button class="menu-profile" id="button-profile" data-route="/profile/me">
-					<p class="menu-username" id="username"></p>
-					<img class="menu-img-user" id="user-photo" alt="profile picture" width="60" height="60">
+					<p class="menu-username" id="header-username"></p>
+					<img class="menu-img-user" id="header-user-photo" alt="profile picture" width="60" height="60">
 				</button>
 				<button class="menu-notifs" data-route="/notifications/">
-					<img class="menu-img-notifs" src="/static/main/img/notifications.png" alt="notifications" width="50" height="50">
-					<span class="notification-count" id="notification-count"></span>
+					<img class="menu-img-notifs" src="/static/notifications_app/img/notifications.png" alt="notifications" width="50" height="50">
+					<span class="notification-count" id="header-notification-count"></span>
 				</button>
 			</div>
 		</nav>

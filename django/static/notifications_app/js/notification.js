@@ -12,9 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	// Update the notification count
 	notificationSocket.socket.onmessage = function(e) {
-		document.getElementById('notification-count').textContent = parseInt(
-			document.getElementById('notification-count').textContent
-		) + 1;
+		renderHeader();
 	};
 
 	
