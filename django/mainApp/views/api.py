@@ -90,7 +90,7 @@ def get_user(request, username=None):
 				last_message = {
 					'sender': "You" if sender == request.user.username else sender,
 					'message': last_message_obj.message,
-					'timestamp': last_message_obj.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+					'timestamp': last_message_obj.timestamp.strftime("%d-%m-%Y %H:%M"),
 				}
 			else:
 				last_message = None
@@ -156,6 +156,9 @@ def users(request):
 	users = list(User.objects.all())
 	users_dict = {}
 	for user in users:
+		if user.id == request.user.id:
+			continue
+		
 		users_dict[user.id] = {
 			'id': user.id,
 			'username': user.username,
@@ -277,6 +280,8 @@ def unblock(request, id):
 	return JsonResponse({'success': True, "message": "Successful unblock"})
 
 
+from django.utils import timezone
+
 def get_notifications(request):
 	if not request.user.is_authenticated:
 		return JsonResponse({'notifications': None})
@@ -291,7 +296,7 @@ def get_notifications(request):
 		notifications_dict[notification.id] = {
 			'id': notification.id,
 			'message': notification.message,
-			'date': notification.date,
+			'date': timezone.localtime(notification.date).strftime("%d-%m-%Y %H:%M"),
 			'read': notification.read,
 		}
 	

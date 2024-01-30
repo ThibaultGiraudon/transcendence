@@ -4,6 +4,7 @@ from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from channels.db import database_sync_to_async
 from datetime import datetime
+from django.utils import timezone
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -61,7 +62,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		message = text_data_json.get("message")
 		sender = text_data_json.get("sender")
 		username = text_data_json.get("username")
-		timestamp = datetime.now().strftime("%d/%m/%Y %H:%M")
+		timestamp = timezone.localtime().strftime("%d-%m-%Y %H:%M")
 
 		# Save the message
 		await self.save_message(sender, message)
