@@ -6,16 +6,18 @@ def keyupReset(direction, paddle):
 	if (paddle.taskAsyncio[direction]):
 		paddle.taskAsyncio[direction].cancel()
 
-async def keydownLoop(direction, paddle, consumer):
+async def keydownLoop(direction, paddle, consumer, gameSettings):
 	if (direction == 'up'):
 		paddle.keyState['down'] = False;
 	elif (direction == 'down'):
 		paddle.keyState['up'] = False;
 
 	while (paddle.keyState[direction] or paddle.keyState[direction]):
-		if (paddle.keyState[direction] and direction == 'up' and paddle.position > 30):
+		if (paddle.keyState[direction] and direction == 'up' \
+	  		and paddle.position > gameSettings.limit):
 			paddle.moveUp()
-		elif (paddle.keyState[direction] and direction == 'down' and paddle.position < 670):
+		elif (paddle.keyState[direction] and direction == 'down' \
+			and paddle.position < gameSettings.squareSize - gameSettings.limit - gameSettings.paddleSize):
 			paddle.moveDown()
 		
 		await sendUpdatePaddlePosition(consumer, paddle)
@@ -32,7 +34,7 @@ async def handlePaddleMove(consumer, message, gameSettings):
 				paddle.keyState[direction] = True;
 			elif (direction == 'down'):
 				paddle.keyState[direction] = True;
-			paddle.taskAsyncio[direction] = asyncio.create_task(keydownLoop(direction, paddle, consumer))
+			paddle.taskAsyncio[direction] = asyncio.create_task(keydownLoop(direction, paddle, consumer, gameSettings))
 
 		elif (message['key'] == 'keyup'):
 			keyupReset(direction, paddle)
