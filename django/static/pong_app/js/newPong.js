@@ -11,12 +11,20 @@ const   keyState = {
     l: false,
 };
 
+const	sizes = {
+    canvas: 800,
+    paddleSize: 100,
+    paddleThickness: 20,
+    offset: 20,
+};
+sizes.field = sizes.paddleThickness + sizes.offset;
+
 class Field {
 	constructor(size) {
-		this.x = 30;
-		this.y = 30;
-		this.width = size - 60;
-		this.height = size - 60;
+		this.x = sizes.field;
+		this.y = sizes.field;
+		this.width = size - sizes.field * 2;
+		this.height = size - sizes.field * 2;
 	}
 
 	draw(context) {
@@ -27,19 +35,22 @@ class Field {
 
 class Paddle {
 	constructor(paddleID, position) {
-		const paddleXpos = [10, 770, position, position];
-		const paddleYpos = [position, position, 10, 770];
+		const bottomLimit = sizes.offset;
+		const topLimit = sizes.canvas - sizes.field;
+
+		const paddleXpos = [bottomLimit, topLimit, position, position];
+		const paddleYpos = [position, position, bottomLimit, topLimit];
 		const paddleColors = ['#E21E59', '#1598E9', '#2FD661', '#F19705'];
 
 		this.x = paddleXpos[paddleID];
 		this.y = paddleYpos[paddleID];
 		this.color = paddleColors[paddleID];
 		this.id = paddleID;
-		this.width = 20;
-		this.height = 100;
+		this.width = sizes.paddleThickness;
+		this.height = sizes.paddleSize;
 		if (paddleID >= 2) {
-			this.width = 100;
-			this.height = 20;
+			this.width = sizes.paddleSize;
+			this.height = sizes.paddleThickness;
 		}
 	}
 
@@ -49,11 +60,14 @@ class Paddle {
 	}
 	
 	clear(context) {
+		const bottomLimit = sizes.offset;
+		const topLimit = sizes.canvas - sizes.field;
+
 		context.fillStyle = "#212121";
-		const clearXList = [0, 770, 0, 0]
-		const clearYList = [0, 0, 0, 770]
-		const clearWidthList = [30, 30, 800, 800]
-		const clearHeightList = [800, 800, 30, 30]
+		const clearXList = [0, topLimit, 0, 0]
+		const clearYList = [0, 0, 0, topLimit]
+		const clearWidthList =  [sizes.field, sizes.field, sizes.canvas, sizes.canvas]
+		const clearHeightList = [sizes.canvas, sizes.canvas, sizes.field, sizes.field]
 		const clearX = clearXList[this.id]
 		const clearY = clearYList[this.id]
 		const clearWidth = clearWidthList[this.id]
@@ -79,7 +93,9 @@ class Ball {
 
 	clear(context) {
 		// Here we add 10px because the ball is 20px diameter
-		if (this.x < 40 || this.x > 760 || this.y < 40 || this.y > 760) {
+		const bottomLimit = sizes.field + 10
+		const topLimit = sizes.canvas - sizes.field - 10
+		if (this.x < bottomLimit || this.x > topLimit || this.y < bottomLimit || this.y > topLimit) {
 			context.fillStyle = "#212121";
 			context.beginPath();
 			context.arc(this.x, this.y, this.radius + 1, 0, 2 * Math.PI);
@@ -107,17 +123,15 @@ function getPaddleDirection(key) {
 }
 
 function createGameCanvas() {
-	const canvasSize = 800;
-
 	const gameCanvas = document.getElementById('gameCanvas');
-    gameCanvas.width = canvasSize;
-    gameCanvas.height = canvasSize;
+    gameCanvas.width = sizes.canvas;
+    gameCanvas.height = sizes.canvas;
 
     const gameContext = gameCanvas.getContext('2d');
     gameContext.fillStyle = "#212121";
     gameContext.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
 
-	elements.field = new Field(canvasSize);
+	elements.field = new Field(sizes.canvas);
 	elements.field.draw(gameContext);
 
 	return (gameCanvas, gameContext)
@@ -134,6 +148,7 @@ function updatePaddlePosition(gameContext, paddleID, position) {
 	elements.paddles[paddleID].draw(gameContext);
 }
 
+// TODO add radius from message
 function updateBallPosition(gameContext, x, y) {
 	if (elements.ball) {
 		elements.ball.clear(gameContext);
