@@ -1,7 +1,7 @@
 class Paddle:
     def __init__(self, id):
         self.id = id
-        # self.offset = 0
+        self.offset = 0
         self.position = 0
         self.speed = 10
         self.score = 0
