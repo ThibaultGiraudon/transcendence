@@ -55,12 +55,6 @@ async def sendInitScore(consumer, nbPaddles):
 		await consumer.send(json.dumps(message))
 
 async def sendUpdateBallPosition(consumer, ball):
-	# TODO test
-	if ball.x < 0:
-		ball.x = 700
-	ball.x = ball.x - 20
-	
-
 	await consumer.channel_layer.group_send('game', {
 		'type': 'update_ball_position',
 		'x': ball.x,
@@ -127,13 +121,49 @@ async def sendUpdateScore(consumer, paddleID, gameMode):
 		# await asyncio.sleep(0.01)
 		# await sendUpdateBallPosition(consumer, ball)
 
+
+# async def handle_ball_move(consumer, gameMode):
+# 	await sendInitsquareSize(consumer)
+# 	await sendInitPaddlePosition(consumer)
+# 	await sendInitScore(consumer, consumer.gameSettings.nbPaddles)
+
+# 	ball = consumer.gameSettings.ball
+# 	while (True):
+# 		# TODO maybe change this to bottom (ball.move)
+# 		ball.move()
+
+# 		for paddle in consumer.gameSettings.paddles:
+# 			ball.checkPaddleCollision(paddle, consumer.gameSettings)
+
+# 		paddleID = ball.checkWallCollision(consumer.gameSettings)
+# 		paddle = consumer.gameSettings.paddles[paddleID]
+# 		if (paddleID >= 0):
+# 			if (paddle.score == 9):
+# 				if (consumer.gameSettings.nbPaddles == 2):
+# 					consumer.gameSettings.paddles[paddle.id ^ 1].isAlive = False
+# 				else:
+# 					paddle.isAlive = False
+# 				paddle.color = "0x212121"
+			
+# 			await sendInitPaddlePosition(consumer)	
+# 			await sendUpdateScore(consumer, paddleID, gameMode)
+# 			ball.resetBall(consumer.gameSettings)
+# 			await asyncio.sleep(1)
+
+# 		# TODO change to global var for fps
+# 		await asyncio.sleep(0.01)
+# 		await sendUpdateBallPosition(consumer, ball)
+
 async def startBall(consumer, gameSettings):
 	ball = gameSettings.ball
 	while (True):
-		print('test update ball')
+		ball.move()
+
+		# for paddle in gameSettings.paddles:
+			# ball.checkPaddleCollision(paddle, gameSettings)
 
 		await sendUpdateBallPosition(consumer, ball)
-		await asyncio.sleep(1)
+		await asyncio.sleep(0.1)
 
 async def handleBallMove(consumer, gameMode, gameSettings):
 	if (gameSettings.ball.task):
