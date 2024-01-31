@@ -66,7 +66,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
 	email = models.EmailField(unique=True)
 	username = models.CharField(max_length=150, unique=True)
-	photo = models.ImageField(upload_to='static/users_app/img', default='default.jpg')
+	photo = models.ImageField(upload_to='static/users/img', default='default.jpg')
 	follows = ArrayField(models.IntegerField(), default=list)
 	status = models.CharField(max_length=150, default="online")
 	nbNewNotifications = models.IntegerField(default=0)
@@ -85,6 +85,10 @@ class CustomUser(AbstractUser):
 	
 	def save(self, *args, **kwargs):
 		super(CustomUser, self).save(*args, **kwargs)
+	
+	def set_status(self, status):
+		self.status = status
+		self.save()
 
 
 class Notification(models.Model):
@@ -102,7 +106,10 @@ class Notification(models.Model):
 	def send_notification(self):		
 		channel_layer = get_channel_layer()
 		async_to_sync(channel_layer.group_send)(
-			f"notifications_{self.user.id}", {"type": "notification_message"}
+			f"notifications_{self.user.id}",
+			{
+				"type": "notification_message"
+			}
 		)
 
 
@@ -111,10 +118,22 @@ class Channel(models.Model):
 	room_id = models.CharField(max_length=150, unique=True)
 	name = models.CharField(max_length=150)
 	users = models.ManyToManyField(CustomUser, related_name='channels')
-	messages = ArrayField(models.JSONField(), default=list)
- 
+
 	def __str__(self):
 		return self.name
 	
 	def save(self, *args, **kwargs):
 		super(Channel, self).save(*args, **kwargs)
+
+
+class Message(models.Model):
+	sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+	message = models.TextField()
+	timestamp = models.DateTimeField(default=timezone.now)
+	channel = models.ForeignKey(Channel, related_name='messages', on_delete=models.CASCADE)
+
+	def __str__(self):
+		return self.message
+	
+	def save(self, *args, **kwargs):
+		super(Message, self).save(*args, **kwargs)
