@@ -16,12 +16,9 @@ def practice(request):
 		return render(request, 'base.html')
 
 
-def game(request, gameMode, gameID):
-	# if not request.user.is_authenticated:
-	# 	return redirectPage(request, '/sign_in/')
-	
-	# return renderPage(request, 'pong_elements/modes.html', {'gameMode': gameMode, 'gameID': gameID})
-	pass
+def game(request):
+	if request.method == 'GET':
+		return render(request, 'base.html')
 
 
 def gameOver(request, player):
