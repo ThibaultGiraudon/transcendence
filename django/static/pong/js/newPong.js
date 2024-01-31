@@ -174,17 +174,7 @@ function getSocket(gameID) {
 	return (socket)
 }
 
-function gameProcess(isWaitingPage) {
-	const gameIDElement = document.getElementById('game_id');
-	const gameModeElement = document.getElementById('game_mode');
-	const playerIDELement = document.getElementById('player_id');
-	if (!gameIDElement || !gameModeElement || !playerIDELement) {
-		setTimeout(function() {gameProcess(isWaitingPage)}, 200);
-		return;
-	}
-	const gameID = JSON.parse(gameIDElement.textContent);
-	const gameMode = JSON.parse(gameModeElement.textContent);
-	const playerID = JSON.parse(playerIDELement.textContent);
+function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 
 	if (!isWaitingPage) {
 		gameCanvas, gameContext = createGameCanvas();
@@ -220,7 +210,6 @@ function gameProcess(isWaitingPage) {
 			updateBallPosition(gameContext, message.x, message.y);
 		}
 
-
         console.log('Message reçu:', message);
     };
 
@@ -237,7 +226,6 @@ function gameProcess(isWaitingPage) {
                 direction: getPaddleDirection(event.key),
                 id: getPaddleID(event.key),
             };
-			console.log("keydown");
             socket.socket.send(JSON.stringify(message));
         }
 

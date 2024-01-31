@@ -1,20 +1,27 @@
 function renderWaitPlayers(gameMode) {
 	fetchAPI('/api/isAuthenticated').then(data => {
 		if (data.isAuthenticated) {
-			let html = `
-				<h1>Wait for players ${gameMode}</h1>
-
-				<div class="score_bar" id="wait_player"></div>
-				<div id="pong_game"></div>
-
-				<p>{{ gameID }}</p>
-			`;
-
-			document.getElementById('app').innerHTML = html;
-
 			fetchGamePage(gameMode)
+			fetchAPI('/api/get_game_info').then(data => {
+				if (data.success) {
+					gameID = data.game_id;
+					playerID = data.player_id;
 
-			gameProcess(true)
+					let html = `
+						<h1>Wait for players ${gameMode}</h1>
+		
+						<div class="score_bar" id="wait_player"></div>
+						<div id="pong_game"></div>
+		
+						<p>${gameID}</p>
+					`;
+					document.getElementById('app').innerHTML = html;
+		
+					gameProcess(true, gameMode, gameID, playerID)
+				} else {
+					router.navigate('/pong/');
+				}
+			});
 		} else {
 			router.navigate('/sign_in/');
 		}

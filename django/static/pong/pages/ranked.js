@@ -35,7 +35,6 @@ function renderRankedPage() {
 					const responseData = await response.json();
 
 					if (responseData.success) {
-						// console.log(responseData.redirect + responseData.gameMode);
 						router.navigate(responseData.redirect + responseData.gameMode);
 					}
 				}
