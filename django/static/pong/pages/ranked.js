@@ -4,18 +4,34 @@ function renderRankedPage() {
 			let html = `
 				<h1>Ranked game</h1>
 			
-				<a href="#" data-route="{% url 'wait_players' 'init_ranked_solo_game' %}" onclick="navigateTo(event, this.dataset.route)">
+				<button class="ranked-button" id="init_ranked_solo_game">
 					1 VS 1 SOLO
-				</a>
-				<a href="#" data-route="{% url 'wait_players' 'init_death_game' %}" onclick="navigateTo(event, this.dataset.route)">
+				</button>
+				<button class="ranked-button" id="init_death_game">
 					DEATH GAME (4 players)
-				</a>
-				<a href="#" data-route="{% url 'wait_players' 'init_tournament_game' %}" onclick="navigateTo(event, this.dataset.route)">
+				</button>
+				<button class="ranked-button" id="init_tournament_game">
 					TOURNAMENT (4 players)
-				</a>
+				</button>
 			`;
 
 			document.getElementById('app').innerHTML = html;
+
+			document.querySelector('.ranked-button').addEventListener('click', async function(event) {
+				const gameMode = event.target.id;
+				console.log(gameMode);
+
+				// Send data to the server
+				const response = await fetch('/sign_in/', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-CSRFToken': getCookie('csrftoken'),
+					},
+					body: JSON.stringify({gameMode})
+				});
+			});
+
 		} else {
 			router.navigate('/sign_in/');
 		}
