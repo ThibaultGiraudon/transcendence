@@ -25,7 +25,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 	async def disconnect(self, close_code):
 		gameID = self.scope['url_route']['kwargs']['game_id']
-		if (self.gameSettingsInstances[gameID]):
+		if (gameID in self.gameSettingsInstances):
 			GameSettings = self.gameSettingsInstances[gameID]
 			if (GameSettings.ball.task):
 				GameSettings.ball.task.cancel()
