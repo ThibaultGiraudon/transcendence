@@ -25,8 +25,6 @@ class StatusConsumer(AsyncWebsocketConsumer):
 		status = text_data_json['status']
 		id = text_data_json['id']
 
-		print('>>>>>>>>>>>>>>>>>> RECEIVE status: ' + str(status) + ' id: ' + str(id))
-
 		await self.channel_layer.group_send(
 			self.room_group_name,
 			{
@@ -40,8 +38,6 @@ class StatusConsumer(AsyncWebsocketConsumer):
 	async def status_update(self, event):
 		status = event['status']
 		id = event['id']
-
-		print('>>>>>>>>>>>>>>>>>> STATUS_UPDATE status: ' + str(status) + ' id: ' + str(id) + "[ta mere]")
 
 		await self.send(text_data=json.dumps({
 			'id': id,
