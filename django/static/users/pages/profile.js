@@ -176,16 +176,16 @@ function renderProfilePage(username) {
 									`;
 								} else {
 									html += `
-										<button class="profile-button chat">
+										<button class="profile-button">
 											Send a chat
 										</button>
 									`;
 								}
 								html += `
-									<button class="profile-button block" data-user-id="${user.id}">
-										Block
-									</button>
-								</div>`;
+										<button class="profile-button block" data-user-id="${user.id}">
+											Block
+										</button>
+									</div>`;
 							}
 
 							// Display the profile page
