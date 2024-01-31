@@ -11,11 +11,6 @@ function renderWaitPlayers(gameMode) {
 			`;
 
 			document.getElementById('app').innerHTML = html;
-
-
-
-
-
 		} else {
 			router.navigate('/sign_in/');
 		}

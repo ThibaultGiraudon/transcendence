@@ -30,6 +30,14 @@ function renderRankedPage() {
 					},
 					body: JSON.stringify({gameMode})
 				});
+
+				if (response.headers.get('content-type').includes('application/json')) {
+					const responseData = await response.json();
+
+					if (responseData.success) {
+						router.navigate(responseData.redirect + responseData.gameMode);
+					}
+				}
 			});
 
 		} else {
