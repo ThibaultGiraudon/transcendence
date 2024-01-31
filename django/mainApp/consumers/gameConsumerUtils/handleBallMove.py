@@ -160,7 +160,6 @@ async def startBall(consumer, gameSettings):
 		ball.move()
 
 		for paddle in gameSettings.paddles:
-			print(paddle.id)
 			ball.checkPaddleCollision(paddle, gameSettings)
 
 		await sendUpdateBallPosition(consumer, ball)

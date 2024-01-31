@@ -196,6 +196,10 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
     socket.socket.onmessage = function(event) {
         const message = JSON.parse(event.data);
 
+		if (message.type === 'reload_page') {
+			router.navigate('/pong/game/' + gameMode);
+		}
+
 		if (message.type === 'init_paddle_position') {
 			initPaddlePosition(gameContext, message.id, message.position);
 		}
@@ -207,8 +211,6 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 		if (message.type === 'update_ball_position') {
 			updateBallPosition(gameContext, message.x, message.y);
 		}
-
-        console.log('Message reçu:', message);
     };
 
     socket.socket.onclose = function(event) {

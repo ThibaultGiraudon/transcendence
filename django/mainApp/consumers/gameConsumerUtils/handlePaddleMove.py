@@ -28,7 +28,6 @@ async def handlePaddleMove(consumer, message, gameSettings):
 	paddle = gameSettings.paddles[int(message['id'])]
 
 	if (paddle.isAlive == True):
-		print('handlePaddleMove')
 		if (message['key'] == 'keydown'):
 			if (direction == 'up'):
 				paddle.keyState[direction] = True;
