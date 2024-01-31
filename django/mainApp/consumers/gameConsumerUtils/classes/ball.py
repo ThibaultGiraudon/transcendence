@@ -53,7 +53,7 @@ class Ball:
         closestY = max(position, min(self.y, position + paddleSize))
         distance = math.sqrt((self.x - closestX)**2 + (self.y - closestY)**2)
         
-        print('distance', distance, 'paddle', paddle.id)
+        # print('distance', distance, 'paddle', paddle.id)
 
         # if distance < self.radius:
         #     if (paddle.id == 2 or paddle.id == 3):

@@ -51,7 +51,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 		# # TODO use this to send reload to waiting players
 		# await self.channel_layer.group_send('game', {
 		# 	'type': 'reload_page',
-		# 	'message': 'reload'
 		# })
 
 	# TODO use this to send reload to waiting players
