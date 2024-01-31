@@ -12,9 +12,31 @@ function renderWaitPlayers(gameMode) {
 
 			document.getElementById('app').innerHTML = html;
 
+			fetchGamePage(gameMode)
+
 			gameProcess(true)
 		} else {
 			router.navigate('/sign_in/');
 		}
 	});
+}
+
+async function fetchGamePage(gameMode) {
+	// Send data to the server
+	const response = await fetch('/pong/wait_players/' + gameMode, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-CSRFToken': getCookie('csrftoken'),
+		},
+		body: JSON.stringify({gameMode})
+	});
+
+	if (response.headers.get('content-type').includes('application/json')) {
+		const responseData = await response.json();
+
+		if (responseData.success && responseData.redirect == '/pong/game/') {
+			router.navigate(responseData.redirect + responseData.gameMode);
+		}
+	}
 }
