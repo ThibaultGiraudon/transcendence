@@ -121,7 +121,7 @@ class Channel(models.Model):
 class Message(models.Model):
 	sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 	message = models.TextField()
-	timestamp = models.DateTimeField(auto_now_add=True)
+	timestamp = models.DateTimeField(default=timezone.now)
 	channel = models.ForeignKey(Channel, related_name='messages', on_delete=models.CASCADE)
 
 	def __str__(self):
