@@ -22,6 +22,7 @@ const router = {
 		'/pong/ranked/': renderRankedPage,
 		'/pong/practice/': renderPracticePage,
 		'/pong/wait_players/:gameMode': renderWaitPlayers,
+		'/pong/game/:gameMode': renderGamePage,
 
 		// Chat
 		'/chat/': renderChatPage,
