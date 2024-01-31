@@ -89,7 +89,7 @@ def get_user(request, username=None):
 
 				last_message = {
 					'sender': "You" if sender == request.user.username else sender,
-					'message': last_message_obj.message,
+					'message': last_message_obj.message if not last_message_obj.sender.id in request.user.blockedUsers else "This message is blocked",
 					'timestamp': timezone.localtime(last_message_obj.timestamp).strftime("%d-%m-%Y %H:%M"),
 				}
 			else:
