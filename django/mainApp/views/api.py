@@ -90,7 +90,7 @@ def get_user(request, username=None):
 				last_message = {
 					'sender': "You" if sender == request.user.username else sender,
 					'message': last_message_obj.message,
-					'timestamp': last_message_obj.timestamp.strftime("%d-%m-%Y %H:%M"),
+					'timestamp': timezone.localtime(last_message_obj.timestamp).strftime("%d-%m-%Y %H:%M"),
 				}
 			else:
 				last_message = None
