@@ -25,15 +25,15 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 	async def disconnect(self, close_code):
 		gameID = self.scope['url_route']['kwargs']['game_id']
-		GameSettings = self.gameSettingsInstances[gameID]
-		if (GameSettings.ball.task):
-			GameSettings.ball.task.cancel()
+		if (self.gameSettingsInstances[gameID]):
+			GameSettings = self.gameSettingsInstances[gameID]
+			if (GameSettings.ball.task):
+				GameSettings.ball.task.cancel()
 		await self.channel_layer.group_discard('game', self.channel_name)
 
 	async def receive(self, text_data):
 		gameID = self.scope['url_route']['kwargs']['game_id']
 		message = json.loads(text_data)
-		print(message)
 
 		if (message['type'] == 'init_ranked_solo_game' or \
 			message['type'] == 'init_death_game' or \

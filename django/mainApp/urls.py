@@ -46,12 +46,12 @@ urlpatterns = [
 	path('api/create_channel', api.create_channel, name='create_channel'),
 
 	path('api/generate_csrf_token/', api.generate_csrf_token, name='generate_csrf_token'),
-
+	path('api/get_game_info', api.get_game_info, name='get_game_info'),
 
 	# To define
 	path('pong/ranked/', pongView.ranked, name='ranked'),
 	path('pong/practice/', pongView.practice, name='practice'),
-	path('pong/game/<str:gameMode>', pongView.game, name='game'),
 	path('pong/game_over/<str:player>', pongView.gameOver, name='game_over'),
 	path('pong/wait_players/<str:gameMode>', waitPlayersView.waitPlayers, name='wait_players'),
+	path('pong/game/<str:gameMode>', pongView.game, name='game'),
 ]

@@ -409,3 +409,10 @@ def create_channel(request):
 def generate_csrf_token(request):
 	csrf_token = get_token(request)
 	return JsonResponse({'token': csrf_token})
+
+
+def get_game_info(request):
+	if not request.user.is_authenticated:
+		return JsonResponse({'success': False, 'game_id': None, 'player_id': None})
+
+	return JsonResponse({'success': True, 'game_id': request.user.player.currentGameID, 'player_id': request.user.player.id})
