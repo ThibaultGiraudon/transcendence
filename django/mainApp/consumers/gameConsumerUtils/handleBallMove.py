@@ -159,8 +159,9 @@ async def startBall(consumer, gameSettings):
 	while (True):
 		ball.move()
 
-		# for paddle in gameSettings.paddles:
-			# ball.checkPaddleCollision(paddle, gameSettings)
+		for paddle in gameSettings.paddles:
+			print(paddle.id)
+			ball.checkPaddleCollision(paddle, gameSettings)
 
 		await sendUpdateBallPosition(consumer, ball)
 		await asyncio.sleep(0.1)
