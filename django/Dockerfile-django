@@ -11,9 +11,4 @@ COPY	./ ./
 
 RUN		python manage.py makemigrations --noinput
 
-CMD 	["sh", "-c", "python manage.py makemigrations mainApp && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
-
-# NOTE BY LEON:
-# The --insecure flag is used to serve static file in production.
-# It's not insecure, it's just Django who doesn't want to serve static files by default in production.
-# See the official documentation for more informations...
+CMD		["sh", "-c", "python manage.py makemigrations mainApp && python manage.py migrate && python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000 && python manage.py set_all_users_offline"]

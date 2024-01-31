@@ -35,13 +35,14 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     networks:
       - transcendence
     restart: on-failure
     volumes:
       - static_volume:/usr/src/app/static
-      - img_volume:/usr/src/app/static/users_app/img
+      - img_volume:/usr/src/app/static/users/img
     # TODO remove this (enable it for logs directy in console) (for the print in python)
     tty: true
 
@@ -92,6 +93,11 @@ services:
     restart: on-failure
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} -h localhost"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
 
   adminer:
     image: adminer
