@@ -42,7 +42,7 @@ services:
     restart: on-failure
     volumes:
       - static_volume:/usr/src/app/static
-      - img_volume:/usr/src/app/static/users_app/img
+      - img_volume:/usr/src/app/static/users/img
     # TODO remove this (enable it for logs directy in console) (for the print in python)
     tty: true
 

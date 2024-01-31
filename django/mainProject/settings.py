@@ -15,7 +15,7 @@ SECURE_SSL_REDIRECT = False
 
 
 # Default profile picture
-DEFAULT_IMAGE_PATH = '/usr/src/app/static/users_app/img/default.jpg'
+DEFAULT_IMAGE_PATH = '/usr/src/app/static/users/img/default.jpg'
 
 
 # Date and Languages
