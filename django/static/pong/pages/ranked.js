@@ -22,7 +22,7 @@ function renderRankedPage() {
 				console.log(gameMode);
 
 				// Send data to the server
-				const response = await fetch('/sign_in/', {
+				const response = await fetch('/pong/wait_players/', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',

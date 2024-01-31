@@ -30,7 +30,7 @@ def waitPlayers(request):
 		return render(request, 'base.html')
 	elif (request.method == 'POST'):
 		data = json.loads(request.body)
-		gameMode = data['gameMode']
+		gameMode = data.get('gameMode')
 
 		player = request.user.player
 

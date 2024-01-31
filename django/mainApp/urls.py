@@ -53,5 +53,5 @@ urlpatterns = [
 	path('pong/practice/', pongView.practice, name='practice'),
 	path('pong/game/<str:gameMode>/<str:gameID>/', pongView.game, name='game'),
 	path('pong/game_over/<str:player>/', pongView.gameOver, name='game_over'),
-	path('pong/wait_players/<str:gameMode>/', waitPlayersView.waitPlayers, name='wait_players'),
+	path('pong/wait_players/', waitPlayersView.waitPlayers, name='wait_players'),
 ]
