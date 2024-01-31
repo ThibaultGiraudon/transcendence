@@ -22,7 +22,7 @@ function renderRankedPage() {
 				console.log(gameMode);
 
 				// Send data to the server
-				const response = await fetch('/pong/wait_players/', {
+				const response = await fetch('/pong/wait_players/' + gameMode, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -35,6 +35,7 @@ function renderRankedPage() {
 					const responseData = await response.json();
 
 					if (responseData.success) {
+						// console.log(responseData.redirect + responseData.gameMode);
 						router.navigate(responseData.redirect + responseData.gameMode);
 					}
 				}

@@ -174,12 +174,12 @@ function getSocket(gameID) {
 	return (socket)
 }
 
-function gameProcessLoaded(isWaitingPage) {
+function gameProcess(isWaitingPage) {
 	const gameIDElement = document.getElementById('game_id');
 	const gameModeElement = document.getElementById('game_mode');
 	const playerIDELement = document.getElementById('player_id');
 	if (!gameIDElement || !gameModeElement || !playerIDELement) {
-		setTimeout(function() {gameProcessLoaded(isWaitingPage)}, 200);
+		setTimeout(function() {gameProcess(isWaitingPage)}, 200);
 		return;
 	}
 	const gameID = JSON.parse(gameIDElement.textContent);
@@ -258,8 +258,4 @@ function gameProcessLoaded(isWaitingPage) {
             socket.socket.send(JSON.stringify(message));
         }
     });
-}
-
-function gameProcess(isWaitingPage) {
-	gameProcessLoaded(isWaitingPage);
 }

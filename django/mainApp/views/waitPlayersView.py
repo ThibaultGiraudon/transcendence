@@ -25,7 +25,7 @@ def createOrJoinGame(waitingGamesList, player, gameMode):
 		)
 		return (newGame.id)
 
-def waitPlayers(request):
+def waitPlayers(request, gameMode):
 	if (request.method == 'GET'):
 		return render(request, 'base.html')
 	elif (request.method == 'POST'):

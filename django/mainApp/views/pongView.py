@@ -16,7 +16,7 @@ def practice(request):
 		return render(request, 'base.html')
 
 
-def game(request):
+def game(request, gameMode):
 	if request.method == 'GET':
 		return render(request, 'base.html')
 

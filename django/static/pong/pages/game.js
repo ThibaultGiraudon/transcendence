@@ -20,6 +20,8 @@ function renderGamePage(gameMode) {
 			`;
 
 			document.getElementById('app').innerHTML = html;
+
+			gameProcess(false)
 		} else {
 			router.navigate('/sign_in/');
 		}
