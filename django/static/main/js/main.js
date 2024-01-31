@@ -159,31 +159,6 @@ function fetchAPI(url) {
 // ---------------------------------- Observer ------------------------------------
 // --------------------------------------------------------------------------------
 
-function gameProcess() {
-	console.log("test");
-}
-
-
-const elementsToProcess = {
-	'pong_game': gameProcess,
-};
-
-
-function handleMutation() {
-	for (let id in elementsToProcess) {
-		const element = document.getElementById(id);
-		if (element) {
-			elementsToProcess[id]();
-			delete elementsToProcess[id];
-		}
-	}
-}
-
-
-const observer = new MutationObserver(handleMutation);
-observer.observe(document, { childList: true, subtree: true });
-
-
 window.addEventListener('DOMContentLoaded', (event) => {
 	router.navigate(window.location.pathname);
 	renderHeader();
