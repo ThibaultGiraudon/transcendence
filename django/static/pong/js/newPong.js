@@ -105,7 +105,6 @@ class Ball {
 	}
 }
 
-
 function getPaddleID(key) {
 	if (key === 'w' || key === 's') {
 		return '0';
@@ -175,7 +174,6 @@ function getSocket(gameID) {
 }
 
 function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
-
 	if (!isWaitingPage) {
 		gameCanvas, gameContext = createGameCanvas();
 	}
