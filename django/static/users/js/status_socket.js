@@ -19,8 +19,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		const id = data.id;
 		const status = data.status;
 
-		console.log("data " + data);
-
 		// Dont display if the user is in a chat
 		if (status.indexOf('chat') !== -1) {
 			status = 'online';
@@ -59,7 +57,6 @@ function SignOutProcess(id) {
 	// Send a message to the websocket when the user logged out
 	var signOutButton = document.getElementById('sign-out');
 	if (signOutButton) {
-		console.log('signOutButton');
 		// signOutButton.addEventListener('click', function() {
 			statusSocket.socket.send(JSON.stringify({
 				'id': id,
@@ -73,11 +70,9 @@ function SignInProcess(id) {
 	// Send a message to the websocket when the user logged in
 	var signInButton = document.getElementById('set-status-online');
 	if (signInButton) {
-		console.log('signInButton');
 		var socketConnectedPromise = new Promise(function(resolve, reject) {
 			var checkSocketStatus = setInterval(function() {
 				if (statusSocket.socket.readyState === WebSocket.OPEN) {
-					console.log('send');
 					clearInterval(checkSocketStatus);
 					resolve();
 				} else if (statusSocket.socket.readyState === WebSocket.CLOSED || statusSocket.socket.readyState === WebSocket.CLOSING) {
@@ -92,8 +87,6 @@ function SignInProcess(id) {
 				'id': id,
 				'status': 'online'
 			}));
-		}).catch(function(error) {
-			console.error("Erreur de connexion WebSocket : ", error);
-		});
+		}).catch(function(error) {});
 	}
 }

@@ -29,9 +29,7 @@ function renderNotificationsPage() {
 			`;
 
 		} else {
-			console.log(data.notifications);
 			for (notification of Object.values(data.notifications)) {
-				console.log(notification);
 				
 				let html = `
 					<div class="notification">
