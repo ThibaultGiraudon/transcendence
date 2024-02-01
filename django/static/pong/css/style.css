@@ -18,9 +18,28 @@
 	font-size: 50px;
 }
 
-
-
 canvas {
 	border-radius: 10px;
 	margin-bottom: 20px;
+}
+
+
+/* WAITING PAGE FOR THE GAME */
+
+.waiting-game-infos {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.waiting-game-title {
+	text-align: left;
+}
+
+.waiting-game-gif {
+	width: 30em;
+	height: 30em;
 }

@@ -15,6 +15,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.core.mail import send_mail
 import urllib.request, json, base64
 
 
