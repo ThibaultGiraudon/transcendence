@@ -59,6 +59,7 @@ async def sendUpdateBallPosition(consumer, ball):
 		'type': 'update_ball_position',
 		'x': ball.x,
 		'y': ball.y,
+		'color': ball.color,
 	})
 
 async def sendUpdateScore(consumer, paddleID, gameMode):
@@ -157,11 +158,10 @@ async def sendUpdateScore(consumer, paddleID, gameMode):
 async def startBall(consumer, gameSettings):
 	ball = gameSettings.ball
 	while (True):
-		ball.move()
-
 		for paddle in gameSettings.paddles:
 			ball.checkPaddleCollision(paddle, gameSettings)
 
+		ball.move()
 		await sendUpdateBallPosition(consumer, ball)
 		await asyncio.sleep(0.1)
 
