@@ -53,17 +53,17 @@ class Ball:
         closestY = max(position, min(self.y, position + paddleSize))
         distance = math.sqrt((self.x - closestX)**2 + (self.y - closestY)**2)
         
-        # print('distance', distance, 'paddle', paddle.id)
+        print('distance', distance, 'paddle', paddle.id)
 
-        # if distance < self.radius:
-        #     if (paddle.id == 2 or paddle.id == 3):
-        #         collisionPosition = (closestX - offset) / paddleThickness
-        #     else:
-        #         collisionPosition = (closestY - position) / paddleSize
-        #     reflectionAngle = (collisionPosition - 0.5) * math.pi
-        #     maxAngle = math.pi / 3
+        if distance < self.radius:
+            if (paddle.id == 2 or paddle.id == 3):
+                collisionPosition = (closestX - offset) / paddleThickness
+            else:
+                collisionPosition = (closestY - position) / paddleSize
+            reflectionAngle = (collisionPosition - 0.5) * math.pi
+            maxAngle = math.pi / 3
 
-        #     self.__getReflectionAngle(paddle, maxAngle, reflectionAngle)
+            self.__getReflectionAngle(paddle, maxAngle, reflectionAngle)
             # TODO add powershot
             # self.__powerShot(paddle, collisionPosition)
 
