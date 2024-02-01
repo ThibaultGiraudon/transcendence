@@ -1,4 +1,5 @@
 from	asgiref.sync import async_to_sync
+from	.senders.sendUpdateBallPosition import sendUpdateBallPosition
 import	asyncio, json
 
 def getUserName(id, gameMode):
@@ -53,14 +54,6 @@ async def sendInitScore(consumer, nbPaddles):
 			'id': paddle.id,
 		}
 		await consumer.send(json.dumps(message))
-
-async def sendUpdateBallPosition(consumer, ball):
-	await consumer.channel_layer.group_send('game', {
-		'type': 'update_ball_position',
-		'x': ball.x,
-		'y': ball.y,
-		'color': ball.color,
-	})
 
 async def sendUpdateScore(consumer, paddleID, gameMode):
 	if (consumer.gameSettings.nbPaddles == 2):

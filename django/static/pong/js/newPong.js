@@ -211,7 +211,6 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 		}
 
 		if (message.type === 'update_ball_position') {
-			console.log(message.color);
 			updateBallPosition(gameContext, message.x, message.y, message.color);
 		}
     };
