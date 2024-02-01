@@ -42,9 +42,13 @@ class Paddle {
 			this.width = sizes.paddleSize;
 			this.height = sizes.paddleThickness;
 		}
+		const canvas = document.getElementById('paddle' + (parseInt(paddleID) + 1) + 'Layer');
+		canvas.width = sizes.canvas;
+		canvas.height = sizes.canvas;		
+		this.context = canvas.getContext('2d');
 	}
 
-	draw(context, position) {
+	draw(position) {
 		const bottomLimit = sizes.offset;
 		const topLimit = sizes.canvas - sizes.field;
 
@@ -55,12 +59,12 @@ class Paddle {
 		this.x = paddleXpos[this.id];
 		this.y = paddleYpos[this.id];
 		this.color = paddleColors[this.id];
-		context.fillStyle = this.color;
-		context.fillRect(this.x, this.y, this.width, this.height);
+		this.context.fillStyle = this.color;
+		this.context.fillRect(this.x, this.y, this.width, this.height);
 	}
 	
-	clear(context) {
-		context.clearRect(0, 0, sizes.canvas, sizes.canvas)
+	clear() {
+		this.context.clearRect(0, 0, sizes.canvas, sizes.canvas)
 	}
 }
 
@@ -125,19 +129,13 @@ function createGameCanvas() {
 }
 
 function initPaddlePosition(gameContext, paddleID, position) {
-	const canvas = document.getElementById('paddle' + (parseInt(paddleID) + 1) + 'Layer');
-	canvas.width = sizes.canvas;
-	canvas.height = sizes.canvas;
-
-	const context = canvas.getContext('2d');
 	elements.paddles[paddleID] = new Paddle(paddleID);
-	elements.paddles[paddleID].draw(context, position);
+	elements.paddles[paddleID].draw(position);
 }
 
 function updatePaddlePosition(gameContext, paddleID, position) {
-	elements.paddles[paddleID].clear(gameContext);
-	elements.paddles[paddleID].y = position;
-	elements.paddles[paddleID].draw(gameContext);
+	elements.paddles[paddleID].clear();
+	elements.paddles[paddleID].draw(position);
 }
 
 // TODO add radius from message
