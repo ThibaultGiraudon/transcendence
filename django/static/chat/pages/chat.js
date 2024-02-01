@@ -26,7 +26,7 @@ function renderChatPage() {
 									<p class="chat-last-message-timestamp">${channel.last_message.timestamp}</p>
 									<div class="chat-last-message-container">
 										<p class="chat-last-message-sender">${channel.last_message.sender}: </p>
-										<p class="chat-last-message">${channel.last_message.message}</p>
+										<p class="chat-last-message">${channel.last_message.message.substring(0, 50)}${channel.last_message.message.length > 50 ? '...' : ''}</p>
 									</div>
 								`
 								:
@@ -39,7 +39,6 @@ function renderChatPage() {
 					}).join('')}
 				</div>
 			`;
-		
 		// If the user has no chats
 		} else {
 			document.getElementById('app').innerHTML += '<p>No channels available.</p>';

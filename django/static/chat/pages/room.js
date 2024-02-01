@@ -149,43 +149,7 @@ function renderRoomPage(room_id) {
 				html += messageHTML;
 			}
 			html += `</div>`;
-
-			// html += `
-			// <div id="chat-log" class="chat-log">
-			// 	${Object.values(messages).map(message => {
-			// 		let messageHTML = '';
-			// 		console.log("MESSAGE " + (message));
-			// 		console.log("SENDER " + Object.values(message.sender));
-			// 		console.log("BLOCKED USER " + Object.values(user.blockedUsers));
-			// 		if (message.sender in user.blockedUsers) {
-			// 			console.log("blocked");
-			// 			messageHTML += `
-			// 				<p class="blocked-message">This user is blocked</p>
-			// 			`;
-			// 		} else {
-			// 			if (!room.private && message.sender != user.id) {
-			// 				if (previousMessageSender != message.sender) {
-			// 						messageHTML += `
-			// 							<p class="other-username">${message.username}</p>
-			// 						`;
-			// 				}
-			// 			}
-			// 			messageHTML += `
-			// 				${message.sender == user.id ? `
-			// 					<p class="my-message" data-sender="${message.sender}">
-			// 				` : `
-			// 					<p class="other-message" data-sender="${message.sender}">
-			// 				`}
-			// 				${message.message}
-			// 				</p>
-			// 			`;
-			// 		}
-			// 		previousMessageSender = message.sender;
-			// 		return messageHTML;
-			// 	}).join('')}
-			// </div>
-			// `;
-
+			
 			// Display the chat buttons and close HTML
 			html += `
 				<br>
