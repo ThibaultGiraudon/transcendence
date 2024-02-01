@@ -4,4 +4,5 @@ async def sendUpdateBallPosition(consumer, ball):
 		'x': ball.x,
 		'y': ball.y,
 		'color': ball.color,
+		'radius': ball.radius,
 	})
