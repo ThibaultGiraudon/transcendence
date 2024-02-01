@@ -73,6 +73,29 @@ class Ball:
             self.__getReflectionAngle(paddle, maxAngle, reflectionAngle)
             self.__powerShot(paddle, collisionPosition)
 
+    def checkWallCollision(self, gameSettings):
+        maxPosition = gameSettings.squareSize - gameSettings.limit
+        for paddle in gameSettings.paddles:
+            if (paddle.isAlive == True):
+                if (paddle.id == 0 and self.x <= 0):
+                    return (0)
+                elif (paddle.id == 1 and self.x >= gameSettings.squareSize):
+                    return (1)
+                elif (paddle.id == 2 and self.y <= 0):
+                    return (2)
+                elif (paddle.id == 3 and self.y >= gameSettings.squareSize):
+                    return (3)
+            else:
+                if (paddle.id == 0 and self.x <= gameSettings.limit):
+                    self.angle = math.pi - self.angle
+                elif (paddle.id == 1 and self.x >= maxPosition):
+                    self.angle = math.pi - self.angle
+                elif (paddle.id == 2 and self.y <= gameSettings.limit):
+                    self.angle = -self.angle
+                elif (paddle.id == 3 and self.y >= maxPosition):
+                    self.angle = -self.angle
+        return (-1)
+
     def move(self):
         deltaX = self.speed * math.cos(self.angle) 
         deltaY = self.speed * math.sin(self.angle)
