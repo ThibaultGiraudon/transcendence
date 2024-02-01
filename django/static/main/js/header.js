@@ -13,7 +13,11 @@ function renderHeader() {
 
 			document.getElementById('header-username').textContent = data.username;
 			document.getElementById('header-user-photo').src = data.photo_url;
-			document.getElementById('header-notification-count').textContent = data.nbNewNotifications;
+			
+			if (data.nbNewNotifications > 99)
+				document.getElementById('header-notification-count').textContent = '99+';
+			else
+				document.getElementById('header-notification-count').textContent = data.nbNewNotifications;
 
 		// If the user is not authenticated
 		} else {

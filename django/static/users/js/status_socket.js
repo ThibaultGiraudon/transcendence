@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	};
 
 
-	// Update the status of users
 	statusSocket.socket.onmessage = function(e) {
 		const data = JSON.parse(e.data);
 		const id = data.id;
@@ -37,15 +36,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	// Close the socket
 	statusSocket.socket.onclose = function(e) {
-		if (!this.shouldClose) {
+		if (!this.shouldClose && this.readyState !== WebSocket.CLOSED) {
 			statusSocket.socket = new WebSocket(statusSocket.url);
 		}
 	};
 
-	
 	// Close the socket when the user leaves the page
 	window.onbeforeunload = function() {
-		if (statusSocket !== null) {
+		if (statusSocket !== null && statusSocket.socket.readyState === WebSocket.OPEN) {
 			statusSocket.shouldClose = true;
 			statusSocket.socket.close();
 		}
@@ -57,12 +55,10 @@ function SignOutProcess(id) {
 	// Send a message to the websocket when the user logged out
 	var signOutButton = document.getElementById('sign-out');
 	if (signOutButton) {
-		// signOutButton.addEventListener('click', function() {
-			statusSocket.socket.send(JSON.stringify({
-				'id': id,
-				'status': 'offline'
-			}));
-		// });
+		statusSocket.socket.send(JSON.stringify({
+			'id': id,
+			'status': 'offline'
+		}));
 	}
 }
 

@@ -45,16 +45,16 @@ def sign_in(request):
 		user = authenticate_custom_user(email=email, password=password)
 
 		if user == 'emailError':
-			return JsonResponse({"success": False, "email": "Invalid email"})
+			return JsonResponse({"success": False, "email": "Invalid email"}, status=401)
 		elif user == 'passwordError':
-			return JsonResponse({"success": False, "password": "Invalid password"})
+			return JsonResponse({"success": False, "password": "Invalid password"}, status=401)
 		else:
 			login(request, user)
 
 			# Update the user status
 			user.set_status("online")
 
-			return JsonResponse({"success": True, "message": "Successful login"})
+			return JsonResponse({"success": True, "message": "Successful login"}, status=200)
 
 
 @ensure_csrf_cookie
@@ -71,13 +71,16 @@ def sign_up(request):
 		password = data.get('password')
 
 		if CustomUser.objects.filter(email=email).exists():
-			return JsonResponse({"success": False, "email": "This email is already taken"})
+			return JsonResponse({"success": False, "email": "This email is already taken"}, status=401)
 
 		if CustomUser.objects.filter(username=username).exists():
-			return JsonResponse({"success": False, "username": "This username is already taken"})
+			return JsonResponse({"success": False, "username": "This username is already taken"}, status=401)
 		
 		elif len(username) < 4:
-			return JsonResponse({"success": False, "username": "Your username is too short (4 characters minimum)"})
+			return JsonResponse({"success": False, "username": "Your username is too short (4 characters minimum)"}, status=401)
+		
+		elif len(username) > 20:
+			return JsonResponse({"success": False, "username": "Your username is too long (20 characters maximum)"}, status=401)
 
 		# Create the user
 		user = CustomUser.objects.create_user(
@@ -101,7 +104,7 @@ def sign_up(request):
 			channel.users.set([user])
 			channel.save()
 
-		return JsonResponse({"success": True, "message": "Successful sign up"})
+		return JsonResponse({"success": True, "message": "Successful sign up"}, status=200)
 
 
 @ensure_csrf_cookie
@@ -119,13 +122,15 @@ def profile(request, username):
 		if new_username == request.user.username:
 			pass
 		elif len(new_username) < 4:
-			return JsonResponse({"success": False, "username": "This username is too short (4 characters minimum)"})
+			return JsonResponse({"success": False, "username": "This username is too short (4 characters minimum)"}, status=401)
+		elif len(new_username) > 20:
+			return JsonResponse({"success": False, "username": "This username is too long (20 characters maximum)"}, status=401)
 		elif ' ' in new_username:
-			return JsonResponse({"success": False, "username": "This username cannot contain space"})
+			return JsonResponse({"success": False, "username": "This username cannot contain space"}, status=401)
 		elif any(char.isdigit() for char in new_username):
-			return JsonResponse({"success": False, "username": "This username cannot contain special characters"})
+			return JsonResponse({"success": False, "username": "This username cannot contain special characters"}, status=401)
 		elif CustomUser.objects.filter(username=new_username).exists():
-			return JsonResponse({"success": False, "username": "This username is already taken"})
+			return JsonResponse({"success": False, "username": "This username is already taken"}, status=401)
 		else:
 			request.user.username = new_username
 			request.user.save()
@@ -141,12 +146,12 @@ def profile(request, username):
 				photo_data = base64.b64decode(photo)
 				photo_image = Image.open(BytesIO(photo_data))
 			except Exception as e:
-				return JsonResponse({"success": False, "message": "Invalid image file"})
+				return JsonResponse({"success": False, "message": "Invalid image file"}, status=401)
 
 			# Determine the image file type
 			image_type = imghdr.what(None, photo_data)
 			if image_type is None:
-				return JsonResponse({"success": False, "message": "Invalid image file"})
+				return JsonResponse({"success": False, "message": "Invalid image file"}, status=401)
 			
 			# Save the new photo
 			photo_temp = BytesIO()
@@ -155,7 +160,7 @@ def profile(request, username):
 			request.user.photo.save(f"{request.user.email}.{image_type}", File(photo_temp), save=True)
 			request.user.save()
 
-		return JsonResponse({"success": True, "message": "Successful profile update"})
+		return JsonResponse({"success": True, "message": "Successful profile update"}, status=200)
 	
 	else:
 		return JsonResponse({"success": False, "message": "Method not allowed"}, status=405)
