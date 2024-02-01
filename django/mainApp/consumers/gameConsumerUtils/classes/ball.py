@@ -101,3 +101,13 @@ class Ball:
         deltaY = self.speed * math.sin(self.angle)
         self.x += deltaX
         self.y += deltaY
+
+    def resetBall(self, gameSettings):
+        self.x = gameSettings.squareSize / 2
+        self.y = gameSettings.squareSize / 2
+        self.radius = 10
+        self.color = "#FDF3E1"
+        self.speed = 5
+
+        randomAngle = self.__getRandomAngle(gameSettings)
+        self.angle = random.choice(randomAngle)
