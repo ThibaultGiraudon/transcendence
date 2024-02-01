@@ -148,11 +148,11 @@ function updatePaddlePosition(gameContext, paddleID, position) {
 }
 
 // TODO add radius from message
-function updateBallPosition(gameContext, x, y) {
+function updateBallPosition(gameContext, x, y, color) {
 	if (elements.ball) {
 		elements.ball.clear(gameContext);
 	}
-	elements.ball = new Ball(x, y, '#FFFFFF', 10);
+	elements.ball = new Ball(x, y, color, 10);
 	elements.ball.draw(gameContext);
 }
 
@@ -211,7 +211,8 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 		}
 
 		if (message.type === 'update_ball_position') {
-			updateBallPosition(gameContext, message.x, message.y);
+			console.log(message.color);
+			updateBallPosition(gameContext, message.x, message.y, message.color);
 		}
     };
 
