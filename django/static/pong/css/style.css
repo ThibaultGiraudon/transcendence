@@ -18,9 +18,10 @@
 	font-size: 50px;
 }
 
-
-
 canvas {
+	position: absolute;
+	top: 400px;
+	left: calc(50% - 400px);
 	border-radius: 10px;
 	margin-bottom: 20px;
 }

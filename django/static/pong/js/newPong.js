@@ -34,17 +34,7 @@ class Field {
 }
 
 class Paddle {
-	constructor(paddleID, position) {
-		const bottomLimit = sizes.offset;
-		const topLimit = sizes.canvas - sizes.field;
-
-		const paddleXpos = [bottomLimit, topLimit, position, position];
-		const paddleYpos = [position, position, bottomLimit, topLimit];
-		const paddleColors = ['#E21E59', '#1598E9', '#2FD661', '#F19705'];
-
-		this.x = paddleXpos[paddleID];
-		this.y = paddleYpos[paddleID];
-		this.color = paddleColors[paddleID];
+	constructor(paddleID) {
 		this.id = paddleID;
 		this.width = sizes.paddleThickness;
 		this.height = sizes.paddleSize;
@@ -54,25 +44,23 @@ class Paddle {
 		}
 	}
 
-	draw(context) {
+	draw(context, position) {
+		const bottomLimit = sizes.offset;
+		const topLimit = sizes.canvas - sizes.field;
+
+		const paddleXpos = [bottomLimit, topLimit, position, position];
+		const paddleYpos = [position, position, bottomLimit, topLimit];
+		const paddleColors = ['#E21E59', '#1598E9', '#2FD661', '#F19705'];
+
+		this.x = paddleXpos[this.id];
+		this.y = paddleYpos[this.id];
+		this.color = paddleColors[this.id];
 		context.fillStyle = this.color;
 		context.fillRect(this.x, this.y, this.width, this.height);
 	}
 	
 	clear(context) {
-		const bottomLimit = sizes.offset;
-		const topLimit = sizes.canvas - sizes.field;
-
-		context.fillStyle = "#212121";
-		const clearXList = [0, topLimit, 0, 0]
-		const clearYList = [0, 0, 0, topLimit]
-		const clearWidthList =  [sizes.field, sizes.field, sizes.canvas, sizes.canvas]
-		const clearHeightList = [sizes.canvas, sizes.canvas, sizes.field, sizes.field]
-		const clearX = clearXList[this.id]
-		const clearY = clearYList[this.id]
-		const clearWidth = clearWidthList[this.id]
-		const clearHeight = clearHeightList[this.id]
-		context.fillRect(clearX, clearY, clearWidth, clearHeight);
+		context.clearRect(0, 0, sizes.canvas, sizes.canvas)
 	}
 }
 
@@ -137,8 +125,13 @@ function createGameCanvas() {
 }
 
 function initPaddlePosition(gameContext, paddleID, position) {
-	elements.paddles[paddleID] = new Paddle(paddleID, position);
-	elements.paddles[paddleID].draw(gameContext);
+	const canvas = document.getElementById('paddle' + (parseInt(paddleID) + 1) + 'Layer');
+	canvas.width = sizes.canvas;
+	canvas.height = sizes.canvas;
+
+	const context = canvas.getContext('2d');
+	elements.paddles[paddleID] = new Paddle(paddleID);
+	elements.paddles[paddleID].draw(context, position);
 }
 
 function updatePaddlePosition(gameContext, paddleID, position) {
