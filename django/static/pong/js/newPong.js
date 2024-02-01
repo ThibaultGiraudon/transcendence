@@ -34,17 +34,7 @@ class Field {
 }
 
 class Paddle {
-	constructor(paddleID, position) {
-		const bottomLimit = sizes.offset;
-		const topLimit = sizes.canvas - sizes.field;
-
-		const paddleXpos = [bottomLimit, topLimit, position, position];
-		const paddleYpos = [position, position, bottomLimit, topLimit];
-		const paddleColors = ['#E21E59', '#1598E9', '#2FD661', '#F19705'];
-
-		this.x = paddleXpos[paddleID];
-		this.y = paddleYpos[paddleID];
-		this.color = paddleColors[paddleID];
+	constructor(paddleID) {
 		this.id = paddleID;
 		this.width = sizes.paddleThickness;
 		this.height = sizes.paddleSize;
@@ -52,27 +42,37 @@ class Paddle {
 			this.width = sizes.paddleSize;
 			this.height = sizes.paddleThickness;
 		}
+		const canvas = document.getElementById('paddle' + (parseInt(paddleID) + 1) + 'Layer');
+		if (!canvas) {
+			return;
+		}
+		canvas.width = sizes.canvas;
+		canvas.height = sizes.canvas;		
+		this.context = canvas.getContext('2d');
 	}
 
-	draw(context) {
-		context.fillStyle = this.color;
-		context.fillRect(this.x, this.y, this.width, this.height);
-	}
-	
-	clear(context) {
+	draw(position) {
 		const bottomLimit = sizes.offset;
 		const topLimit = sizes.canvas - sizes.field;
 
-		context.fillStyle = "#212121";
-		const clearXList = [0, topLimit, 0, 0]
-		const clearYList = [0, 0, 0, topLimit]
-		const clearWidthList =  [sizes.field, sizes.field, sizes.canvas, sizes.canvas]
-		const clearHeightList = [sizes.canvas, sizes.canvas, sizes.field, sizes.field]
-		const clearX = clearXList[this.id]
-		const clearY = clearYList[this.id]
-		const clearWidth = clearWidthList[this.id]
-		const clearHeight = clearHeightList[this.id]
-		context.fillRect(clearX, clearY, clearWidth, clearHeight);
+		const paddleXpos = [bottomLimit, topLimit, position, position];
+		const paddleYpos = [position, position, bottomLimit, topLimit];
+		const paddleColors = ['#E21E59', '#1598E9', '#2FD661', '#F19705'];
+
+		this.x = paddleXpos[this.id];
+		this.y = paddleYpos[this.id];
+		this.color = paddleColors[this.id];
+		if (!this.context) {
+			return;
+		}
+		this.context.fillStyle = this.color;
+		this.context.fillRect(this.x, this.y, this.width, this.height);
+	}
+	
+	clear() {
+		if (this.context) {
+			this.context.clearRect(0, 0, sizes.canvas, sizes.canvas)
+		}
 	}
 }
 
@@ -82,26 +82,33 @@ class Ball {
 		this.y = y;
 		this.color = color;
 		this.radius = radius;
-	}
-
-	draw(context) {
-		context.fillStyle = this.color;
-		context.beginPath();
-		context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-		context.fill();
-	}
-
-	clear(context) {
-		// Here we add 10px because the ball is 20px diameter
-		const bottomLimit = sizes.field + 10
-		const topLimit = sizes.canvas - sizes.field - 10
-		if (this.x < bottomLimit || this.x > topLimit || this.y < bottomLimit || this.y > topLimit) {
-			context.fillStyle = "#212121";
-			context.beginPath();
-			context.arc(this.x, this.y, this.radius + 1, 0, 2 * Math.PI);
-			context.fill();
+		const canvas = document.getElementById('ballLayer');
+		if (!canvas) {
+			return;
 		}
-		elements.field.draw(context);
+		canvas.width = sizes.canvas;
+		canvas.height = sizes.canvas;
+		this.context = canvas.getContext('2d');
+	}
+
+	draw(x, y, color, radius) {
+		this.x = x;
+		this.y = y;
+		this.color = color;
+		this.radius = radius;
+		if (!this.context) {
+			return;
+		}
+		this.context.fillStyle = this.color;
+		this.context.beginPath();
+		this.context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+		this.context.fill();
+	}
+
+	clear() {
+		if (this.context) {
+			this.context.clearRect(0, 0, sizes.canvas, sizes.canvas)
+		}
 	}
 }
 
@@ -136,24 +143,23 @@ function createGameCanvas() {
 	return (gameCanvas, gameContext)
 }
 
-function initPaddlePosition(gameContext, paddleID, position) {
-	elements.paddles[paddleID] = new Paddle(paddleID, position);
-	elements.paddles[paddleID].draw(gameContext);
+function initPaddlePosition(paddleID, position) {
+	elements.paddles[paddleID] = new Paddle(paddleID);
+	elements.paddles[paddleID].draw(position);
 }
 
-function updatePaddlePosition(gameContext, paddleID, position) {
-	elements.paddles[paddleID].clear(gameContext);
-	elements.paddles[paddleID].y = position;
-	elements.paddles[paddleID].draw(gameContext);
+function updatePaddlePosition(paddleID, position) {
+	elements.paddles[paddleID].clear();
+	elements.paddles[paddleID].draw(position);
 }
 
 // TODO add radius from message
-function updateBallPosition(gameContext, x, y, color) {
+function updateBallPosition(x, y, color, radius) {
 	if (elements.ball) {
-		elements.ball.clear(gameContext);
+		elements.ball.clear();
 	}
-	elements.ball = new Ball(x, y, color, 10);
-	elements.ball.draw(gameContext);
+	elements.ball = new Ball(x, y, color, radius);
+	elements.ball.draw(x, y, color, radius);
 }
 
 function getSocket(gameID) {
@@ -203,15 +209,15 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 		}
 
 		if (message.type === 'init_paddle_position') {
-			initPaddlePosition(gameContext, message.id, message.position);
+			initPaddlePosition(message.id, message.position);
 		}
 
 		if (message.type === 'update_paddle_position') {
-			updatePaddlePosition(gameContext, message.id, message.position);
+			updatePaddlePosition(message.id, message.position);
 		}
 
 		if (message.type === 'update_ball_position') {
-			updateBallPosition(gameContext, message.x, message.y, message.color);
+			updateBallPosition(message.x, message.y, message.color, message.radius);
 		}
     };
 
