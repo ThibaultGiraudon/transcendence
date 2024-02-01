@@ -173,14 +173,16 @@ function getSocket(gameID) {
 	return (socket)
 }
 
+var gameSocket = null;
+
 function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 	if (!isWaitingPage) {
 		gameCanvas, gameContext = createGameCanvas();
 	}
 
-	const socket = getSocket(gameID);
+	gameSocket = getSocket(gameID);
 
-    socket.socket.onopen = function() {
+    gameSocket.socket.onopen = function() {
 		if (isWaitingPage) {
 			return;
 		}
@@ -189,11 +191,11 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 			playerID: playerID,
 			action: 'newPlayer'
 		};
-		socket.socket.send(JSON.stringify(message));
+		gameSocket.socket.send(JSON.stringify(message));
         console.log('Message envoyé :', message);
     };
 
-    socket.socket.onmessage = function(event) {
+    gameSocket.socket.onmessage = function(event) {
         const message = JSON.parse(event.data);
 
 		if (message.type === 'reload_page') {
@@ -213,7 +215,7 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 		}
     };
 
-    socket.socket.onclose = function(event) {
+    gameSocket.socket.onclose = function(event) {
         console.log('Connexion WebSocket fermée', event);
     };
 
@@ -226,7 +228,7 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
                 direction: getPaddleDirection(event.key),
                 id: getPaddleID(event.key),
             };
-            socket.socket.send(JSON.stringify(message));
+            gameSocket.socket.send(JSON.stringify(message));
         }
 
         if (event.key === "ArrowUp" || event.key === "ArrowDown") {
@@ -243,7 +245,7 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
                 direction: getPaddleDirection(event.key),
                 id: getPaddleID(event.key),
             };
-            socket.socket.send(JSON.stringify(message));
+            gameSocket.socket.send(JSON.stringify(message));
         }
     });
 }
