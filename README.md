@@ -1,5 +1,7 @@
 # Transcendence
 
+> [!NOTE]  
+> This project is still under development.
 ## Modules (A modifier)
 
 -	**Major module**: Use a Framework as backend. (Django instead of Ruby)
