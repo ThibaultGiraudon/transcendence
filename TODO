@@ -13,3 +13,5 @@ quand la partie est over on met isready a false
 Erreur quand on est sur une autre page (chat) et que le j2 \
 lance la game ca me redirige en ouvrant plusieurs fois le \
 WebSocket ce qui est pas clean
+
+TODO ajoute un mode solo avec tout les murs active pour joueur contre le mur
