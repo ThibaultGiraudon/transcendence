@@ -54,12 +54,16 @@ class GameConsumer(AsyncWebsocketConsumer):
 		# 	'type': 'reload_page',
 		# })
 
-	# TODO use this to send reload to waiting players
+	# Called by the server when a message is received from the group
 	async def reload_page(self, event):
 		message = json.dumps(event)
 		await self.send(text_data=message)
 
 	async def init_paddle_position(self, event):
+		message = json.dumps(event)
+		await self.send(text_data=message)
+
+	async def init_score(self, event):
 		message = json.dumps(event)
 		await self.send(text_data=message)
 
