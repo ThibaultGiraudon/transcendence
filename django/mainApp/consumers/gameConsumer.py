@@ -12,13 +12,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 		super().__init__(*args, **kwargs)
 		self.gameSettingsInstances = gameSettingsInstances
 
-	# TODO peut-etre inutile si on fait tout dans la premiere fonction
-	# def launchDeathGame(self):
-	# 	print('-----------------------------///launchDeathGame')
-
-	# def launchTournamentGame(self):
-	# 	print('-----------------------------///launchTournamentGame')
-
 	async def connect(self):
 		await self.channel_layer.group_add('game', self.channel_name)
 		await self.accept()
@@ -47,12 +40,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 		if (message['type'] == 'paddle_move'):
 			gameSettings = self.gameSettingsInstances[gameID]
 			await handlePaddleMove(self, message, gameSettings)
-
-		# print('receive from consumer ----')
-		# # TODO use this to send reload to waiting players
-		# await self.channel_layer.group_send('game', {
-		# 	'type': 'reload_page',
-		# })
 
 	# Called by the server when a message is received from the group
 	async def reload_page(self, event):

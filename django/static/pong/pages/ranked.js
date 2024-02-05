@@ -17,29 +17,30 @@ function renderRankedPage() {
 
 			document.getElementById('app').innerHTML = html;
 
-			document.querySelector('.ranked-button').addEventListener('click', async function(event) {
-				const gameMode = event.target.id;
-				console.log(gameMode);
+			document.querySelectorAll('.ranked-button').forEach(button => {
+				button.addEventListener('click', async function(event) {
+					const gameMode = event.target.id;
+					console.log(gameMode);
 
-				// Send data to the server
-				const response = await fetch('/pong/wait_players/' + gameMode, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						'X-CSRFToken': getCookie('csrftoken'),
-					},
-					body: JSON.stringify({gameMode})
-				});
+					// Send data to the server
+					const response = await fetch('/pong/wait_players/' + gameMode, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							'X-CSRFToken': getCookie('csrftoken'),
+						},
+						body: JSON.stringify({gameMode})
+					});
 
-				if (response.headers.get('content-type').includes('application/json')) {
-					const responseData = await response.json();
+					if (response.headers.get('content-type').includes('application/json')) {
+						const responseData = await response.json();
 
-					if (responseData.success) {
-						router.navigate(responseData.redirect + responseData.gameMode);
+						if (responseData.success) {
+							router.navigate(responseData.redirect + responseData.gameMode);
+						}
 					}
-				}
+				});
 			});
-
 		} else {
 			router.navigate('/sign_in/');
 		}
