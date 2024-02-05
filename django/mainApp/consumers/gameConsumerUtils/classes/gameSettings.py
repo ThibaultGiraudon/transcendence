@@ -23,8 +23,11 @@ class GameSettings:
         self.offset = 20
         self.limit = self.offset + self.paddleThickness
 
-        for id in range(nbPaddles):
+        for id in range(4):
             self.paddles.append(Paddle(id))
+            self.paddles[id].isAlive = False
+
+        for id in range(nbPaddles):
             self.paddles[id].position = self.squareSize / 2 - self.paddleSize / 2
             self.paddles[id].isAlive = True
 
