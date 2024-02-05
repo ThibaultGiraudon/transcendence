@@ -1,7 +1,4 @@
 function initPaddlePosition(paddleID, position) {
-	if (!elements.paddles[paddleID]) {
-		return
-	}
 	elements.paddles[paddleID] = new Paddle(paddleID);
 	elements.paddles[paddleID].draw(position);
 }
