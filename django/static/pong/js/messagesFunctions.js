@@ -1,9 +1,15 @@
 function initPaddlePosition(paddleID, position) {
+	if (!elements.paddles[paddleID]) {
+		return
+	}
 	elements.paddles[paddleID] = new Paddle(paddleID);
 	elements.paddles[paddleID].draw(position);
 }
 
 function updatePaddlePosition(paddleID, position) {
+	if (!elements.paddles[paddleID]) {
+		return
+	}
 	elements.paddles[paddleID].clear();
 	elements.paddles[paddleID].draw(position);
 }
@@ -17,13 +23,22 @@ function updateScore(message) {
     } else if (message.nbPaddles == 4) {
         scoreSpans[message.id].style.width = '25%';
     }
-    scoreSpans[message.id].textContent = message.score;
+
+	scoreSpans[message.id].textContent = message.score;
     scoreSpans[message.id].style.backgroundColor = backgroundColors[message.id];
 	if (message.score >= 10) {
-		scoreSpans[message.id].style.backgroundColor = '#212121';
-		scoreSpans[message.id].style.color = '#DADADA';
-		elements.paddles[message.id].clear();
-		elements.paddles[message.id].draw();
+		if (message.nbPaddles == 2) {
+			paddleID = message.id ^ 1;
+		} else {
+			paddleID = message.id;
+		}
+		scoreSpans[paddleID].style.backgroundColor = '#212121';
+		scoreSpans[paddleID].style.color = '#DADADA';
+		if (!elements.paddles[paddleID]) {
+			return
+		}
+		elements.paddles[paddleID].clear();
+		elements.paddles[paddleID].draw();
 	}
 }
 

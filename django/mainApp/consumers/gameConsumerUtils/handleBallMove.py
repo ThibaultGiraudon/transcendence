@@ -123,8 +123,13 @@ import	asyncio, json
 async def updateScore(gameSettings, paddleID):
 	if (gameSettings.nbPaddles == 2):
 		gameSettings.paddles[paddleID ^ 1].score += 1
+		if (gameSettings.paddles[paddleID ^ 1].score >= 10):
+			gameSettings.paddles[paddleID].isAlive = False
 	else:
 		gameSettings.paddles[paddleID].score += 1
+		if (gameSettings.paddles[paddleID].score >= 10):
+			gameSettings.paddles[paddleID].isAlive = False
+
 		# score = gameSettings.paddles[paddleID].score
 		# id = gameSettings.paddles[paddleID].id
 	# message = {
