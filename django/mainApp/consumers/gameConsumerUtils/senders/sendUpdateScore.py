@@ -1,8 +1,8 @@
-async def sendInitScore(consumer, gameSettings):
+async def sendUpdateScore(consumer, gameSettings):
 	for paddle in gameSettings.paddles:
 		if (paddle.isAlive == True):
 			await consumer.channel_layer.group_send('game', {
-				'type': 'init_score',
+				'type': 'update_score',
 				'id': paddle.id,
 				'score': paddle.score,
 			})

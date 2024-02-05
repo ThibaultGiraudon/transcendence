@@ -42,13 +42,13 @@ async def sendInitPaddlePosition(consumer):
         }
 		await consumer.send(json.dumps(message))
 
-async def sendInitScore(consumer, nbPaddles):
+async def sendUpdateScore(consumer, nbPaddles):
 	for paddle in consumer.gameSettings.paddles:
 		if (consumer.gameSettings.nbPaddles == 2 and paddle.id >= 2):
 			continue
 		score = paddle.score
 		message = {
-			'type': 'init_score',
+			'type': 'update_score',
 			'nbPaddles': nbPaddles,
 			'score': score,
 			'id': paddle.id,
@@ -95,7 +95,7 @@ async def sendUpdateScore(consumer, paddleID, gameMode):
 async def handle_ball_move(consumer, gameMode):
 	await sendInitsquareSize(consumer)
 	await sendInitPaddlePosition(consumer)
-	await sendInitScore(consumer, consumer.gameSettings.nbPaddles)
+	await sendUpdateScore(consumer, consumer.gameSettings.nbPaddles)
 
 	ball = consumer.gameSettings.ball
 	while (True):
