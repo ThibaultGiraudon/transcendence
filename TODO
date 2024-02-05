@@ -15,3 +15,5 @@ lance la game ca me redirige en ouvrant plusieurs fois le \
 WebSocket ce qui est pas clean
 
 TODO ajoute un mode solo avec tout les murs active pour joueur contre le mur
+
+Attention le bouton retour du navigateur ne fonctionne plus

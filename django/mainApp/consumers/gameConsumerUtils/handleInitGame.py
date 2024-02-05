@@ -18,14 +18,23 @@ def getPlayer(playerID):
 def savePlayer(player):
 	player.save()
 
-async def launchRankedSoloGame(consumer, gameID, gameMode):
+async def launchRankedSoloGame(consumer, gameID):
 	if gameID not in consumer.gameSettingsInstances:
 		consumer.gameSettingsInstances[gameID] = GameSettings(2)
 
 	gameSettings = consumer.gameSettingsInstances[gameID]
 	await sendInitPaddlePosition(consumer, gameSettings)
 	await sendUpdateScore(consumer, gameSettings)
-	await handleBallMove(consumer, gameMode, gameSettings)
+	await handleBallMove(consumer, gameSettings)
+
+async def launchDeathGame(consumer, gameID):
+	if gameID not in consumer.gameSettingsInstances:
+		consumer.gameSettingsInstances[gameID] = GameSettings(4)
+
+	gameSettings = consumer.gameSettingsInstances[gameID] 
+	await sendInitPaddlePosition(consumer, gameSettings)
+	# await sendUpdateScore(consumer, gameSettings)
+	# await handleBallMove(consumer, gameSettings)
 
 async def handleInitGame(consumer, gameID, gameMode, playerID):
 	game = await getGame(gameID)
@@ -45,9 +54,9 @@ async def handleInitGame(consumer, gameID, gameMode, playerID):
 			return (False)
 
 	if (gameMode == 'init_ranked_solo_game'):
-		await launchRankedSoloGame(consumer, gameID, gameMode)
-	# elif (gameMode == 'init_death_game'):
-	# 	self.launchDeathGame()
+		await launchRankedSoloGame(consumer, gameID)
+	elif (gameMode == 'init_death_game'):
+		await launchDeathGame(consumer, gameID)
 	# elif (gameMode == 'init_tournament_game'):
 	# 	self.launchTournamentGame()
 	return (True)
