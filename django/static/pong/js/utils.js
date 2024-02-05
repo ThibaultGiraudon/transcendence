@@ -1,8 +1,8 @@
 function getPaddleID(key) {
-	if (key === 'o' || key === 'l') {
-		return '1';
-	} else if (key === 'w' || key === 's') {
+	if (key === 'w' || key === 's') {
 		return '0';
+	} else if (key === 'o' || key === 'l') {
+		return '1';
 	}
 }
 
@@ -12,4 +12,21 @@ function getPaddleDirection(key) {
 	} else if (key === 'l' || key === 's') {
 		return 'down';
 	}
+}
+
+function getSocket(gameID) {
+	let socketUrl;
+	if (window.location.protocol === 'https:') {
+		socketUrl = 'wss://localhost:8001/wss/game/';
+	} else {
+		socketUrl = 'ws://localhost:8000/ws/game/';
+	}
+	socketUrl += gameID + '/';
+
+	socket = {
+		socket: new WebSocket(socketUrl),
+		url: socketUrl,
+		shouldClose: false
+	};
+	return (socket)
 }
