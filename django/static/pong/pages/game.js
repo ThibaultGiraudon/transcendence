@@ -12,7 +12,7 @@ function renderGamePage(gameMode) {
 						<h2>Game Mode: ${gameMode}</h2>
 						<p>${gameID}</p>
 						
-						<div class="score_bar" id="pong_game">
+						<div class="score_bar">
 							<span class="player_score id0"></span>
 							<span class="player_score id1"></span>
 							<span class="player_score id2"></span>

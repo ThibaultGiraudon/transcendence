@@ -11,7 +11,6 @@ function renderWaitPlayers(gameMode) {
 						<h1>Wait for players ${gameMode}</h1>
 		
 						<div class="score_bar" id="wait_player"></div>
-						<div id="pong_game"></div>
 		
 						<p>${gameID}</p>
 					`;
