@@ -1,11 +1,3 @@
-function getPaddleID(key) {
-	if (key === 'w' || key === 's') {
-		return '0';
-	} else if (key === 'o' || key === 'l') {
-		return '1';
-	}
-}
-
 function getPaddleDirection(key) {
 	if (key === 'o' || key === 'w') {
 		return 'up';

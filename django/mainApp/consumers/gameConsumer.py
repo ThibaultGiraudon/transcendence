@@ -39,7 +39,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 		if (message['type'] == 'paddle_move'):
 			gameSettings = self.gameSettingsInstances[gameID]
-			await handlePaddleMove(self, message, gameSettings)
+			await handlePaddleMove(self, message, gameSettings, gameID, message['playerID'])
 
 	# Called by the server when a message is received from the group
 	async def reload_page(self, event):

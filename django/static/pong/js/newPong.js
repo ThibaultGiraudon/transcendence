@@ -9,6 +9,10 @@ const   keyState = {
     s: false,
     o: false,
     l: false,
+	// z: false,
+	// x: false,
+	// ArrowLeft: false,
+	// ArrowRight: false,
 };
 
 const	sizes = {
@@ -89,7 +93,7 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
                 type: 'paddle_move',
                 key: 'keydown',
                 direction: getPaddleDirection(event.key),
-                id: getPaddleID(event.key),
+				playerID: playerID,
             };
             socket.socket.send(JSON.stringify(message));
         }
@@ -106,7 +110,7 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
                 type: 'paddle_move',
                 key: 'keyup',
                 direction: getPaddleDirection(event.key),
-                id: getPaddleID(event.key),
+				playerID: playerID,
             };
             socket.socket.send(JSON.stringify(message));
         }

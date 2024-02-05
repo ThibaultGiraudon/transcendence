@@ -33,8 +33,8 @@ async def launchDeathGame(consumer, gameID):
 
 	gameSettings = consumer.gameSettingsInstances[gameID] 
 	await sendInitPaddlePosition(consumer, gameSettings)
-	# await sendUpdateScore(consumer, gameSettings)
-	# await handleBallMove(consumer, gameSettings)
+	await sendUpdateScore(consumer, gameSettings)
+	await handleBallMove(consumer, gameSettings)
 
 async def handleInitGame(consumer, gameID, gameMode, playerID):
 	game = await getGame(gameID)
