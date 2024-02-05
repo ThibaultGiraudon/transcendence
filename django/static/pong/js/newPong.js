@@ -19,22 +19,6 @@ const	sizes = {
 };
 sizes.field = sizes.paddleThickness + sizes.offset;
 
-function getPaddleID(key) {
-	if (key === 'w' || key === 's') {
-		return '0';
-	} else if (key === 'o' || key === 'l') {
-		return '1';
-	}
-}
-
-function getPaddleDirection(key) {
-	if (key === 'o' || key === 'w') {
-		return 'up';
-	} else if (key === 'l' || key === 's') {
-		return 'down';
-	}
-}
-
 function createGameCanvas() {
 	const gameCanvas = document.getElementById('gameCanvas');
     gameCanvas.width = sizes.canvas;
@@ -85,23 +69,6 @@ function updateBallPosition(x, y, color, radius) {
 	}
 	elements.ball = new Ball(x, y, color, radius);
 	elements.ball.draw(x, y, color, radius);
-}
-
-function getSocket(gameID) {
-	let socketUrl;
-	if (window.location.protocol === 'https:') {
-		socketUrl = 'wss://localhost:8001/wss/game/';
-	} else {
-		socketUrl = 'ws://localhost:8000/ws/game/';
-	}
-	socketUrl += gameID + '/';
-
-	socket = {
-		socket: new WebSocket(socketUrl),
-		url: socketUrl,
-		shouldClose: false
-	};
-	return (socket)
 }
 
 function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
