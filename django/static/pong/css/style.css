@@ -20,7 +20,7 @@
 
 canvas {
 	position: absolute;
-	top: 300px;
+	top: 400px;
 	left: calc(50% - 400px);
 	border-radius: 10px;
 	margin-bottom: 20px;

@@ -5,4 +5,5 @@ async def sendUpdateScore(consumer, gameSettings):
 				'type': 'update_score',
 				'id': paddle.id,
 				'score': paddle.score,
+				'nbPaddles': gameSettings.nbPaddles,
 			})
