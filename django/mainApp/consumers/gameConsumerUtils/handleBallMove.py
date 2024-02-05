@@ -13,13 +13,6 @@ def getUserName(id, gameMode):
 	# TODO change this to username
 	return ('player')
 
-async def sendInitsquareSize(consumer):
-	message = {
-		'type': 'init_game_size',
-		'size': consumer.gameSettings.squareSize,
-	}
-	await consumer.send(json.dumps(message))
-
 async def sendInitScore(consumer, nbPaddles):
 	for paddle in consumer.gameSettings.paddles:
 		if (consumer.gameSettings.nbPaddles == 2 and paddle.id >= 2):
@@ -158,5 +151,7 @@ async def startBall(consumer, gameSettings):
 
 async def handleBallMove(consumer, gameMode, gameSettings):
 	if (gameSettings.ball.task):
-		gameSettings.ball.task.cancel()
+		# TODO inutile mais a verifier quand meme si ca casse rien
+		# gameSettings.ball.task.cancel()
+		return
 	gameSettings.ball.task = asyncio.create_task(startBall(consumer, gameSettings))
