@@ -48,7 +48,9 @@ def waitPlayers(request, gameMode):
 				gameMode = game.gameMode
 				if (game.playerList.__len__() == nbPlayersToWait):
 					return JsonResponse({'success': True, 'redirect': '/pong/game/', 'gameMode': gameMode, 'gameID': game.id})
+					# return redirectPage(request, '/pong/game/' + gameMode + '/' + str(game.id) + '/')
 				return JsonResponse({'success': True, 'redirect': '/pong/wait_players/', 'gameMode': gameMode, 'gameID': game.id})
+				# return renderPage(request, 'pong_elements/wait_players.html', {'gameMode': gameMode, 'gameID': game.id})
 
 		gameID = createOrJoinGame(waitingGamesList, player, gameMode)
 		player.currentGameID = gameID
@@ -56,6 +58,8 @@ def waitPlayers(request, gameMode):
 		game = Game.objects.get(id=gameID)
 		if (game.playerList.__len__() == nbPlayersToWait):
 			return JsonResponse({'success': True, 'redirect': '/pong/game/', 'gameMode': gameMode, 'gameID': game.id})
+			# return redirectPage(request, '/pong/game/' + gameMode + '/' + str(game.id) + '/')
 		return JsonResponse({'success': True, 'redirect': '/pong/wait_players/', 'gameMode': gameMode, 'gameID': game.id})
+		# return renderPage(request, 'pong_elements/wait_players.html', {'gameMode': gameMode, 'gameID': gameID})
 	else:
 		return JsonResponse({'success': False, 'message': 'Method not allowed'})
