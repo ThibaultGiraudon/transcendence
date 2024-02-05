@@ -63,7 +63,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		message = json.dumps(event)
 		await self.send(text_data=message)
 
-	async def init_score(self, event):
+	async def update_score(self, event):
 		message = json.dumps(event)
 		await self.send(text_data=message)
 

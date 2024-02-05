@@ -210,7 +210,7 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 			initPaddlePosition(message.id, message.position);
 		}
 
-		if (message.type === 'init_score') {
+		if (message.type === 'update_score') {
 			console.log(message);
 			// updatePaddlePosition(message.id, message.position);
 		}
