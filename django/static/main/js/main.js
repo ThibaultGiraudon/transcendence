@@ -177,14 +177,3 @@ window.addEventListener('DOMContentLoaded', (event) => {
 		});
 	} 
 });
-
-
-if (gameSocket) {
-	gameSocket.onmessage = function(event) {
-		const message = JSON.parse(event.data);
-
-		if (message.type === 'reload_page') {
-			router.navigate('/pong/game/' + gameMode);
-		}
-	}
-}

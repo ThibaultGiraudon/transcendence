@@ -19,9 +19,12 @@ function renderGamePage(gameMode) {
 							<span class="player_score id3"></span>
 						</div>
 						
-						<canvas id="gameCanvas">
-						
-						</canvas>
+						<canvas id="gameCanvas"></canvas>
+						<canvas id="ballLayer"></canvas>
+						<canvas id="paddle1Layer"></canvas>
+						<canvas id="paddle2Layer"></canvas>
+						<canvas id="paddle3Layer"></canvas>
+						<canvas id="paddle4Layer"></canvas>
 					`;
 		
 					document.getElementById('app').innerHTML = html;

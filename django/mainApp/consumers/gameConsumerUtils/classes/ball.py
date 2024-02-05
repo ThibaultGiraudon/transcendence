@@ -6,7 +6,7 @@ class Ball:
         self.x = gameSettings.squareSize / 2
         self.y = gameSettings.squareSize / 2
         self.radius = 10
-        # self.color = "0xFDF3E1"
+        self.color = "#FDF3E1"
         self.speed = 5
         self.speedBase = 10
         self.task = None
@@ -26,6 +26,16 @@ class Ball:
             elif paddle.isAlive and paddle.id == 3:
                 randomAngle.append(math.pi / 2)
         return (randomAngle)
+
+    def __powerShot(self, paddle, collisionPosition):
+        speedFactor = 1 - abs(collisionPosition - 0.5)
+        self.speed = self.speedBase * speedFactor * 1.4
+        if (speedFactor > 0.9):
+            self.color = paddle.color
+            self.radius = 8
+        else:
+            self.color = "#FDF3E1"
+            self.radius = 10
 
     def __getReflectionAngle(self, paddle, maxAngle, reflectionAngle):
         if (paddle.id == 0):
@@ -47,28 +57,57 @@ class Ball:
         else:
             paddleThickness, paddleSize = gameSettings.paddleThickness, gameSettings.paddleSize
             offset, position = paddle.offset, paddle.position
-        
 
         closestX = max(offset, min(self.x, offset + paddleThickness))
         closestY = max(position, min(self.y, position + paddleSize))
         distance = math.sqrt((self.x - closestX)**2 + (self.y - closestY)**2)
         
-        # print('distance', distance, 'paddle', paddle.id)
+        if distance < self.radius:
+            if (paddle.id == 2 or paddle.id == 3):
+                collisionPosition = (closestX - offset) / paddleThickness
+            else:
+                collisionPosition = (closestY - position) / paddleSize
+            reflectionAngle = (collisionPosition - 0.5) * math.pi
+            maxAngle = math.pi / 3
 
-        # if distance < self.radius:
-        #     if (paddle.id == 2 or paddle.id == 3):
-        #         collisionPosition = (closestX - offset) / paddleThickness
-        #     else:
-        #         collisionPosition = (closestY - position) / paddleSize
-        #     reflectionAngle = (collisionPosition - 0.5) * math.pi
-        #     maxAngle = math.pi / 3
+            self.__getReflectionAngle(paddle, maxAngle, reflectionAngle)
+            self.__powerShot(paddle, collisionPosition)
 
-        #     self.__getReflectionAngle(paddle, maxAngle, reflectionAngle)
-            # TODO add powershot
-            # self.__powerShot(paddle, collisionPosition)
+    def checkWallCollision(self, gameSettings):
+        maxPosition = gameSettings.squareSize - gameSettings.limit
+        for paddle in gameSettings.paddles:
+            if (paddle.isAlive == True):
+                if (paddle.id == 0 and self.x <= 0):
+                    return (0)
+                elif (paddle.id == 1 and self.x >= gameSettings.squareSize):
+                    return (1)
+                elif (paddle.id == 2 and self.y <= 0):
+                    return (2)
+                elif (paddle.id == 3 and self.y >= gameSettings.squareSize):
+                    return (3)
+            else:
+                if (paddle.id == 0 and self.x <= gameSettings.limit):
+                    self.angle = math.pi - self.angle
+                elif (paddle.id == 1 and self.x >= maxPosition):
+                    self.angle = math.pi - self.angle
+                elif (paddle.id == 2 and self.y <= gameSettings.limit):
+                    self.angle = -self.angle
+                elif (paddle.id == 3 and self.y >= maxPosition):
+                    self.angle = -self.angle
+        return (-1)
 
     def move(self):
         deltaX = self.speed * math.cos(self.angle) 
         deltaY = self.speed * math.sin(self.angle)
         self.x += deltaX
         self.y += deltaY
+
+    def resetBall(self, gameSettings):
+        self.x = gameSettings.squareSize / 2
+        self.y = gameSettings.squareSize / 2
+        self.radius = 10
+        self.color = "#FDF3E1"
+        self.speed = 5
+
+        randomAngle = self.__getRandomAngle(gameSettings)
+        self.angle = random.choice(randomAngle)
