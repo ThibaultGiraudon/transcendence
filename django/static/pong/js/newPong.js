@@ -9,10 +9,12 @@ const   keyState = {
     s: false,
     o: false,
     l: false,
-	// z: false,
-	// x: false,
-	// ArrowLeft: false,
-	// ArrowRight: false,
+	z: false,
+	x: false,
+	ArrowLeft: false,
+	ArrowRight: false,
+    ArrowUp: false,
+    ArrowDown: false,
 };
 
 const	sizes = {
@@ -98,7 +100,8 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
             socket.socket.send(JSON.stringify(message));
         }
 
-        if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+        if (event.key === "ArrowUp" || event.key === "ArrowDown" || 
+            event.key === "ArrowLeft" || event.key === "ArrowRight") {
             event.preventDefault();
         }
     });
