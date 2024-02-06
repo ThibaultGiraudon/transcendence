@@ -5,4 +5,5 @@ class Command(BaseCommand):
 	help = 'Set all users offline'
 
 	def handle(self, *args, **options):
-		startserver.set_all_users_offline()
+		# startserver.set_all_users_offline()
+		pass
