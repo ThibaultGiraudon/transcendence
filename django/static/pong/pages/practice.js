@@ -4,12 +4,15 @@ function renderPracticePage() {
 			let html = `
 				<h1>Practice game</h1>
 			
-				<a href="#" data-route="{% url 'game' 'init_local_game' %}" onclick="navigateTo(event, this.dataset.route)">
+				<button class="practice_button" id="init_local_game">
 					LOCAL GAME
-				</a>
-				<a href="#" data-route="{% url 'game' 'init_ai_game' %}" onclick="navigateTo(event, this.dataset.route)">
+				</button>
+				<button class="practice_button" id="init_ai_game">
 					1 VS AI
-				</a>
+				</button>
+				<button class="practice_button" id="init_alcatraz_game">
+					ALCATRAZ
+				</button>
 			`;
 
 			document.getElementById('app').innerHTML = html;
