@@ -3,11 +3,6 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-STATICFILES_DIRS = [
-	os.path.join(BASE_DIR, 'static'),
-]
-
-
 # HTTPS redirect for 42 API
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -35,6 +30,9 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+STATICFILES_DIRS = [
+	os.path.join(BASE_DIR, 'static'),
+]
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -45,7 +43,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'default_secret_key')
 
 
 # Debug modes
-DEBUG = bool(os.getenv('DEBUG', True))
+DEBUG = False
 
 
 # CRSF verification
@@ -140,11 +138,11 @@ WSGI_APPLICATION = 'mainProject.wsgi.application'
 DATABASES = {
 	'default': {
 		'ENGINE': 'django.db.backends.postgresql',
-		'NAME': os.getenv('POSTGRES_DB', 'default_db_name'),
-		'USER': os.getenv('POSTGRES_USER', 'default_db_user'),
-		'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'default_db_password'),
-		'HOST': os.getenv('DB_FOLDER', 'default_db_host'),
-		'PORT': os.getenv('POSTGRES_PORT', '5432'),
+		'NAME': os.environ.get('POSTGRES_DB'),
+		'USER': os.environ.get('POSTGRES_USER'),
+		'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+		'HOST': os.environ.get('DB_FOLDER'),
+		'PORT': os.environ.get('POSTGRES_PORT'),
 	}
 }
 
