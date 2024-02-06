@@ -21,12 +21,10 @@ async def keydownLoop(direction, paddle, consumer, gameSettings):
 	elif (direction == 'down'):
 		paddle.keyState['up'] = False;
 
-	while (paddle.keyState[direction] or paddle.keyState[direction]):
-		if (paddle.keyState[direction] and direction == 'up' \
-	  		and paddle.position > gameSettings.limit):
+	while (paddle.keyState[direction]):
+		if (direction == 'up' and paddle.position > gameSettings.limit):
 			paddle.moveUp()
-		elif (paddle.keyState[direction] and direction == 'down' \
-			and paddle.position < gameSettings.squareSize - gameSettings.limit - gameSettings.paddleSize):
+		elif (direction == 'down' and paddle.position < gameSettings.squareSize - gameSettings.limit - gameSettings.paddleSize):
 			paddle.moveDown()
 		
 		await sendUpdatePaddlePosition(consumer, paddle)
@@ -41,6 +39,8 @@ async def handlePaddleMove(consumer, message, gameSettings, gameID, playerID):
 
 	if (paddle.isAlive == True):
 		if (message['key'] == 'keydown'):
+			if (paddle.keyState[direction] == True):
+				return
 			if (direction == 'up'):
 				paddle.keyState[direction] = True;
 			elif (direction == 'down'):
