@@ -10,28 +10,24 @@ SECURE_SSL_REDIRECT = False
 
 
 # Default profile picture
-DEFAULT_IMAGE_PATH = '/usr/src/app/static/users/img/default.jpg'
+DEFAULT_IMAGE_PATH = '/home/app/web/staticfiles/users/img/default.jpg'
 
 
 # Date and Languages
 TIME_ZONE = 'Europe/Paris'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
-LANGUAGE_CODE = 'fr'
+LANGUAGE_CODE = 'en-us'
 
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 STATICFILES_DIRS = [
-	os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 # Default primary key field type
@@ -39,15 +35,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Django secret key
-SECRET_KEY = os.getenv('SECRET_KEY', 'default_secret_key')
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 
 # Debug modes
-DEBUG = False
+DEBUG = bool(os.environ.get("DEBUG", default=0))
 
 
 # CRSF verification
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 CSRF_TRUSTED_ORIGINS = [
 	'http://localhost:8000',
@@ -137,12 +133,12 @@ WSGI_APPLICATION = 'mainProject.wsgi.application'
 
 DATABASES = {
 	'default': {
-		'ENGINE': 'django.db.backends.postgresql',
-		'NAME': os.environ.get('POSTGRES_DB'),
-		'USER': os.environ.get('POSTGRES_USER'),
-		'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-		'HOST': os.environ.get('DB_FOLDER'),
-		'PORT': os.environ.get('POSTGRES_PORT'),
+		'ENGINE': os.environ.get("DATABASE_ENGINE"),
+		'NAME': os.environ.get('DATABASE_NAME'),
+		'USER': os.environ.get('DATABASE_USER'),
+		'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+		'HOST': os.environ.get('DATABASE_HOST'),
+		'PORT': os.environ.get('DATABASE_PORT'),
 	}
 }
 

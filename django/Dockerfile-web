@@ -1,0 +1,48 @@
+FROM python:3.11.4-slim-buster
+
+# Set work directory
+WORKDIR /usr/src/app
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gcc netcat && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install python dependencies
+RUN pip install --upgrade pip
+COPY ./requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Create directory for the app user
+RUN mkdir -p /home/app
+
+# Create the app user
+RUN addgroup --system app && adduser --system --group app
+
+# Create the appropriate directories
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/web
+RUN mkdir $APP_HOME
+RUN mkdir $APP_HOME/staticfiles
+WORKDIR $APP_HOME
+
+# Copy entrypoint.sh
+COPY ./entrypoint.sh .
+RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.sh
+RUN chmod +x  $APP_HOME/entrypoint.sh
+
+# Copy project
+COPY . $APP_HOME
+
+# Chown all the files to the app user
+RUN chown -R app:app $APP_HOME
+
+# Change to the app user
+USER app
+
+# Run the start script
+ENTRYPOINT ["/home/app/web/entrypoint.sh"]
