@@ -1,5 +1,5 @@
-FROM	python:3.10
-EXPOSE	8001
+FROM	python:3.11.4-slim-buster
+
 WORKDIR	/usr/src/app
 
 COPY	./requirements.txt ./
@@ -7,5 +7,7 @@ COPY	./requirements.txt ./
 RUN		pip install --no-cache -r requirements.txt
 
 COPY	./ ./
+
+EXPOSE	8001
 
 CMD 	["daphne", "-e", "ssl:8001:privateKey=/etc/ssl/private/server.key:certKey=/etc/ssl/certs/server.crt", "mainProject.asgi:application"]
