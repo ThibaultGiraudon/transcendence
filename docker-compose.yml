@@ -5,7 +5,7 @@ services:
     build:
       context: ./django
       dockerfile: Dockerfile-web
-    command: uvicorn mainProject.asgi:application --host 0.0.0.0 --port 8000
+    command: uvicorn mainProject.asgi:application --host 0.0.0.0 --port 8000 --workers 4 --log-level debug
     expose:
       - 8000
     env_file:
@@ -47,19 +47,19 @@ services:
       - ssl_certificates:/etc/ssl
     restart: on-failure
 
-  daphne:
-    build:
-      context: ./django/
-      dockerfile: Dockerfile-daphne
-    env_file:
-      - ./.env
-    ports:
-      - "8001:8001"
-    depends_on:
-      - web
-    restart: on-failure
-    volumes:
-      - ssl_certificates:/etc/ssl
+  # daphne:
+  #   build:
+  #     context: ./django/
+  #     dockerfile: Dockerfile-daphne
+  #   env_file:
+  #     - ./.env
+  #   ports:
+  #     - "8001:8001"
+  #   depends_on:
+  #     - web
+  #   restart: on-failure
+  #   volumes:
+  #     - ssl_certificates:/etc/ssl
 
 volumes:
   postgres_data:
