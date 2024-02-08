@@ -48,9 +48,12 @@ async def handleInitGame(consumer, gameID, gameMode, playerID):
 	for playerID in game.playerList:
 		player = await getPlayer(playerID)
 		if not player.isReady:
-			await consumer.channel_layer.group_send('game', {
-				'type': 'reload_page',
-			})
+			await consumer.channel_layer.group_send(
+				f'game_{consumer.game_id}',
+				{
+					'type': 'reload_page',
+				}
+			)
 			return (False)
 
 	if (gameMode == 'init_ranked_solo_game'):
