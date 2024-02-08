@@ -19,7 +19,7 @@ import urllib.request, json, base64
 
 
 from mainApp.models import Player
-from mainApp.views.utils import redirectPage, renderError
+from mainApp.views.utils import renderError
 
 
 # 42 API
@@ -138,7 +138,7 @@ def profile(request, username):
 		# Check if the photo is valid
 		if photo:
 			# Delete the old photo
-			if request.user.photo and request.user.photo.path != 'static/main/img/default.jpg':
+			if request.user.photo and request.user.photo.path != 'static/users/img/default.jpg':
 				default_storage.delete(request.user.photo.path)
 			
 			# Decode the Base64 photo

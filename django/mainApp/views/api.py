@@ -37,7 +37,7 @@ def isAuthenticated(request):
 	if request.user.is_authenticated:
 		return JsonResponse({'isAuthenticated': True}, status=200)
 	else:
-		return JsonResponse({'isAuthenticated': False}, status=401)
+		return JsonResponse({'isAuthenticated': False}, status=200)
 
 
 def header(request):
@@ -45,7 +45,7 @@ def header(request):
 		return JsonResponse({
 			'isAuthenticated': False,
 		},
-		status=401)
+		status=200)
 	
 	return JsonResponse({
 		'isAuthenticated': request.user.is_authenticated,

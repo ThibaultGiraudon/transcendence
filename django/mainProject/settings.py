@@ -3,11 +3,6 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-STATICFILES_DIRS = [
-	os.path.join(BASE_DIR, 'static'),
-]
-
-
 # HTTPS redirect for 42 API
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -15,25 +10,31 @@ SECURE_SSL_REDIRECT = False
 
 
 # Default profile picture
-DEFAULT_IMAGE_PATH = '/usr/src/app/static/users/img/default.jpg'
+DEFAULT_IMAGE_PATH = '/home/app/web/staticfiles/users/img/default.jpg'
 
 
 # Date and Languages
 TIME_ZONE = 'Europe/Paris'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
+LANGUAGE_CODE = 'en-us'
 
-LANGUAGE_CODE = 'fr'
+
+# Static files (CSS, JavaScript...)
+STATIC_URL = "/static/"
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+STATICFILES_DIRS = [
+	os.path.join(BASE_DIR, 'static'),
+]
 
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
+# Media files (Images...)
+MEDIA_URL = "/media/"
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles")
 
 
 # Default primary key field type
@@ -41,15 +42,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Django secret key
-SECRET_KEY = os.getenv('SECRET_KEY', 'default_secret_key')
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 
 # Debug modes
-DEBUG = bool(os.getenv('DEBUG', True))
+DEBUG = os.environ.get("DEBUG") == "True"
 
 
 # CRSF verification
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 CSRF_TRUSTED_ORIGINS = [
 	'http://localhost:8000',
@@ -59,7 +60,6 @@ CSRF_TRUSTED_ORIGINS = [
 
 # Application definition
 INSTALLED_APPS = [
-	'daphne',
 	'django.contrib.admin',
 	'django.contrib.auth',
 	'django.contrib.contenttypes',
@@ -67,7 +67,6 @@ INSTALLED_APPS = [
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'mainApp',
-	'mainApp.templatetags.poll_extras',
 	'channels',
 ]
 
@@ -139,12 +138,12 @@ WSGI_APPLICATION = 'mainProject.wsgi.application'
 
 DATABASES = {
 	'default': {
-		'ENGINE': 'django.db.backends.postgresql',
-		'NAME': os.getenv('POSTGRES_DB', 'default_db_name'),
-		'USER': os.getenv('POSTGRES_USER', 'default_db_user'),
-		'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'default_db_password'),
-		'HOST': os.getenv('DB_FOLDER', 'default_db_host'),
-		'PORT': os.getenv('POSTGRES_PORT', '5432'),
+		'ENGINE': os.environ.get("DATABASE_ENGINE"),
+		'NAME': os.environ.get('DATABASE_NAME'),
+		'USER': os.environ.get('DATABASE_USER'),
+		'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+		'HOST': os.environ.get('DATABASE_HOST'),
+		'PORT': os.environ.get('DATABASE_PORT'),
 	}
 }
 
