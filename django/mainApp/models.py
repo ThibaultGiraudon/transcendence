@@ -66,7 +66,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
 	email = models.EmailField(unique=True)
 	username = models.CharField(max_length=150, unique=True)
-	photo = models.ImageField(upload_to='users/img', default='default.jpg')
+	photo = models.ImageField(upload_to='', default='default.jpg')
 	follows = ArrayField(models.IntegerField(), default=list)
 	status = models.CharField(max_length=150, default="online")
 	nbNewNotifications = models.IntegerField(default=0)
