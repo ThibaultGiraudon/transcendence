@@ -5,7 +5,6 @@ services:
     build:
       context: ./django
       dockerfile: Dockerfile-web
-    command: uvicorn mainProject.asgi:application --host 0.0.0.0 --port 8000
     expose:
       - 8000
     env_file:
@@ -25,12 +24,12 @@ services:
     env_file:
       - ./.env
     environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=postgres
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_HOST}
     restart: on-failure
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d postgres -h localhost"]
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d ${DATABASE_HOST} -h localhost"]
       interval: 10s
       timeout: 10s
       retries: 3
@@ -41,6 +40,7 @@ services:
       dockerfile: Dockerfile-nginx
     ports:
       - 8000:80
+      - 8443:443
     depends_on:
       - web
     volumes:

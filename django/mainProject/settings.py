@@ -27,7 +27,7 @@ STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+	os.path.join(BASE_DIR, 'static'),
 ]
 
 
@@ -46,11 +46,14 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 
 
 # Debug modes
-DEBUG = bool(os.environ.get("DEBUG", default=0))
+DEBUG = os.environ.get("DEBUG") == "True"
 
 
 # CRSF verification
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+if DEBUG:
+	ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+else:
+	ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
 	'http://localhost:8000',
@@ -136,6 +139,13 @@ TEMPLATES = [
 
 # Database gestion
 WSGI_APPLICATION = 'mainProject.wsgi.application'
+
+print(os.environ.get("DATABASE_ENGINE"))
+print(os.environ.get('DATABASE_NAME'))
+print(os.environ.get('DATABASE_USER'))
+print(os.environ.get('DATABASE_PASSWORD'))
+print(os.environ.get('DATABASE_HOST'))
+print(os.environ.get('DATABASE_PORT'))
 
 DATABASES = {
 	'default': {
