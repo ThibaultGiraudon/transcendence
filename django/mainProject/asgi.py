@@ -5,7 +5,6 @@ from django.urls import re_path
 import os
 
 from mainApp.consumers.gameConsumer import GameConsumer
-# from mainApp.consumers.pongConsumer import PongConsumer
 from mainApp.consumers.notificationsConsumer import NotificationConsumer
 from mainApp.consumers.statusConsumer import StatusConsumer
 from mainApp.consumers.chatConsumer import ChatConsumer

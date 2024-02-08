@@ -50,10 +50,7 @@ DEBUG = os.environ.get("DEBUG") == "True"
 
 
 # CRSF verification
-if DEBUG:
-	ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
-else:
-	ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 CSRF_TRUSTED_ORIGINS = [
 	'http://localhost:8000',
@@ -139,13 +136,6 @@ TEMPLATES = [
 
 # Database gestion
 WSGI_APPLICATION = 'mainProject.wsgi.application'
-
-print(os.environ.get("DATABASE_ENGINE"))
-print(os.environ.get('DATABASE_NAME'))
-print(os.environ.get('DATABASE_USER'))
-print(os.environ.get('DATABASE_PASSWORD'))
-print(os.environ.get('DATABASE_HOST'))
-print(os.environ.get('DATABASE_PORT'))
 
 DATABASES = {
 	'default': {
