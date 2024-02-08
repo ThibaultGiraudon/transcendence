@@ -52,9 +52,6 @@ function renderRoomPage(room_id) {
 				return;
 			}
 
-			// Sort the messages by timestamp
-			
-
 			// Get the name and the photo of the channel
 			let name_channel = null;
 			let photo_channel = null;

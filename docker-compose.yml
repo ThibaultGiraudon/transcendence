@@ -1,23 +1,58 @@
-version: '3'
+version: '3.8'
 
-networks:
-  transcendence:
-    name: transcendence
+services:
+  web:
+    build:
+      context: ./django
+      dockerfile: Dockerfile-web
+    expose:
+      - 8000
+    env_file:
+      - ./.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/mediafiles
+    restart: on-failure
+  
+  postgres:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+    environment:
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_HOST}
+    restart: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d ${DATABASE_HOST} -h localhost"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+  
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile-nginx
+    ports:
+      - 8000:80
+      - 8443:443
+    depends_on:
+      - web
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/mediafiles
+      - ssl_certificates:/etc/ssl
+    restart: on-failure
 
 volumes:
   postgres_data:
-    driver: local
-    name: postgres_data
-  img_volume:
-    driver: local
-    name: img_volume
   static_volume:
-    driver: local
-    name: static_volume
-    driver_opts:
-      type: none
-      o: bind
-      device: ./${DJANGO_FOLDER}/static
+  media_volume:
   ssl_certificates:
     driver: local
     name: ssl_certificates
@@ -25,84 +60,3 @@ volumes:
       type: none
       o: bind
       device: ./ssl
-
-services:
-  django:
-    build:
-      context: ./${DJANGO_FOLDER}/
-      dockerfile: Dockerfile-django
-    env_file: .env
-    ports:
-      - "8000:8000"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - transcendence
-    restart: on-failure
-    volumes:
-      - static_volume:/usr/src/app/static
-      - img_volume:/usr/src/app/static/users/img
-    # TODO remove this (enable it for logs directy in console) (for the print in python)
-    tty: true
-
-  daphne:
-    build:
-      context: ./${DJANGO_FOLDER}/
-      dockerfile: Dockerfile-daphne
-    env_file: .env
-    ports:
-      - "8001:8001"
-    depends_on:
-      - django
-    networks:
-      - transcendence
-    restart: on-failure
-    volumes:
-      - ssl_certificates:/etc/ssl
-    # TODO remove this (enable it for logs directy in console) (for the print in python)
-    tty: true
-
-  nginx:
-    build:
-      context: ./${NGINX_FOLDER}/
-      dockerfile: Dockerfile
-    env_file: .env
-    ports:
-      - "7080:80"
-      - "8443:443"
-    depends_on:
-      - daphne
-    networks:
-      - transcendence
-    restart: on-failure
-    volumes:
-      - ssl_certificates:/etc/ssl
-
-  postgres:
-    image: postgres:latest
-    env_file: .env
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - "5432:5432"
-    networks:
-      - transcendence
-    restart: on-failure
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} -h localhost"]
-      interval: 10s
-      timeout: 10s
-      retries: 3
-
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - "8080:8080"
-    networks:
-      - transcendence

@@ -104,33 +104,6 @@ document.addEventListener('click', function(event) {
 
 
 // --------------------------------------------------------------------------------
-// ---------------------------------- Event listeners -----------------------------
-// --------------------------------------------------------------------------------
-
-
-// When the user navigates back or forward in the browser history
-// window.addEventListener('popstate', async function(event) {
-// 	const currentUrl = window.location.pathname;
-	
-// 	try {
-// 		const response = await fetch(currentUrl, {
-// 			method: 'GET',
-// 			headers: {
-// 				'X-Requested-With': 'XMLHttpRequest'
-// 			},
-// 			credentials: 'same-origin'
-// 		});
-	
-// 		const data = await response.json();
-// 		document.querySelector('#page-content').innerHTML = data.html;
-// 		if (data.header) {
-// 			document.querySelector('#header').innerHTML = data.header;
-// 		}
-// 	} catch (error) {}
-// });
-
-
-// --------------------------------------------------------------------------------
 // ------------------------------------ Utils -------------------------------------
 // --------------------------------------------------------------------------------
 

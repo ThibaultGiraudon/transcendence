@@ -8,13 +8,23 @@ function renderWaitPlayers(gameMode) {
 					playerID = data.player_id;
 
 					let html = `
-						<h1>Wait for players ${gameMode}</h1>
-		
-						<div class="score_bar" id="wait_player"></div>
-		
-						<p>${gameID}</p>
+						<h1>${gameMode} ${gameID}</h1>
+						<div class="waiting-game-infos">
+							<h2 class="waiting-game-title"></h2>
+							<img class="waiting-game-gif" src="/static/main/img/loading.gif" alt="waiting">
+						</div>
 					`;
 					document.getElementById('app').innerHTML = html;
+
+					// Dynamic title
+					let dots = 0;
+					setInterval(() => {
+						if (dots == 4) {
+							dots = 0;
+						}
+						document.querySelector('.waiting-game-title').innerHTML = 'Waiting for players' + '.'.repeat(dots);
+						dots++;
+					}, 350);
 		
 					gameProcess(true, gameMode, gameID, playerID)
 				} else {
