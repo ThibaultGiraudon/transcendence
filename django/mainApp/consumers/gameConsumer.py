@@ -13,7 +13,13 @@ class GameConsumer(AsyncWebsocketConsumer):
 		self.gameSettingsInstances = gameSettingsInstances
 
 	async def connect(self):
-		await self.channel_layer.group_add('game', self.channel_name)
+		self.game_id = self.scope['url_route']['kwargs']['game_id']
+		self.game_group_name = f'game_{self.game_id}'
+
+		await self.channel_layer.group_add(
+			self.game_group_name,
+			self.channel_name
+		)
 		await self.accept()
 
 	async def disconnect(self, close_code):
@@ -23,7 +29,11 @@ class GameConsumer(AsyncWebsocketConsumer):
 		# 	GameSettings = self.gameSettingsInstances[gameID]
 		# 	if (GameSettings.ball.task):
 		#		GameSettings.ball.task.cancel()
-		await self.channel_layer.group_discard('game', self.channel_name)
+		await self.channel_layer.group_discard(
+			self.game_group_name,
+			self.channel_name
+		)
+		# await self.channel_layer.group_discard('game', self.channel_name)
 
 	async def receive(self, text_data):
 		gameID = self.scope['url_route']['kwargs']['game_id']
