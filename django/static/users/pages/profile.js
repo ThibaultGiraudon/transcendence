@@ -1,3 +1,35 @@
+function renderProfile(user) {
+	return `
+		<div class="profile">
+			<img class="profile-img" src="${user.photo_url}" alt="profile picture">
+			<div class="profile-infos">
+				<p class="profile-username">${user.username}</p>
+				<p class="profile-email">${user.email}</p>
+			</div>
+		</div>
+	`;
+}
+
+
+function renderForm(fieldsHtml) {
+	return `
+		<div class="form-div">
+			<form class="sign-form" method="POST" enctype="multipart/form-data" novalidate>
+				<h3 class="sign-title">Edit informations</h3>
+				${fieldsHtml}
+				<p class="error-message" id="error-message"></p>
+				<input type="submit" value="Accept modifications"/>
+			</form>
+		</div>
+	`;
+}
+
+
+function renderSignOutButton() {
+	return `<button class="profile-button" id="sign-out">Sign out</button>`;
+}
+
+
 function renderProfilePage(username) {
 
 	fetchAPI('/api/isAuthenticated').then(data => {
@@ -18,24 +50,15 @@ function renderProfilePage(username) {
 							
 					// Display the current user's informations
 					if (data.isCurrentUser) {
+						const fieldsHtml = fields.map(renderField).join('');
+						const profileHtml = renderProfile(user);
+						const formHtml = renderForm(fieldsHtml);
+						const signOutButtonHtml = renderSignOutButton();
+
 						document.getElementById('app').innerHTML = `
-							<div class="profile">
-								<img class="profile-img" src="${user.photo_url}" alt="profile picture">
-								<div class="profile-infos">
-									<p class="profile-username">${user.username}</p>
-									<p class="profile-email">${user.email}</p>
-								</div>
-							</div>
-							<div class="form-div">
-								<form class="sign-form" method="POST" enctype="multipart/form-data" novalidate>
-									<h3 class="sign-title">Edit informations</h3>
-									${fieldsHtml}
-									<p class="error-message" id="error-message"></p>
-									<input type="submit" value="Accept modifications"/>
-								</form>
-							</div>
-							
-							<button class="profile-button" id="sign-out">Sign out</button>
+							${profileHtml}
+							${formHtml}
+							${signOutButtonHtml}
 						`;
 
 						// Add an event listener on the sign-in form
