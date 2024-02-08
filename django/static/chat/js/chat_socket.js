@@ -10,7 +10,7 @@ function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
 
 	// Create a new socket
 	let websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-	let websocketPort = window.location.protocol === 'https:' ? ':8001' : ':8000';
+	let websocketPort = window.location.protocol === 'https:' ? ':8443' : ':8000';
 	const socketUrl = websocketProtocol + '//' + window.location.hostname + websocketPort + '/ws/chat/' + roomID + "/";
 
 	chatSocket = {

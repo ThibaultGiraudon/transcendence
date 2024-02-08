@@ -159,7 +159,7 @@ function updateBallPosition(gameContext, x, y) {
 function getSocket(gameID) {
 	let socketUrl;
 	if (window.location.protocol === 'https:') {
-		socketUrl = 'wss://localhost:8001/wss/game/';
+		socketUrl = 'wss://localhost:8443/wss/game/';
 	} else {
 		socketUrl = 'ws://localhost:8000/ws/game/';
 	}

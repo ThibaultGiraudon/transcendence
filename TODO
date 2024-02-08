@@ -3,12 +3,11 @@ idee elias powershot ratio (je me comprends) (% de powershot)
 mettre gameObjects dans un dossier
 leger bug quand on joue a deux la paddle vivante disparait et reapparait
 mettre un countdown au mileu au reset pour pas quon crois que cest un lag
+ouvre le ws game tout le temps comme ca si u fais autre chose ca te redirige quand la game est prete 
+quand la partie est over on met isready a false
 
 
 [LEON]
-Usernam esur les nouveaux messages a la suite
+Username sur les nouveaux messages a la suite
 Taille max 5mo pour les pp
 Changer email et password
-
-ouvre le ws game tout le temps comme ca si u fais autre chose ca te redirige quand la game est prete 
-quand la partie est over on met isready a false

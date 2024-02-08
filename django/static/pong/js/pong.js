@@ -129,7 +129,7 @@ function changeAllScores(message) {
 
 function gameProcess2() {
     let     websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    let     websocketPort = window.location.protocol === 'https:' ? ':8001' : ':8000';
+    let     websocketPort = window.location.protocol === 'https:' ? ':8443' : ':8000';
     const   socketUrl = websocketProtocol + '//' + window.location.hostname + websocketPort + '/ws/some_path/';
     const   socket = new WebSocket(socketUrl);
 
