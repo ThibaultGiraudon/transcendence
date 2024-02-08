@@ -3,11 +3,6 @@ idee elias powershot ratio (je me comprends) (% de powershot)
 mettre un countdown au mileu au reset pour pas quon crois que cest un lag
 ouvre le ws game tout le temps comme ca si u fais autre chose ca te redirige quand la game est prete 
 quand la partie est over on met isready a false
-
-[LEON]
-Usernam esur les nouveaux messages a la suite
-
-[ELIAS]
 ouvre le ws game tout le temps comme ca si u fais autre chose ca te \
 redirige quand la game est prete 
 quand la partie est over on met isready a false
@@ -19,9 +14,13 @@ WebSocket ce qui est pas clean
 TODO ajoute un mode solo avec tout les murs active pour joueur contre le mur
 
 Attention le bouton retour du navigateur ne fonctionne plus
+Ajouter gameID au nom du groupe du websocket
 
 A faire demain :
 check si le lag est lier a mon pc ou si cest le code
+
+
+[LEON]
 Username sur les nouveaux messages a la suite
 Taille max 5mo pour les pp
 Changer email et password

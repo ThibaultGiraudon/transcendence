@@ -8,7 +8,7 @@ function renderWaitPlayers(gameMode) {
 					playerID = data.player_id;
 
 					let html = `
-						<h1>${gameMode} ${gameID}</h1>
+						<p>${gameMode} ${gameID}</p>
 						<div class="waiting-game-infos">
 							<h2 class="waiting-game-title"></h2>
 							<img class="waiting-game-gif" src="/static/main/img/loading.gif" alt="waiting">
@@ -22,7 +22,11 @@ function renderWaitPlayers(gameMode) {
 						if (dots == 4) {
 							dots = 0;
 						}
-						document.querySelector('.waiting-game-title').innerHTML = 'Waiting for players' + '.'.repeat(dots);
+						if (document.querySelector('.waiting-game-title') != null) {
+							document.querySelector('.waiting-game-title').innerHTML = 'Waiting for players' + '.'.repeat(dots);
+						} else {
+							clearInterval();
+						}
 						dots++;
 					}, 350);
 		
