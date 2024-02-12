@@ -2,14 +2,6 @@ from 	channels.db import database_sync_to_async
 from	.senders.sendUpdatePaddlePosition import sendUpdatePaddlePosition
 import	asyncio
 
-@database_sync_to_async
-def getPlayerIndex(playerID, gameID):
-	from mainApp.models import Player, Game
-	currentPlayer = Player.objects.get(id=playerID)
-	if currentPlayer.id in Game.objects.get(id=gameID).playerList:
-		return (Game.objects.get(id=gameID).playerList.index(currentPlayer.id))
-	return (None)
-
 def keyupReset(direction, paddle):
 	paddle.keyState[direction] = False;
 	if (paddle.taskAsyncio[direction]):
@@ -30,9 +22,10 @@ async def keydownLoop(direction, paddle, consumer, gameSettings):
 		await sendUpdatePaddlePosition(consumer, paddle)
 		await asyncio.sleep(0.01) # TODO change to global var for speed
 
-async def handlePaddleMove(consumer, message, gameSettings, gameID, playerID):
+async def handlePaddleMove(consumer, message, gameSettings, playerID):
 	direction = message['direction']
-	playerIndex = await getPlayerIndex(playerID, gameID)
+	playerIndex = gameSettings.playerIDList.index(playerID)
+
 	if (playerIndex == None):
 		return
 	paddle = gameSettings.paddles[playerIndex]
