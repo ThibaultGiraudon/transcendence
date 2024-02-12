@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	// Close the socket
 	statusSocket.socket.onclose = function(e) {
-		if (!this.shouldClose && this.readyState !== WebSocket.CLOSED) {
+		if (!statusSocket.shouldClose && this.readyState !== WebSocket.CLOSED) {
 			statusSocket.socket = new WebSocket(statusSocket.url);
 		}
 	};
