@@ -1,4 +1,5 @@
 import os
+import re
 import requests
 import imghdr
 from PIL import Image
@@ -70,15 +71,17 @@ def sign_up(request):
 		email = data.get('email')
 		password = data.get('password')
 
-		if CustomUser.objects.filter(email=email).exists():
+		if not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
+			return JsonResponse({"success": False, "email": "Invalid email format"}, status=401)
+		elif CustomUser.objects.filter(email=email).exists():
 			return JsonResponse({"success": False, "email": "This email is already taken"}, status=401)
-
+		
 		if CustomUser.objects.filter(username=username).exists():
 			return JsonResponse({"success": False, "username": "This username is already taken"}, status=401)
-		
+		elif not re.match('^[a-zA-Z0-9-]*$', username):
+			return JsonResponse({"success": False, "username": "This username cannot contain special characters"}, status=401)
 		elif len(username) < 4:
 			return JsonResponse({"success": False, "username": "Your username is too short (4 characters minimum)"}, status=401)
-		
 		elif len(username) > 20:
 			return JsonResponse({"success": False, "username": "Your username is too long (20 characters maximum)"}, status=401)
 
@@ -117,6 +120,8 @@ def profile(request, username):
 		data = json.loads(request.body)
 		new_username = data.get('new_username')
 		photo = data.get('photo')
+		new_email = data.get('new_email')
+		new_password = data.get('new_password')
 
 		# Check if the username is valid
 		if new_username == request.user.username:
@@ -127,7 +132,7 @@ def profile(request, username):
 			return JsonResponse({"success": False, "username": "This username is too long (20 characters maximum)"}, status=401)
 		elif ' ' in new_username:
 			return JsonResponse({"success": False, "username": "This username cannot contain space"}, status=401)
-		elif any(char.isdigit() for char in new_username):
+		elif not re.match('^[a-zA-Z0-9-]*$', new_username):
 			return JsonResponse({"success": False, "username": "This username cannot contain special characters"}, status=401)
 		elif CustomUser.objects.filter(username=new_username).exists():
 			return JsonResponse({"success": False, "username": "This username is already taken"}, status=401)
@@ -160,8 +165,24 @@ def profile(request, username):
 			request.user.photo.save(f"{request.user.email}.{image_type}", File(photo_temp), save=True)
 			request.user.save()
 
+		# Check if the email is valid
+		if new_email == request.user.email:
+			pass
+		elif not len(new_email):
+			return JsonResponse({"success": False, "email": "This email is empty"}, status=401)
+		elif not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", new_email):
+			return JsonResponse({"success": False, "email": "Invalid email format"}, status=401)
+		elif CustomUser.objects.filter(email=new_email).exists():
+			return JsonResponse({"success": False, "email": "This email is already taken"}, status=401)
+		else:
+			request.user.email = new_email
+			request.user.save()
+		
+		# Check if the password is valid
+		request.user.password = new_password
+		request.user.save()
+
 		return JsonResponse({"success": True, "message": "Successful profile update"}, status=200)
-	
 	else:
 		return JsonResponse({"success": False, "message": "Method not allowed"}, status=405)
 	

@@ -54,8 +54,6 @@ function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
 				usernameContainer.className = 'other-username';
 
 				// Check if the message is from the current user
-				const idElement = sender;
-
 				if (blockedUsers.includes(parseInt(data.sender, 10))) {
 					messageContainer.className = 'blocked-message';
 					messageContainer.textContent = 'This user is blocked';
@@ -68,7 +66,7 @@ function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
 				if (chatLog) {
 					// Display the username of the sender
 					if (data.sender !== sender && !isPrivate) {
-						if (chatLog.lastElementChild && chatLog.lastElementChild.dataset.sender !== data.sender) {
+						if (chatLog.lastElementChild && Number(chatLog.lastElementChild.dataset.sender) !== Number(data.sender)) {
 							chatLog.appendChild(usernameContainer);
 						}
 					}
