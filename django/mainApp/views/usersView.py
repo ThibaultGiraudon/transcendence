@@ -11,16 +11,14 @@ from ..models import CustomUser
 from django.contrib.auth import login
 from django.contrib.auth import get_user_model
 from django.core.files.storage import default_storage
-from ..models import Notification, Channel
+from ..models import Channel
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
 from django.shortcuts import render
 from django.http import JsonResponse
 import urllib.request, json, base64
 
-
 from mainApp.models import Player
-from mainApp.views.utils import renderError
 
 
 # 42 API
