@@ -40,13 +40,21 @@ function renderProfilePage(username) {
 			fetchAPI('/api/get_user/' + username).then(data => {
 				if (data.user) {
 					const user = data.user;
+					let fields = [];
 
-					const fields = [
-						{ name: 'input-username', label: 'Username', type: 'text', value: user.username },
-						{ name: 'input-photo', label: 'Profile picture', type: 'file', accept: 'image/*' },
-						{ name: 'input-email', label: 'Email', type: 'email', value: user.email },
-						{ name: 'input-password', label: 'Password', type: 'password' }
-					];
+					if (user.is42) {
+						fields = [
+							{ name: 'input-username', label: 'Username', type: 'text', value: user.username },
+							{ name: 'input-photo', label: 'Profile picture', type: 'file', accept: 'image/*' },
+						];
+					} else {
+						fields = [
+							{ name: 'input-username', label: 'Username', type: 'text', value: user.username },
+							{ name: 'input-photo', label: 'Profile picture', type: 'file', accept: 'image/*' },
+							{ name: 'input-email', label: 'Email', type: 'email', value: user.email },
+							{ name: 'input-password', label: 'Password', type: 'password' }
+						];
+					}
 
 					// Display the current user's informations
 					if (data.isCurrentUser) {

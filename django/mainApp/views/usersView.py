@@ -179,8 +179,14 @@ def profile(request, username):
 			request.user.save()
 		
 		# Check if the password is valid
-		request.user.password = new_password
-		request.user.save()
+		if not len(new_password):
+			pass
+		else:
+			# Change the status to offline
+			request.user.set_status("offline")
+
+			request.user.set_password(new_password)
+			request.user.save()
 
 		return JsonResponse({"success": True, "message": "Successful profile update"}, status=200)
 	else:
@@ -236,7 +242,8 @@ def	connect_42_user(request, response_data):
 		user = CustomUser.objects.create(
 			username=response_data['login'],
 			email=response_data['email'],
-			player=player
+			player=player,
+			is42=True
 		)
 		user.photo.save(f"{response_data['email']}.jpg", ContentFile(img_io.getvalue()), save=True)
 		user.save()
