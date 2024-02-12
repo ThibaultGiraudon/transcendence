@@ -28,7 +28,8 @@ def getPlayerIDList(gameSettings, gameID):
 
 async def launchAnyGame(consumer, gameID):
 	gameSettings = consumer.gameSettingsInstances[gameID]
-	await getPlayerIDList(gameSettings, gameID)
+	if not gameSettings.isLocalGame:
+		await getPlayerIDList(gameSettings, gameID)
 	await sendInitPaddlePosition(consumer, gameSettings)
 	await sendUpdateScore(consumer, gameSettings)
 	await handleBallMove(consumer, gameSettings)
@@ -36,11 +37,13 @@ async def launchAnyGame(consumer, gameID):
 async def launchRankedSoloGame(consumer, gameID):
 	if gameID not in consumer.gameSettingsInstances:
 		consumer.gameSettingsInstances[gameID] = GameSettings(2)
+	consumer.gameSettingsInstances[gameID].isLocalGame = False
 	await launchAnyGame(consumer, gameID)
 
 async def launchDeathGame(consumer, gameID):
 	if gameID not in consumer.gameSettingsInstances:
 		consumer.gameSettingsInstances[gameID] = GameSettings(4)
+	consumer.gameSettingsInstances[gameID].isLocalGame = False
 	await launchAnyGame(consumer, gameID)
 
 # async def launchTournamentGame(consumer, gameID):
@@ -48,7 +51,20 @@ async def launchDeathGame(consumer, gameID):
 		# consumer.gameSettingsInstances[gameID] = GameSettings(4)
 	# await launchAnyGame(consumer, gameID)
 
+async def launchInitLocalGame(consumer, gameID):
+	if gameID not in consumer.gameSettingsInstances:
+		consumer.gameSettingsInstances[gameID] = GameSettings(2)
+	consumer.gameSettingsInstances[gameID].isLocalGame = True
+	await launchAnyGame(consumer, gameID)
+
 async def handleInitGame(consumer, gameID, gameMode, playerID):
+	if (gameMode == 'init_local_game'):
+		await launchInitLocalGame(consumer, gameID)
+		return (True)
+	elif (gameMode == 'init_ai_game'):
+		# await launchInitAiGame(consumer, gameID)
+		return (True)
+		
 	game = await getGame(gameID)
 	if playerID not in game.playerList:
 		return (False)

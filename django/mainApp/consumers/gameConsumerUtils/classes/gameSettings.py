@@ -23,6 +23,7 @@ class GameSettings:
         self.paddleThickness = 20
         self.offset = 20
         self.limit = self.offset + self.paddleThickness
+        self.isLocalGame = None
 
         for id in range(4):
             self.paddles.append(Paddle(id))

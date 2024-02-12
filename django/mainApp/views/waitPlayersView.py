@@ -2,7 +2,7 @@ from	mainApp.views.utils import renderPage, redirectPage
 from	mainApp.models import Game
 from	django.http import JsonResponse
 from	django.shortcuts import render
-import	datetime, json
+import	datetime, json, random
 
 def getNbPlayersToWait(gameMode):
 	if (gameMode == 'init_ranked_solo_game'):
@@ -31,8 +31,20 @@ def waitPlayers(request, gameMode):
 	elif (request.method == 'POST'):
 		data = json.loads(request.body)
 		gameMode = data.get('gameMode')
-
 		player = request.user.player
+
+		# TODO faire comme ca dans le consumer aussi
+		# If the game is a local game or an AI game
+		if gameMode in ['init_local_game', 'init_ai_game']:
+			if not player.currentGameID:
+				while (True):
+					gameID = random.randint(1, 1000000)
+					player.currentGameID = gameID
+					player.save()
+					if not Game.objects.filter(id=gameID).exists():
+						return JsonResponse({'success': True, 'redirect': '/pong/game/', 'gameMode': gameMode, 'gameID': gameID})
+			else:
+				return JsonResponse({'success': True, 'redirect': '/pong/game/', 'gameMode': gameMode, 'gameID': player.currentGameID})
 
 		nbPlayersToWait = getNbPlayersToWait(gameMode)
 		waitingGamesList = Game.objects\
@@ -48,9 +60,7 @@ def waitPlayers(request, gameMode):
 				gameMode = game.gameMode
 				if (game.playerList.__len__() == nbPlayersToWait):
 					return JsonResponse({'success': True, 'redirect': '/pong/game/', 'gameMode': gameMode, 'gameID': game.id})
-					# return redirectPage(request, '/pong/game/' + gameMode + '/' + str(game.id) + '/')
 				return JsonResponse({'success': True, 'redirect': '/pong/wait_players/', 'gameMode': gameMode, 'gameID': game.id})
-				# return renderPage(request, 'pong_elements/wait_players.html', {'gameMode': gameMode, 'gameID': game.id})
 
 		gameID = createOrJoinGame(waitingGamesList, player, gameMode)
 		player.currentGameID = gameID
@@ -58,8 +68,6 @@ def waitPlayers(request, gameMode):
 		game = Game.objects.get(id=gameID)
 		if (game.playerList.__len__() == nbPlayersToWait):
 			return JsonResponse({'success': True, 'redirect': '/pong/game/', 'gameMode': gameMode, 'gameID': game.id})
-			# return redirectPage(request, '/pong/game/' + gameMode + '/' + str(game.id) + '/')
 		return JsonResponse({'success': True, 'redirect': '/pong/wait_players/', 'gameMode': gameMode, 'gameID': game.id})
-		# return renderPage(request, 'pong_elements/wait_players.html', {'gameMode': gameMode, 'gameID': gameID})
 	else:
 		return JsonResponse({'success': False, 'message': 'Method not allowed'})

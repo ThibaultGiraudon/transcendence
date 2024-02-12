@@ -178,11 +178,14 @@ async def startBall(consumer, gameSettings):
 			await asyncio.sleep(0.5)
 
 		await asyncio.sleep(0.02)
-		await sendUpdateBallPosition(consumer, ball)
+		await sendUpdateBallPosition(consumer, gameSettings)
 
 async def handleBallMove(consumer, gameSettings):
 	if (gameSettings.ball.task):
 		# TODO inutile mais a verifier quand meme si ca casse rien
 		# gameSettings.ball.task.cancel()
-		return
+		if (gameSettings.isLocalGame == False):
+			return
+		else:
+			gameSettings.ball.task.cancel()
 	gameSettings.ball.task = asyncio.create_task(startBall(consumer, gameSettings))

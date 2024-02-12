@@ -15,7 +15,7 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - ${PWD}/django/static:/home/app/web/staticfiles
+      - ./django/static:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
     restart: on-failure
   
@@ -49,7 +49,7 @@ services:
     depends_on:
       - web
     volumes:
-      - ${PWD}/django/static:/home/app/web/staticfiles
+      - ./django/static:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
       - ssl_certificates:/etc/ssl
     restart: on-failure

@@ -18,6 +18,7 @@ Ajouter gameID au nom du groupe du websocket
 
 A faire demain :
 check si le lag est lier a mon pc ou si cest le code
+quand une game est fini on met isready a false et on eneleve la task de ball
 
 
 [LEON]

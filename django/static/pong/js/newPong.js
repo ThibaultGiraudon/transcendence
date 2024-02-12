@@ -96,6 +96,7 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
                 key: 'keydown',
                 direction: getPaddleDirection(event.key),
 				playerID: playerID,
+                paddleKey: event.key,
             };
             socket.socket.send(JSON.stringify(message));
         }
@@ -114,6 +115,7 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
                 key: 'keyup',
                 direction: getPaddleDirection(event.key),
 				playerID: playerID,
+                paddleKey: event.key,
             };
             socket.socket.send(JSON.stringify(message));
         }

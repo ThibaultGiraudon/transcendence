@@ -41,11 +41,10 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 		if (message['type'] == 'init_ranked_solo_game' or \
 			message['type'] == 'init_death_game' or \
-			message['type'] == 'init_tournament_game'):
-				await handleInitGame(self, gameID, message['type'], message['playerID'])
-		# # TODO add other local game modes
-		# # else if (message['type'] == 'init_solooo'):
-		# 	# await handle_paddle_move(self, message['paddleID'], message['direction'])
+			message['type'] == 'init_tournament_game' or \
+			message['type'] == 'init_local_game' or \
+			message['type'] == 'init_ai_game'):
+			await handleInitGame(self, gameID, message['type'], message['playerID'])
 
 		if (message['type'] == 'paddle_move'):
 			gameSettings = self.gameSettingsInstances[gameID]
