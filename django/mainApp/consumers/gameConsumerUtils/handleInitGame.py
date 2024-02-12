@@ -18,23 +18,35 @@ def getPlayer(playerID):
 def savePlayer(player):
 	player.save()
 
-async def launchRankedSoloGame(consumer, gameID):
-	if gameID not in consumer.gameSettingsInstances:
-		consumer.gameSettingsInstances[gameID] = GameSettings(2)
+@database_sync_to_async
+def getPlayerIDList(gameSettings, gameID):
+	from mainApp.models import Game
+	game = Game.objects.get(id=gameID)
+	gameSettings.playerIDList = []
+	for player in game.playerList:
+		gameSettings.playerIDList.append(player)
 
+async def launchAnyGame(consumer, gameID):
 	gameSettings = consumer.gameSettingsInstances[gameID]
+	await getPlayerIDList(gameSettings, gameID)
 	await sendInitPaddlePosition(consumer, gameSettings)
 	await sendUpdateScore(consumer, gameSettings)
 	await handleBallMove(consumer, gameSettings)
+
+async def launchRankedSoloGame(consumer, gameID):
+	if gameID not in consumer.gameSettingsInstances:
+		consumer.gameSettingsInstances[gameID] = GameSettings(2)
+	await launchAnyGame(consumer, gameID)
 
 async def launchDeathGame(consumer, gameID):
 	if gameID not in consumer.gameSettingsInstances:
 		consumer.gameSettingsInstances[gameID] = GameSettings(4)
+	await launchAnyGame(consumer, gameID)
 
-	gameSettings = consumer.gameSettingsInstances[gameID] 
-	await sendInitPaddlePosition(consumer, gameSettings)
-	await sendUpdateScore(consumer, gameSettings)
-	await handleBallMove(consumer, gameSettings)
+# async def launchTournamentGame(consumer, gameID):
+	# if gameID not in consumer.gameSettingsInstances:
+		# consumer.gameSettingsInstances[gameID] = GameSettings(4)
+	# await launchAnyGame(consumer, gameID)
 
 async def handleInitGame(consumer, gameID, gameMode, playerID):
 	game = await getGame(gameID)

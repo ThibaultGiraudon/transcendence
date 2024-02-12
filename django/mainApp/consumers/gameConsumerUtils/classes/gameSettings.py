@@ -18,6 +18,7 @@ class GameSettings:
         self.nbPaddles = nbPaddles
         self.squareSize = 800
         self.paddles = []
+        self.playerIDList = []
         self.paddleSize = 100
         self.paddleThickness = 20
         self.offset = 20
