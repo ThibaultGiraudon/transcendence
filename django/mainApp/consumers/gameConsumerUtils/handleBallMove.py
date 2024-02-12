@@ -174,10 +174,6 @@ async def startBall(consumer, gameSettings):
 			
 			# await sendUpdateScore(consumer, paddleID, gameMode)
 			await asyncio.sleep(1)
-			for paddle in gameSettings.paddles:
-				if (paddle.isAlive == True):
-					paddle.position = gameSettings.squareSize / 2 - gameSettings.paddleSize / 2
-					await sendUpdatePaddlePosition(consumer, paddle)
 			ball.resetBall(gameSettings)
 			await asyncio.sleep(0.5)
 
