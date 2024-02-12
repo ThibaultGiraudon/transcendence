@@ -120,6 +120,7 @@ def get_user(request, username=None):
 		# Get informations about the user
 		user_dict = {
 			'id': request.user.id,
+			'is42': request.user.is42,
 			'email': request.user.email,
 			'username': request.user.username,
 			'photo_url': request.user.photo.url,
