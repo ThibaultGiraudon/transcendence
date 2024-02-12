@@ -19,3 +19,6 @@ RUN		mkdir $APP_HOME/mediafiles
 # Update the permissions of the directories to Nginx
 RUN		chown -R nginx:nginx $APP_HOME/staticfiles $APP_HOME/mediafiles
 RUN		chmod -R 755 $APP_HOME/staticfiles $APP_HOME/mediafiles
+
+# Change the user directive in the Nginx configuration
+RUN		sed -i 's/user  nginx;/user  root;/' /etc/nginx/nginx.conf

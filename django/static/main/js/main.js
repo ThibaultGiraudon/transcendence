@@ -111,7 +111,7 @@ document.addEventListener('click', function(event) {
 function renderField(field) {
 	return `
 		<label for="${field.name}">${field.label}</label>
-		<input type="${field.type}" id="${field.name}" name="${field.name}" autocomplete="on" value="${field.value || ''}" accept="${field.accept || ''}"/>
+		<input type="${field.type}" id="${field.name}" name="${field.name}" autocomplete="on" value="${field.value || ''}" accept="${field.accept || ''}" ${field.disabled ? 'disabled' : ''}/>
 		<p class="error-alert" id="error-${field.name}"></p>
 	`;
 }

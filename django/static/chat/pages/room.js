@@ -1,7 +1,8 @@
 function renderRoomPage(room_id) {
 
-	// If the user is not connected
 	fetchAPI('/api/get_user').then(dataUser => {
+
+		// If the user is not connected
 		if (!dataUser.isAuthenticated) {
 			router.navigate('/sign_in/');
 			return;

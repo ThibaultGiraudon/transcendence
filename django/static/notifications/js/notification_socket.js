@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+    
     // Init the socket
     let websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     let websocketPort = window.location.protocol === 'https:' ? ':8443' : ':8000';
@@ -17,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Close the socket
     notificationSocket.socket.onclose = function(e) {
-        if (!this.shouldClose) {
+        if (!notificationSocket.shouldClose) {
             // Reconnect if the socket is unexpectedly closed
             notificationSocket.socket = new WebSocket(notificationSocket.url);
         }

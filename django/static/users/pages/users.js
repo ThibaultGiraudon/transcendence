@@ -1,5 +1,40 @@
+function renderUser(user) {
+	return `
+		<button class="menu-link" data-route="/profile/${user.username}">
+			<div class="container" data-user-id="${user.id}">
+				<img src="${user.photo_url}" alt="profile picture">
+				<h3>${user.username}</h3>
+				<p class="status">${user.status.includes("chat") ? "online" : user.status}</p>
+			</div>
+		</button>
+	`;
+}
+
+
+function renderUsersSection(title, users) {
+	if (Object.keys(users).length === 0) {
+		return `
+			<div class="${title.toLowerCase()}">
+				<h1>${title}</h1>
+				<div class="list">
+					<h4 class="no-${title.toLowerCase()}">No ${title.toLowerCase()}</h4>
+				</div>
+			</div>
+		`;
+	} else {
+		return `
+			<div class="${title.toLowerCase()}">
+				<h1>${title}</h1>
+				<div class="list">
+					${Object.values(users).map(renderUser).join('')}
+				</div>
+			</div>
+		`;
+	}
+}
+
+
 function renderUsersPage() {
-	
 	// Check if the user is authenticated
 	fetchAPI('/api/isAuthenticated').then(data => {
 		if (!data.isAuthenticated) {
@@ -7,11 +42,8 @@ function renderUsersPage() {
 			return;
 		}
 
-		let html = '<div id="status-log" class="status-log">';
-
 		// Get the users
 		fetchAPI('/api/users').then(dataUsers => {
-
 			// Define categories
 			let users = {};
 			let followed = {};
@@ -24,100 +56,11 @@ function renderUsersPage() {
 				}
 			}
 
-			// Check if the users category is empty
-			if (users.length === 0) {
-				html += `
-					<div class="all-users">
-						<h1>All users</h1>
-						<div class="list">
-							<h4 class="no-users">No users</h4>
-						</div>
-					</div>
-				`;
-
-			// Display the users
-			} else {
-				html += `
-					<div class="all-users">
-						<h1>All users</h1>
-						<div class="list">
-				`;
-
-				for (const user of Object.values(users)) {
-					html += `
-							<button class="menu-link" data-route="/profile/${user.username}">
-								<div class="container" data-user-id="${user.id}">
-									<img src="${user.photo_url}" alt="profile picture">
-									<h3>${user.username}</h3>
-					`;
-					if (!user.status.includes("chat")) {
-						html += `
-									<p class="status">${user.status}</p>
-						`;
-					} else {
-						html += `
-									<p class="status">online</p>
-						`;
-					}
-					html += `
-								</div>
-							</button>
-					`;
-				}
-
-				html += `
-						</div>
-					</div>
-				`;
-			}
-
-			// Check if the followed category is empty
-			if (Object.keys(followed).length === 0) {
-				html += `
-					<div class="friend">
-						<h1>Friends</h1>
-						<div class="list">
-							<h4 class="no-friends">No friends</h4>
-						</div>
-					</div>
-				`;
-
-			// Display the followed
-			} else {
-				html += `
-					<div class="friend">
-						<h1>Friends</h1>
-						<div class="list">
-				`;
-
-				for (const user of Object.values(followed)) {
-					html += `
-							<button class="menu-link" data-route="/profile/${user.username}">
-								<div class="container" data-user-id="${user.id}">
-									<img src="${user.photo_url}" alt="profile picture">
-									<h3>${user.username}</h3>
-					`;
-					if (!user.status.includes("chat")) {
-						html += `
-									<p class="status">${user.status}</p>
-						`;
-					} else {
-						html += `
-									<p class="status">online</p>
-						`;
-					}
-					html += `
-								</div>
-							</button>
-					`;
-				}
-			}
-
-			// Close the html
-			html += `
-						</div>
-					</div>
-			`;
+			// Build the HTML
+			let html = '<div id="status-log" class="status-log">';
+			html += renderUsersSection('All users', users);
+			html += renderUsersSection('Friends', followed);
+			html += '</div>';
 
 			// Display the users page
 			document.getElementById('app').innerHTML = html;
