@@ -30,8 +30,6 @@ const router = {
 
 		// Notifications
 		'/notifications/': renderNotificationsPage,
-
-		// Errors
 	},
 
 	navigate: function(route) {
@@ -48,6 +46,10 @@ const router = {
 			// Call the corresponding function with the parameters
 			this.routes[matchingRoute](...params);
 			history.pushState({}, '', route);
+		
+		} else {
+			// If no route is found, render the 404 page
+			render404Page();
 		}
 	}
 };
