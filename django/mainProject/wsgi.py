@@ -1,16 +1,5 @@
 """
-WSGI config for main project.
-
-It exposes the WSGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/4.2/howto/deployment/wsgi/
+The entire website is served by the ASGI server.
+This file is only here because it is required by Django.
+See the ASGI file for more information.
 """
-
-import os
-
-from django.core.wsgi import get_wsgi_application
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mainProject.settings')
-
-application = get_wsgi_application()
