@@ -44,10 +44,10 @@ function renderProfilePage(username) {
 					const fields = [
 						{ name: 'input-username', label: 'Username', type: 'text', value: user.username },
 						{ name: 'input-photo', label: 'Profile picture', type: 'file', accept: 'image/*' },
+						{ name: 'input-email', label: 'Email', type: 'email', value: user.email },
+						{ name: 'input-password', label: 'Password', type: 'password' }
 					];
 
-					const fieldsHtml = fields.map(renderField).join('');
-							
 					// Display the current user's informations
 					if (data.isCurrentUser) {
 						const fieldsHtml = fields.map(renderField).join('');
@@ -68,10 +68,14 @@ function renderProfilePage(username) {
 							// Clear errors messages
 							document.getElementById('error-input-username').textContent = '';
 							document.getElementById('error-input-photo').textContent = '';
+							document.getElementById('error-input-email').textContent = '';
+							document.getElementById('error-input-password').textContent = '';
 
 							// Get data from the form
 							const new_username = document.getElementById('input-username').value;
 							const photo = document.getElementById('input-photo').files[0];
+							const new_email = document.getElementById('input-email').value;
+							const new_password = document.getElementById('input-password').value;
 
 							// Validate the data
 							if (!new_username) {
@@ -82,10 +86,10 @@ function renderProfilePage(username) {
 							// Convert the photo to a Base64 string
 							let photoBase64 = null;
 							if (photo) {
+								// Wait for the photo to be converted to Base64
 								const reader = new FileReader();
 								reader.readAsDataURL(photo);
 
-								// Wait for the photo to be converted to Base64
 								await new Promise(resolve => {
 									reader.onloadend = function() {
 										photoBase64 = reader.result.replace('data:', '').replace(/^.+,/, '');
@@ -101,7 +105,7 @@ function renderProfilePage(username) {
 									'X-Requested-With': 'XMLHttpRequest',
 									'X-CSRFToken': getCookie('csrftoken'),
 								},
-								body: JSON.stringify({ new_username, photo: photoBase64 })
+								body: JSON.stringify({ new_username, photo: photoBase64, new_email, new_password })
 							});
 
 							if (response.headers.get('content-type').includes('application/json')) {
@@ -115,11 +119,17 @@ function renderProfilePage(username) {
 									// If the connection failed, display the error message
 									document.getElementById('error-input-username').textContent = responseData.username;
 									document.getElementById('error-input-photo').textContent = responseData.photo;
+									document.getElementById('error-input-email').textContent = responseData.email;
+									document.getElementById('error-input-password').textContent = responseData.password;
 									document.getElementById('error-message').textContent = responseData.message;
 								}
 							
 							} else {
-								document.getElementById('error-message').textContent = "The server did not return a JSON response.";
+								if (response.status == 413) {
+									document.getElementById('error-message').textContent = "The photo size is too large.";
+								} else {
+									document.getElementById('error-message').textContent = "The server did not return a JSON response.";
+								}
 							}
 						});
 
