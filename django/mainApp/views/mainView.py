@@ -1,7 +1,6 @@
 from django.utils.translation import gettext as _
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
-import random
 
 
 @ensure_csrf_cookie
@@ -24,3 +23,11 @@ def custom405(request, exception):
 
 def custom500(request):
 	return render(request, 'base.html', status=500)
+
+
+def token42(request):
+	return render(request, 'base.html', status=498)
+
+
+def down42(request):
+	return render(request, 'base.html', status=401)

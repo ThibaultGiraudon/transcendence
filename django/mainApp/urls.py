@@ -54,4 +54,8 @@ urlpatterns = [
 	path('pong/game_over/<str:player>', pongView.gameOver, name='game_over'),
 	path('pong/wait_players/<str:gameMode>', waitPlayersView.waitPlayers, name='wait_players'),
 	path('pong/game/<str:gameMode>', pongView.game, name='game'),
+
+	# Errors handling for 42 API
+	path('token42/', mainView.token42, name='token42'),
+	path('down42/', mainView.down42, name='down42'),
 ]

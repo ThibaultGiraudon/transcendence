@@ -209,11 +209,11 @@ def	check_authorize(request):
 	
 	response_token = handle_42_callback(request, code)
 	if response_token is None:
-		return renderError(request, 498, {'title':"The token has expired", 'infos':"Please contact the administrator"})
+		return redirect('token42')
 	
 	response_data = make_api_request_with_token(API_USER, response_token)
 	if response_data is None:
-		return renderError(request, 401, {'title':"The 42 API is down", 'infos':"Please contact the administrator"})
+		return redirect('down42')
 	
 	connect_42_user(request, response_data)
 
@@ -236,12 +236,17 @@ def	connect_42_user(request, response_data):
 				img_io = BytesIO()
 				img.save(img_io, format='JPEG')
 
+		isOfficial = False
+		if response_data['email'] in os.environ.get('OFFICIAL_EMAILS').split(','):
+			isOfficial = True
+
 		player = Player.objects.create(currentGameID=None)
 		user = CustomUser.objects.create(
 			username=response_data['login'],
 			email=response_data['email'],
 			player=player,
-			is42=True
+			is42=True,
+			isOfficial=isOfficial,
 		)
 		user.photo.save(f"{response_data['email']}.jpg", ContentFile(img_io.getvalue()), save=True)
 		user.save()
