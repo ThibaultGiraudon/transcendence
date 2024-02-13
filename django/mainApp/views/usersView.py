@@ -11,16 +11,14 @@ from ..models import CustomUser
 from django.contrib.auth import login
 from django.contrib.auth import get_user_model
 from django.core.files.storage import default_storage
-from ..models import Notification, Channel
+from ..models import Channel
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
 from django.shortcuts import render
 from django.http import JsonResponse
 import urllib.request, json, base64
 
-
 from mainApp.models import Player
-from mainApp.views.utils import renderError
 
 
 # 42 API
@@ -179,8 +177,14 @@ def profile(request, username):
 			request.user.save()
 		
 		# Check if the password is valid
-		request.user.password = new_password
-		request.user.save()
+		if not len(new_password):
+			pass
+		else:
+			# Change the status to offline
+			request.user.set_status("offline")
+
+			request.user.set_password(new_password)
+			request.user.save()
 
 		return JsonResponse({"success": True, "message": "Successful profile update"}, status=200)
 	else:
@@ -205,11 +209,11 @@ def	check_authorize(request):
 	
 	response_token = handle_42_callback(request, code)
 	if response_token is None:
-		return renderError(request, 498, {'title':"The token has expired", 'infos':"Please contact the administrator"})
+		return redirect('token42')
 	
 	response_data = make_api_request_with_token(API_USER, response_token)
 	if response_data is None:
-		return renderError(request, 401, {'title':"The 42 API is down", 'infos':"Please contact the administrator"})
+		return redirect('down42')
 	
 	connect_42_user(request, response_data)
 
@@ -232,11 +236,17 @@ def	connect_42_user(request, response_data):
 				img_io = BytesIO()
 				img.save(img_io, format='JPEG')
 
+		isOfficial = False
+		if response_data['email'] in os.environ.get('OFFICIAL_EMAILS').split(','):
+			isOfficial = True
+
 		player = Player.objects.create(currentGameID=None)
 		user = CustomUser.objects.create(
 			username=response_data['login'],
 			email=response_data['email'],
-			player=player
+			player=player,
+			is42=True,
+			isOfficial=isOfficial,
 		)
 		user.photo.save(f"{response_data['email']}.jpg", ContentFile(img_io.getvalue()), save=True)
 		user.save()
