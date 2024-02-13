@@ -28,7 +28,6 @@ def getPlayerIDList(gameSettings, gameID):
 
 async def launchAnyGame(consumer, gameID, isLocalGame):
 	gameSettings = consumer.gameSettingsInstances[gameID]
-	# if not gameSettings.isLocalGame:
 	if not isLocalGame:
 		await getPlayerIDList(gameSettings, gameID)
 	await sendInitPaddlePosition(consumer, gameSettings)
@@ -37,27 +36,27 @@ async def launchAnyGame(consumer, gameID, isLocalGame):
 
 async def launchRankedSoloGame(consumer, gameID):
 	if gameID not in consumer.gameSettingsInstances:
-		consumer.gameSettingsInstances[gameID] = GameSettings(2)
+		consumer.gameSettingsInstances[gameID] = GameSettings(2, False)
 	await launchAnyGame(consumer, gameID, False)
 
 async def launchDeathGame(consumer, gameID):
 	if gameID not in consumer.gameSettingsInstances:
-		consumer.gameSettingsInstances[gameID] = GameSettings(4)
+		consumer.gameSettingsInstances[gameID] = GameSettings(4, False)
 	await launchAnyGame(consumer, gameID, False)
 
 # async def launchTournamentGame(consumer, gameID):
 	# if gameID not in consumer.gameSettingsInstances:
-		# consumer.gameSettingsInstances[gameID] = GameSettings(4)
+		# consumer.gameSettingsInstances[gameID] = GameSettings(4, False)
 	# await launchAnyGame(consumer, gameID, False)
 
 async def launchInitLocalGame(consumer, gameID):
 	if gameID not in consumer.gameSettingsInstances:
-		consumer.gameSettingsInstances[gameID] = GameSettings(2)
+		consumer.gameSettingsInstances[gameID] = GameSettings(2, False)
 	await launchAnyGame(consumer, gameID, True)
 
 async def launchInitAiGame(consumer, gameID):
 	if gameID not in consumer.gameSettingsInstances:
-		consumer.gameSettingsInstances[gameID] = GameSettings(2)
+		consumer.gameSettingsInstances[gameID] = GameSettings(2, True)
 	await launchAnyGame(consumer, gameID, True)
 
 async def handleInitGame(consumer, gameID, gameMode, playerID):
@@ -84,7 +83,7 @@ async def handleInitGame(consumer, gameID, gameMode, playerID):
 		await launchInitLocalGame(consumer, gameID)
 		return (True)
 	elif (gameMode == 'init_ai_game'):
-		# await launchInitAiGame(consumer, gameID)
+		await launchInitAiGame(consumer, gameID)
 		return (True)
 
 	if (gameMode == 'init_ranked_solo_game'):
