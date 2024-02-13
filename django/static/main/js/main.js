@@ -30,6 +30,10 @@ const router = {
 
 		// Notifications
 		'/notifications/': renderNotificationsPage,
+
+		// Errors handling
+		'/token42/': renderToken42Page,
+		'/down42/': renderDown42Page,
 	},
 
 	navigate: function(route) {

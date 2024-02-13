@@ -121,6 +121,7 @@ def get_user(request, username=None):
 		user_dict = {
 			'id': request.user.id,
 			'is42': request.user.is42,
+			'isOfficial': request.user.isOfficial,
 			'email': request.user.email,
 			'username': request.user.username,
 			'photo_url': request.user.photo.url,
@@ -142,6 +143,7 @@ def get_user(request, username=None):
 		
 		user_dict = {
 			'id': user.id,
+			'isOfficial': user.isOfficial,
 			'username': user.username,
 			'photo_url': user.photo.url,
 			'status': user.status,
