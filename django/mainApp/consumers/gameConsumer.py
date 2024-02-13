@@ -42,7 +42,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 			message['type'] == 'init_death_game' or \
 			message['type'] == 'init_tournament_game' or \
 			message['type'] == 'init_local_game' or \
-			message['type'] == 'init_ai_game'):
+			message['type'] == 'init_ai_game' or \
+			message['type'] == 'init_wall_game'):
 			await handleInitGame(self, gameID, message['type'], message['playerID'])
 
 		if (message['type'] == 'paddle_move'):
