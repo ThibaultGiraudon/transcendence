@@ -214,35 +214,44 @@
 
 /* USERS */
 
-#status-log {
+.status-log {
 	width: 100%;
 	height: 100%;
 	display: flex;
-	justify-content: space-between;
 }
 
-.friend {
-	width: 50%;
-	height: 100%;
-	margin-left: 1%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-}
-
-.all-users {
-	width: 50%;
+.users {
+	width: 100%;
 	height: 100%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
+}
+
+.friends {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+.no-users {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	font-size: 1.5em;
+	font-family: var(--font-text-regular);
+	color: var(--color-dark-hover);
 }
 
 .list {
-	height: 75%;
-	width: 60%;
+	width: 80%;
+	height: 80%;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
@@ -251,6 +260,15 @@
 	border-radius: var(--border-radius);
 	margin-top: 2%;
 	padding: 5%;
+	margin-left: 10%;
+	margin-right: 10%;
+}
+
+.users-user {
+	font-size: 1.5em;
+	font-family: var(--font-text-bold);
+	color: var(--color-dark);
+	margin-right: 0.25em;
 }
 
 .list::-webkit-scrollbar {

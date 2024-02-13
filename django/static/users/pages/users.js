@@ -3,7 +3,7 @@ function renderUser(user) {
 		<button class="menu-link" data-route="/profile/${user.username}">
 			<div class="container" data-user-id="${user.id}">
 				<img src="${user.photo_url}" alt="profile picture">
-				<h3>${user.username}</h3>
+				<p class="users-user">${user.username}</p>
 				<p class="status">${user.status.includes("chat") ? "online" : user.status}</p>
 			</div>
 		</button>
@@ -17,7 +17,7 @@ function renderUsersSection(title, users) {
 			<div class="${title.toLowerCase()}">
 				<h1>${title}</h1>
 				<div class="list">
-					<h4 class="no-${title.toLowerCase()}">No ${title.toLowerCase()}</h4>
+					<h4 class="no-users">No ${title.toLowerCase()}</h4>
 				</div>
 			</div>
 		`;
@@ -58,7 +58,7 @@ function renderUsersPage() {
 
 			// Build the HTML
 			let html = '<div id="status-log" class="status-log">';
-			html += renderUsersSection('All users', users);
+			html += renderUsersSection('Users', users);
 			html += renderUsersSection('Friends', followed);
 			html += '</div>';
 

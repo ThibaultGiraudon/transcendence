@@ -15,9 +15,14 @@ urlpatterns = [
 	path('notifications/', usersView.notifications, name='notifications'),
 
 	path('pong/', pongView.pong, name='pong'),
+	path('pong/ranked/', pongView.ranked, name='ranked'),
+	path('pong/practice/', pongView.practice, name='practice'),
+	path('pong/wait_players/<str:gameMode>', waitPlayersView.waitPlayers, name='wait_players'),
+	path('pong/game/<str:gameMode>', pongView.game, name='game'),
 
 	path('chat/', chatView.chat, name='chat'),
 	path('chat/<str:room_id>', chatView.room, name='room'),
+
 
 	# 42
 	path('ft_api/', usersView.ft_api, name='ft_api'),
@@ -48,14 +53,12 @@ urlpatterns = [
 	path('api/generate_csrf_token/', api.generate_csrf_token, name='generate_csrf_token'),
 	path('api/get_game_info', api.get_game_info, name='get_game_info'),
 
-	# To define
-	path('pong/ranked/', pongView.ranked, name='ranked'),
-	path('pong/practice/', pongView.practice, name='practice'),
-	path('pong/game_over/<str:player>', pongView.gameOver, name='game_over'),
-	path('pong/wait_players/<str:gameMode>', waitPlayersView.waitPlayers, name='wait_players'),
-	path('pong/game/<str:gameMode>', pongView.game, name='game'),
 
 	# Errors handling for 42 API
 	path('token42/', mainView.token42, name='token42'),
 	path('down42/', mainView.down42, name='down42'),
+	
+
+	# To define
+	path('pong/game_over/<str:player>', pongView.gameOver, name='game_over'),
 ]
