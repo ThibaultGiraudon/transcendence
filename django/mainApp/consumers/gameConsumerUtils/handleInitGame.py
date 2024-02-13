@@ -59,6 +59,11 @@ async def launchInitAiGame(consumer, gameID):
 		consumer.gameSettingsInstances[gameID] = GameSettings(2, True)
 	await launchAnyGame(consumer, gameID, True)
 
+async def launchWallGame(consumer, gameID):
+	if gameID not in consumer.gameSettingsInstances:
+		consumer.gameSettingsInstances[gameID] = GameSettings(1, False)
+	await launchAnyGame(consumer, gameID, False)
+
 async def handleInitGame(consumer, gameID, gameMode, playerID):
 	game = await getGame(gameID)
 	if playerID not in game.playerList:
@@ -67,6 +72,16 @@ async def handleInitGame(consumer, gameID, gameMode, playerID):
 	player = await getPlayer(playerID)
 	player.isReady = True
 	await savePlayer(player)
+
+	if (gameMode == 'init_local_game'):
+		await launchInitLocalGame(consumer, gameID)
+		return (True)
+	elif (gameMode == 'init_ai_game'):
+		await launchInitAiGame(consumer, gameID)
+		return (True)
+	elif (gameMode == 'init_wall_game'):
+		await launchWallGame(consumer, gameID)
+		return (True)
 
 	for playerID in game.playerList:
 		player = await getPlayer(playerID)
@@ -78,13 +93,6 @@ async def handleInitGame(consumer, gameID, gameMode, playerID):
 				}
 			)
 			return (False)
-
-	if (gameMode == 'init_local_game'):
-		await launchInitLocalGame(consumer, gameID)
-		return (True)
-	elif (gameMode == 'init_ai_game'):
-		await launchInitAiGame(consumer, gameID)
-		return (True)
 
 	if (gameMode == 'init_ranked_solo_game'):
 		await launchRankedSoloGame(consumer, gameID)

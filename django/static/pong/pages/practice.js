@@ -10,8 +10,8 @@ function renderPracticePage() {
 				<button class="practice-button" id="init_ai_game">
 					1 VS AI
 				</button>
-				<button class="practice-button" id="init_alcatraz_game">
-					ALCATRAZ
+				<button class="practice-button" id="init_wall_game">
+					WALL GAME
 				</button>
 			`;
 
