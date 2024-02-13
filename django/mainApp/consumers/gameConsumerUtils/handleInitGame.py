@@ -28,6 +28,8 @@ def getPlayerIDList(gameSettings, gameID):
 
 async def launchAnyGame(consumer, gameID, isLocalGame):
 	gameSettings = consumer.gameSettingsInstances[gameID]
+	# gameSettings = GameSettings(gameID, 2, False)
+	# consumer.gameSettingsInstances[gameID] = gameSettings
 	if not isLocalGame:
 		await getPlayerIDList(gameSettings, gameID)
 	await sendInitPaddlePosition(consumer, gameSettings)
@@ -36,7 +38,7 @@ async def launchAnyGame(consumer, gameID, isLocalGame):
 
 async def launchRankedSoloGame(consumer, gameID):
 	if gameID not in consumer.gameSettingsInstances:
-		consumer.gameSettingsInstances[gameID] = GameSettings(2, False)
+		consumer.gameSettingsInstances[gameID] = GameSettings(gameID, 2, False)
 	await launchAnyGame(consumer, gameID, False)
 
 async def launchDeathGame(consumer, gameID):
