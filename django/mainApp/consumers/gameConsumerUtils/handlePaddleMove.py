@@ -19,7 +19,7 @@ async def keydownLoop(direction, paddle, consumer, gameSettings):
 		elif (direction == 'down' and paddle.position < gameSettings.squareSize - gameSettings.limit - gameSettings.paddleSize):
 			paddle.moveDown()
 		
-		await sendUpdatePaddlePosition(consumer, paddle, gameSettings)
+		await sendUpdatePaddlePosition(consumer, paddle)
 		await asyncio.sleep(0.01) # TODO change to global var for speed
 
 async def handlePaddleMove(consumer, message, gameSettings, playerID):
