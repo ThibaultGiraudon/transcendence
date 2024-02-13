@@ -58,13 +58,6 @@ async def launchInitLocalGame(consumer, gameID):
 	await launchAnyGame(consumer, gameID)
 
 async def handleInitGame(consumer, gameID, gameMode, playerID):
-	if (gameMode == 'init_local_game'):
-		await launchInitLocalGame(consumer, gameID)
-		return (True)
-	elif (gameMode == 'init_ai_game'):
-		# await launchInitAiGame(consumer, gameID)
-		return (True)
-		
 	game = await getGame(gameID)
 	if playerID not in game.playerList:
 		return (False)
@@ -83,6 +76,13 @@ async def handleInitGame(consumer, gameID, gameMode, playerID):
 				}
 			)
 			return (False)
+
+	if (gameMode == 'init_local_game'):
+		await launchInitLocalGame(consumer, gameID)
+		return (True)
+	elif (gameMode == 'init_ai_game'):
+		# await launchInitAiGame(consumer, gameID)
+		return (True)
 
 	if (gameMode == 'init_ranked_solo_game'):
 		await launchRankedSoloGame(consumer, gameID)
