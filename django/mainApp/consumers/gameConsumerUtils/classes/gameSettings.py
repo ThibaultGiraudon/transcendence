@@ -1,19 +1,28 @@
 from .paddle import Paddle
 from .ball import Ball
 
-def singleton(class_):
-    instances = {}
+# def singleton(class_):
+#     instances = {}
 
-    def wrapper(*args, **kwargs):
-        if class_ not in instances:
-            instances[class_] = class_(*args, **kwargs)
-        return instances[class_]
+#     def wrapper(*args, **kwargs):
+#         if class_ not in instances:
+#             instances[class_] = class_(*args, **kwargs)
+#         return instances[class_]
 
-    return wrapper
+#     return wrapper
 
-@singleton
+# @singleton
 class GameSettings:
-    def __init__(self, nbPaddles, isAIGame):
+    _instances = {}
+
+    def __new__(cls, game_id, *args, **kwargs):
+        if game_id not in cls._instances:
+            instance = super().__new__(cls)
+            cls._instances[game_id] = instance
+        return cls._instances[game_id]
+
+    def __init__(self, game_id, nbPaddles, isAIGame):
+        self.game_id = game_id
         print('GameSettings init')
         self.nbPaddles = nbPaddles
         self.isAIGame = isAIGame
