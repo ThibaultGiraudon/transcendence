@@ -4,6 +4,8 @@ from	django.shortcuts import render
 import	datetime, json, random
 
 def getNbPlayersToWait(gameMode):
+	if gameMode in ['init_local_game', 'init_ai_game']:
+		return (1)
 	if (gameMode == 'init_ranked_solo_game'):
 		return (2)
 	return (4)
@@ -31,19 +33,6 @@ def waitPlayers(request, gameMode):
 		data = json.loads(request.body)
 		gameMode = data.get('gameMode')
 		player = request.user.player
-
-		# TODO faire comme ca dans le consumer aussi
-		# If the game is a local game or an AI game
-		if gameMode in ['init_local_game', 'init_ai_game']:
-			if not player.currentGameID:
-				while (True):
-					gameID = random.randint(1, 1000000)
-					player.currentGameID = gameID
-					player.save()
-					if not Game.objects.filter(id=gameID).exists():
-						return JsonResponse({'success': True, 'redirect': '/pong/game/', 'gameMode': gameMode, 'gameID': gameID})
-			else:
-				return JsonResponse({'success': True, 'redirect': '/pong/game/', 'gameMode': gameMode, 'gameID': player.currentGameID})
 
 		nbPlayersToWait = getNbPlayersToWait(gameMode)
 		waitingGamesList = Game.objects\
