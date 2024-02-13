@@ -33,7 +33,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 			self.game_group_name,
 			self.channel_name
 		)
-		# await self.channel_layer.group_discard('game', self.channel_name)
 
 	async def receive(self, text_data):
 		gameID = self.scope['url_route']['kwargs']['game_id']
