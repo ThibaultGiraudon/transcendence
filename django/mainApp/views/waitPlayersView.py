@@ -1,4 +1,3 @@
-from	mainApp.views.utils import renderPage, redirectPage
 from	mainApp.models import Game
 from	django.http import JsonResponse
 from	django.shortcuts import render

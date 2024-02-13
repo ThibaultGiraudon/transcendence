@@ -2,6 +2,7 @@
 // ---------------------------------- Router --------------------------------------
 // --------------------------------------------------------------------------------
 
+let isPopStateEvent = false;
 
 // Create a new router
 const router = {
@@ -31,10 +32,17 @@ const router = {
 		// Notifications
 		'/notifications/': renderNotificationsPage,
 
-		// Errors
+		// Errors handling
+		'/token42/': renderToken42Page,
+		'/down42/': renderDown42Page,
 	},
 
 	navigate: function(route) {
+		// Check if the route is a string
+		if (typeof route !== 'string') {
+			return;
+		}
+
 		// Find the matching route
 		const matchingRoute = Object.keys(this.routes).find(r => {
 			const regex = new RegExp(`^${r.replace(/:[^\s/]+/g, '([\\w-]+)')}$`);
@@ -47,7 +55,16 @@ const router = {
 	
 			// Call the corresponding function with the parameters
 			this.routes[matchingRoute](...params);
-			history.pushState({}, '', route);
+			
+			// Add the new route to the history
+			if (!isPopStateEvent) {
+				history.pushState({ route: route }, '', route);
+			}
+			isPopStateEvent = false;
+		
+		} else {
+			// If no route is found, render the 404 page
+			render404Page();
 		}
 	}
 };
@@ -100,6 +117,15 @@ document.addEventListener('click', function(event) {
 		}
 		target = target.parentNode;
 	}
+});
+
+
+// Handle the navigation when the user clicks on the back or forward button
+window.addEventListener('popstate', function(event) {
+	if (event.state && event.state.route) {
+        isPopStateEvent = true;
+        router.navigate(event.state.route);
+    }
 });
 
 
