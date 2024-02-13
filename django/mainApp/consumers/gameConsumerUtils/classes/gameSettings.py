@@ -13,9 +13,10 @@ def singleton(class_):
 
 @singleton
 class GameSettings:
-    def __init__(self, nbPaddles):
+    def __init__(self, nbPaddles, isAIGame):
         print('GameSettings init')
         self.nbPaddles = nbPaddles
+        self.isAIGame = isAIGame
         self.squareSize = 800
         self.paddles = []
         self.playerIDList = []
