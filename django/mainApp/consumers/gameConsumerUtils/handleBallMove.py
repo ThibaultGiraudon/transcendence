@@ -184,8 +184,5 @@ async def handleBallMove(consumer, gameSettings):
 	if (gameSettings.ball.task):
 		# TODO inutile mais a verifier quand meme si ca casse rien
 		# gameSettings.ball.task.cancel()
-		if (gameSettings.isLocalGame == False):
-			return
-		else:
-			gameSettings.ball.task.cancel()
+		return
 	gameSettings.ball.task = asyncio.create_task(startBall(consumer, gameSettings))

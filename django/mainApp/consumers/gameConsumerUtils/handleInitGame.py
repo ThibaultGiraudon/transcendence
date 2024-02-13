@@ -26,9 +26,10 @@ def getPlayerIDList(gameSettings, gameID):
 	for player in game.playerList:
 		gameSettings.playerIDList.append(player)
 
-async def launchAnyGame(consumer, gameID):
+async def launchAnyGame(consumer, gameID, isLocalGame):
 	gameSettings = consumer.gameSettingsInstances[gameID]
-	if not gameSettings.isLocalGame:
+	# if not gameSettings.isLocalGame:
+	if not isLocalGame:
 		await getPlayerIDList(gameSettings, gameID)
 	await sendInitPaddlePosition(consumer, gameSettings)
 	await sendUpdateScore(consumer, gameSettings)
@@ -37,25 +38,27 @@ async def launchAnyGame(consumer, gameID):
 async def launchRankedSoloGame(consumer, gameID):
 	if gameID not in consumer.gameSettingsInstances:
 		consumer.gameSettingsInstances[gameID] = GameSettings(2)
-	consumer.gameSettingsInstances[gameID].isLocalGame = False
-	await launchAnyGame(consumer, gameID)
+	await launchAnyGame(consumer, gameID, False)
 
 async def launchDeathGame(consumer, gameID):
 	if gameID not in consumer.gameSettingsInstances:
 		consumer.gameSettingsInstances[gameID] = GameSettings(4)
-	consumer.gameSettingsInstances[gameID].isLocalGame = False
-	await launchAnyGame(consumer, gameID)
+	await launchAnyGame(consumer, gameID, False)
 
 # async def launchTournamentGame(consumer, gameID):
 	# if gameID not in consumer.gameSettingsInstances:
 		# consumer.gameSettingsInstances[gameID] = GameSettings(4)
-	# await launchAnyGame(consumer, gameID)
+	# await launchAnyGame(consumer, gameID, False)
 
 async def launchInitLocalGame(consumer, gameID):
 	if gameID not in consumer.gameSettingsInstances:
 		consumer.gameSettingsInstances[gameID] = GameSettings(2)
-	consumer.gameSettingsInstances[gameID].isLocalGame = True
-	await launchAnyGame(consumer, gameID)
+	await launchAnyGame(consumer, gameID, True)
+
+async def launchInitAiGame(consumer, gameID):
+	if gameID not in consumer.gameSettingsInstances:
+		consumer.gameSettingsInstances[gameID] = GameSettings(2)
+	await launchAnyGame(consumer, gameID, True)
 
 async def handleInitGame(consumer, gameID, gameMode, playerID):
 	game = await getGame(gameID)
