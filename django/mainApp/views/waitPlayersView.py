@@ -1,7 +1,7 @@
 from	mainApp.models import Game
 from	django.http import JsonResponse
 from	django.shortcuts import render
-import	datetime, json, random
+import	datetime, json
 
 def getNbPlayersToWait(gameMode):
 	if gameMode in ['init_local_game', 'init_ai_game']:
