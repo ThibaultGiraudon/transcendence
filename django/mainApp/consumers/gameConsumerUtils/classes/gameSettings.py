@@ -15,14 +15,14 @@ from .ball import Ball
 class GameSettings:
     _instances = {}
 
-    def __new__(cls, game_id, *args, **kwargs):
-        if game_id not in cls._instances:
+    def __new__(cls, gameID, *args, **kwargs):
+        if gameID not in cls._instances:
             instance = super().__new__(cls)
-            cls._instances[game_id] = instance
-        return cls._instances[game_id]
+            cls._instances[gameID] = instance
+        return cls._instances[gameID]
 
-    def __init__(self, game_id, nbPaddles, isAIGame):
-        self.game_id = game_id
+    def __init__(self, gameID, nbPaddles, isAIGame):
+        self.gameID = gameID
         print('GameSettings init')
         self.nbPaddles = nbPaddles
         self.isAIGame = isAIGame
