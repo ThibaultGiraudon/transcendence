@@ -82,6 +82,11 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 		if (message.type === 'update_ball_position') {
 			updateBallPosition(message.x, message.y, message.color, message.radius);
 		}
+
+        if (message.type === 'game_over') {
+            console.log(message);
+            gameOver(message);
+        }
     };
 
     socket.socket.onclose = function(event) {
