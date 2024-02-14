@@ -24,6 +24,7 @@ const router = {
 		'/pong/practice/': renderPracticePage,
 		'/pong/wait_players/:gameMode': renderWaitPlayers,
 		'/pong/game/:gameMode': renderGamePage,
+		'/pong/game_over/:gameID': renderGameOverPage,
 
 		// Chat
 		'/chat/': renderChatPage,

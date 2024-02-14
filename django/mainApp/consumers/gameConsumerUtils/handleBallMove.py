@@ -9,13 +9,15 @@ async def sendGameOver(consumer, gameSettings, paddle):
 		f'game_{gameSettings.gameID}',
 		{
 			'type': 'game_over',
-			'nbPaddles': gameSettings.nbPaddles,
-			'paddleID': paddle.id,
-			'position': paddle.position,
+			'gameID': gameSettings.gameID,
+			# 'nbPaddles': gameSettings.nbPaddles,
+			# 'paddleID': paddle.id,
+			# 'position': paddle.position,
 			# 'nbPaddles': gameSettings.nbPaddles,
 			# 'player': gameSettings.paddles[0].id,
 		}
 	)
+
 
 async def updateScore(consumer, gameSettings, paddleID):
 	if (gameSettings.nbPaddles == 2):

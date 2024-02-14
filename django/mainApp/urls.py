@@ -19,6 +19,7 @@ urlpatterns = [
 	path('pong/practice/', pongView.practice, name='practice'),
 	path('pong/wait_players/<str:gameMode>', waitPlayersView.waitPlayers, name='wait_players'),
 	path('pong/game/<str:gameMode>', pongView.game, name='game'),
+	path('pong/game_over/<int:gameID>', pongView.gameOver, name='game_over'),
 
 	path('chat/', chatView.chat, name='chat'),
 	path('chat/<str:room_id>', chatView.room, name='room'),
@@ -57,8 +58,4 @@ urlpatterns = [
 	# Errors handling for 42 API
 	path('token42/', mainView.token42, name='token42'),
 	path('down42/', mainView.down42, name='down42'),
-	
-
-	# To define
-	path('pong/game_over/<str:player>', pongView.gameOver, name='game_over'),
 ]

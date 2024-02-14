@@ -420,3 +420,9 @@ def get_game_info(request):
 		return JsonResponse({'success': False, 'game_id': None, 'player_id': None}, status=401)
 
 	return JsonResponse({'success': True, 'game_id': request.user.player.currentGameID, 'player_id': request.user.player.id}, status=200)
+
+def get_game_over(request):
+	if not request.user.is_authenticated:
+		return JsonResponse({'success': False, 'game_id': None, 'player_id': None}, status=401)
+
+	return JsonResponse({'success': True, 'player_id': request.user.player.id}, status=200)
