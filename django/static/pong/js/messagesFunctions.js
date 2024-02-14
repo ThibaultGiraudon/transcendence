@@ -48,3 +48,10 @@ function updateBallPosition(x, y, color, radius) {
 	elements.ball = new Ball(x, y, color, radius);
 	elements.ball.draw(x, y, color, radius);
 }
+
+function gameOver(message) {
+	router.navigate('/gameOver/' + message.gameMode);
+	
+	// const gameOverDiv = document.getElementById('gameOver');
+	// gameOverDiv.style.display = 'block';
+}
