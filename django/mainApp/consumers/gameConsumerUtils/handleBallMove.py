@@ -3,9 +3,16 @@ from	.senders.sendUpdateBallPosition import sendUpdateBallPosition
 from	.senders.sendUpdateScore import sendUpdateScore	
 import	asyncio
 
-# @database_sync_to_async
-# def getPlayerID(playerIDList):
-# 	# from mainApp.models import Player
+@database_sync_to_async
+def addStatToPlayer(playerID, gameSettings, paddle):
+	from mainApp.models import Player, Stat
+	player = Player.objects.get(id=playerID)
+
+	stat = Stat(gameID=gameSettings.gameID, position=paddle.position, score=paddle.score)
+	stat.save()
+
+	player.stats.add(stat)
+	player.save()
 
 # TODO move to senders
 async def sendGameOver(consumer, gameSettings, paddle):
@@ -20,6 +27,7 @@ async def sendGameOver(consumer, gameSettings, paddle):
 
 	playerID = gameSettings.playerIDList[paddle.id]
 	print("playerID", playerID)
+	await addStatToPlayer(playerID, gameSettings, paddle)
 
 	# Ajouter une stat
 
