@@ -11,6 +11,9 @@ from django.utils import timezone
 class Player(models.Model):
 	currentGameID = models.IntegerField(default=None, null=True)
 	isReady = models.BooleanField(default=False)	
+	soloPoints = models.IntegerField(default=0)
+	deathPoints = models.IntegerField(default=0)
+	tournamentPoints = models.IntegerField(default=0)
 	stats = models.ManyToManyField('Stat', related_name='stats')
 
 	def join_game(self):
@@ -19,9 +22,8 @@ class Player(models.Model):
 
 class Stat(models.Model):
 	gameID = models.IntegerField()
-	paddleID = models.IntegerField()
 	position = models.IntegerField()
-	points = models.IntegerField()
+	score = models.IntegerField()
 
 class Game(models.Model):
 	date = models.DateField()
