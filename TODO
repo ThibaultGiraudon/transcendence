@@ -1,23 +1,29 @@
 [ELIAS]
 idee elias powershot ratio (je me comprends) (% de powershot)
+
 mettre un countdown au mileu au reset pour pas quon crois que cest un lag
-quand la partie est over on met isready a false
 
 Erreur quand on est sur une autre page (chat) et que le j2 \
-lance la game ca me redirige en ouvrant plusieurs fois le \
-WebSocket ce qui est pas clean
+	lance la game ca me redirige en ouvrant plusieurs fois le \
+	WebSocket ce qui est pas clean
+
+ajouter le gameID des le debut dans gameSettings pour eviter \
+	de le passer en args a chaque fois 
 
 TODO ajoute un mode solo avec tout les murs active pour joueur contre le mur
 
 check si le lag est lier a mon pc ou si cest le code
+
 quand une game est fini on met isready a false et on enleve la task de ball
+
 regarder si la communication entre ws et wss \
 	sur le pong est normale ou si on utilise pas ws tout le temps
+
 Fix le pb avec plusieurs jeux local qui semblent ne pas etre separer \
 	car on recois quand meme le socket sur les autres comptes
+	
 Ajoute un button (set over) qui finit la fame en local si on veux jouer \
 	ailleurs que sur le pong
-
 
 [LEON]
 Faire les erreurs
