@@ -1,6 +1,11 @@
+from	channels.db import database_sync_to_async
 from	.senders.sendUpdateBallPosition import sendUpdateBallPosition
 from	.senders.sendUpdateScore import sendUpdateScore	
 import	asyncio
+
+# @database_sync_to_async
+# def getPlayerID(playerIDList):
+# 	# from mainApp.models import Player
 
 # TODO move to senders
 async def sendGameOver(consumer, gameSettings, paddle):
@@ -10,13 +15,18 @@ async def sendGameOver(consumer, gameSettings, paddle):
 		{
 			'type': 'game_over',
 			'gameID': gameSettings.gameID,
-			# 'nbPaddles': gameSettings.nbPaddles,
-			# 'paddleID': paddle.id,
-			# 'position': paddle.position,
-			# 'nbPaddles': gameSettings.nbPaddles,
-			# 'player': gameSettings.paddles[0].id,
 		}
 	)
+
+	playerID = gameSettings.playerIDList[paddle.id]
+	print("playerID", playerID)
+
+	# Ajouter une stat
+
+	# - avec gameSettings.playerIDList - recuperer le playerID avec paddleID
+	#     - playerID = gameSettings.playerIDList[paddleID]
+	# - recuperer dans la db le player (player = await getPlayer(playerID)
+	# - ajouter la stat au player avec l'id gameID et le score du paddle etc
 
 
 async def updateScore(consumer, gameSettings, paddleID):
