@@ -11,11 +11,17 @@ from django.utils import timezone
 class Player(models.Model):
 	currentGameID = models.IntegerField(default=None, null=True)
 	isReady = models.BooleanField(default=False)	
+	stats = models.ManyToManyField('Stat', related_name='stats')
 
 	def join_game(self):
 		self.isReady = True
 		self.save()
 
+class Stat(models.Model):
+	gameID = models.IntegerField()
+	paddleID = models.IntegerField()
+	position = models.IntegerField()
+	points = models.IntegerField()
 
 class Game(models.Model):
 	date = models.DateField()
@@ -28,12 +34,10 @@ class Game(models.Model):
 	def save(self, *args, **kwargs):
 		super(Game, self).save(*args, **kwargs)
 
-
 class Score(models.Model):
 	players = models.ForeignKey(Player, on_delete=models.CASCADE)
 	game = models.ForeignKey(Game, on_delete=models.CASCADE)
 	points = models.IntegerField()
-
 
 class CustomUserManager(BaseUserManager):
 	def create_user(self, email, username, password=None, photo=None, **extra_fields):
@@ -60,7 +64,6 @@ class CustomUserManager(BaseUserManager):
 		extra_fields.setdefault('is_superuser', True)
 
 		return self.create_user(email, username, password=password, **extra_fields)
-
 
 class CustomUser(AbstractUser):
 	email = models.EmailField(unique=True)
@@ -91,7 +94,6 @@ class CustomUser(AbstractUser):
 		self.status = status
 		self.save()
 
-
 class Notification(models.Model):
 	user = models.ForeignKey(CustomUser, related_name='notifications', on_delete=models.CASCADE)
 	message = models.TextField()
@@ -113,7 +115,6 @@ class Notification(models.Model):
 			}
 		)
 
-
 class Channel(models.Model):
 	private = models.BooleanField(default=False)
 	room_id = models.CharField(max_length=150, unique=True)
@@ -125,7 +126,6 @@ class Channel(models.Model):
 	
 	def save(self, *args, **kwargs):
 		super(Channel, self).save(*args, **kwargs)
-
 
 class Message(models.Model):
 	sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
