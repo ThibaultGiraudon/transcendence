@@ -35,18 +35,19 @@ function renderSignInPage() {
 
 			// Display the sign in form
 			document.getElementById('app').innerHTML = `
-				<div class="form-div">
-					<form method="POST" class="sign-form">
-						<h3 class="sign-title">Sign in</h3>
-						${fieldsHtml}
-						<p class="error-message" id="error-message"></p>
-						<input type="submit" value="Login"/>
-					</form>
+				<div class="all-screen">
+					<div class="form-div">
+						<form method="POST" class="sign-form">
+							<h3 class="sign-title">Sign in</h3>
+							${fieldsHtml}
+							<p class="error-message" id="error-message"></p>
+							<input type="submit" value="Login"/>
+						</form>
 
-					<a href="/ft_api/" class="sign-42-button" data-ignore-click>
-						<input type="submit" value="Sign in with 42">
-					</a>
-
+						<a href="/ft_api/" class="sign-42-button" data-ignore-click>
+							<input type="submit" value="Sign in with 42">
+						</a>
+					</div>
 				</div>
 			`;
 
