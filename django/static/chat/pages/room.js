@@ -77,7 +77,7 @@ function renderRoomPage(room_id) {
 			if (!room.private) {
 				html += `
 					<div class="participants">
-						<h2 class="chat-category">Participants</h2>
+						<h2 class="chat-category">Users</h2>
 						
 						<div class="list-participants">
 							${Object.values(room.users).map(some_user => `

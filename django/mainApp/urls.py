@@ -57,6 +57,7 @@ urlpatterns = [
 	# Errors handling for 42 API
 	path('token42/', mainView.token42, name='token42'),
 	path('down42/', mainView.down42, name='down42'),
+	path('used42/', mainView.used42, name='used42'),
 	
 
 	# To define
