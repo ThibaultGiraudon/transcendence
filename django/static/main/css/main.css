@@ -33,6 +33,7 @@
 	/* Sizes */
 	--header-width: 100vw;
 	--header-height: 6.5em;
+	--footer-height: 7em;
 	--border-radius: 24px;
 	--border-radius-inner: 16px;
 	--input-border-radius: 10px;
@@ -119,6 +120,18 @@ label {
 	color: var(--color-dark-hover);
 	margin: 0;
 	padding: 0;
+}
+
+
+.all-screen {
+	width: 100vw;
+	height: calc(100vh - var(--header-height) - var(--footer-height));
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	overflow-x: hidden;
+	overflow-y: hidden;
 }
 
 
@@ -339,14 +352,15 @@ img {
 /* CUSTOM ERRORS */
 
 .error-container {
-	width: 100vw;
-	height: calc(100vh - var(--header-height));
+	width: 100%;
+	height: calc(100vh - var(--header-height) - var(--footer-height));
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
 	text-align: center;
 	background-color: rgb(213, 131, 131);
+	overflow-x: hidden;
 }
 
 .error-code {
@@ -386,7 +400,7 @@ img {
 	padding: 1%;
 	margin: 0;
 	transform: translate(-50%, -50%);
-	font-size: 1vw;
+	font-size: 1em;
 	font-family: var(--font-text-bold);
 	color: white;
 	border: 1px solid var(--color-dark);
