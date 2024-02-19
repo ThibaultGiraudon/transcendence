@@ -220,6 +220,11 @@
 	display: flex;
 }
 
+.users-img {
+	width: 3em;
+	height: 3em;
+}
+
 .users {
 	width: 100%;
 	height: 100%;
@@ -250,8 +255,8 @@
 }
 
 .list {
-	width: 80%;
-	height: 80%;
+	width: 70%;
+	height: 75%;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
@@ -269,6 +274,7 @@
 	font-family: var(--font-text-bold);
 	color: var(--color-dark);
 	margin-right: 0.25em;
+	margin-left: 0.25em;
 }
 
 .list::-webkit-scrollbar {

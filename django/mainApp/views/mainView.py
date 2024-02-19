@@ -13,6 +13,10 @@ def ken(request):
 		return render(request, 'base.html')
 
 
+def custom403(request, exception):
+	return render(request, 'base.html', status=403)
+
+
 def custom404(request, exception):
 	return render(request, 'base.html', status=404)
 
@@ -31,3 +35,7 @@ def token42(request):
 
 def down42(request):
 	return render(request, 'base.html', status=401)
+
+
+def used42(request):
+	return render(request, 'base.html', status=403)
