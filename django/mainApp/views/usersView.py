@@ -215,15 +215,16 @@ def	check_authorize(request):
 	if response_data is None:
 		return redirect('down42')
 	
-	connect_42_user(request, response_data)
-
-	return redirect('pong')
+	return connect_42_user(request, response_data)
 
 
 def	connect_42_user(request, response_data):
 	user = authenticate_42_user(email=response_data['email'])
 	
 	if user:
+		if not user.is42:
+			return redirect('used42')
+
 		user.set_status("online")
 
 		login(request, user)
@@ -262,6 +263,8 @@ def	connect_42_user(request, response_data):
 			channel = Channel.objects.create(name="General", room_id="general")
 			channel.users.set([user])
 			channel.save()
+	
+	return redirect('pong')
 
 
 def make_api_request_with_token(api_url, token):

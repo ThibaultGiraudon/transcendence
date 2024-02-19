@@ -23,6 +23,7 @@ function renderChooseModePage() {
 		// If the user is not connected
 		} else {
 			router.navigate('/sign_in/');
+			return ;
 		}
 	})
 }

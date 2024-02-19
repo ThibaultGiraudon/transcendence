@@ -219,6 +219,11 @@
 	display: flex;
 }
 
+.users-img {
+	width: 3em;
+	height: 3em;
+}
+
 .users, .friends {
 	width: 100%;
 	display: flex;
@@ -257,6 +262,7 @@
 	font-family: var(--font-text-bold);
 	color: var(--color-dark);
 	margin-right: 0.25em;
+	margin-left: 0.25em;
 }
 
 .list::-webkit-scrollbar {

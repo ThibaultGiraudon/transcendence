@@ -37,12 +37,14 @@ function renderRankedPage() {
 
 						if (responseData.success) {
 							router.navigate(responseData.redirect + responseData.gameMode);
+							return ;
 						}
 					}
 				});
 			});
 		} else {
 			router.navigate('/sign_in/');
+			return ;
 		}
 	});
 }

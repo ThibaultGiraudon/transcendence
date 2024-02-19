@@ -92,6 +92,7 @@ function renderSignInPage() {
 
 						// Redirect the user
 						router.navigate('/pong/');
+						return ;
 					
 					} else {
 						document.getElementById('error-email').textContent = responseData.email;
