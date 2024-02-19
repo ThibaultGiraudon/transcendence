@@ -209,6 +209,7 @@ function renderProfilePage(username) {
 								if (responseData.success) {
 									renderHeader();
 									router.navigate('/profile/' + new_username);
+									return ;
 	
 								} else {
 									// If the connection failed, display the error message
@@ -360,12 +361,14 @@ function renderProfilePage(username) {
 				// If the user does not exist
 				} else {
 					router.navigate('/users/');
+					return ;
 				}
 			})
 		
 		// If the user is not connected
 		} else {
 			router.navigate('/sign_in/');
+			return ;
 		}
 	})
 }

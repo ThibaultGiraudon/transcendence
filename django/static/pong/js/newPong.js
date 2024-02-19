@@ -65,6 +65,7 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 
 		if (message.type === 'reload_page') {
 			router.navigate('/pong/game/' + gameMode);
+            return ;
 		}
 
 		if (message.type === 'init_paddle_position') {
