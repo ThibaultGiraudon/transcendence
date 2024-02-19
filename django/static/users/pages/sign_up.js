@@ -36,13 +36,15 @@ function renderSignUpPage() {
 
 			// Display the sign up form
 			document.getElementById('app').innerHTML = `
-				<div class="form-div">
-					<form method="POST" class="sign-form">
-						<h3 class="sign-title">Sign up</h3>
-						${fieldsHtml}
-						<p class="error-message" id="error-message"></p>
-						<input type="submit" value="Sign up"/>
-					</form>
+				<div class="all-screen">
+					<div class="form-div">
+						<form method="POST" class="sign-form">
+							<h3 class="sign-title">Sign up</h3>
+							${fieldsHtml}
+							<p class="error-message" id="error-message"></p>
+							<input type="submit" value="Sign up"/>
+						</form>
+					</div>
 				</div>
 			`;
 
