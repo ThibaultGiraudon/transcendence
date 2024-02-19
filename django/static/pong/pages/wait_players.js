@@ -33,10 +33,12 @@ function renderWaitPlayers(gameMode) {
 					gameProcess(true, gameMode, gameID, playerID)
 				} else {
 					router.navigate('/pong/');
+					return ;
 				}
 			});
 		} else {
 			router.navigate('/sign_in/');
+			return ;
 		}
 	});
 }
@@ -57,6 +59,7 @@ async function fetchGamePage(gameMode) {
 
 		if (responseData.success && responseData.redirect == '/pong/game/') {
 			router.navigate(responseData.redirect + responseData.gameMode);
+			return ;
 		}
 	}
 }

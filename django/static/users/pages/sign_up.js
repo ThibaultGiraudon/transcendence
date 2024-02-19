@@ -95,6 +95,7 @@ function renderSignUpPage() {
 
 						// Redirect the user
 						router.navigate('/pong/');
+						return ;
 					
 					} else {
 						// If the connection failed, display the error message
