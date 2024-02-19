@@ -162,9 +162,10 @@ function renderProfilePage(username) {
 							// Get data from the form
 							const new_username = document.getElementById('input-username').value;
 							const photo = document.getElementById('input-photo').files[0];
+							let new_email, new_password;
 							if (!user.is42) {
-								const new_email = document.getElementById('input-email').value;
-								const new_password = document.getElementById('input-password').value;
+								new_email = document.getElementById('input-email').value;
+								new_password = document.getElementById('input-password').value;
 							}
 
 							// Validate the data
