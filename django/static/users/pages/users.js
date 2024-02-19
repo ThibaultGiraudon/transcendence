@@ -2,7 +2,7 @@ function renderUser(user) {
 	return `
 		<button class="menu-link" data-route="/profile/${user.username}">
 			<div class="container" data-user-id="${user.id}">
-				<img src="${user.photo_url}" alt="profile picture">
+				<img class="users-img" src="${user.photo_url}" alt="profile picture">
 				<p class="users-user">${user.username}</p>
 				<p class="status">${user.status.includes("chat") ? "online" : user.status}</p>
 			</div>

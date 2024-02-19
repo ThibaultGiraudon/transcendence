@@ -35,6 +35,7 @@ const router = {
 		// Errors handling
 		'/token42/': renderToken42Page,
 		'/down42/': renderDown42Page,
+		'/used42/': renderUsed42Page,
 	},
 
 	navigate: function(route) {
@@ -103,6 +104,7 @@ function getCookie(name) {
 async function navigateTo(event, route) {
 	event.preventDefault();
 	router.navigate(route);
+	renderHeader();
 }
 
 
