@@ -56,14 +56,15 @@ function renderUsersPage() {
 				}
 			}
 
-			// Build the HTML
-			let html = '<div id="status-log" class="status-log">';
-			html += renderUsersSection('Users', users);
-			html += renderUsersSection('Friends', followed);
-			html += '</div>';
-
-			// Display the users page
-			document.getElementById('app').innerHTML = html;
+			// Display the HTML
+			document.getElementById('app').innerHTML = `
+				<div class="all-screen">
+					<div id="status-log" class="status-log">
+						${renderUsersSection('Users', users)}
+						${renderUsersSection('Friends', followed)}
+					</div>
+				</div>
+			`;
 		});
 	});
 }

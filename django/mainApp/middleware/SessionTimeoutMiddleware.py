@@ -16,6 +16,7 @@ class SessionTimeoutMiddleware:
 
 				# Timeout duration before logout (in seconds)
 				if (datetime.datetime.now() - last_activity).seconds > 3600:
+					request.user.set_status("offline")
 					logout(request)
 			
 			request.session['last_activity'] = current_time

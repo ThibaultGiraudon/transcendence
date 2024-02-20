@@ -91,7 +91,7 @@ function renderChatButton(room) {
 		`;
 	} else {
 		return `
-			<button class="profile-button">
+			<button class="profile-button chat">
 				Send a chat
 			</button>
 		`;
@@ -297,7 +297,7 @@ function renderProfilePage(username) {
 								`;
 							}
 
-							// Add an event listener on the send a chat button
+							// Add an event listener on the send a chat button (for new chat only)
 							const sendChatButton = document.querySelector('.profile-button.chat');
 							if (sendChatButton) {
 								sendChatButton.addEventListener('click', async function(event) {
