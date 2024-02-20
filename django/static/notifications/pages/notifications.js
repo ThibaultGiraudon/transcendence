@@ -14,6 +14,9 @@ function renderNotificationsPage() {
 	// Get the notifications
 	fetchAPI('/api/get_notifications').then(data => {
 
+		// Reverse the notifications
+		let reversedNotifications = Object.values(data.notifications).reverse();
+
 		// Display the notifications page
 		document.getElementById('app').innerHTML = `
 			<h1>Notifications</h1>
@@ -23,13 +26,13 @@ function renderNotificationsPage() {
 			</a>
 		`;
 
-		if (Object.keys(data.notifications).length === 0) {
+		if (reversedNotifications.length === 0) {
 			document.getElementById('app').innerHTML += `
 				<p class="no-notification">No notifications.</p>
 			`;
 
 		} else {
-			for (notification of Object.values(data.notifications)) {
+			for (notification of reversedNotifications) {
 				
 				let html = `
 					<div class="notification">
