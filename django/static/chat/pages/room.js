@@ -159,7 +159,11 @@ function renderRoomPage(room_id) {
 			`;
 
 			// Display the page
-			document.getElementById('app').innerHTML = html;
+			document.getElementById('app').innerHTML = `
+				<div class="all-screen">
+					${html}
+				</div>
+			`;
 
 			// Call the websocket
 			chatProcess(room_id, user.blockedUsers, room.private, user.id, user.username);
