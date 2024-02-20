@@ -132,6 +132,7 @@ label {
 	justify-content: center;
 	overflow-x: hidden;
 	overflow-y: hidden;
+	overflow: hidden;
 }
 
 

@@ -137,14 +137,14 @@
 
 .notification {
 	width: 50vw;
-	padding-left: 1vw;
-	padding-top: 1.5vh;
-	padding-bottom: 1.5vh;
-	margin-bottom: 1em;
 	display: flex;
 	align-items: left;
 	justify-content: left;
 	flex-direction: column;
+	padding-left: 1.5em;
+	padding-top: 1.5em;
+	padding-bottom: 1.5em;
+	margin-bottom: 1em;
 	background-color: var(--color-light-hover);
 	border-radius: var(--border-radius);
 }
@@ -152,8 +152,8 @@
 .notification-new {
 	font-size: 1em;
 	font-family: var(--font-text-regular);
-	padding-left: 0.5vw;
-	margin-bottom: 1vh;
+	padding-left: 0.5em;
+	margin-bottom: 1em;
 	display: flex;
 	align-items: left;
 	justify-content: center;
@@ -164,14 +164,14 @@
 	font-family: var(--font-text-regular);
 	font-size: var(--h5-size);
 	color: var(--color-dark-hover);
-	margin-bottom: 1vh;
+	margin-bottom: 1em;
 }
 
 .notification-message {
 	font-family: var(--font-text-regular);
 	font-size: var(--h4-size);
 	color: var(--color-dark-hover);
-	margin-bottom: 1vh;
+	margin-bottom: 1em;
 }
 
 .notification-delete {
@@ -196,18 +196,18 @@
 	background: var(--color-dark);
 	text-align: center;
 	vertical-align: middle;
-	margin-bottom: 3vh;
+	margin-bottom: 2em;
 }
 
 .no-notification {
 	width: 50vw;
-	padding-left: 1vw;
-	padding-top: 1.5vh;
-	padding-bottom: 1.5vh;
 	display: flex;
 	align-items: left;
 	justify-content: center;
 	flex-direction: column;
+	padding-left: 1.5em;
+	padding-top: 1.5em;
+	padding-bottom: 1.5em;
 	background-color: var(--color-light-hover);
 	border-radius: var(--border-radius);
 }
@@ -226,6 +226,7 @@
 
 .users, .friends {
 	width: 100%;
+	height: calc(100vh - var(--header-height) - var(--footer-height));
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -244,14 +245,15 @@
 
 .list {
 	width: 80%;
-	flex-grow: 1;
+	height: calc(80vh - var(--header-height) - var(--footer-height));
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 	overflow-y: auto;
 	background-color: var(--color-light-hover);
 	border-radius: var(--border-radius);
-	margin-top: 2%;
+	margin-top: 2em;
+	margin-bottom: 2em;
 	padding: 5%;
 	margin-left: 10%;
 	margin-right: 10%;
@@ -263,11 +265,6 @@
 	color: var(--color-dark);
 	margin-right: 0.25em;
 	margin-left: 0.25em;
-}
-
-.list::-webkit-scrollbar {
-	width: 0px;
-	background: transparent;
 }
 
 
@@ -347,6 +344,7 @@
 	font-size: 1em;
 	padding: 0.5em;
 	margin-right: 0.5em;
+	margin-top: 2em;
 	margin-bottom: 2em;
 	font-family: var(--font-text-bold);
 	color: white;
