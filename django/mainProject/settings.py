@@ -96,6 +96,8 @@ DJANGO_IGNORE_APP_READY_WARNINGS = True
 # ASGI
 ASGI_APPLICATION = 'mainProject.asgi.application'
 
+default_app_config = 'mainApp.apps.MainAppConfig'
+
 CHANNEL_LAYERS = {
 	"default": {
 		"BACKEND": "channels.layers.InMemoryChannelLayer"
