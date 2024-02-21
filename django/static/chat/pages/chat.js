@@ -4,6 +4,8 @@ function renderChannel(channel) {
 		badge = "🌍 Global";
 	} else if (channel.private) {
 		badge = "👥 Private discution";
+	} else if (channel.tournament) {
+		badge = "🎯 Tournament";
 	} else if (!channel.creator) {
 		badge = "⭐ Official";
 	}

@@ -65,7 +65,7 @@ def get_user(request, username=None):
 	if not username or username == request.user.username or username == "me":
 		channels_dict = {}
 		channels = list(request.user.channels.all())
-		
+
 		# Order by last message
 		channels_with_messages = [channel for channel in channels if channel.messages.order_by('-timestamp').first()]
 		channels_without_messages = [channel for channel in channels if not channel.messages.order_by('-timestamp').first()]
@@ -137,6 +137,7 @@ def get_user(request, username=None):
 				'room_id': channel.room_id,
 				'name': channel_name,
 				'private': channel.private,
+				'tournament': channel.tournament,
 				'users': users_dict,
 				'last_message': last_message,
 				'creator': channel.creator if channel.creator else None,
@@ -185,14 +186,16 @@ def users(request):
 	if not request.user.is_authenticated:
 		return JsonResponse({'users': None}, status=401)
 
-	# Get all users
+	# Get all users exept the user with id 0
 	User = get_user_model()
 	users = list(User.objects.all())
 	users_dict = {}
 	for user in users:
 		if user.id == request.user.id:
 			continue
-		
+		if user.id == 0:
+			continue
+
 		users_dict[user.id] = {
 			'id': user.id,
 			'username': user.username,
@@ -532,3 +535,28 @@ def leave_channel(request, room_id):
 	channel.save()
 
 	return JsonResponse({'success': True, 'message': 'User left the channel'}, status=200)
+
+
+def	join_tournament(request):
+	if not request.user.is_authenticated:
+		return JsonResponse({'success': False, "message": "The user is not authenticated"}, status=401)
+	
+	# Get all tournament channels
+	channels = Channel.objects.filter(tournament=True)
+
+	for channel in channels:
+		if request.user in channel.users.all():
+			return JsonResponse({'success': False, "message": "User already in tournament"}, status=401)
+		if len(channel.users.all()) < 4 :
+			channel.users.add(request.user)
+			channel.save()
+			if len(channel.users.all()) == 4 :
+				return JsonResponse({'success': True, "message": "Tournament is full", "room_id": channel.room_id}, status=200)
+			return JsonResponse({'success': True, "message": "User joined the tournament"}, status=200)
+	
+	room_id = str(uuid.uuid1())
+
+	channel = Channel.objects.create(tournament=True, room_id=room_id, name='Tournament')
+	channel.users.add(request.user)
+	channel.save()
+	return JsonResponse({'success': True, "message": "Create tournament"}, status=200)

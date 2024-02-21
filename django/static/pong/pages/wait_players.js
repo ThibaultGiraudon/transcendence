@@ -1,7 +1,7 @@
 function renderWaitPlayers(gameMode) {
 	fetchAPI('/api/isAuthenticated').then(data => {
 		if (data.isAuthenticated) {
-			fetchGamePage(gameMode)
+			// fetchGamePage(gameMode)
 			fetchAPI('/api/get_game_info').then(data => {
 				if (data.success) {
 					gameID = data.game_id;
@@ -30,7 +30,7 @@ function renderWaitPlayers(gameMode) {
 						dots++;
 					}, 350);
 		
-					gameProcess(true, gameMode, gameID, playerID)
+					// gameProcess(true, gameMode, gameID, playerID)
 				} else {
 					router.navigate('/pong/');
 					return ;

@@ -36,6 +36,15 @@ function renderRankedPage() {
 						const responseData = await response.json();
 
 						if (responseData.success) {
+							if (gameMode == 'init_tournament_game') {
+								fetchAPI('/api/join_tournament').then(data => {
+									console.log(data);
+									if (data.room_id) {
+										send_tournament_message(data.room_id);
+										return;
+									}
+								});
+							}
 							router.navigate(responseData.redirect + responseData.gameMode);
 							return ;
 						}
@@ -47,4 +56,29 @@ function renderRankedPage() {
 			return ;
 		}
 	});
+}
+
+function send_tournament_message(room_id) {
+	let websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+	let websocketPort = window.location.protocol === 'https:' ? ':8443' : ':8000';
+	const socketUrl = websocketProtocol + '//' + window.location.hostname + websocketPort + '/ws/chat/' + room_id + "/";
+
+	let tmpSocket
+
+	tmpSocket = {
+		socket: new WebSocket(socketUrl),
+		url: socketUrl,
+		shouldClose: false
+	};
+
+	console.log(tmpSocket);
+
+	tmpSocket.socket.onopen = function(event) {
+		console.log('Sending message');
+		tmpSocket.socket.send(JSON.stringify({
+			'message': "Tournament game is starting! Players get ready!",
+			'sender': 0,
+			'username': 'System Info',
+		}));
+	};
 }

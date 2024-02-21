@@ -6,4 +6,5 @@ class MainAppConfig(AppConfig):
 	
 	def ready(self):
 		from .utils import set_all_users_offline
+		import mainApp.signals
 		set_all_users_offline()
