@@ -1,8 +1,7 @@
-import json
+import json, logging
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
-from datetime import datetime
 from django.utils import timezone
 
 
@@ -62,6 +61,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		sender = text_data_json.get("sender")
 		username = text_data_json.get("username")
 		timestamp = timezone.localtime().strftime("%d-%m-%Y %H:%M")
+		logging.info(f"Received message: {message}")
 
 		# Save the message
 		await self.save_message(sender, message)

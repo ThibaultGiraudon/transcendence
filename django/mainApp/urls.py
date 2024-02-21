@@ -54,6 +54,7 @@ urlpatterns = [
 	path('api/add_to_favorite/<str:room_id>', api.add_to_favorite, name='add_to_favorite'),
 	path('api/remove_from_favorite/<str:room_id>', api.remove_from_favorite, name='remove_from_favorite'),
 	path('api/leave_channel/<str:room_id>', api.leave_channel, name='leave_channel'),
+	path('api/join_tournament', api.join_tournament, name='join_tournament'),
 
 
 	path('api/generate_csrf_token/', api.generate_csrf_token, name='generate_csrf_token'),

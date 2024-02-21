@@ -30,32 +30,34 @@ def waitPlayers(request, gameMode):
 	if (request.method == 'GET'):
 		return render(request, 'base.html')
 	elif (request.method == 'POST'):
-		data = json.loads(request.body)
-		gameMode = data.get('gameMode')
-		player = request.user.player
+		# data = json.loads(request.body)
+		# gameMode = data.get('gameMode')
+		# player = request.user.player
 
-		nbPlayersToWait = getNbPlayersToWait(gameMode)
-		waitingGamesList = Game.objects\
-			.filter(playerList__len__lt=nbPlayersToWait)\
-			.exclude(playerList__contains=[player.id])\
-			.exclude(isOver=True)\
-			.filter(gameMode=gameMode)
+		# nbPlayersToWait = getNbPlayersToWait(gameMode)
+		# waitingGamesList = Game.objects\
+		# 	.filter(playerList__len__lt=nbPlayersToWait)\
+		# 	.exclude(playerList__contains=[player.id])\
+		# 	.exclude(isOver=True)\
+		# 	.filter(gameMode=gameMode)
 
-		# If the player is already in a game and the game is not over, we redirect him to the game
-		if (player.currentGameID):
-			game = Game.objects.get(id=player.currentGameID)
-			if (game.isOver == False):
-				gameMode = game.gameMode
-				if (game.playerList.__len__() == nbPlayersToWait):
-					return JsonResponse({'success': True, 'redirect': '/pong/game/', 'gameMode': gameMode, 'gameID': game.id})
-				return JsonResponse({'success': True, 'redirect': '/pong/wait_players/', 'gameMode': gameMode, 'gameID': game.id})
+		# # If the player is already in a game and the game is not over, we redirect him to the game
+		# if (player.currentGameID):
+		# 	game = Game.objects.get(id=player.currentGameID)
+		# 	if (game.isOver == False):
+		# 		gameMode = game.gameMode
+		# 		if (game.playerList.__len__() == nbPlayersToWait):
+		# 			return JsonResponse({'success': True, 'redirect': '/pong/game/', 'gameMode': gameMode, 'gameID': game.id})
+		# 		return JsonResponse({'success': True, 'redirect': '/pong/wait_players/', 'gameMode': gameMode, 'gameID': game.id})
 
-		gameID = createOrJoinGame(waitingGamesList, player, gameMode)
-		player.currentGameID = gameID
-		player.save()
-		game = Game.objects.get(id=gameID)
-		if (game.playerList.__len__() == nbPlayersToWait):
-			return JsonResponse({'success': True, 'redirect': '/pong/game/', 'gameMode': gameMode, 'gameID': game.id})
-		return JsonResponse({'success': True, 'redirect': '/pong/wait_players/', 'gameMode': gameMode, 'gameID': game.id})
-	else:
-		return JsonResponse({'success': False, 'message': 'Method not allowed'})
+		# gameID = createOrJoinGame(waitingGamesList, player, gameMode)
+		# player.currentGameID = gameID
+		# player.save()
+		# game = Game.objects.get(id=gameID)
+		# if (game.playerList.__len__() == nbPlayersToWait):
+		# 	return JsonResponse({'success': True, 'redirect': '/pong/game/', 'gameMode': gameMode, 'gameID': game.id})
+		# return JsonResponse({'success': True, 'redirect': '/pong/wait_players/', 'gameMode': gameMode, 'gameID': game.id})
+		return JsonResponse({'success': True, 'redirect': '/pong/wait_players/', 'gameMode': gameMode, 'gameID': 1})
+	
+	# else:
+	# 	return JsonResponse({'success': False, 'message': 'Method not allowed'})
