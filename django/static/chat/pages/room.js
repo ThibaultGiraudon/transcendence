@@ -86,12 +86,15 @@ function renderRoomPage(room_id) {
 										<img class="participants-img" src="${some_user.photo_url}" alt="profile picture">
 										<h3 class="participants-username">
 											${some_user.username}
+											${some_user.id == room.creator ? '<span class="admin-text">👑</span>' : ''}
 											${some_user.id == user.id ? '<span class="you-text">(You)</span>' : ''}
 										</h3>
 									</div>
 								</a>
 							`).join('')}
 						</div>
+
+						<input class="chat-add-user" id="chat-add-user" type="button" value="Add a user">
 					</div>
 				`;
 			}
@@ -147,7 +150,7 @@ function renderRoomPage(room_id) {
 				html += messageHTML;
 			}
 			html += `</div>`;
-			
+
 			// Display the chat buttons and close HTML
 			html += `
 				<br>
@@ -164,6 +167,99 @@ function renderRoomPage(room_id) {
 					${html}
 				</div>
 			`;
+
+			// Hide the button if the user is not the creator of the room
+			const addUserButton = document.getElementById('chat-add-user');
+			if (addUserButton) {
+				if (room.creator != user.id) {
+					addUserButton.style.display = 'none';
+				}
+
+				// Handle the click on the add user button
+				addUserButton.addEventListener('click', async function(event) {
+
+					// Get the list of users
+					fetchAPI('/api/users').then(dataUsers => {
+						if (!dataUsers.users) {
+							return;
+						}
+
+						// Create the popup background
+						let popupBackgroundHTML = '<div class="popup-background" id="popup-background"></div>';
+
+						// Create the popup
+						let popupHTML = `
+							<div class="popup">
+								<h3 class="title-popup">Select a user</h3>
+						`;
+
+						// Add each user to the popup
+						let count_users = 0;
+						for (const user of Object.values(dataUsers.users)) {
+							if (!(user.id in room.users))
+							{
+								popupHTML += `
+								<button class="add-user" data-user-id="${user.id}">
+									<div class="container" data-user-id="${user.id}">
+										<img class="users-img" src="${user.photo_url}" alt="profile picture">
+										<p class="users-user">${user.username}</p>
+									</div>
+								</button>
+								`;
+								count_users++;
+							}
+						}
+
+						// If there is no user to add
+						if (count_users == 0) {
+							popupHTML += `
+								<p class="no-user-to-add">❌ No user to add</p>
+							`;
+						}
+
+						popupHTML += `
+								<button class="close-popup" id="close-popup">Close</button>
+							</div>
+						`;
+
+						// Create the popup background and the popup
+						let popupBackground = document.createElement('div');
+						popupBackground.innerHTML = popupBackgroundHTML;
+						document.body.appendChild(popupBackground);
+
+						let popup = document.createElement('div');
+						popup.innerHTML = popupHTML;
+						document.body.appendChild(popup);
+
+						// Add a click event listener to each user
+						document.querySelectorAll('.add-user').forEach(user => {
+							user.addEventListener('click', () => {
+								const userId = user.getAttribute('data-user-id');
+
+								// Add the user to the room
+								fetchAPI(`/api/add_user_to_room/${room_id}/${userId}`, 'POST').then(data => {
+									if (data.success) {
+										popup.remove();
+										popupBackground.remove();
+										renderRoomPage(room_id);
+									}
+								});
+							});
+						});
+
+						// Handle the click on the close button
+						document.getElementById('close-popup').addEventListener('click', () => {
+							popup.remove();
+							popupBackground.remove();
+						});
+
+						document.getElementById('popup-background').addEventListener('click', () => {
+							popup.remove();
+							popupBackground.remove();
+						});
+					});
+				});
+			}
 
 			// Call the websocket
 			chatProcess(room_id, user.blockedUsers, room.private, user.id, user.username);
