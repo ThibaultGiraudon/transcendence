@@ -5,7 +5,9 @@ let chatSocket = null;
 function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
 	if (chatSocket !== null) {
 		chatSocket.shouldClose = true;
-		chatSocket.socket.close();
+		if (chatSocket.socket.readyState !== WebSocket.CLOSED) {
+			chatSocket.socket.close();
+		}
 	}
 
 	// Create a new socket
@@ -93,7 +95,7 @@ function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
 
 	// Handle closing the socket
 	chatSocket.socket.onclose = function(e) {
-		if (!this.shouldClose) {
+		if (!this.shouldClose && chatSocket.socket.readyState === WebSocket.CLOSED) {
 			chatSocket.socket = new WebSocket(chatSocket.url);
 		}
 	};

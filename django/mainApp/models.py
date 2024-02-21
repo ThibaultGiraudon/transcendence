@@ -73,6 +73,7 @@ class CustomUser(AbstractUser):
 	nbNewNotifications = models.IntegerField(default=0)
 	blockedUsers = ArrayField(models.IntegerField(), default=list)
 	player = models.OneToOneField(Player, on_delete=models.CASCADE, related_name='user', null=True)
+	favoritesChannels = ArrayField(models.TextField(), default=list)
 
 	# Use the custom manager
 	objects = CustomUserManager()
@@ -119,6 +120,8 @@ class Channel(models.Model):
 	room_id = models.CharField(max_length=150, unique=True)
 	name = models.CharField(max_length=150)
 	users = models.ManyToManyField(CustomUser, related_name='channels')
+	creator = models.IntegerField(default=0)
+	description = models.TextField(default='')
 
 	def __str__(self):
 		return self.name

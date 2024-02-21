@@ -27,6 +27,7 @@ const router = {
 
 		// Chat
 		'/chat/': renderChatPage,
+		'/chat/new/': renderNewRoomPage,
 		'/chat/:id': renderRoomPage,
 
 		// Notifications
@@ -112,6 +113,7 @@ async function navigateTo(event, route) {
 document.addEventListener('click', function(event) {
 	let target = event.target;
 	while (target !== document) {
+		if (!target) return;
 		if ((target.tagName === 'BUTTON' || target.tagName === 'A') && !target.hasAttribute('data-ignore-click')) {
 			event.preventDefault();
 			navigateTo(event, target.getAttribute('data-route'));
