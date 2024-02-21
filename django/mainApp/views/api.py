@@ -3,6 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model, logout
 from django.middleware.csrf import get_token
 from django.utils import timezone
+from datetime import datetime
 import uuid
 
 from ..models import Notification, Channel
@@ -64,6 +65,16 @@ def get_user(request, username=None):
 	if not username or username == request.user.username or username == "me":
 		channels_dict = {}
 		channels = list(request.user.channels.all())
+		
+		# Order by last message
+		channels_with_messages = [channel for channel in channels if channel.messages.order_by('-timestamp').first()]
+		channels_without_messages = [channel for channel in channels if not channel.messages.order_by('-timestamp').first()]
+
+		# Sort channels by last message
+		channels_with_messages.sort(key=lambda x: x.messages.order_by('-timestamp').first().timestamp, reverse=True)
+
+		# Concatenate the two lists
+		channels = channels_with_messages + channels_without_messages
 		for channel in channels:
 
 			# Get users
