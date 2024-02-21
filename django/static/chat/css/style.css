@@ -325,6 +325,25 @@
 	word-wrap: break-word;
 }
 
+.system-message {
+    width: 40%; /* Définir une largeur */
+    margin-left: auto;
+    margin-right: auto;
+    color: white;
+    background-color: #F88379;
+    border-radius: var(--border-radius);
+    text-align: left;
+    font-family: var(--font-text-regular);
+    font-size: 1.5em;
+    padding-top: 0.5%;
+    padding-bottom: 0.5%;
+    padding-left: 1.5%;
+    padding-right: 1.5%;
+    margin-bottom: 0.5%;
+    clear: both;
+    word-wrap: break-word;
+}
+
 .blocked-message {
 	float: left;
 	color: white;
@@ -347,6 +366,22 @@
 	float: left;
 	color: grey;
 	text-align: left;
+	font-family: var(--font-text-regular);
+	font-size: 1em;
+	max-width: 40%;
+	padding-top: 1%;
+	padding-bottom: 0.5%;
+	padding-left: 1.5%;
+	clear: both;
+}
+
+.system-username {
+	/* width: 40%; Définir une largeur */
+	margin-left: auto;
+    margin-right: auto;
+	/* float: center; */
+	color: grey;
+	text-align: center;
 	font-family: var(--font-text-regular);
 	font-size: 1em;
 	max-width: 40%;

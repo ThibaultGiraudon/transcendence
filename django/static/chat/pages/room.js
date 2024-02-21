@@ -131,17 +131,30 @@ function renderRoomPage(room_id) {
 				} else {
 					if (!room.private && message.sender != user.id) {
 						if (previousMessageSender != message.sender) {
-							messageHTML += `
-								<p class="other-username">${message.username}</p>
-							`;
+							if (message.sender == 0) {
+								messageHTML += `
+								<p class="system-username">${message.username}</p>`;
+							}
+							else {
+								messageHTML += `
+									<p class="other-username">${message.username}</p>
+								`;
+							}
 						}
 					}
+					if (message.sender == user.id) {
+						messageHTML += `
+							<p class="my-message" data-sender="${message.sender}">`;
+					}
+					else if (message.sender == 0) {
+						messageHTML += `
+							<p class="system-message" data-sender="${message.sender}">`;
+					}
+					else {
+						messageHTML += `
+							<p class="other-message" data-sender="${message.sender}">`;
+					}
 					messageHTML += `
-						${message.sender == user.id ? `
-							<p class="my-message" data-sender="${message.sender}">
-						` : `
-							<p class="other-message" data-sender="${message.sender}">
-						`}
 						${message.message}
 						</p>
 					`;
