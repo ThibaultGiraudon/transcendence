@@ -21,7 +21,7 @@ function renderNotificationsPage() {
 		document.getElementById('app').innerHTML = `
 			<h1>Notifications</h1>
 
-			<a class="notification-delete-all" data-route="delete_all_notifications">
+			<a class="notification-delete-all">
 				Delete All
 			</a>
 		`;
