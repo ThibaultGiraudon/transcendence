@@ -123,6 +123,7 @@ class Channel(models.Model):
 	users = models.ManyToManyField(CustomUser, related_name='channels')
 	creator = models.IntegerField(default=0)
 	description = models.TextField(default='')
+	last_interaction = models.DateTimeField(default=timezone.now)
 
 	def __str__(self):
 		return self.name

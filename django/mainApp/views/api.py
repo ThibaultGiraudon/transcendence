@@ -66,15 +66,9 @@ def get_user(request, username=None):
 		channels_dict = {}
 		channels = list(request.user.channels.all())
 
-		# Order by last message
-		channels_with_messages = [channel for channel in channels if channel.messages.order_by('-timestamp').first()]
-		channels_without_messages = [channel for channel in channels if not channel.messages.order_by('-timestamp').first()]
+		# Order by last interaction
+		channels.sort(key=lambda x: x.last_interaction, reverse=True)
 
-		# Sort channels by last message
-		channels_with_messages.sort(key=lambda x: x.messages.order_by('-timestamp').first().timestamp, reverse=True)
-
-		# Concatenate the two lists
-		channels = channels_with_messages + channels_without_messages
 		for channel in channels:
 
 			# Get users
@@ -474,7 +468,7 @@ def add_user_to_room(request, room_id, user_id):
 	channel.users.add(user)
 	channel.save()
 
-	return JsonResponse({'success': True, 'message': 'User added to the channel'}, status=200)
+	return JsonResponse({'success': True, 'message': 'User added to the channel', 'username': user.username}, status=200)
 
 
 def add_to_favorite(request, room_id):

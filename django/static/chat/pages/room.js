@@ -252,6 +252,7 @@ function renderRoomPage(room_id) {
 								// Add the user to the room
 								fetchAPI(`/api/add_user_to_room/${room_id}/${userId}`, 'POST').then(data => {
 									if (data.success) {
+										send_message(room_id, 0, `${dataUser.user.username} added ${data.username} to the channel`);
 										popup.remove();
 										popupBackground.remove();
 										renderRoomPage(room_id);
@@ -278,4 +279,29 @@ function renderRoomPage(room_id) {
 			chatProcess(room_id, user.blockedUsers, room.private, user.id, user.username);
 		});
 	});
+}
+
+function send_message(room_id, sender, message) {
+	let websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+	let websocketPort = window.location.protocol === 'https:' ? ':8443' : ':8000';
+	const socketUrl = websocketProtocol + '//' + window.location.hostname + websocketPort + '/ws/chat/' + room_id + "/";
+
+	let tmpSocket
+
+	tmpSocket = {
+		socket: new WebSocket(socketUrl),
+		url: socketUrl,
+		shouldClose: false
+	};
+
+	console.log(tmpSocket);
+
+	tmpSocket.socket.onopen = function(event) {
+		console.log('Sending message');
+		tmpSocket.socket.send(JSON.stringify({
+			'message': message,
+			'sender': sender,
+			'username': 'System Info',
+		}));
+	};
 }

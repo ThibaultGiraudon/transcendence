@@ -36,6 +36,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		except Channel.DoesNotExist:
 			return None
 		
+	@database_sync_to_async
+	def update_last_interaction(self, room_id):
+		from mainApp.models import Channel
+		channel = Channel.objects.get(room_id=room_id)
+		channel.last_interaction = timezone.now()
+		channel.save()
+		
 
 	async def connect(self):
 		self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
@@ -82,6 +89,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 					if self.scope['user'].id not in userToSend.blockedUsers:
 						await self.create_notification(userToSend, f"You have a new message from {channel.name}")
 		
+		await self.update_last_interaction(self.room_id)
+
 		# Send message to room group
 		await self.channel_layer.group_send(
 			self.room_group_name, {"type": "chat_message", "message": message, "sender": sender, "username": username, "timestamp": timestamp}
