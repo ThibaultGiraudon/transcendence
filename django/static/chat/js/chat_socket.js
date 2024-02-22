@@ -33,7 +33,7 @@ function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
 
 		const data = JSON.parse(e.data);
 
-		if (data.sender) {
+		if (data.sender >= 0 && data.message) {
 			let username = '[UserNotfound]';
 
 			// Get the username of the sender
@@ -60,7 +60,16 @@ function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
 					messageContainer.className = 'blocked-message';
 					messageContainer.textContent = 'This user is blocked';
 				} else {
-					messageContainer.className = data.sender === sender ? 'my-message' : 'other-message';
+					// messageContainer.className = data.sender === sender ? 'my-message' : 'other-message';
+					if (data.sender === sender) {
+						messageContainer.className = 'my-message';
+					}
+					else if (data.sender == 0) {
+						messageContainer.className = 'system-message';
+					}
+					else {
+						messageContainer.className = 'other-message';
+					}
 				}
 
 				// Display the message

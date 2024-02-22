@@ -172,6 +172,19 @@
 	margin-left: 1%;
 }
 
+.invite-game-button {
+	width: 15%;
+	height: 2em;
+	font-size: 1em;
+	font-family: var(--font-text-bold);
+	color: white;
+	border: 1px solid var(--color-dark);
+	border-radius: var(--border-radius);
+	background: var(--color-dark);
+	margin-left: 1%;
+	transition: opacity 0.3s ease-in-out;
+}
+
 .participants-container {
 	display: flex;
 	align-items: left;
@@ -326,11 +339,11 @@
 }
 
 .system-message {
-    width: 40%; /* Définir une largeur */
+    width: 40%;
     margin-left: auto;
     margin-right: auto;
     color: white;
-    background-color: #F88379;
+    background-color: #58D68D;
     border-radius: var(--border-radius);
     text-align: left;
     font-family: var(--font-text-regular);
