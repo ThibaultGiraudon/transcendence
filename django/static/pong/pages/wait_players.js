@@ -1,17 +1,19 @@
 function renderWaitPlayers(gameMode) {
 	fetchAPI('/api/isAuthenticated').then(data => {
 		if (data.isAuthenticated) {
-			fetchGamePage(gameMode)
+			// fetchGamePage(gameMode)
 			fetchAPI('/api/get_game_info').then(data => {
 				if (data.success) {
 					gameID = data.game_id;
 					playerID = data.player_id;
 
 					let html = `
-						<p>${gameMode} ${gameID}</p>
-						<div class="waiting-game-infos">
-							<h2 class="waiting-game-title"></h2>
-							<img class="waiting-game-gif" src="/static/main/img/loading.gif" alt="waiting">
+						<div class="all-screen">
+							<p>${gameMode} ${gameID}</p>
+							<div class="waiting-game-infos">
+								<h2 class="waiting-game-title"></h2>
+								<img class="waiting-game-gif" src="/static/main/img/loading.gif" alt="waiting">
+							</div>
 						</div>
 					`;
 					document.getElementById('app').innerHTML = html;
@@ -28,9 +30,9 @@ function renderWaitPlayers(gameMode) {
 							clearInterval();
 						}
 						dots++;
-					}, 350);
+					}, 500);
 		
-					gameProcess(true, gameMode, gameID, playerID)
+					// gameProcess(true, gameMode, gameID, playerID)
 				} else {
 					router.navigate('/pong/');
 					return ;

@@ -3,6 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model, logout
 from django.middleware.csrf import get_token
 from django.utils import timezone
+from datetime import datetime
 import uuid
 
 from ..models import Notification, Channel
@@ -11,6 +12,15 @@ from ..models import Notification, Channel
 def get_username(request, id):
 	if not request.user.is_authenticated:
 		return JsonResponse({'username': None}, status=401)
+	
+	# Convert ID
+	try:
+		id = int(id)
+	except ValueError:
+		return JsonResponse({'username': None}, status=401)
+
+	if id == 0:
+		return JsonResponse({'success': False, "message": "You cannot interact with the system user"}, status=401)
 
 	# Check if the user exist
 	User = get_user_model()
@@ -64,6 +74,10 @@ def get_user(request, username=None):
 	if not username or username == request.user.username or username == "me":
 		channels_dict = {}
 		channels = list(request.user.channels.all())
+
+		# Order by last interaction
+		channels.sort(key=lambda x: x.last_interaction, reverse=True)
+
 		for channel in channels:
 
 			# Get users
@@ -107,14 +121,31 @@ def get_user(request, username=None):
 			else:
 				channel_name = channel.name
 
+			# Get the creator username
+			creator_username = 'No creator available'
+			if channel.creator:
+				if (channel.creator == request.user.id):
+					creator_username = "You"
+				else:
+					User = get_user_model()
+					try:
+						user = User.objects.get(id=channel.creator)
+						creator_username = user.username
+					except User.DoesNotExist:
+						pass
+
 			# Add channel to the list
 			channels_dict[channel.room_id] = {
 				'id': channel.id,
 				'room_id': channel.room_id,
 				'name': channel_name,
 				'private': channel.private,
+				'tournament': channel.tournament,
 				'users': users_dict,
 				'last_message': last_message,
+				'creator': channel.creator if channel.creator else None,
+				'creator_username': creator_username,
+				'description': channel.description if channel.description else 'No description available',
 			}
 
 		# Get informations about the user
@@ -130,6 +161,7 @@ def get_user(request, username=None):
 			'channels': channels_dict,
 			'follows': request.user.follows,
 			'blockedUsers': request.user.blockedUsers,
+			'favoritesChannels': request.user.favoritesChannels,
 		}
 		return JsonResponse({'user': user_dict, 'isCurrentUser': True, 'isAuthenticated': True}, status=200)
 	
@@ -157,14 +189,16 @@ def users(request):
 	if not request.user.is_authenticated:
 		return JsonResponse({'users': None}, status=401)
 
-	# Get all users
+	# Get all users exept the user with id 0
 	User = get_user_model()
 	users = list(User.objects.all())
 	users_dict = {}
 	for user in users:
 		if user.id == request.user.id:
 			continue
-		
+		if user.id == 0:
+			continue
+
 		users_dict[user.id] = {
 			'id': user.id,
 			'username': user.username,
@@ -186,6 +220,9 @@ def follow(request, id):
 		id = int(id)
 	except ValueError:
 		return JsonResponse({'success': False, "message": "Invalid id"}, status=401)
+
+	if id == 0:
+		return JsonResponse({'success': False, "message": "You cannot interact with the system user"}, status=401)
 
 	# Check if the user exist and if he is not already followed
 	User = get_user_model()
@@ -215,6 +252,9 @@ def unfollow(request, id):
 	except ValueError:
 		return JsonResponse({'success': False, "message": "Invalid id"}, status=401)
 	
+	if id == 0:
+		return JsonResponse({'success': False, "message": "You cannot interact with the system user"}, status=401)
+	
 	# Check if the user exist and if he is followed
 	User = get_user_model()
 	try:
@@ -239,6 +279,9 @@ def block(request, id):
 		id = int(id)
 	except ValueError:
 		return JsonResponse({'success': False, "message": "Invalid id"}, status=401)
+	
+	if id == 0:
+		return JsonResponse({'success': False, "message": "You cannot interact with the system user"}, status=401)
 
 	# Check if the user exist and if he is not already blocked
 	User = get_user_model()
@@ -263,6 +306,9 @@ def block(request, id):
 def unblock(request, id):
 	if not request.user.is_authenticated:
 		return JsonResponse({'success': False, "message": "The user is not authenticated"}, status=401)
+	
+	if id == 0:
+		return JsonResponse({'success': False, "message": "You cannot interact with the system user"}, status=401)
 	
 	# Convert ID
 	try:
@@ -420,3 +466,115 @@ def get_game_info(request):
 		return JsonResponse({'success': False, 'game_id': None, 'player_id': None}, status=401)
 
 	return JsonResponse({'success': True, 'game_id': request.user.player.currentGameID, 'player_id': request.user.player.id}, status=200)
+
+
+def add_user_to_room(request, room_id, user_id):
+	if not request.user.is_authenticated:
+		return JsonResponse({'success': False, 'message': 'The user is not authenticated'}, status=401)
+	
+	if user_id == 0:
+		return JsonResponse({'success': False, 'message': 'You cannot interact with the system user'}, status=401)
+
+	# Get the channel
+	try:
+		channel = request.user.channels.get(room_id=room_id)
+	except ObjectDoesNotExist:
+		return JsonResponse({'success': False, 'message': 'Channel does not exist'}, status=401)
+	
+	# Get the user
+	User = get_user_model()
+	try:
+		user = User.objects.get(id=user_id)
+	except User.DoesNotExist:
+		return JsonResponse({'success': False, 'message': 'User does not exist'}, status=401)
+	
+	# Add the user to the channel
+	channel.users.add(user)
+	channel.save()
+
+	return JsonResponse({'success': True, 'message': 'User added to the channel', 'username': user.username}, status=200)
+
+
+def add_to_favorite(request, room_id):
+	if not request.user.is_authenticated:
+		return JsonResponse({'success': False, "message": "The user is not authenticated"}, status=401)
+
+	# Check if the channel exist and if he is not already in favorite
+	try:
+		channel = request.user.channels.get(room_id=room_id)
+	except ObjectDoesNotExist:
+		return JsonResponse({'success': False, "message": "Channel does not exist"}, status=401)
+	
+	if channel in request.user.favoritesChannels:
+		return JsonResponse({'success': False, "message": "Channel already in favorite"}, status=401)
+	else:
+		request.user.favoritesChannels.append(room_id)
+		request.user.save()
+	
+	return JsonResponse({'success': True, "message": "Successful add to favorite"}, status=200)
+
+
+def remove_from_favorite(request, room_id):
+	if not request.user.is_authenticated:
+		return JsonResponse({'success': False, "message": "The user is not authenticated"}, status=401)
+
+	# Check if the channel exist and if he is not already in favorite
+	try:
+		channel = request.user.channels.get(room_id=room_id)
+	except ObjectDoesNotExist:
+		return JsonResponse({'success': False, "message": "Channel does not exist"}, status=401)
+	
+	if room_id in request.user.favoritesChannels:
+		request.user.favoritesChannels.remove(room_id)
+		request.user.save()
+	else:
+		return JsonResponse({'success': False, "message": "Channel is not in favorite"}, status=401)
+	
+	return JsonResponse({'success': True, "message": "Successful remove from favorite"}, status=200)
+
+
+def leave_channel(request, room_id):
+	if not request.user.is_authenticated:
+		return JsonResponse({'success': False, "message": "The user is not authenticated"}, status=401)
+	
+	# Get the channel
+	try:
+		channel = request.user.channels.get(room_id=room_id)
+	except ObjectDoesNotExist:
+		return JsonResponse({'success': False, 'message': 'Channel does not exist'}, status=401)
+	
+	# Remove the channel from the favorites
+	if room_id in request.user.favoritesChannels:
+		request.user.favoritesChannels.remove(room_id)
+		request.user.save()
+
+	# Remove the user from the channel
+	channel.users.remove(request.user)
+	channel.save()
+
+	return JsonResponse({'success': True, 'message': 'User left the channel'}, status=200)
+
+
+def	join_tournament(request):
+	if not request.user.is_authenticated:
+		return JsonResponse({'success': False, "message": "The user is not authenticated"}, status=401)
+	
+	# Get all tournament channels
+	channels = Channel.objects.filter(tournament=True)
+
+	for channel in channels:
+		if request.user in channel.users.all():
+			return JsonResponse({'success': False, "message": "User already in tournament"}, status=401)
+		if len(channel.users.all()) < 4 :
+			channel.users.add(request.user)
+			channel.save()
+			if len(channel.users.all()) == 4 :
+				return JsonResponse({'success': True, "message": "Tournament is full", "room_id": channel.room_id}, status=200)
+			return JsonResponse({'success': True, "message": "User joined the tournament"}, status=200)
+	
+	room_id = str(uuid.uuid1())
+
+	channel = Channel.objects.create(tournament=True, room_id=room_id, name='Tournament')
+	channel.users.add(request.user)
+	channel.save()
+	return JsonResponse({'success': True, "message": "Create tournament"}, status=200)
