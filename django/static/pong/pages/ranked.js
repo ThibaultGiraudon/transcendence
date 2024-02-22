@@ -3,21 +3,43 @@ function renderRankedPage() {
 		if (data.isAuthenticated) {
 			let html = `
 				<h1>Ranked game</h1>
+				<h3>Choose a game mode</h3>
 			
-				<button class="ranked-button" id="init_ranked_solo_game">
-					1 VS 1 SOLO
-				</button>
-				<button class="ranked-button" id="init_death_game">
-					DEATH GAME (4 players)
-				</button>
-				<button class="ranked-button" id="init_tournament_game">
-					TOURNAMENT (4 players)
-				</button>
+				<div class="choose-buttons">
+					<button class="ranked-btn" id="init_ranked_solo_game">
+						<img class="choose-img" src="/static/pong/img/global.png" class="choose-img">
+						<p class="choose-btn-title">1 vs 1</p>
+						<p class="choose-btn-text">
+							Solo play against a random opponent from around the world.
+						</p>
+					</button>
+
+					<button class="ranked-btn" id="init_death_game">
+						<img class="choose-img" src="/static/pong/img/death.png" class="choose-img">
+						<p class="choose-btn-title">Death Game</p>
+						<p class="choose-btn-text">
+							4 players play on the same board.
+							The last one standing wins the game.
+						</p>
+					</button>
+
+					<button class="ranked-btn" id="init_tournament_game">
+						<img class="choose-img" src="/static/pong/img/tournament.png" class="choose-img">
+						<p class="choose-btn-title">Tournament</p>
+						<p class="choose-btn-text">
+							4 players play on 2 boards in 1v1.
+							The 2 winners play against each other.
+							The last one standing wins the tournament.
+						</p>
+					</button>
+				</div>
+
+				<button class="choose-back-btn" data-route="/pong/">↩ Back to menu</button>
 			`;
 
 			document.getElementById('app').innerHTML = html;
 
-			document.querySelectorAll('.ranked-button').forEach(button => {
+			document.querySelectorAll('.ranked-btn').forEach(button => {
 				button.addEventListener('click', async function(event) {
 					const gameMode = event.target.id;
 					console.log(gameMode);

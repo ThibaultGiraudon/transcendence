@@ -8,10 +8,12 @@ function renderWaitPlayers(gameMode) {
 					playerID = data.player_id;
 
 					let html = `
-						<p>${gameMode} ${gameID}</p>
-						<div class="waiting-game-infos">
-							<h2 class="waiting-game-title"></h2>
-							<img class="waiting-game-gif" src="/static/main/img/loading.gif" alt="waiting">
+						<div class="all-screen">
+							<p>${gameMode} ${gameID}</p>
+							<div class="waiting-game-infos">
+								<h2 class="waiting-game-title"></h2>
+								<img class="waiting-game-gif" src="/static/main/img/loading.gif" alt="waiting">
+							</div>
 						</div>
 					`;
 					document.getElementById('app').innerHTML = html;
@@ -28,7 +30,7 @@ function renderWaitPlayers(gameMode) {
 							clearInterval();
 						}
 						dots++;
-					}, 350);
+					}, 500);
 		
 					// gameProcess(true, gameMode, gameID, playerID)
 				} else {

@@ -10,6 +10,14 @@ function renderChannel(channel) {
 		badge = "⭐ Official";
 	}
 
+	let sender = '';
+	if (channel.last_message) {
+		sender = channel.last_message.sender;
+		if (sender == 0) {
+			sender = "System";
+		}
+	}
+
 	return `
 		<div class="a-chat">
 			<a class="chat-container" data-route="/chat/${channel.room_id}">
@@ -18,7 +26,7 @@ function renderChannel(channel) {
 				${channel.last_message ? `
 					<p class="chat-last-message-timestamp">${channel.last_message.timestamp}</p>
 					<div class="chat-last-message-container">
-						<p class="chat-last-message-sender">${channel.last_message.sender}: </p>
+						<p class="chat-last-message-sender">${sender}: </p>
 						<p class="chat-last-message">${channel.last_message.message.substring(0, 50)}${channel.last_message.message.length > 50 ? '...' : ''}</p>
 					</div>
 				`
