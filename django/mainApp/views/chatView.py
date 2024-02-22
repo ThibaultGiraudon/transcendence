@@ -28,6 +28,8 @@ def new(request):
 			return JsonResponse({'success': False, 'name': 'The name is required'}, status=401)
 		elif len(name) > 30:
 			return JsonResponse({'success': False, 'name': 'The name is too long'}, status=401)
+		elif name.isspace():
+			return JsonResponse({'success': False, 'name': 'The name cannot be only white spaces'}, status=401)
 		
 		# Check description
 		if not description:

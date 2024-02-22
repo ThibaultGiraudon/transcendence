@@ -109,6 +109,7 @@ function renderRoomPage(room_id) {
 						<img class="chat-private-img" src="${photo_channel}" alt="profile picture">
 						<h2 class="chat-category-pp">${name_channel}</h2>
 					</a>
+					<button class="invite-game-button">Play a game</button>
 					<p class="chat-info-private">Private channel</p>
 				`;
 			} else {
@@ -275,6 +276,14 @@ function renderRoomPage(room_id) {
 				});
 			}
 
+			const inviteGameButton = document.querySelector('.invite-game-button');
+
+			if (inviteGameButton) {
+				inviteGameButton.addEventListener('click', () => {
+					send_message(room_id, 0, `${dataUser.user.username} invited you to play a game`);
+				});
+			}
+
 			// Call the websocket
 			chatProcess(room_id, user.blockedUsers, room.private, user.id, user.username);
 		});
@@ -294,10 +303,7 @@ function send_message(room_id, sender, message) {
 		shouldClose: false
 	};
 
-	console.log(tmpSocket);
-
 	tmpSocket.socket.onopen = function(event) {
-		console.log('Sending message');
 		tmpSocket.socket.send(JSON.stringify({
 			'message': message,
 			'sender': sender,

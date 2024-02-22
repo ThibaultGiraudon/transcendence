@@ -12,6 +12,15 @@ from ..models import Notification, Channel
 def get_username(request, id):
 	if not request.user.is_authenticated:
 		return JsonResponse({'username': None}, status=401)
+	
+	# Convert ID
+	try:
+		id = int(id)
+	except ValueError:
+		return JsonResponse({'username': None}, status=401)
+
+	if id == 0:
+		return JsonResponse({'success': False, "message": "You cannot interact with the system user"}, status=401)
 
 	# Check if the user exist
 	User = get_user_model()
@@ -212,6 +221,9 @@ def follow(request, id):
 	except ValueError:
 		return JsonResponse({'success': False, "message": "Invalid id"}, status=401)
 
+	if id == 0:
+		return JsonResponse({'success': False, "message": "You cannot interact with the system user"}, status=401)
+
 	# Check if the user exist and if he is not already followed
 	User = get_user_model()
 	try:
@@ -240,6 +252,9 @@ def unfollow(request, id):
 	except ValueError:
 		return JsonResponse({'success': False, "message": "Invalid id"}, status=401)
 	
+	if id == 0:
+		return JsonResponse({'success': False, "message": "You cannot interact with the system user"}, status=401)
+	
 	# Check if the user exist and if he is followed
 	User = get_user_model()
 	try:
@@ -264,6 +279,9 @@ def block(request, id):
 		id = int(id)
 	except ValueError:
 		return JsonResponse({'success': False, "message": "Invalid id"}, status=401)
+	
+	if id == 0:
+		return JsonResponse({'success': False, "message": "You cannot interact with the system user"}, status=401)
 
 	# Check if the user exist and if he is not already blocked
 	User = get_user_model()
@@ -288,6 +306,9 @@ def block(request, id):
 def unblock(request, id):
 	if not request.user.is_authenticated:
 		return JsonResponse({'success': False, "message": "The user is not authenticated"}, status=401)
+	
+	if id == 0:
+		return JsonResponse({'success': False, "message": "You cannot interact with the system user"}, status=401)
 	
 	# Convert ID
 	try:
@@ -451,6 +472,9 @@ def add_user_to_room(request, room_id, user_id):
 	if not request.user.is_authenticated:
 		return JsonResponse({'success': False, 'message': 'The user is not authenticated'}, status=401)
 	
+	if user_id == 0:
+		return JsonResponse({'success': False, 'message': 'You cannot interact with the system user'}, status=401)
+
 	# Get the channel
 	try:
 		channel = request.user.channels.get(room_id=room_id)
