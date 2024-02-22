@@ -227,7 +227,7 @@
 }
 
 .chat-log {
-	height: 83%;
+	height: 80%;
 	overflow-y: auto;
 	background-color: var(--color-light-hover);
 	border-radius: var(--border-radius);
@@ -389,10 +389,8 @@
 }
 
 .system-username {
-	/* width: 40%; Définir une largeur */
 	margin-left: auto;
     margin-right: auto;
-	/* float: center; */
 	color: grey;
 	text-align: center;
 	font-family: var(--font-text-regular);
