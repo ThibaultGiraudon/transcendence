@@ -29,7 +29,7 @@ function renderGamePage(gameMode) {
 		
 					document.getElementById('app').innerHTML = html;
 		
-					gameProcess(false, gameMode, gameID, playerID)
+					// gameProcess(false, gameMode, gameID, playerID)
 				} else {
 					router.navigate('/pong/');
 					return ;

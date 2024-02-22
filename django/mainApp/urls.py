@@ -21,6 +21,7 @@ urlpatterns = [
 	path('pong/game/<str:gameMode>', pongView.game, name='game'),
 
 	path('chat/', chatView.chat, name='chat'),
+	path('chat/new/', chatView.new, name='new'),
 	path('chat/<str:room_id>', chatView.room, name='room'),
 
 
@@ -49,6 +50,12 @@ urlpatterns = [
 
 	path('api/get_messages/<str:room_id>', api.get_messages, name='get_messages'),
 	path('api/create_channel', api.create_channel, name='create_channel'),
+	path('api/add_user_to_room/<str:room_id>/<int:user_id>', api.add_user_to_room, name='add_user_to_room'),
+	path('api/add_to_favorite/<str:room_id>', api.add_to_favorite, name='add_to_favorite'),
+	path('api/remove_from_favorite/<str:room_id>', api.remove_from_favorite, name='remove_from_favorite'),
+	path('api/leave_channel/<str:room_id>', api.leave_channel, name='leave_channel'),
+	path('api/join_tournament', api.join_tournament, name='join_tournament'),
+
 
 	path('api/generate_csrf_token/', api.generate_csrf_token, name='generate_csrf_token'),
 	path('api/get_game_info', api.get_game_info, name='get_game_info'),

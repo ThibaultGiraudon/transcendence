@@ -3,21 +3,40 @@ function renderPracticePage() {
 		if (data.isAuthenticated) {
 			let html = `
 				<h1>Practice game</h1>
+				<h3>Choose a game mode</h3>
 			
-				<button class="practice-button" id="init_local_game">
-					LOCAL GAME
-				</button>
-				<button class="practice-button" id="init_ai_game">
-					1 VS AI
-				</button>
-				<button class="practice-button" id="init_wall_game">
-					WALL GAME
-				</button>
+				<div class="choose-buttons">
+					<button class="practice-btn" id="init_local_game">
+						<img class="choose-img" src="/static/pong/img/local.png" class="choose-img">
+						<p class="choose-btn-title">Local game</p>
+						<p class="choose-btn-text">
+							1v1 game between you and a friend on the same computer.
+						</p>
+					</button>
+
+					<button class="practice-btn" id="init_ai_game">
+						<img class="choose-img" src="/static/pong/img/ai.png" class="choose-img">
+						<p class="choose-btn-title">1 vs AI</p>
+						<p class="choose-btn-text">
+							1v1 game between you and an opponent controlled by artificial intelligence.
+						</p>
+					</button>
+
+					<button class="practice-btn" id="init_wall_game">
+						<img class="choose-img" src="/static/pong/img/wall.png" class="choose-img">
+						<p class="choose-btn-title">Wall game</p>
+						<p class="choose-btn-text">
+							Provide description here...
+						</p>
+					</button>
+				</div>
+
+				<button class="choose-back-btn" data-route="/pong/">↩ Back to menu</button>
 			`;
 
 			document.getElementById('app').innerHTML = html;
 
-			document.querySelectorAll('.practice-button').forEach(button => {
+			document.querySelectorAll('.practice-btn').forEach(button => {
 				button.addEventListener('click', async function(event) {
 					const gameMode = event.target.id;
 					console.log(gameMode);

@@ -5,7 +5,9 @@ let chatSocket = null;
 function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
 	if (chatSocket !== null) {
 		chatSocket.shouldClose = true;
-		chatSocket.socket.close();
+		if (chatSocket.socket.readyState !== WebSocket.CLOSED) {
+			chatSocket.socket.close();
+		}
 	}
 
 	// Create a new socket
@@ -31,7 +33,7 @@ function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
 
 		const data = JSON.parse(e.data);
 
-		if (data.sender) {
+		if (data.sender >= 0 && data.message) {
 			let username = '[UserNotfound]';
 
 			// Get the username of the sender
@@ -58,7 +60,16 @@ function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
 					messageContainer.className = 'blocked-message';
 					messageContainer.textContent = 'This user is blocked';
 				} else {
-					messageContainer.className = data.sender === sender ? 'my-message' : 'other-message';
+					// messageContainer.className = data.sender === sender ? 'my-message' : 'other-message';
+					if (data.sender === sender) {
+						messageContainer.className = 'my-message';
+					}
+					else if (data.sender == 0) {
+						messageContainer.className = 'system-message';
+					}
+					else {
+						messageContainer.className = 'other-message';
+					}
 				}
 
 				// Display the message
@@ -93,7 +104,7 @@ function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
 
 	// Handle closing the socket
 	chatSocket.socket.onclose = function(e) {
-		if (!this.shouldClose) {
+		if (!this.shouldClose && chatSocket.socket.readyState === WebSocket.CLOSED) {
 			chatSocket.socket = new WebSocket(chatSocket.url);
 		}
 	};

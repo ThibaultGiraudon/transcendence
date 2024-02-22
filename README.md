@@ -121,3 +121,17 @@ n’utilisant pas l’Algorithme A*.
 Module majeur : Joueurs à distance
 Il est possible d’avoir 2 joueurs distants. Chaque joueur est sur un ordinateurs
 différent, accédant au même site web et jouant la même partie de Pong.
+
+
+• Module mineur : Étendre la compatibilité des navigateurs web.
+Dans ce module mineur, l’objectif est d’améliorer la compatibilité de l’application web en ajoutant la compatibilité pour un navigateur web supplémentaire.
+Cela inclue :
+◦ Étendre le support navigateur afin d’inclure un navigateur supplémentaire,
+s’assurant ainsi que les utilisateurs peuvent accéder l’application web sans problèmes.
+◦ Effectuer des tests approfondis et des optimisations pour s’assurer que l’application web fonctionne correctement et s’affiche correctement dans le nouveau
+navigateur pris en charge.
+◦ Gérer et régler tout problème de compatibilité ou de rendu qui pourrait survenir
+dans le nouveau navigateur.
+◦ S’assurer d’une expérience utilisateur constante sur tous les navigateurs supportés, conservant l’usage et les fonctionnalités.//
+Ce module mineur vise à élargir l’accessibilité de l’application web en supportant un navigateur additionnel, offrant ainsi plus de choix d’usage de l’application
+par l’utilisateur.

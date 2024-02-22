@@ -42,6 +42,10 @@
 	--columns-gap: 10px;
 }
 
+::-webkit-scrollbar {
+    display: none;
+}
+
 /* GLOBAL */
 h1 {
 	font-family: var(--font-text-bold);
