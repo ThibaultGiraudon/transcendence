@@ -30,8 +30,8 @@ async def launchAnyGame(consumer, gameID, gameMode, isLocalGame):
 	if gameID not in consumer.gameSettingsInstances:
 		consumer.gameSettingsInstances[gameID] = GameSettings(gameID, gameMode)
 	gameSettings = consumer.gameSettingsInstances[gameID]
-	if not isLocalGame:
-		await getPlayerIDList(gameSettings, gameID)
+	gameSettings.isLocalGame = isLocalGame
+	await getPlayerIDList(gameSettings, gameID)
 	await sendInitPaddlePosition(consumer, gameSettings)
 	await sendUpdateScore(consumer, gameSettings)
 	await handleBallMove(consumer, gameSettings)

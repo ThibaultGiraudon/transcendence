@@ -3,20 +3,25 @@ from	.senders.sendUpdateBallPosition import sendUpdateBallPosition
 from	.senders.sendUpdateScore import sendUpdateScore	
 import	asyncio
 
+# TODO gameSettings not used
 @database_sync_to_async
 def addStatToPlayer(playerID, gameSettings, paddle):
-	from mainApp.models import Player, Stat
+	from mainApp.models import Player, Score, Game
 	player = Player.objects.get(id=playerID)
 
-	stat = Stat(gameID=gameSettings.gameID, position=paddle.position, score=paddle.score)
-	stat.save()
+	print(f'player = {paddle.position}')
+	# TODO fix position incorrect when ai game
+	score = Score(player=player, position=paddle.position, score=paddle.score)
+	score.save()
 
-	player.stats.add(stat)
-	player.save()
+	gameID = player.currentGameID
+	game = Game.objects.get(id=gameID)
+	game.scores.add(score)
+	game.save()
 
 # TODO move to senders
 async def sendGameOver(consumer, gameSettings, paddle):
-	print("game over")
+	print(f'game over !! game_{gameSettings.gameID}')
 	await consumer.channel_layer.group_send(
 		f'game_{gameSettings.gameID}',
 		{
@@ -24,16 +29,25 @@ async def sendGameOver(consumer, gameSettings, paddle):
 			'gameID': gameSettings.gameID,
 		}
 	)
-	playerID = gameSettings.playerIDList[paddle.id]
+	if (gameSettings.isLocalGame):
+		playerID = gameSettings.playerIDList[0]
+	else:
+		playerID = gameSettings.playerIDList[paddle.id]
 	await addStatToPlayer(playerID, gameSettings, paddle)
 
 async def updateScore(consumer, gameSettings, paddleID):
 	if (gameSettings.nbPaddles == 2):
 		gameSettings.paddles[paddleID ^ 1].score += 1
+		print(f'gam  = {gameSettings.paddles[paddleID ^ 1].score}')
 		if (gameSettings.paddles[paddleID ^ 1].score >= 10):
 			gameSettings.paddles[paddleID].isAlive = False
+			gameSettings.paddles[paddleID ^ 1].isAlive = False
 			gameSettings.paddles[paddleID].position = 2
 			gameSettings.paddles[paddleID ^ 1].position = 1
+
+			print(f'gameSettings.paddles[paddleID].position = {gameSettings.paddles[paddleID].position}')
+			print(f'gameSettings.paddles[paddleID ^ 1].position = {gameSettings.paddles[paddleID ^ 1].position}')
+
 			await sendGameOver(consumer, gameSettings, gameSettings.paddles[paddleID])
 			await sendGameOver(consumer, gameSettings, gameSettings.paddles[paddleID ^ 1])
 	else:

@@ -432,11 +432,28 @@ def get_game_over(request, gameID):
 	player.isReady = False
 	player.save()
 
-	stat = player.stats.filter(gameID=gameID).first()
-	score = stat.score
-	position = stat.position
+	game = Game.objects.get(id=gameID)
+	gameMode = game.gameMode
 
-	gameMode = Game.objects.get(id=gameID).gameMode
+	score = 20
+	position = 6
+
+	# score = game.scores.filter(playerID=player.id).first().score
+	# position = game.scores.filter(playerID=player.id).first().position
+
+
+	# if gameMode in ['init_local_game', 'init_ai_game', 'init_wall_game']:
+	# 	game = Game.objects.get(id=gameID)
+	# 	game.isOver = True
+	# 	game.save()
+			# return JsonResponse({'success': True, 'game_id': gameID}, status=200)
+
+	# stat = player.stats.filter(gameID=gameID).first()
+	# score = stat.score
+	# position = stat.position
+	
+
+
 	positionsScore = [10, 7, 3, 0]
 	if (gameMode == "init_ranked_solo_game"):
 		player.soloPoints += score
@@ -448,5 +465,11 @@ def get_game_over(request, gameID):
 		player.tournamentPoints += positionsScore[position]
 		player.save()
 
-	# TODO ici on doit envoyer le Score, la position
-	return JsonResponse({'success': True, 'player_id': request.user.player.id, 'score': score, 'position': position}, status=200)
+	# TODO ici on doit envoyer le Score, la position seulement
+	return JsonResponse({
+		'success': True,
+		'player_id': request.user.player.id,
+		'score': score,
+		'position': position,
+		'game_mode': gameMode
+	}, status=200)
