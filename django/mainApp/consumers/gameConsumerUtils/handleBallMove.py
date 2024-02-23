@@ -24,18 +24,8 @@ async def sendGameOver(consumer, gameSettings, paddle):
 			'gameID': gameSettings.gameID,
 		}
 	)
-
 	playerID = gameSettings.playerIDList[paddle.id]
-	print("playerID", playerID)
 	await addStatToPlayer(playerID, gameSettings, paddle)
-
-	# Ajouter une stat
-
-	# - avec gameSettings.playerIDList - recuperer le playerID avec paddleID
-	#     - playerID = gameSettings.playerIDList[paddleID]
-	# - recuperer dans la db le player (player = await getPlayer(playerID)
-	# - ajouter la stat au player avec l'id gameID et le score du paddle etc
-
 
 async def updateScore(consumer, gameSettings, paddleID):
 	if (gameSettings.nbPaddles == 2):
