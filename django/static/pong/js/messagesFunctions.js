@@ -51,7 +51,4 @@ function updateBallPosition(x, y, color, radius) {
 
 function gameOver(message) {
 	router.navigate('/pong/game_over/' + message.gameID);
-	
-	// const gameOverDiv = document.getElementById('gameOver');
-	// gameOverDiv.style.display = 'block';
 }
