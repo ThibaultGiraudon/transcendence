@@ -426,6 +426,8 @@ def get_game_over(request, gameID):
 		return JsonResponse({'success': False}, status=401)
 	
 	player = request.user.player
+	if (player.currentGameID != gameID):
+		return JsonResponse({'success': False}, status=200)
 	player.currentGameID = None
 	player.isReady = False
 	player.save()
@@ -435,6 +437,16 @@ def get_game_over(request, gameID):
 	position = stat.position
 
 	gameMode = Game.objects.get(id=gameID).gameMode
+	positionsScore = [10, 7, 3, 0]
+	if (gameMode == "init_ranked_solo_game"):
+		player.soloPoints += score
+		player.save()
+	elif (gameMode == "init_death_game"):
+		player.deathPoints += positionsScore[position]
+		player.save()
+	elif (gameMode == "init_tournament_game"):
+		player.tournamentPoints += positionsScore[position]
+		player.save()
 
 	# TODO ici on doit envoyer le Score, la position
 	return JsonResponse({'success': True, 'player_id': request.user.player.id, 'score': score, 'position': position}, status=200)
