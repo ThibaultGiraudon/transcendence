@@ -5,7 +5,7 @@ from django.middleware.csrf import get_token
 from django.utils import timezone
 import uuid
 
-from ..models import Notification, Channel
+from ..models import Notification, Channel, Game
 
 
 def get_username(request, id):
@@ -425,15 +425,16 @@ def get_game_over(request, gameID):
 	if not request.user.is_authenticated:
 		return JsonResponse({'success': False}, status=401)
 	
-	print("game over with id ", gameID)
-	# Get the game
-	# gameID = request.user.player.currentGame
+	player = request.user.player
+	player.currentGameID = None
+	player.isReady = False
+	player.save()
 
-	# player = request.user.player
-	# player.currentGameID = None
-	# player.isReady = False
-	# player.save()
+	stat = player.stats.filter(gameID=gameID).first()
+	score = stat.score
+	position = stat.position
 
+	gameMode = Game.objects.get(id=gameID).gameMode
 
-
-	return JsonResponse({'success': True, 'player_id': request.user.player.id}, status=200)
+	# TODO ici on doit envoyer le Score, la position
+	return JsonResponse({'success': True, 'player_id': request.user.player.id, 'score': score, 'position': position}, status=200)
