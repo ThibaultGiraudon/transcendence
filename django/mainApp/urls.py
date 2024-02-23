@@ -54,6 +54,7 @@ urlpatterns = [
 	path('api/generate_csrf_token/', api.generate_csrf_token, name='generate_csrf_token'),
 	path('api/get_game_info', api.get_game_info, name='get_game_info'),
 
+	path('api/get_game_over/<int:gameID>', api.get_game_over, name='get_game_over'),
 
 	# Errors handling for 42 API
 	path('token42/', mainView.token42, name='token42'),
