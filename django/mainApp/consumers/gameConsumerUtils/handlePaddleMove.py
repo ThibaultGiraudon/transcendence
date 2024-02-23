@@ -25,16 +25,16 @@ async def keydownLoop(direction, paddle, consumer, gameSettings):
 
 async def handlePaddleMove(consumer, message, gameSettings, playerID):
 	direction = message['direction']
-	if playerID in gameSettings.playerIDList:
-		playerIndex = gameSettings.playerIDList.index(playerID)
-		paddle = gameSettings.paddles[playerIndex]
-	else:
+	if (gameSettings.isLocalGame):
 		if (message['paddleKey'] in ['w', 's']):
 			paddle = gameSettings.paddles[0]
 		elif (message['paddleKey'] in ['o', 'l'] and not gameSettings.isAIGame):
 			paddle = gameSettings.paddles[1]
 		else:
 			return
+	else:
+		playerIndex = gameSettings.playerIDList.index(playerID)
+		paddle = gameSettings.paddles[playerIndex]
 
 	aiPaddle = gameSettings.paddles[1]
 	if (gameSettings.isAIGame and aiPaddle.aiTask == None):
