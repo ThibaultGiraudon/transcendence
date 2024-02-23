@@ -14,16 +14,10 @@ class Player(models.Model):
 	soloPoints = models.IntegerField(default=0)
 	deathPoints = models.IntegerField(default=0)
 	tournamentPoints = models.IntegerField(default=0)
-	stats = models.ManyToManyField('Stat', related_name='stats')
 
 	def join_game(self):
 		self.isReady = True
 		self.save()
-
-class Stat(models.Model):
-	gameID = models.IntegerField()
-	position = models.IntegerField()
-	score = models.IntegerField()
 
 class Game(models.Model):
 	date = models.DateField()
@@ -32,14 +26,15 @@ class Game(models.Model):
 	playerList = ArrayField(models.IntegerField())
 	gameMode = models.CharField(max_length=30)
 	isOver = models.BooleanField(default=False)
+	scores = models.ManyToManyField('Score', related_name='scores')
 
 	def save(self, *args, **kwargs):
 		super(Game, self).save(*args, **kwargs)
 
 class Score(models.Model):
-	players = models.ForeignKey(Player, on_delete=models.CASCADE)
-	game = models.ForeignKey(Game, on_delete=models.CASCADE)
-	points = models.IntegerField()
+	player = models.ForeignKey(Player, on_delete=models.CASCADE)
+	position = models.IntegerField()
+	score = models.IntegerField()
 
 class CustomUserManager(BaseUserManager):
 	def create_user(self, email, username, password=None, photo=None, **extra_fields):
