@@ -61,7 +61,6 @@ async def aiLoop(consumer, gameSettings, paddle):
 		collisionPosition = await calculateAimPosition(gameSettings)
 		aimPosition = collisionPosition - gameSettings.paddleSize / 2 + random.randint(-10, 10)
 	
-		# TODO move this in class
 		moveTask = asyncio.create_task(moveAiToAim(consumer, paddle, gameSettings, aimPosition))
 		await asyncio.sleep(1)
 		moveTask.cancel()
