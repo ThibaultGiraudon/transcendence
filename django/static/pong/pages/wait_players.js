@@ -1,7 +1,7 @@
 function renderWaitPlayers(gameMode) {
 	fetchAPI('/api/isAuthenticated').then(data => {
 		if (data.isAuthenticated) {
-			// fetchGamePage(gameMode)
+			fetchGamePage(gameMode)
 			fetchAPI('/api/get_game_info').then(data => {
 				if (data.success) {
 					gameID = data.game_id;
@@ -32,15 +32,13 @@ function renderWaitPlayers(gameMode) {
 						dots++;
 					}, 500);
 		
-					// gameProcess(true, gameMode, gameID, playerID)
+					gameProcess(true, gameMode, gameID, playerID)
 				} else {
 					router.navigate('/pong/');
-					return ;
 				}
 			});
 		} else {
 			router.navigate('/sign_in/');
-			return ;
 		}
 	});
 }
@@ -61,7 +59,6 @@ async function fetchGamePage(gameMode) {
 
 		if (responseData.success && responseData.redirect == '/pong/game/') {
 			router.navigate(responseData.redirect + responseData.gameMode);
-			return ;
 		}
 	}
 }

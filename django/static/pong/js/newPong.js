@@ -65,7 +65,6 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 
 		if (message.type === 'reload_page') {
 			router.navigate('/pong/game/' + gameMode);
-            return ;
 		}
 
 		if (message.type === 'init_paddle_position') {
@@ -83,6 +82,11 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 		if (message.type === 'update_ball_position') {
 			updateBallPosition(message.x, message.y, message.color, message.radius);
 		}
+
+        if (message.type === 'game_over') {
+            console.log(message);
+            gameOver(message);
+        }
     };
 
     socket.socket.onclose = function(event) {
