@@ -25,6 +25,8 @@ function renderGamePage(gameMode) {
 						<canvas id="paddle2Layer"></canvas>
 						<canvas id="paddle3Layer"></canvas>
 						<canvas id="paddle4Layer"></canvas>
+
+						<div class="fill_pong_space"></div>
 					`;
 		
 					document.getElementById('app').innerHTML = html;
