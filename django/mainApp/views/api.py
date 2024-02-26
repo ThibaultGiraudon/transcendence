@@ -621,7 +621,6 @@ def get_game_over(request, gameID):
 		player.tournamentPoints += positionsScore[position]
 		player.save()
 
-	# TODO ici on doit envoyer le Score, la position seulement
 	return JsonResponse({
 		'success': True,
 		'score': scoresList,
