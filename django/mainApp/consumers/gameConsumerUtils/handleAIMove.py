@@ -53,7 +53,6 @@ async def calculateAimPosition(gameSettings):
 				ballY = limit
 				angle = -angle	
 
-	print("CRASH AVOID\n")
 	return (height)
 
 async def aiLoop(consumer, gameSettings, paddle):
