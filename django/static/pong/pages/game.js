@@ -34,12 +34,10 @@ function renderGamePage(gameMode) {
 					gameProcess(false, gameMode, gameID, playerID)
 				} else {
 					router.navigate('/pong/');
-					return ;
 				}
 			});
 		} else {
 			router.navigate('/sign_in/');
-			return ;
 		}
 	});
 }

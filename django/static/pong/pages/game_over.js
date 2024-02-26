@@ -3,7 +3,6 @@ function renderGameOverPage(gameID) {
 		if (data.isAuthenticated) {
 			fetchAPI('/api/get_game_over/' + gameID).then(data => {
 				if (data.success) {	
-					playerID = data.player_id;
 					score = data.score;
 					position = data.position;
 					if (position == 1) {
@@ -23,7 +22,6 @@ function renderGameOverPage(gameID) {
 
 					let html = `
 						<h1>Game Over (id = ${gameID})</h1>
-						<p>Player ID: ${playerID}</p>
 						<p>Score: ${score}</p>
 						${positionText}
 					`;

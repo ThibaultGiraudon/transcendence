@@ -624,7 +624,6 @@ def get_game_over(request, gameID):
 	# TODO ici on doit envoyer le Score, la position seulement
 	return JsonResponse({
 		'success': True,
-		'player_id': request.user.player.id,
 		'score': scoresList,
 		'position': positionsList,
 		'game_mode': gameMode
