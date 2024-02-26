@@ -22,6 +22,11 @@ def addStatToPlayer(playerID, gameSettings, paddle):
 # TODO move to senders
 async def sendGameOver(consumer, gameSettings, paddle):
 	print(f'game over !! game_{gameSettings.gameID}')
+	if (gameSettings.isLocalGame):
+		playerID = gameSettings.playerIDList[0]
+	else:
+		playerID = gameSettings.playerIDList[paddle.id]
+	await addStatToPlayer(playerID, gameSettings, paddle)
 	await consumer.channel_layer.group_send(
 		f'game_{gameSettings.gameID}',
 		{
@@ -29,11 +34,6 @@ async def sendGameOver(consumer, gameSettings, paddle):
 			'gameID': gameSettings.gameID,
 		}
 	)
-	if (gameSettings.isLocalGame):
-		playerID = gameSettings.playerIDList[0]
-	else:
-		playerID = gameSettings.playerIDList[paddle.id]
-	await addStatToPlayer(playerID, gameSettings, paddle)
 
 async def updateScore(consumer, gameSettings, paddleID):
 	if (gameSettings.nbPaddles == 2):

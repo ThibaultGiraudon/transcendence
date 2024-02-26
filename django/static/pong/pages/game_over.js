@@ -16,11 +16,16 @@ function renderGameOverPage(gameID) {
 						position = position + 'th';
 					}
 
+					positionText = '<p>You finished ' + position + '</p>';
+					if (score.length > 1) {
+						positionText = '';
+					}
+
 					let html = `
 						<h1>Game Over (id = ${gameID})</h1>
 						<p>Player ID: ${playerID}</p>
 						<p>Score: ${score}</p>
-						<p>You finished ${position}</p>
+						${positionText}
 					`;
 					document.getElementById('app').innerHTML = html;
 				}
