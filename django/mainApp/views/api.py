@@ -593,24 +593,22 @@ def get_game_over(request, gameID):
 	game = Game.objects.get(id=gameID)
 	gameMode = game.gameMode
 
-	score = 20
-	position = 6
+	scores = game.scores.filter(player__id=player.id)
+	score = scores.first().score
+	position = scores.first().position
 
-	# score = game.scores.filter(playerID=player.id).first().score
-	# position = game.scores.filter(playerID=player.id).first().position
+	scoresList = []
+	positionsList = []
+	for score2 in scores:
+		scoresList.append(score2.score)
+		positionsList.append(score2.position)
 
-
+	# TODO a voir si on delete pas isOver de model parce que ca sert a rien
 	# if gameMode in ['init_local_game', 'init_ai_game', 'init_wall_game']:
 	# 	game = Game.objects.get(id=gameID)
 	# 	game.isOver = True
 	# 	game.save()
 			# return JsonResponse({'success': True, 'game_id': gameID}, status=200)
-
-	# stat = player.stats.filter(gameID=gameID).first()
-	# score = stat.score
-	# position = stat.position
-	
-
 
 	positionsScore = [10, 7, 3, 0]
 	if (gameMode == "init_ranked_solo_game"):
@@ -627,7 +625,7 @@ def get_game_over(request, gameID):
 	return JsonResponse({
 		'success': True,
 		'player_id': request.user.player.id,
-		'score': score,
-		'position': position,
+		'score': scoresList,
+		'position': positionsList,
 		'game_mode': gameMode
 	}, status=200)
