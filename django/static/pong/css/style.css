@@ -105,3 +105,9 @@ canvas {
 	padding-bottom: 0.7em;
 	border-radius: var(--border-radius);
 }
+
+.fill_pong_space {
+	height: 900px;
+	width: 100%;
+	display: block;
+}
