@@ -8,9 +8,7 @@ function renderGamePage(gameMode) {
 		
 					let html = `
 						<h1>Pong game</h1>
-						
-						<h2>Game Mode: ${gameMode}</h2>
-						<p>${gameID}</p>
+						<h3>${gameMode}</h3>
 						
 						<div class="score_bar">
 							<span class="player_score id0"></span>

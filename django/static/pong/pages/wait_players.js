@@ -9,7 +9,6 @@ function renderWaitPlayers(gameMode) {
 
 					let html = `
 						<div class="all-screen">
-							<p>${gameMode} ${gameID}</p>
 							<div class="waiting-game-infos">
 								<h2 class="waiting-game-title"></h2>
 								<img class="waiting-game-gif" src="/static/main/img/loading.gif" alt="waiting">
