@@ -608,7 +608,7 @@ def get_game_over(request, gameID):
 	# 	game = Game.objects.get(id=gameID)
 	# 	game.isOver = True
 	# 	game.save()
-			# return JsonResponse({'success': True, 'game_id': gameID}, status=200)
+	# 	return JsonResponse({'success': True, 'game_id': gameID}, status=200)
 
 	positionsScore = [10, 7, 3, 0]
 	if (gameMode == "init_ranked_solo_game"):
