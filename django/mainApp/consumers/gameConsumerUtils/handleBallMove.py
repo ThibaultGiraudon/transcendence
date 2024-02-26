@@ -38,15 +38,11 @@ async def sendGameOver(consumer, gameSettings, paddle):
 async def updateScore(consumer, gameSettings, paddleID):
 	if (gameSettings.nbPaddles == 2):
 		gameSettings.paddles[paddleID ^ 1].score += 1
-		print(f'gam  = {gameSettings.paddles[paddleID ^ 1].score}')
 		if (gameSettings.paddles[paddleID ^ 1].score >= 10):
 			gameSettings.paddles[paddleID].isAlive = False
 			gameSettings.paddles[paddleID ^ 1].isAlive = False
 			gameSettings.paddles[paddleID].position = 2
 			gameSettings.paddles[paddleID ^ 1].position = 1
-
-			print(f'gameSettings.paddles[paddleID].position = {gameSettings.paddles[paddleID].position}')
-			print(f'gameSettings.paddles[paddleID ^ 1].position = {gameSettings.paddles[paddleID ^ 1].position}')
 
 			await sendGameOver(consumer, gameSettings, gameSettings.paddles[paddleID])
 			await sendGameOver(consumer, gameSettings, gameSettings.paddles[paddleID ^ 1])
