@@ -6,7 +6,7 @@ from django.utils import timezone
 from datetime import datetime
 import uuid
 
-from ..models import Notification, Channel
+from ..models import Notification, Channel, Game
 
 
 def get_username(request, id):
@@ -578,3 +578,56 @@ def	join_tournament(request):
 	channel.users.add(request.user)
 	channel.save()
 	return JsonResponse({'success': True, "message": "Create tournament"}, status=200)
+
+def get_game_over(request, gameID):
+	if not request.user.is_authenticated:
+		return JsonResponse({'success': False}, status=401)
+	
+	player = request.user.player
+	if (player.currentGameID != gameID):
+		return JsonResponse({'success': False}, status=200)
+	player.currentGameID = None
+	player.isReady = False
+	player.save()
+
+	game = Game.objects.get(id=gameID)
+	gameMode = game.gameMode
+
+	score = 20
+	position = 6
+
+	# score = game.scores.filter(playerID=player.id).first().score
+	# position = game.scores.filter(playerID=player.id).first().position
+
+
+	# if gameMode in ['init_local_game', 'init_ai_game', 'init_wall_game']:
+	# 	game = Game.objects.get(id=gameID)
+	# 	game.isOver = True
+	# 	game.save()
+			# return JsonResponse({'success': True, 'game_id': gameID}, status=200)
+
+	# stat = player.stats.filter(gameID=gameID).first()
+	# score = stat.score
+	# position = stat.position
+	
+
+
+	positionsScore = [10, 7, 3, 0]
+	if (gameMode == "init_ranked_solo_game"):
+		player.soloPoints += score
+		player.save()
+	elif (gameMode == "init_death_game"):
+		player.deathPoints += positionsScore[position]
+		player.save()
+	elif (gameMode == "init_tournament_game"):
+		player.tournamentPoints += positionsScore[position]
+		player.save()
+
+	# TODO ici on doit envoyer le Score, la position seulement
+	return JsonResponse({
+		'success': True,
+		'player_id': request.user.player.id,
+		'score': score,
+		'position': position,
+		'game_mode': gameMode
+	}, status=200)

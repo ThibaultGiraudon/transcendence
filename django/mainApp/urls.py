@@ -19,6 +19,7 @@ urlpatterns = [
 	path('pong/practice/', pongView.practice, name='practice'),
 	path('pong/wait_players/<str:gameMode>', waitPlayersView.waitPlayers, name='wait_players'),
 	path('pong/game/<str:gameMode>', pongView.game, name='game'),
+	path('pong/game_over/<int:gameID>', pongView.gameOver, name='game_over'),
 
 	path('chat/', chatView.chat, name='chat'),
 	path('chat/new/', chatView.new, name='new'),
@@ -60,12 +61,12 @@ urlpatterns = [
 	path('api/generate_csrf_token/', api.generate_csrf_token, name='generate_csrf_token'),
 	path('api/get_game_info', api.get_game_info, name='get_game_info'),
 
+	path('api/get_game_over/<int:gameID>', api.get_game_over, name='get_game_over'),
 
 	# Errors handling for 42 API
 	path('token42/', mainView.token42, name='token42'),
 	path('down42/', mainView.down42, name='down42'),
 	path('used42/', mainView.used42, name='used42'),
-	
 
 	# To define
 	path('pong/game_over/<str:player>', pongView.gameOver, name='game_over'),

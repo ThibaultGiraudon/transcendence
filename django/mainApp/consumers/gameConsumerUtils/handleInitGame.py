@@ -26,43 +26,15 @@ def getPlayerIDList(gameSettings, gameID):
 	for player in game.playerList:
 		gameSettings.playerIDList.append(player)
 
-async def launchAnyGame(consumer, gameID, isLocalGame):
+async def launchAnyGame(consumer, gameID, gameMode, isLocalGame):
+	if gameID not in consumer.gameSettingsInstances:
+		consumer.gameSettingsInstances[gameID] = GameSettings(gameID, gameMode)
 	gameSettings = consumer.gameSettingsInstances[gameID]
-	if not isLocalGame:
-		await getPlayerIDList(gameSettings, gameID)
+	gameSettings.isLocalGame = isLocalGame
+	await getPlayerIDList(gameSettings, gameID)
 	await sendInitPaddlePosition(consumer, gameSettings)
 	await sendUpdateScore(consumer, gameSettings)
 	await handleBallMove(consumer, gameSettings)
-
-async def launchRankedSoloGame(consumer, gameID):
-	if gameID not in consumer.gameSettingsInstances:
-		consumer.gameSettingsInstances[gameID] = GameSettings(2, False)
-	await launchAnyGame(consumer, gameID, False)
-
-async def launchDeathGame(consumer, gameID):
-	if gameID not in consumer.gameSettingsInstances:
-		consumer.gameSettingsInstances[gameID] = GameSettings(4, False)
-	await launchAnyGame(consumer, gameID, False)
-
-# async def launchTournamentGame(consumer, gameID):
-	# if gameID not in consumer.gameSettingsInstances:
-		# consumer.gameSettingsInstances[gameID] = GameSettings(4, False)
-	# await launchAnyGame(consumer, gameID, False)
-
-async def launchInitLocalGame(consumer, gameID):
-	if gameID not in consumer.gameSettingsInstances:
-		consumer.gameSettingsInstances[gameID] = GameSettings(2, False)
-	await launchAnyGame(consumer, gameID, True)
-
-async def launchInitAiGame(consumer, gameID):
-	if gameID not in consumer.gameSettingsInstances:
-		consumer.gameSettingsInstances[gameID] = GameSettings(2, True)
-	await launchAnyGame(consumer, gameID, True)
-
-async def launchWallGame(consumer, gameID):
-	if gameID not in consumer.gameSettingsInstances:
-		consumer.gameSettingsInstances[gameID] = GameSettings(1, False)
-	await launchAnyGame(consumer, gameID, False)
 
 async def handleInitGame(consumer, gameID, gameMode, playerID):
 	game = await getGame(gameID)
@@ -73,14 +45,8 @@ async def handleInitGame(consumer, gameID, gameMode, playerID):
 	player.isReady = True
 	await savePlayer(player)
 
-	if (gameMode == 'init_local_game'):
-		await launchInitLocalGame(consumer, gameID)
-		return (True)
-	elif (gameMode == 'init_ai_game'):
-		await launchInitAiGame(consumer, gameID)
-		return (True)
-	elif (gameMode == 'init_wall_game'):
-		await launchWallGame(consumer, gameID)
+	if (gameMode in ['init_local_game', 'init_ai_game', 'init_wall_game']):
+		await launchAnyGame(consumer, gameID, gameMode, True)
 		return (True)
 
 	for playerID in game.playerList:
@@ -94,10 +60,6 @@ async def handleInitGame(consumer, gameID, gameMode, playerID):
 			)
 			return (False)
 
-	if (gameMode == 'init_ranked_solo_game'):
-		await launchRankedSoloGame(consumer, gameID)
-	elif (gameMode == 'init_death_game'):
-		await launchDeathGame(consumer, gameID)
-	# elif (gameMode == 'init_tournament_game'):
-	# 	self.launchTournamentGame()
+	if (gameMode in ['init_ranked_solo_game', 'init_death_game', 'init_tournament_game']):
+		await launchAnyGame(consumer, gameID, gameMode, False)
 	return (True)
