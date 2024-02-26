@@ -1,155 +1,69 @@
-from	asgiref.sync import async_to_sync
+from	channels.db import database_sync_to_async
 from	.senders.sendUpdateBallPosition import sendUpdateBallPosition
-from	.senders.sendUpdatePaddlePosition import sendUpdatePaddlePosition
 from	.senders.sendUpdateScore import sendUpdateScore	
-import	asyncio, json
+import	asyncio
 
-# def getUserName(id, gameMode):
-# 	if (gameMode == 'init_local_game'):
-# 		return 'Player ' + str(id + 1)
-# 	if (gameMode == 'init_ai_game'):
-# 		if (id == 0):
-# 			return ('Player 1')
-# 		return ('AI')
-# 	# TODO change this to username
-# 	return ('player')
+# TODO gameSettings not used
+@database_sync_to_async
+def addStatToPlayer(playerID, gameSettings, paddle):
+	from mainApp.models import Player, Score, Game
+	player = Player.objects.get(id=playerID)
 
-# async def sendUpdateScore(consumer, nbPaddles):
-# 	for paddle in consumer.gameSettings.paddles:
-# 		if (consumer.gameSettings.nbPaddles == 2 and paddle.id >= 2):
-# 			continue
-# 		score = paddle.score
-# 		message = {
-# 			'type': 'update_score',
-# 			'nbPaddles': nbPaddles,
-# 			'score': score,
-# 			'id': paddle.id,
-# 		}
-# 		await consumer.send(json.dumps(message))
+	print(f'player = {paddle.position}')
+	# TODO fix position incorrect when ai game
+	score = Score(player=player, position=paddle.position, score=paddle.score)
+	score.save()
 
-# async def sendUpdateScore(consumer, paddleID, gameMode):
-# 	if (consumer.gameSettings.nbPaddles == 2):
-# 		consumer.gameSettings.paddles[paddleID ^ 1].score += 1
-# 		score = consumer.gameSettings.paddles[paddleID ^ 1].score
-# 		id = consumer.gameSettings.paddles[paddleID ^ 1].id
-# 	else:
-# 		consumer.gameSettings.paddles[paddleID].score += 1
-# 		score = consumer.gameSettings.paddles[paddleID].score
-# 		id = consumer.gameSettings.paddles[paddleID].id
-# 	message = {
-# 		'type': 'update_score',
-# 		'score': score,	
-# 		'nbPaddles': consumer.gameSettings.nbPaddles,
-# 		'id': id,
-# 	}
-# 	await consumer.send(json.dumps(message))
-# 	if (score >= 10):
-# 		player = getUserName(id, gameMode)
-# 		message = {
-# 			'type': 'game_over',
-# 			'nbPaddles': consumer.gameSettings.nbPaddles,
-# 			'player': player,
-# 		}
-# 		await asyncio.sleep(1)
-# 		await consumer.send(json.dumps(message))
-# 		consumer.gameSettings.ball.task.cancel()
+	gameID = player.currentGameID
+	game = Game.objects.get(id=gameID)
+	game.scores.add(score)
+	game.save()
 
-# async def handle_ball_move(consumer, gameMode):
-# async def startBall(consumer, gameMode):
-# 	ball = consumer.gameSettings.ball
-# 	while (True):
-# 		# TODO maybe change this to bottom (ball.move)
-# 		ball.move()
+# TODO move to senders
+async def sendGameOver(consumer, gameSettings, paddle):
+	print(f'game over !! game_{gameSettings.gameID}')
+	await consumer.channel_layer.group_send(
+		f'game_{gameSettings.gameID}',
+		{
+			'type': 'game_over',
+			'gameID': gameSettings.gameID,
+		}
+	)
+	if (gameSettings.isLocalGame):
+		playerID = gameSettings.playerIDList[0]
+	else:
+		playerID = gameSettings.playerIDList[paddle.id]
+	await addStatToPlayer(playerID, gameSettings, paddle)
 
-# 		# TODO change to global var for fps
-# 		await asyncio.sleep(1)
-# 		await sendUpdateBallPosition(consumer, ball)
-
-		# for paddle in consumer.gameSettings.paddles:
-		# 	ball.checkPaddleCollision(paddle, consumer.gameSettings)
-
-		# paddleID = ball.checkWallCollision(consumer.gameSettings)
-		# paddle = consumer.gameSettings.paddles[paddleID]
-		# if (paddleID >= 0):
-		# 	if (paddle.score == 9):
-		# 		if (consumer.gameSettings.nbPaddles == 2):
-		# 			consumer.gameSettings.paddles[paddle.id ^ 1].isAlive = False
-		# 		else:
-		# 			paddle.isAlive = False
-		# 		paddle.color = "0x212121"
-			
-		# 	await sendInitPaddlePosition(consumer)	
-		# 	await sendUpdateScore(consumer, paddleID, gameMode)
-		# 	ball.resetBall(consumer.gameSettings)
-		# 	await asyncio.sleep(1)
-
-		# # TODO change to global var for fps
-		# await asyncio.sleep(0.01)
-		# await sendUpdateBallPosition(consumer, ball)
-
-
-# async def handle_ball_move(consumer, gameMode):
-# 	await sendInitsquareSize(consumer)
-# 	await sendInitPaddlePosition(consumer)
-# 	await sendUpdateScore(consumer, consumer.gameSettings.nbPaddles)
-
-# 	ball = consumer.gameSettings.ball
-# 	while (True):
-# 		# TODO maybe change this to bottom (ball.move)
-# 		ball.move()
-
-# 		for paddle in consumer.gameSettings.paddles:
-# 			ball.checkPaddleCollision(paddle, consumer.gameSettings)
-
-# 		paddleID = ball.checkWallCollision(consumer.gameSettings)
-# 		paddle = consumer.gameSettings.paddles[paddleID]
-# 		if (paddleID >= 0):
-# 			if (paddle.score == 9):
-# 				if (consumer.gameSettings.nbPaddles == 2):
-# 					consumer.gameSettings.paddles[paddle.id ^ 1].isAlive = False
-# 				else:
-# 					paddle.isAlive = False
-# 				paddle.color = "0x212121"
-			
-# 			await sendInitPaddlePosition(consumer)	
-# 			await sendUpdateScore(consumer, paddleID, gameMode)
-# 			ball.resetBall(consumer.gameSettings)
-# 			await asyncio.sleep(1)
-
-# 		# TODO change to global var for fps
-# 		await asyncio.sleep(0.01)
-# 		await sendUpdateBallPosition(consumer, ball)
-
-async def updateScore(gameSettings, paddleID):
+async def updateScore(consumer, gameSettings, paddleID):
 	if (gameSettings.nbPaddles == 2):
 		gameSettings.paddles[paddleID ^ 1].score += 1
+		print(f'gam  = {gameSettings.paddles[paddleID ^ 1].score}')
 		if (gameSettings.paddles[paddleID ^ 1].score >= 10):
 			gameSettings.paddles[paddleID].isAlive = False
+			gameSettings.paddles[paddleID ^ 1].isAlive = False
+			gameSettings.paddles[paddleID].position = 2
+			gameSettings.paddles[paddleID ^ 1].position = 1
+
+			print(f'gameSettings.paddles[paddleID].position = {gameSettings.paddles[paddleID].position}')
+			print(f'gameSettings.paddles[paddleID ^ 1].position = {gameSettings.paddles[paddleID ^ 1].position}')
+
+			await sendGameOver(consumer, gameSettings, gameSettings.paddles[paddleID])
+			await sendGameOver(consumer, gameSettings, gameSettings.paddles[paddleID ^ 1])
 	else:
 		gameSettings.paddles[paddleID].score += 1
 		if (gameSettings.paddles[paddleID].score >= 10):
 			gameSettings.paddles[paddleID].isAlive = False
-
-		# score = gameSettings.paddles[paddleID].score
-		# id = gameSettings.paddles[paddleID].id
-	# message = {
-	# 	'type': 'update_score',
-	# 	'score': score,	
-	# 	'nbPaddles': gameSettings.nbPaddles,
-	# 	'id': id,
-	# }
-	# await consumer.send(json.dumps(message))
-	# if (score >= 10):
-	# 	player = getUserName(id, gameMode)
-	# 	message = {
-	# 		'type': 'game_over',
-	# 		'nbPaddles': gameSettings.nbPaddles,
-	# 		'player': player,
-	# 	}
-	# 	await asyncio.sleep(1)
-	# 	await consumer.send(json.dumps(message))
-	# 	gameSettings.ball.task.cancel()
-	pass
+			nbAlives = 0
+			for paddle in gameSettings.paddles:
+				if (paddle.isAlive):
+					nbAlives += 1
+			gameSettings.paddles[paddleID].position = nbAlives + 1
+			await sendGameOver(consumer, gameSettings, gameSettings.paddles[paddleID])
+			if (nbAlives == 1):
+				for paddle in gameSettings.paddles:
+					if (paddle.isAlive):
+						await sendGameOver(consumer, gameSettings, paddle)
 
 async def startBall(consumer, gameSettings):
 	ball = gameSettings.ball
@@ -161,18 +75,8 @@ async def startBall(consumer, gameSettings):
 
 		paddleID = ball.checkWallCollision(gameSettings)
 		if (paddleID >= 0):
-			await updateScore(gameSettings, paddleID)
+			await updateScore(consumer, gameSettings, paddleID)
 			await sendUpdateScore(consumer, gameSettings)
-
-
-			# if (paddle.score == 9):
-				# if (consumer.gameSettings.nbPaddles == 2):
-			# 		consumer.gameSettings.paddles[paddle.id ^ 1].isAlive = False
-			# 	else:
-			# 		paddle.isAlive = False
-			# 	paddle.color = "#212121"
-			
-			# await sendUpdateScore(consumer, paddleID, gameMode)
 			await asyncio.sleep(1)
 			ball.resetBall(gameSettings)
 			await asyncio.sleep(0.5)
