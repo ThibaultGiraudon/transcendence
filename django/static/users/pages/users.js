@@ -61,7 +61,7 @@ function renderUsersPage() {
 				<div class="all-screen">
 					<div id="status-log" class="status-log">
 						${renderUsersSection('Users', users)}
-						${renderUsersSection('Friends', followed)}
+						${renderUsersSection('Follows', followed)}
 					</div>
 				</div>
 			`;
