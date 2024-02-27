@@ -23,3 +23,5 @@ Ajouter le mode tournoi avec un systeme de bracket \
 	et de matchs a jouer
 
 Fix le pb quand on ctrl+r sur la page GameOver
+
+Ajouter le canvas en responsive avec une regle transform css
