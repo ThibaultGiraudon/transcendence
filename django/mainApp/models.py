@@ -7,7 +7,6 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
 
-
 class Player(models.Model):
 	currentGameID = models.IntegerField(default=None, null=True)
 	isReady = models.BooleanField(default=False)	
@@ -27,6 +26,8 @@ class Game(models.Model):
 	gameMode = models.CharField(max_length=30)
 	isOver = models.BooleanField(default=False)
 	scores = models.ManyToManyField('Score', related_name='scores')
+	subGames = ArrayField(models.IntegerField(), default=list)
+	# finalsGames = ArrayField(models.IntegerField(), default=list)
 
 	def save(self, *args, **kwargs):
 		super(Game, self).save(*args, **kwargs)
