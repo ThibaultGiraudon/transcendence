@@ -3,14 +3,11 @@ from	.senders.sendUpdateBallPosition import sendUpdateBallPosition
 from	.senders.sendUpdateScore import sendUpdateScore	
 import	asyncio
 
-# TODO gameSettings not used
 @database_sync_to_async
-def addStatToPlayer(playerID, gameSettings, paddle):
+def addStatToPlayer(playerID, paddle):
 	from mainApp.models import Player, Score, Game
 	player = Player.objects.get(id=playerID)
 
-	print(f'player = {paddle.position}')
-	# TODO fix position incorrect when ai game
 	score = Score(player=player, position=paddle.position, score=paddle.score)
 	score.save()
 
@@ -21,12 +18,11 @@ def addStatToPlayer(playerID, gameSettings, paddle):
 
 # TODO move to senders
 async def sendGameOver(consumer, gameSettings, paddle):
-	print(f'game over !! game_{gameSettings.gameID}')
 	if (gameSettings.isLocalGame):
 		playerID = gameSettings.playerIDList[0]
 	else:
 		playerID = gameSettings.playerIDList[paddle.id]
-	await addStatToPlayer(playerID, gameSettings, paddle)
+	await addStatToPlayer(playerID, paddle)
 	await consumer.channel_layer.group_send(
 		f'game_{gameSettings.gameID}',
 		{
@@ -82,7 +78,5 @@ async def startBall(consumer, gameSettings):
 
 async def handleBallMove(consumer, gameSettings):
 	if (gameSettings.ball.task):
-		# TODO inutile mais a verifier quand meme si ca casse rien
-		# gameSettings.ball.task.cancel()
 		return
 	gameSettings.ball.task = asyncio.create_task(startBall(consumer, gameSettings))
