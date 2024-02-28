@@ -28,6 +28,7 @@ class Game(models.Model):
 	scores = models.ManyToManyField('Score', related_name='scores')
 	subGames = ArrayField(models.IntegerField(), default=list)
 	# finalsGames = ArrayField(models.IntegerField(), default=list)
+	parentGame = models.IntegerField(default=None, null=True)
 
 	def save(self, *args, **kwargs):
 		super(Game, self).save(*args, **kwargs)
