@@ -23,7 +23,8 @@ def createOrJoinGame(waitingGamesList, player, gameMode):
 						hour=datetime.datetime.now().time(),
 						duration=0,
 						gameMode=gameMode + '_sub_game',
-						playerList=[]
+						playerList=[],
+						parentGame=game.id,
 					)
 					game.subGames.append(newSubGame.id)
 					game.save()
@@ -55,19 +56,19 @@ def createOrJoinGame(waitingGamesList, player, gameMode):
 			playerList=[player.id],
 			subGames=[newSubGameID],
 		)
+		if (gameMode == 'init_tournament_game'):
+			newSubGame.parentGame = newGame.id
+			newSubGame.save()
 		return (newGame.id)
 
 def returnJsonResponse(game, nbPlayersToWait, gameMode, playerID):
 	gameID = game.id
 	if (game.playerList.__len__() == nbPlayersToWait):
 		if (gameMode == 'init_tournament_game'):
-			# print("--- ok ---\n\n\n\n\n")
 			subGame = Game.objects.get(id=game.subGames[0])
 			if (not playerID in subGame.playerList):
 				subGame = Game.objects.get(id=game.subGames[1])
 			gameID = subGame.id
-			# print(gameID)
-			# print("--- ok ---\n\n\n\n\n")
 		return JsonResponse({'success': True, 'redirect': '/pong/game/', 'gameMode': gameMode, 'gameID': gameID})
 	return JsonResponse({'success': True, 'redirect': '/pong/wait_players/', 'gameMode': gameMode, 'gameID': gameID})
 
