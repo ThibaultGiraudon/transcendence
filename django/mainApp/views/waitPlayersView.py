@@ -57,16 +57,19 @@ def createOrJoinGame(waitingGamesList, player, gameMode):
 		)
 		return (newGame.id)
 
-def returnJsonResponse(game, nbPlayersToWait, gameMode):
+def returnJsonResponse(game, nbPlayersToWait, gameMode, playerID):
+	gameID = game.id
 	if (game.playerList.__len__() == nbPlayersToWait):
-		# if (gameMode == 'init_tournament_game'):
-			# if (game.subGames[0]):
-				# subGame = Game.objects.get(id=game.subGames[0])
-				# if (subGame.playerList.__len__() == 2):
-					# subGame = Game.objects.get(id=game.subGames[1])
-				# gameID = subGame.id
-		return JsonResponse({'success': True, 'redirect': '/pong/game/', 'gameMode': gameMode, 'gameID': game.id})
-	return JsonResponse({'success': True, 'redirect': '/pong/wait_players/', 'gameMode': gameMode, 'gameID': game.id})
+		if (gameMode == 'init_tournament_game'):
+			# print("--- ok ---\n\n\n\n\n")
+			subGame = Game.objects.get(id=game.subGames[0])
+			if (not playerID in subGame.playerList):
+				subGame = Game.objects.get(id=game.subGames[1])
+			gameID = subGame.id
+			# print(gameID)
+			# print("--- ok ---\n\n\n\n\n")
+		return JsonResponse({'success': True, 'redirect': '/pong/game/', 'gameMode': gameMode, 'gameID': gameID})
+	return JsonResponse({'success': True, 'redirect': '/pong/wait_players/', 'gameMode': gameMode, 'gameID': gameID})
 
 def waitPlayers(request, gameMode):
 	if (request.method == 'GET'):
@@ -88,12 +91,12 @@ def waitPlayers(request, gameMode):
 			game = Game.objects.get(id=player.currentGameID)
 			if (game.isOver == False):
 				gameMode = game.gameMode
-				return returnJsonResponse(game, nbPlayersToWait, gameMode)
+				return returnJsonResponse(game, nbPlayersToWait, gameMode, request.user.player.id)
 
 		gameID = createOrJoinGame(waitingGamesList, player, gameMode)
 		player.currentGameID = gameID
 		player.save()
 		game = Game.objects.get(id=gameID)
-		return returnJsonResponse(game, nbPlayersToWait, gameMode)
+		return returnJsonResponse(game, nbPlayersToWait, gameMode, request.user.player.id)
 	else:
 		return JsonResponse({'success': False, 'message': 'Method not allowed'})
