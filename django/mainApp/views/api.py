@@ -465,7 +465,15 @@ def get_game_info(request):
 	if not request.user.is_authenticated:
 		return JsonResponse({'success': False, 'game_id': None, 'player_id': None}, status=401)
 
-	return JsonResponse({'success': True, 'game_id': request.user.player.currentGameID, 'player_id': request.user.player.id}, status=200)
+	gameID = request.user.player.currentGameID
+	game = Game.objects.get(id=gameID)
+	if (game.gameMode == 'init_tournament_game'):
+		subGame = Game.objects.get(id=game.subGames[0])
+		if (not request.user.player.id in subGame.playerList):
+			subGame = Game.objects.get(id=game.subGames[1])
+		gameID = subGame.id
+
+	return JsonResponse({'success': True, 'game_id': gameID, 'player_id': request.user.player.id}, status=200)
 
 
 def add_user_to_room(request, room_id, user_id):
@@ -599,9 +607,9 @@ def get_game_over(request, gameID):
 
 	scoresList = []
 	positionsList = []
-	for score2 in scores:
-		scoresList.append(score2.score)
-		positionsList.append(score2.position)
+	for scoreElement in scores:
+		scoresList.append(scoreElement.score)
+		positionsList.append(scoreElement.position)
 
 	# TODO a voir si on delete pas isOver de model parce que ca sert a rien
 	# if gameMode in ['init_local_game', 'init_ai_game', 'init_wall_game']:
