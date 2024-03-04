@@ -148,6 +148,18 @@ def get_user(request, username=None):
 				'description': channel.description if channel.description else 'No description available',
 			}
 
+		# Get player informations
+		player_info = {
+			'currentGameID': request.user.player.currentGameID,
+			'isReady': request.user.player.isReady,
+			'soloPoints': request.user.player.soloPoints,
+			'deathPoints': request.user.player.deathPoints,
+			'tournamentPoints': request.user.player.tournamentPoints,
+			'gamePlayed': user.player.score_set.count(),
+			'gameVictory': 'toDefineInAPI',
+			'gameDefeat': 'toDefineInAPI',
+		}
+
 		# Get informations about the user
 		user_dict = {
 			'id': request.user.id,
@@ -162,7 +174,9 @@ def get_user(request, username=None):
 			'follows': request.user.follows,
 			'blockedUsers': request.user.blockedUsers,
 			'favoritesChannels': request.user.favoritesChannels,
+			'player': player_info,
 		}
+
 		return JsonResponse({'user': user_dict, 'isCurrentUser': True, 'isAuthenticated': True}, status=200)
 	
 	# Get informations about the user with the username
@@ -172,6 +186,18 @@ def get_user(request, username=None):
 			user = User.objects.get(username=username)
 		except User.DoesNotExist:
 			return JsonResponse({'user': None})
+	
+		# Get player informations
+		player_info = {
+			'currentGameID': user.player.currentGameID,
+			'isReady': user.player.isReady,
+			'soloPoints': user.player.soloPoints,
+			'deathPoints': user.player.deathPoints,
+			'tournamentPoints': user.player.tournamentPoints,
+			'gamePlayed': user.player.score_set.count(),
+			'gameVictory': 'toDefineInAPI',
+			'gameDefeat': 'toDefineInAPI',
+		}
 		
 		user_dict = {
 			'id': user.id,
@@ -181,6 +207,7 @@ def get_user(request, username=None):
 			'status': user.status,
 			'followed': user.id in request.user.follows,
 			'blocked': user.id in request.user.blockedUsers,
+			'player': player_info,
 		}
 		return JsonResponse({'user': user_dict, 'isCurrentUser': False}, status=200)
 

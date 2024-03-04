@@ -61,7 +61,7 @@ function renderForm(fieldsHtml) {
 
 
 function renderSignOutButton() {
-	return `<button class="profile-button" id="sign-out">Sign out</button>`;
+	return `<button class="profile-sign-out-button" id="sign-out">Sign out</button>`;
 }
 
 
@@ -108,6 +108,80 @@ function renderBlockedButton(user) {
 }
 
 
+function renderGlobalStats(user) {
+	return `
+		<p class="profile-stats-divider">Globals</p>
+		<div id="carousel-global">
+			<div class="profile-stats-card-global">
+				<p class="profile-stats-category">• Game played</p>
+				<p class="profile-stats-text">📊 ${user.player.gamePlayed}</p>
+			</div>
+
+			<div class="profile-stats-card-global">
+				<p class="profile-stats-category">• Victories</p>
+				<p class="profile-stats-text">🏆 ${user.player.gameVictory}</p>
+			</div>
+
+			<div class="profile-stats-card-global">
+				<p class="profile-stats-category">• Defeats</p>
+				<p class="profile-stats-text">☠️ ${user.player.gameDefeat}</p>
+			</div>
+
+			<div class="profile-stats-buttons">
+				<button class="profile-stats-button" id="prev-global">
+					<img class="profile-stats-buttons-img" src="/static/users/img/left-arrow.png" alt="Previous">
+				</button>
+				<button class="profile-stats-button" id="next-global">
+					<img class="profile-stats-buttons-img" src="/static/users/img/right-arrow.png" alt="Next">
+				</button>
+			</div>
+		</div>
+	`;
+}
+
+
+function renderModesStats(user) {
+	return `
+		<p class="profile-stats-divider">Game modes</p>
+		<div id="carousel-modes">
+			<div class="profile-stats-card-modes">
+				<p class="profile-stats-category">• 1 vs 1</p>
+				<p class="profile-stats-text">📈 ${user.player.soloPoints} points</p>
+			</div>
+
+			<div class="profile-stats-card-modes">
+				<p class="profile-stats-category">• Death Game</p>
+				<p class="profile-stats-text">📈 ${user.player.deathPoints} points</p>
+			</div>
+
+			<div class="profile-stats-card-modes">
+				<p class="profile-stats-category">• Tournament</p>
+				<p class="profile-stats-text">📈 ${user.player.tournamentPoints} points</p>
+			</div>
+
+			<div class="profile-stats-buttons">
+				<button class="profile-stats-button" id="prev-modes">
+					<img class="profile-stats-buttons-img" src="/static/users/img/left-arrow.png" alt="Previous">
+				</button>
+				<button class="profile-stats-button" id="next-modes">
+					<img class="profile-stats-buttons-img" src="/static/users/img/right-arrow.png" alt="Next">
+				</button>
+			</div>
+		</div>
+	`;
+}
+
+
+function renderPongStats(user) {
+	return `
+		<p class="profile-stats-title">Pong statistics</p>
+		<p class="profile-stats-disclaimer">Statistics count only the games played on ranked mode.</p>
+		${renderGlobalStats(user)}
+		${renderModesStats(user)}
+	`;
+}
+
+
 function renderProfilePage(username) {
 
 	fetchAPI('/api/isAuthenticated').then(data => {
@@ -140,12 +214,48 @@ function renderProfilePage(username) {
 						const profileHtml = renderOurProfile(user);
 						const formHtml = renderForm(fieldsHtml);
 						const signOutButtonHtml = renderSignOutButton();
+						const pongStats = renderPongStats(user);
 
 						document.getElementById('app').innerHTML = `
 							${profileHtml}
 							${formHtml}
+							${pongStats}
 							${signOutButtonHtml}
 						`;
+
+
+						// Add a carousel for the pong globals stats
+						let cardsGlobal = document.querySelectorAll('#carousel-global .profile-stats-card-global');
+						let currentCardGlobal = 0;
+
+						document.getElementById('prev-global').addEventListener('click', function() {
+							cardsGlobal[currentCardGlobal].style.display = 'none';
+							currentCardGlobal = (currentCardGlobal - 1 + cardsGlobal.length) % cardsGlobal.length;
+							cardsGlobal[currentCardGlobal].style.display = 'block';
+						});
+
+						document.getElementById('next-global').addEventListener('click', function() {
+							cardsGlobal[currentCardGlobal].style.display = 'none';
+							currentCardGlobal = (currentCardGlobal + 1) % cardsGlobal.length;
+							cardsGlobal[currentCardGlobal].style.display = 'block';
+						});
+
+						// Add a carousel for the pong modes stats
+						let cardsModes = document.querySelectorAll('#carousel-modes .profile-stats-card-modes');
+						let currentCardModes = 0;
+
+						document.getElementById('prev-modes').addEventListener('click', function() {
+							cardsModes[currentCardModes].style.display = 'none';
+							currentCardModes = (currentCardModes - 1 + cardsModes.length) % cardsModes.length;
+							cardsModes[currentCardModes].style.display = 'block';
+						});
+
+						document.getElementById('next-modes').addEventListener('click', function() {
+							cardsModes[currentCardModes].style.display = 'none';
+							currentCardModes = (currentCardModes + 1) % cardsModes.length;
+							cardsModes[currentCardModes].style.display = 'block';
+						});
+
 
 						// Add an event listener on the sign-in form
 						document.querySelector('.sign-form').addEventListener('submit', async function(event) {
@@ -296,6 +406,42 @@ function renderProfilePage(username) {
 									</div>
 								`;
 							}
+
+							// Add the Pong stats
+							document.getElementById('app').innerHTML += renderPongStats(user);
+
+
+							// Add a carousel for the pong globals stats
+							let cardsGlobal = document.querySelectorAll('#carousel-global .profile-stats-card-global');
+							let currentCardGlobal = 0;
+
+							document.getElementById('prev-global').addEventListener('click', function() {
+								cardsGlobal[currentCardGlobal].style.display = 'none';
+								currentCardGlobal = (currentCardGlobal - 1 + cardsGlobal.length) % cardsGlobal.length;
+								cardsGlobal[currentCardGlobal].style.display = 'block';
+							});
+
+							document.getElementById('next-global').addEventListener('click', function() {
+								cardsGlobal[currentCardGlobal].style.display = 'none';
+								currentCardGlobal = (currentCardGlobal + 1) % cardsGlobal.length;
+								cardsGlobal[currentCardGlobal].style.display = 'block';
+							});
+
+							// Add a carousel for the pong modes stats
+							let cardsModes = document.querySelectorAll('#carousel-modes .profile-stats-card-modes');
+							let currentCardModes = 0;
+
+							document.getElementById('prev-modes').addEventListener('click', function() {
+								cardsModes[currentCardModes].style.display = 'none';
+								currentCardModes = (currentCardModes - 1 + cardsModes.length) % cardsModes.length;
+								cardsModes[currentCardModes].style.display = 'block';
+							});
+
+							document.getElementById('next-modes').addEventListener('click', function() {
+								cardsModes[currentCardModes].style.display = 'none';
+								currentCardModes = (currentCardModes + 1) % cardsModes.length;
+								cardsModes[currentCardModes].style.display = 'block';
+							});
 
 							// Add an event listener on the send a chat button (for new chat only)
 							const sendChatButton = document.querySelector('.profile-button.chat');
