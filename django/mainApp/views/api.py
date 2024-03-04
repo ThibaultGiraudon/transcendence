@@ -471,6 +471,9 @@ def get_game_info(request):
 		subGame = Game.objects.get(id=game.subGames[0])
 		if (not request.user.player.id in subGame.playerList):
 			subGame = Game.objects.get(id=game.subGames[1])
+		player = request.user.player
+		player.currentGameID = subGame.id
+		player.save()
 		gameID = subGame.id
 
 	return JsonResponse({'success': True, 'game_id': gameID, 'player_id': request.user.player.id}, status=200)
@@ -587,6 +590,49 @@ def	join_tournament(request):
 	channel.save()
 	return JsonResponse({'success': True, "message": "Create tournament"}, status=200)
 
+def redirect_to_finals_game(request, game, player):
+	scores = game.scores.filter(player__id=player.id)
+	position = scores.first().position
+
+	if (position == 1):
+		if (game.finalGame):
+			finalGame = Game.objects.get(id=game.finalGame)
+			finalGame.playerList.append(player.id)
+			finalGame.save()
+		else:
+			newGame = Game(
+				date=game.date, 
+				hour=game.hour, 
+				duration=game.duration, 
+				gameMode=game.gameMode, 
+				parentGame=game.id
+			)
+			newGame.save()
+			game.finalGame = newGame.id
+			game.save()
+	elif (position == 2):
+		if (game.thirdPlaceGame):
+			thirdPlaceGame = Game.objects.get(id=game.thirdPlaceGame)
+			thirdPlaceGame.playerList.append(player.id)
+			thirdPlaceGame.save()
+		else:
+			newGame = Game(
+				date=game.date, 
+				hour=game.hour, 
+				duration=game.duration, 
+				gameMode=game.gameMode, 
+				parentGame=game.id
+			)
+			newGame.save()
+			game.thirdPlaceGame = newGame.id
+			game.save()
+	return JsonResponse({
+		'success': True,
+		'score': '1',
+		'position': '2',
+		'game_mode': game.gameMode
+	}, status=200)
+
 def get_game_over(request, gameID):
 	if not request.user.is_authenticated:
 		return JsonResponse({'success': False}, status=401)
@@ -626,6 +672,7 @@ def get_game_over(request, gameID):
 		player.deathPoints += positionsScore[position]
 		player.save()
 	elif (gameMode == "init_tournament_game"):
+		# return redirect_to_finals_game(request, game, player)
 		player.tournamentPoints += positionsScore[position]
 		player.save()
 
