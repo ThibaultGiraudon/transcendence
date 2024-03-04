@@ -10,6 +10,8 @@ urlpatterns = [
 	# Pages
 	path('sign_in/', usersView.sign_in, name='sign_in'),
 	path('sign_up/', usersView.sign_up, name='sign_up'),
+	path('reset_password/', usersView.reset_password, name='reset_password'),
+	path('reset_password_id/<str:resetPasswordID>', usersView.reset_password_id, name='reset_password_id'),
 	path('profile/<str:username>', usersView.profile, name='profile'),
 	path('users/', usersView.users, name='users'),
 	path('notifications/', usersView.notifications, name='notifications'),
@@ -22,8 +24,8 @@ urlpatterns = [
 	path('pong/game_over/<int:gameID>', pongView.gameOver, name='game_over'),
 
 	path('chat/', chatView.chat, name='chat'),
-	path('chat/new/', chatView.new, name='new'),
 	path('chat/<str:room_id>', chatView.room, name='room'),
+	path('chat/new/', chatView.new, name='new'),
 
 
 	# 42

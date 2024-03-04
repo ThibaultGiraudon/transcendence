@@ -55,10 +55,12 @@ function SignOutProcess(id) {
 	// Send a message to the websocket when the user logged out
 	var signOutButton = document.getElementById('sign-out');
 	if (signOutButton) {
-		statusSocket.socket.send(JSON.stringify({
-			'id': id,
-			'status': 'offline'
-		}));
+		try {
+			statusSocket.socket.send(JSON.stringify({
+				'id': id,
+				'status': 'offline'
+			}));
+		} catch (error) {}
 	}
 }
 

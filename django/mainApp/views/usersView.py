@@ -17,7 +17,7 @@ from django.middleware.csrf import get_token
 from django.core.mail import send_mail
 from django.shortcuts import render
 from django.http import JsonResponse
-import urllib.request, json, base64
+import urllib.request, json, base64, uuid
 from datetime import datetime
 
 from mainApp.models import Player
@@ -81,7 +81,7 @@ def sign_in(request):
 			send_mail(
 				'New connection to your account',
 				message,
-				'transcendence.42lyon.project@gmail.com',
+				'Transcendence Team <transcendence.42lyon.project@gmail.com>',
 				[user.email],
 				html_message=message,
 				fail_silently=True,
@@ -158,13 +158,99 @@ def sign_up(request):
 		send_mail(
 			'Welcome to transcendence',
 			message,
-			'transcendence.42lyon.project@gmail.com',
+			'Transcendence Team <transcendence.42lyon.project@gmail.com>',
 			[user.email],
 			html_message=message,
 			fail_silently=True,
 		)
 
 		return JsonResponse({"success": True, "message": "Successful sign up"}, status=200)
+
+
+@ensure_csrf_cookie
+def reset_password(request):
+	if request.method == 'GET':
+		return render(request, 'base.html')
+
+	elif request.method == 'POST':
+
+		# Get the data
+		data = json.loads(request.body)
+		email = data.get('email')
+
+		# Check if the email is valid
+		if not len(email):
+			return JsonResponse({"success": False, "email": "This email is empty"}, status=401)
+		elif not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
+			return JsonResponse({"success": False, "email": "Invalid email format"}, status=401)
+		
+		# Fake the success to avoid giving information about the registered emails
+		elif not CustomUser.objects.filter(email=email).exists():
+			return JsonResponse({"success": True, "message": "Successful email sent"}, status=200)
+
+		# Check if the user is from 42
+		user = CustomUser.objects.get(email=email)
+		if user.is42:
+			return JsonResponse({"success": False, "message": "This email is associated with a 42 account"}, status=401)
+
+		# Send an email to the user
+		resetPasswordID = str(uuid.uuid1())
+		user.resetPasswordID = resetPasswordID
+		user.save()
+
+		message = f"""
+		<p>Hello <b>{user.username}</b>,</p>
+		<p>
+		You recently requested to reset your password. If this was you, please click on the link below
+		to reset your password. If you did not request this, please ignore this email.
+		</p>
+		
+		<p>
+		<a href="https://localhost:8443/reset_password_id/{user.resetPasswordID}">Reset your password</a>
+		</p>
+		
+		<p>
+		Have a good day,<br>
+		<i>The transcendence team</i>
+		</p>
+		"""
+
+		send_mail(
+			'Reset your password',
+			message,
+			'Transcendence Team <transcendence.42lyon.project@gmail.com>',
+			[user.email],
+			html_message=message,
+			fail_silently=True,
+		)
+
+		return JsonResponse({"success": True, "message": "Successful email sent"}, status=200)
+
+
+@ensure_csrf_cookie
+def reset_password_id(request, resetPasswordID):
+	if request.method == 'GET':
+		return render(request, 'base.html')
+
+	elif request.method == 'POST':
+		# Get the data
+		data = json.loads(request.body)
+		new_password = data.get('password')
+
+		# Check if the password is valid
+		if not len(new_password):
+			return JsonResponse({"success": False, "password": "This password is empty"}, status=401)
+
+		# Reset the password
+		try:
+			user = CustomUser.objects.get(resetPasswordID=resetPasswordID)
+			user.resetPasswordID = ''
+			user.set_password(new_password)
+			user.save()
+		except CustomUser.DoesNotExist:
+			return JsonResponse({"success": False, "message": "Invalid reset password ID"}, status=401)
+
+		return JsonResponse({"success": True, "message": "Successful password reset"}, status=200)
 
 
 @ensure_csrf_cookie
