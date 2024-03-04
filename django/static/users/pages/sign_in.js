@@ -41,6 +41,7 @@ function renderSignInPage() {
 							<h3 class="sign-title">Sign in</h3>
 							${fieldsHtml}
 							<p class="error-message" id="error-message"></p>
+							<a class="forgot-password" href="/reset_password/"><U>forgot your password ?</U></a>
 							<input type="submit" value="Login"/>
 						</form>
 

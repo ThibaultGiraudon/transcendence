@@ -131,6 +131,12 @@
 	border: 1px solid var(--color-dark);
 }
 
+.forgot-password {
+	font-family: var(--font-text-regular);
+	font-size: var(--h4-size);
+	color: var(--color-dark);
+}
+
 
 /* NOTIFICATIONS */
 
@@ -451,7 +457,7 @@
 }
 
 .profile-stats-button {
-	border-radius: 0;
+	border-radius: var(--border-radius);
 	margin-left: 0.5em;
 	margin-right: 0.5em;
 	padding: 0;
