@@ -6,7 +6,7 @@ function renderChooseModePage() {
 		if (data.isAuthenticated) {
 			document.getElementById('app').innerHTML = `
 				<h1>Pong game</h1>
-				<h3 id="set-status-online">Choose a game mode</h3>
+				<h3 id="set-status-online">Choose a mode</h3>
 				
 				<div class="choose-buttons">
 					<button class="choose-btn" data-route="/pong/practice/">

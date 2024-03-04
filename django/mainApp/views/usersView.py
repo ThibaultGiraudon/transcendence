@@ -14,9 +14,11 @@ from django.core.files.storage import default_storage
 from ..models import Channel
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
+from django.core.mail import send_mail
 from django.shortcuts import render
 from django.http import JsonResponse
 import urllib.request, json, base64
+from datetime import datetime
 
 from mainApp.models import Player
 
@@ -52,6 +54,38 @@ def sign_in(request):
 
 			# Update the user status
 			user.set_status("online")
+
+			# Send an email to the user
+			now = datetime.now()
+			date = now.strftime("%Y-%m-%d")
+			time = now.strftime("%H:%M:%S")
+	
+			message = f"""
+			<p>Hello <b>{user.username}</b>,</p>
+			<p>A new connection to transcendence has just been recorded with your account.</p>
+			<p>If you received this email by mistake, please ignore it.</p>
+
+			<h3>Informations:</h3>
+			<p>
+			- <b>Date</b>: {date}<br>
+			- <b>Time</b>: {time}<br>
+			- <b>IP address</b>: {request.META.get('REMOTE_ADDR')}
+			</p>
+
+			<p>
+			Have a good day,<br>
+			<i>The transcendence team</i>
+			</p>
+			"""
+			
+			send_mail(
+				'New connection to your account',
+				message,
+				'transcendence.42lyon.project@gmail.com',
+				[user.email],
+				html_message=message,
+				fail_silently=True,
+			)
 
 			return JsonResponse({"success": True, "message": "Successful login"}, status=200)
 
@@ -104,6 +138,31 @@ def sign_up(request):
 			channel = Channel.objects.create(name="General", room_id="general")
 			channel.users.set([user])
 			channel.save()
+		
+		# Send an email to the user
+		message = f"""
+		<p>Hello <b>{user.username}</b>,</p>
+		<p>
+		Welcome to transcendence! We are glad to have you with us.</br>
+		Feel free to explore the platform and join the different channels to chat with other users
+		and play games.
+		</p>
+		<p>If you received this email by mistake, please ignore it.</p>
+
+		<p>
+		Have a good day,<br>
+		<i>The transcendence team</i>
+		</p>
+		"""
+		
+		send_mail(
+			'Welcome to transcendence',
+			message,
+			'transcendence.42lyon.project@gmail.com',
+			[user.email],
+			html_message=message,
+			fail_silently=True,
+		)
 
 		return JsonResponse({"success": True, "message": "Successful sign up"}, status=200)
 
