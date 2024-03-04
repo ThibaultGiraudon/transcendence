@@ -364,3 +364,112 @@
 	text-align: center;
 	vertical-align: middle;
 }
+
+.profile-stats {
+	display: flex;
+	align-items: left;
+	justify-content: center;
+	flex-direction: row;
+	width: 100%;
+}
+
+.profile-stats-title {
+	font-family: var(--font-text-bold);
+	font-size: 2em;
+	color: var(--color-dark);
+	margin-bottom: 0.25em;
+}
+
+.profile-stats-disclaimer {
+	font-family: var(--font-text-regular);
+	font-size: 1em;
+	color: var(--color-dark-hover);
+	margin-bottom: 1em;
+}
+
+.profile-stats-divider {
+	font-size: 1.2em;
+	font-family: var(--font-text-bold);
+	color: var(--color-dark-hover);
+	margin-top: 1em;
+	opacity: 0.7;
+}
+
+#carousel-global, #carousel-modes {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+.profile-stats-card, #carousel-global .profile-stats-card-global, #carousel-modes .profile-stats-card-modes {
+	display: none;
+	width: 30%;
+	padding: 2em;
+	align-items: center;
+	background-color: var(--color-light-hover);
+	border-radius: var(--border-radius);
+	margin-bottom: 2em;
+	margin: 1em;
+}
+
+#carousel-global .profile-stats-card-global:first-child, #carousel-modes .profile-stats-card-modes:first-child {
+	display: block;
+}
+
+.profile-stats-category {
+	font-family: var(--font-text-bold);
+	font-size: 1.2em;
+	color: var(--color-dark-hover);
+	margin-bottom: 0.5em;
+}
+
+.profile-stats-text {
+	flex-grow: 1;
+	font-family: var(--font-text-regular);
+	font-size: 1em;
+	color: var(--color-dark-hover);
+}
+
+.profile-stats-buttons {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: row;
+	margin-bottom: 1em;
+}
+
+.profile-stats-button {
+	border-radius: 0;
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+	padding: 0;
+}
+
+.profile-stats-buttons-img {
+	width: 2.5em;
+	height: 2.5em;
+	border-radius: 0;
+}
+
+.profile-stats-card-img {
+	border-radius: 0;
+	width: 5em;
+	height: 5em;
+	margin-bottom: 1em;
+}
+
+.profile-sign-out-button {
+	font-size: 1em;
+	padding: 0.5em;
+	margin-top: 2em;
+	margin-bottom: 2em;
+	font-family: var(--font-text-bold);
+	color: white;
+	border: 1px solid var(--color-dark);
+	border-radius: var(--input-border-radius);
+	background: var(--color-dark);
+	text-align: center;
+	vertical-align: middle;
+}
