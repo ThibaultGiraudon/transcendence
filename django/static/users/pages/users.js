@@ -1,6 +1,6 @@
 function renderUser(user) {
 	return `
-		<button class="menu-link" data-route="/profile/${user.username}">
+		<button class="menu-users-link" data-route="/profile/${user.username}">
 			<div class="container" data-user-id="${user.id}">
 				<img class="users-img" src="${user.photo_url}" alt="profile picture">
 				<p class="users-user">${user.username}</p>

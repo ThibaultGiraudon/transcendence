@@ -253,7 +253,6 @@ header .header-menu {
 	font-family: var(--font-text-bold);
 	color: var(--color-light);
 	font-size: 1.5em;
-
 	text-decoration: none;
 	display: inline-block;
 	padding: 0.5em 0.5em;
