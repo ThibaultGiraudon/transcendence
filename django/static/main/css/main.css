@@ -253,6 +253,29 @@ header .header-menu {
 	font-family: var(--font-text-bold);
 	color: var(--color-light);
 	font-size: 1.5em;
+
+	text-decoration: none;
+	display: inline-block;
+	padding: 0.5em 0.5em;
+	position: relative;
+}
+
+.menu-link:after {    
+	background: none repeat scroll 0 0 transparent;
+	bottom: 0;
+	content: "";
+	display: block;
+	height: 3px;
+	left: 50%;
+	position: absolute;
+	background: #fff;
+	transition: width 0.3s ease 0s, left 0.3s ease 0s;
+	width: 0;
+}
+
+.menu-link:hover:after { 
+	width: 100%; 
+	left: 0; 
 }
 
 .menu-windows {
