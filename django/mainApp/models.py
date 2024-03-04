@@ -74,6 +74,7 @@ class CustomUser(AbstractUser):
 	blockedUsers = ArrayField(models.IntegerField(), default=list)
 	player = models.OneToOneField(Player, on_delete=models.CASCADE, related_name='user', null=True)
 	favoritesChannels = ArrayField(models.TextField(), default=list)
+	resetPasswordID = models.CharField(max_length=150, default='')
 
 	# Use the custom manager
 	objects = CustomUserManager()

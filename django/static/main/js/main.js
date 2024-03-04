@@ -15,6 +15,8 @@ const router = {
 		// User
 		'/sign_in/': renderSignInPage,
 		'/sign_up/': renderSignUpPage,
+		'/reset_password/': renderResetPasswordPage,
+		'/reset_password_id/:resetPasswordID': renderResetPasswordIDPage,
 		'/profile/:username': renderProfilePage,
 		'/users/': renderUsersPage,
 
