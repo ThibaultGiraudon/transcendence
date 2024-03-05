@@ -6,11 +6,7 @@ Erreur quand on est sur une autre page (chat) et que le j2 \
 
 Death game pb si deuxieme player elimine
 
-fleche inverser 4joueur (gauche droite)
-
-augmenter fps
-
-Reload start game
+Reload start game socket closed or on close
 	
 [LEON]
 Les messages du system info s'envoie autant de fois que le nombre de pelo dans le groupe de discution si j'ajoute qlq
