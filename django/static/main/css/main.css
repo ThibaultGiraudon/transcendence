@@ -372,6 +372,25 @@ header .header-menu {
 	left: 0; 
 }
 
+.menu-img {
+	width: 1em;
+	height: 1em;
+	border-radius: 0;
+	margin-right: 0.3em;
+	pointer-events: none;
+	justify-content: center;
+}
+
+.menu-text {
+	font-family: var(--font-text-bold);
+	color: var(--color-light);
+	font-size: 1em;
+	text-decoration: none;
+	display: inline-block;
+	padding: 0.2em 0.2em;
+	position: relative;
+}
+
 .menu-windows {
 	position: absolute;
 	left: 0;
