@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function () {
         shouldClose: false
     };
 
+    console.log(notificationSocket);
+
     // Update the notification count
     notificationSocket.socket.onmessage = function(e) {
         renderHeader();

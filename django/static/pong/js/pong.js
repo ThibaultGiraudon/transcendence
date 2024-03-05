@@ -47,6 +47,8 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 
 	const socket = getSocket(gameID);
 
+    console.log(socket);
+
     socket.socket.onopen = function() {
 		if (isWaitingPage) {
 			return;

@@ -15,6 +15,9 @@ function updateScore(message) {
     const backgroundColors = ['#E21E59', '#1598E9', '#2FD661', '#F19705'];
     const scoreSpans = document.querySelectorAll('.player_score');
 
+	if (!scoreSpans[message.id]) {
+		return
+	}
 	if (message.nbPaddles == 1) {
 		scoreSpans[message.id].style.width = '100%';
 	} else if (message.nbPaddles == 2) {

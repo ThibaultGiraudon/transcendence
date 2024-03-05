@@ -20,9 +20,9 @@ function getSocket(gameID) {
 
 	// let socketUrl;
 	// if (window.location.protocol === 'https:') {
-	// 	socketUrl = 'wss://localhost:8443/wss/game/';
+	// 	socketUrl = 'wss://10.14.9.5:8443/wss/game/';
 	// } else {
-	// 	socketUrl = 'ws://localhost:8000/ws/game/';
+	// 	socketUrl = 'ws://10.14.9.5:8000/ws/game/';
 	// }
 	// socketUrl += gameID + '/';
 
