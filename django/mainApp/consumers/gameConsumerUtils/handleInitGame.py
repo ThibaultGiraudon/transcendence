@@ -26,6 +26,24 @@ def getPlayerIDList(gameSettings, gameID):
 	for player in game.playerList:
 		gameSettings.playerIDList.append(player)
 
+@database_sync_to_async
+def sendTournamentReload(consumer):
+	from mainApp.models import Game
+	gameID = consumer.game_id
+	game = Game.objects.get(id=gameID)
+	if (game.gameMode == 'init_tournament_game_sub_game'):
+		parentGame = Game.objects.get(id=game.parentGame)
+		return (parentGame.subGames)
+
+# TODO a deplacer dans un send
+async def sendReloadPage(consumer, gameID):
+	await consumer.channel_layer.group_send(
+		f'game_{gameID}',
+		{
+			'type': 'reload_page',
+		}
+	)
+
 async def launchAnyGame(consumer, gameID, gameMode, isLocalGame):
 	if gameID not in consumer.gameSettingsInstances:
 		consumer.gameSettingsInstances[gameID] = GameSettings(gameID, gameMode)
@@ -52,12 +70,11 @@ async def handleInitGame(consumer, gameID, gameMode, playerID):
 	for playerID in game.playerList:
 		player = await getPlayer(playerID)
 		if not player.isReady:
-			await consumer.channel_layer.group_send(
-				f'game_{consumer.game_id}',
-				{
-					'type': 'reload_page',
-				}
-			)
+			if (gameMode == 'init_tournament_game'):
+				subGamesList = await sendTournamentReload(consumer)
+				for subGameID in subGamesList:
+					await sendReloadPage(consumer, subGameID)
+			await sendReloadPage(consumer, gameID)
 			return (False)
 
 	if (gameMode in ['init_ranked_solo_game', 'init_death_game', 'init_tournament_game']):
