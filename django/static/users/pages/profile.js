@@ -52,6 +52,15 @@ function renderForm(fieldsHtml) {
 			<form class="sign-form" method="POST" enctype="multipart/form-data" novalidate>
 				<h3 class="sign-title">Edit informations</h3>
 				${fieldsHtml}
+
+				<div class="checkbox-wrapper">
+					<label class="control control--checkbox">
+						Receive alerts by email linked to your account
+						<input type="checkbox" checked />
+						<div class="control__indicator"></div>
+					</label>
+				</div>
+
 				<p class="error-message" id="error-message"></p>
 				<input type="submit" value="Accept modifications"/>
 			</form>
@@ -128,10 +137,10 @@ function renderGlobalStats(user) {
 			</div>
 
 			<div class="profile-stats-buttons">
-				<button class="profile-stats-button" id="prev-global">
+				<button class="profile-stats-button" id="prev-global" data-ignore-click>
 					<img class="profile-stats-buttons-img" src="/static/users/img/left-arrow.png" alt="Previous">
 				</button>
-				<button class="profile-stats-button" id="next-global">
+				<button class="profile-stats-button" id="next-global" data-ignore-click>
 					<img class="profile-stats-buttons-img" src="/static/users/img/right-arrow.png" alt="Next">
 				</button>
 			</div>
@@ -160,10 +169,10 @@ function renderModesStats(user) {
 			</div>
 
 			<div class="profile-stats-buttons">
-				<button class="profile-stats-button" id="prev-modes">
+				<button class="profile-stats-button" id="prev-modes" data-ignore-click>
 					<img class="profile-stats-buttons-img" src="/static/users/img/left-arrow.png" alt="Previous">
 				</button>
-				<button class="profile-stats-button" id="next-modes">
+				<button class="profile-stats-button" id="next-modes" data-ignore-click>
 					<img class="profile-stats-buttons-img" src="/static/users/img/right-arrow.png" alt="Next">
 				</button>
 			</div>
