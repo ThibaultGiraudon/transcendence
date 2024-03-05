@@ -483,7 +483,6 @@
 	margin-bottom: 2em;
 	font-family: var(--font-text-bold);
 	color: white;
-	border: 1px solid var(--color-dark);
 	border-radius: var(--input-border-radius);
 	background: var(--color-dark);
 	text-align: center;
