@@ -46,20 +46,28 @@ function renderOtherProfile(user) {
 }
 
 
-function renderForm(fieldsHtml) {
+function checkboxEmail(user) {
+	const checkedAttribute = user.emailAlerts ? ' checked' : '';
+	return `
+		<div class="checkbox-wrapper">
+			<label class="control control--checkbox">
+				Receive alerts by email about your activity
+				<input type="checkbox" ${checkedAttribute} />
+				<div class="control__indicator"></div>
+			</label>
+		</div>
+	`;
+}
+
+
+function renderForm(fieldsHtml, user) {
 	return `
 		<div class="form-div">
 			<form class="sign-form" method="POST" enctype="multipart/form-data" novalidate>
 				<h3 class="sign-title">Edit informations</h3>
 				${fieldsHtml}
 
-				<div class="checkbox-wrapper">
-					<label class="control control--checkbox">
-						Receive alerts by email linked to your account
-						<input type="checkbox" checked />
-						<div class="control__indicator"></div>
-					</label>
-				</div>
+				${checkboxEmail(user)}
 
 				<p class="error-message" id="error-message"></p>
 				<input type="submit" value="Accept modifications"/>
@@ -221,7 +229,7 @@ function renderProfilePage(username) {
 					if (data.isCurrentUser) {
 						const fieldsHtml = fields.map(renderField).join('');
 						const profileHtml = renderOurProfile(user);
-						const formHtml = renderForm(fieldsHtml);
+						const formHtml = renderForm(fieldsHtml, user);
 						const signOutButtonHtml = renderSignOutButton();
 						const pongStats = renderPongStats(user);
 
@@ -308,6 +316,9 @@ function renderProfilePage(username) {
 								});
 							}
 
+							// Get the checkbox value
+							const emailAlerts = document.querySelector('.control--checkbox input').checked;
+
 							// Send data to the server
 							if (user.is42) {
 								new_email = user.email;
@@ -320,7 +331,7 @@ function renderProfilePage(username) {
 									'X-Requested-With': 'XMLHttpRequest',
 									'X-CSRFToken': getCookie('csrftoken'),
 								},
-								body: JSON.stringify({ new_username, photo: photoBase64, new_email, new_password })
+								body: JSON.stringify({ new_username, photo: photoBase64, new_email, new_password, emailAlerts })
 							});
 
 							if (response.headers.get('content-type').includes('application/json')) {

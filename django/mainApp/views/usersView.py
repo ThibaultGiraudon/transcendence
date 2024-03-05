@@ -55,37 +55,38 @@ def sign_in(request):
 			# Update the user status
 			user.set_status("online")
 
-			# Send an email to the user
-			now = datetime.now()
-			date = now.strftime("%Y-%m-%d")
-			time = now.strftime("%H:%M:%S")
-	
-			message = f"""
-			<p>Hello <b>{user.username}</b>,</p>
-			<p>A new connection to transcendence has just been recorded with your account.</p>
-			<p>If you received this email by mistake, please ignore it.</p>
-
-			<h3>Informations:</h3>
-			<p>
-			- <b>Date</b>: {date}<br>
-			- <b>Time</b>: {time}<br>
-			- <b>IP address</b>: {request.META.get('REMOTE_ADDR')}
-			</p>
-
-			<p>
-			Have a good day,<br>
-			<i>The transcendence team</i>
-			</p>
-			"""
+			# Send an email to the user	
+			if user.emailAlerts:
+				now = datetime.now()
+				date = now.strftime("%Y-%m-%d")
+				time = now.strftime("%H:%M:%S")
 			
-			send_mail(
-				'New connection to your account',
-				message,
-				'Transcendence Team <transcendence.42lyon.project@gmail.com>',
-				[user.email],
-				html_message=message,
-				fail_silently=True,
-			)
+				message = f"""
+				<p>Hello <b>{user.username}</b>,</p>
+				<p>A new connection to transcendence has just been recorded with your account.</p>
+				<p>If you received this email by mistake, please ignore it.</p>
+
+				<h3>Informations:</h3>
+				<p>
+				- <b>Date</b>: {date}<br>
+				- <b>Time</b>: {time}<br>
+				- <b>IP address</b>: {request.META.get('REMOTE_ADDR')}
+				</p>
+
+				<p>
+				Have a good day,<br>
+				<i>The transcendence team</i>
+				</p>
+				"""
+				
+				send_mail(
+					'New connection to your account',
+					message,
+					'Transcendence Team <transcendence.42lyon.project@gmail.com>',
+					[user.email],
+					html_message=message,
+					fail_silently=True,
+				)
 
 			return JsonResponse({"success": True, "message": "Successful login"}, status=200)
 
@@ -140,29 +141,30 @@ def sign_up(request):
 			channel.save()
 		
 		# Send an email to the user
-		message = f"""
-		<p>Hello <b>{user.username}</b>,</p>
-		<p>
-		Welcome to transcendence! We are glad to have you with us.</br>
-		Feel free to explore the platform and join the different channels to chat with other users
-		and play games.
-		</p>
-		<p>If you received this email by mistake, please ignore it.</p>
+		if user.emailAlerts:
+			message = f"""
+			<p>Hello <b>{user.username}</b>,</p>
+			<p>
+			Welcome to transcendence! We are glad to have you with us.</br>
+			Feel free to explore the platform and join the different channels to chat with other users
+			and play games.
+			</p>
+			<p>If you received this email by mistake, please ignore it.</p>
 
-		<p>
-		Have a good day,<br>
-		<i>The transcendence team</i>
-		</p>
-		"""
-		
-		send_mail(
-			'Welcome to transcendence',
-			message,
-			'Transcendence Team <transcendence.42lyon.project@gmail.com>',
-			[user.email],
-			html_message=message,
-			fail_silently=True,
-		)
+			<p>
+			Have a good day,<br>
+			<i>The transcendence team</i>
+			</p>
+			"""
+			
+			send_mail(
+				'Welcome to transcendence',
+				message,
+				'Transcendence Team <transcendence.42lyon.project@gmail.com>',
+				[user.email],
+				html_message=message,
+				fail_silently=True,
+			)
 
 		return JsonResponse({"success": True, "message": "Successful sign up"}, status=200)
 
@@ -198,31 +200,32 @@ def reset_password(request):
 		user.resetPasswordID = resetPasswordID
 		user.save()
 
-		message = f"""
-		<p>Hello <b>{user.username}</b>,</p>
-		<p>
-		You recently requested to reset your password. If this was you, please click on the link below
-		to reset your password. If you did not request this, please ignore this email.
-		</p>
-		
-		<p>
-		<a href="https://localhost:8443/reset_password_id/{user.resetPasswordID}">Reset your password</a>
-		</p>
-		
-		<p>
-		Have a good day,<br>
-		<i>The transcendence team</i>
-		</p>
-		"""
+		if user.emailAlerts:
+			message = f"""
+			<p>Hello <b>{user.username}</b>,</p>
+			<p>
+			You recently requested to reset your password. If this was you, please click on the link below
+			to reset your password. If you did not request this, please ignore this email.
+			</p>
+			
+			<p>
+			<a href="https://localhost:8443/reset_password_id/{user.resetPasswordID}">Reset your password</a>
+			</p>
+			
+			<p>
+			Have a good day,<br>
+			<i>The transcendence team</i>
+			</p>
+			"""
 
-		send_mail(
-			'Reset your password',
-			message,
-			'Transcendence Team <transcendence.42lyon.project@gmail.com>',
-			[user.email],
-			html_message=message,
-			fail_silently=True,
-		)
+			send_mail(
+				'Reset your password',
+				message,
+				'Transcendence Team <transcendence.42lyon.project@gmail.com>',
+				[user.email],
+				html_message=message,
+				fail_silently=True,
+			)
 
 		return JsonResponse({"success": True, "message": "Successful email sent"}, status=200)
 
@@ -250,6 +253,38 @@ def reset_password_id(request, resetPasswordID):
 		except CustomUser.DoesNotExist:
 			return JsonResponse({"success": False, "message": "Invalid reset password ID"}, status=401)
 
+		# Send an email to the user	
+		now = datetime.now()
+		date = now.strftime("%Y-%m-%d")
+		time = now.strftime("%H:%M:%S")
+	
+		message = f"""
+		<p>Hello <b>{user.username}</b>,</p>
+		<p>Your password has been successfully changed by the new one you provided.</p>
+		<p>If you received this email by mistake, please ignore it.</p>
+
+		<h3>Informations:</h3>
+		<p>
+		- <b>Date</b>: {date}<br>
+		- <b>Time</b>: {time}<br>
+		- <b>IP address</b>: {request.META.get('REMOTE_ADDR')}
+		</p>
+
+		<p>
+		Have a good day,<br>
+		<i>The transcendence team</i>
+		</p>
+		"""
+		
+		send_mail(
+			'Successful password reset',
+			message,
+			'Transcendence Team <transcendence.42lyon.project@gmail.com>',
+			[user.email],
+			html_message=message,
+			fail_silently=True,
+		)
+
 		return JsonResponse({"success": True, "message": "Successful password reset"}, status=200)
 
 
@@ -265,6 +300,15 @@ def profile(request, username):
 		photo = data.get('photo')
 		new_email = data.get('new_email')
 		new_password = data.get('new_password')
+		emailAlerts = data.get('emailAlerts')
+
+		# Validate the email alerts
+		if emailAlerts is not None:
+			if emailAlerts not in [True, False]:
+				return JsonResponse({"success": False, "message": "Invalid email alerts value"}, status=401)
+			else:
+				request.user.emailAlerts = emailAlerts
+				request.user.save()
 
 		# Check if the username is valid
 		if new_username == request.user.username:
@@ -309,6 +353,7 @@ def profile(request, username):
 			request.user.save()
 
 		# Check if the email is valid
+		old_email = request.user.email
 		if new_email == request.user.email:
 			pass
 		elif not len(new_email):
@@ -335,6 +380,50 @@ def profile(request, username):
 
 			request.user.set_password(new_password)
 			request.user.save()
+		
+		# Send an email to the user
+		if new_email != request.user.email or new_password:
+			now = datetime.now()
+			date = now.strftime("%Y-%m-%d")
+			time = now.strftime("%H:%M:%S")
+		
+			message = f"""
+			<p>Hello <b>{request.user.username}</b>,</p>
+			"""
+
+			if old_email != request.user.email:
+				message += f"""
+				<p>Your email has been successfully changed from <b>{old_email}</b> to <b>{new_email}</b>.</p>
+				"""
+			if new_password:
+				message += f"""
+				<p>Your password has been successfully changed.</p>
+				"""
+
+			message += f"""
+			<p>If you received this email by mistake, please ignore it.</p>
+
+			<h3>Informations:</h3>
+			<p>
+			- <b>Date</b>: {date}<br>
+			- <b>Time</b>: {time}<br>
+			- <b>IP address</b>: {request.META.get('REMOTE_ADDR')}
+			</p>
+
+			<p>
+			Have a good day,<br>
+			<i>The transcendence team</i>
+			</p>
+			"""
+			
+			send_mail(
+				'Successful profile update',
+				message,
+				'Transcendence Team <transcendence.42lyon.project@gmail.com>',
+				[old_email, request.user.email] if old_email != request.user.email else [request.user.email],
+				html_message=message,
+				fail_silently=True,
+			)
 
 		return JsonResponse({"success": True, "message": "Successful profile update"}, status=200)
 	else:
@@ -379,6 +468,39 @@ def	connect_42_user(request, response_data):
 
 		login(request, user)
 
+		# Send an email to the user
+		if user.emailAlerts:
+			now = datetime.now()
+			date = now.strftime("%Y-%m-%d")
+			time = now.strftime("%H:%M:%S")
+
+			message = f"""
+			<p>Hello <b>{user.username}</b>,</p>
+			<p>A new connection to transcendence has just been recorded with your account.</p>
+			<p>If you received this email by mistake, please ignore it.</p>
+
+			<h3>Informations:</h3>
+			<p>
+			- <b>Date</b>: {date}<br>
+			- <b>Time</b>: {time}<br>
+			- <b>IP address</b>: {request.META.get('REMOTE_ADDR')}
+			</p>
+
+			<p>
+			Have a good day,<br>
+			<i>The transcendence team</i>
+			</p>
+			"""
+			
+			send_mail(
+				'New connection to your account',
+				message,
+				'Transcendence Team <transcendence.42lyon.project@gmail.com>',
+				[user.email],
+				html_message=message,
+				fail_silently=True,
+			)
+
 	else:
 		photo_url = response_data['image']['link']
 
@@ -413,6 +535,32 @@ def	connect_42_user(request, response_data):
 			channel = Channel.objects.create(name="General", room_id="general")
 			channel.users.set([user])
 			channel.save()
+	
+		# Send an email to the user
+		if user.emailAlerts:
+			message = f"""
+			<p>Hello <b>{user.username}</b>,</p>
+			<p>
+			Welcome to transcendence! We are glad to have you with us.</br>
+			Feel free to explore the platform and join the different channels to chat with other users
+			and play games.
+			</p>
+			<p>If you received this email by mistake, please ignore it.</p>
+
+			<p>
+			Have a good day,<br>
+			<i>The transcendence team</i>
+			</p>
+			"""
+			
+			send_mail(
+				'Welcome to transcendence',
+				message,
+				'Transcendence Team <transcendence.42lyon.project@gmail.com>',
+				[user.email],
+				html_message=message,
+				fail_silently=True,
+			)
 	
 	return redirect('pong')
 

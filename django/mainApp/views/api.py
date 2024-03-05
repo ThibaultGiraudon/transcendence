@@ -166,6 +166,7 @@ def get_user(request, username=None):
 			'is42': request.user.is42,
 			'isOfficial': request.user.isOfficial,
 			'email': request.user.email,
+			'emailAlerts': request.user.emailAlerts,
 			'username': request.user.username,
 			'photo_url': request.user.photo.url,
 			'status': request.user.status,
