@@ -209,7 +209,7 @@ def reset_password(request):
 			</p>
 			
 			<p>
-			<a href="https://localhost:8443/reset_password_id/{user.resetPasswordID}">Reset your password</a>
+			<a href="https://10.14.9.5:8443/reset_password_id/{user.resetPasswordID}">Reset your password</a>
 			</p>
 			
 			<p>

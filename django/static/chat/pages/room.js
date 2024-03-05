@@ -302,6 +302,7 @@ function send_message(room_id, sender, message) {
 		url: socketUrl,
 		shouldClose: false
 	};
+	console.log(tmpSocket);
 
 	tmpSocket.socket.onopen = function(event) {
 		tmpSocket.socket.send(JSON.stringify({

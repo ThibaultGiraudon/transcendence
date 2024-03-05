@@ -53,8 +53,8 @@ DEBUG = os.environ.get("DEBUG") == "True"
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 CSRF_TRUSTED_ORIGINS = [
-	'http://localhost:8000',
-	'https://localhost:8443',
+	'http://10.14.9.5:8000',
+	'https://10.14.9.5:8443',
 ]
 
 

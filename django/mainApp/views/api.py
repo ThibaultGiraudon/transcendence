@@ -504,7 +504,18 @@ def get_game_info(request):
 		player.save()
 		gameID = subGame.id
 
-	return JsonResponse({'success': True, 'game_id': gameID, 'player_id': request.user.player.id}, status=200)
+	#Get all usernames from playerList
+	players = game.playerList
+	players_username = []
+	players_photo = []
+	for player in players:
+		User = get_user_model()
+		user = User.objects.get(player__id=player)
+		players_username.append(user.username)
+		players_photo.append(user.photo.url)
+
+
+	return JsonResponse({'success': True, 'game_id': gameID, 'player_id': request.user.player.id, 'players_username': players_username, 'players_photo': players_photo}, status=200)
 
 
 def add_user_to_room(request, room_id, user_id):
