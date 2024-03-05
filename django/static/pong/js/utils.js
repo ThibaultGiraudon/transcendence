@@ -1,7 +1,7 @@
 function getPaddleDirection(key) {
-	if (key === 'o' || key === 'w' || key === 'x' || key === 'ArrowRight' || key === 'ArrowUp') {
+	if (key === 'o' || key === 'w' || key === 'x' || key === 'ArrowLeft' || key === 'ArrowUp') {
 		return 'up';
-	} else if (key === 'l' || key === 's' || key === 'z' || key === 'ArrowLeft' || key === 'ArrowDown') {
+	} else if (key === 'l' || key === 's' || key === 'z' || key === 'ArrowRight' || key === 'ArrowDown') {
 		return 'down';
 	}
 }
