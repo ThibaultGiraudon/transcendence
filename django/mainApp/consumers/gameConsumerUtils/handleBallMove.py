@@ -73,7 +73,7 @@ async def startBall(consumer, gameSettings):
 			ball.resetBall(gameSettings)
 			await asyncio.sleep(0.5)
 
-		await asyncio.sleep(0.02)
+		await asyncio.sleep(0.01)
 		await sendUpdateBallPosition(consumer, gameSettings)
 
 async def handleBallMove(consumer, gameSettings):

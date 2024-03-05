@@ -1,17 +1,16 @@
 [ELIAS]
-idee elias powershot ratio (je me comprends) (% de powershot)
 
 Erreur quand on est sur une autre page (chat) et que le j2 \
 	lance la game ca me redirige en ouvrant plusieurs fois le \
 	WebSocket ce qui est pas clean
 
-quand une game est fini on met isready a false et on enleve la task de ball
+Death game pb si deuxieme player elimine
 
-regarder si la communication entre ws et wss \
-	sur le pong est normale ou si on utilise pas ws tout le temps
+fleche inverser 4joueur (gauche droite)
 
-Fix le pb avec plusieurs jeux local qui semblent ne pas etre separer \
-	car on recois quand meme le socket sur les autres comptes
+augmenter fps
+
+Reload start game
 	
 [LEON]
 Les messages du system info s'envoie autant de fois que le nombre de pelo dans le groupe de discution si j'ajoute qlq

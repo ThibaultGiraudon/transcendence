@@ -7,8 +7,8 @@ class Ball:
         self.y = gameSettings.squareSize / 2
         self.radius = 10
         self.color = "#FDF3E1"
-        self.speed = 10
-        self.speedBase = 15
+        self.speed = 5
+        self.speedBase = 8
         self.task = None
 
         randomAngle = self.__getRandomAngle(gameSettings)
