@@ -196,6 +196,7 @@ def get_user(request, username=None):
 			'soloPoints': user.player.soloPoints,
 			'deathPoints': user.player.deathPoints,
 			'tournamentPoints': user.player.tournamentPoints,
+			'totalPoints': user.player.totalPoints,
 			'gamePlayed': user.player.score_set.count(),
 			'gameVictory': 'toDefineInAPI',
 			'gameDefeat': 'toDefineInAPI',
@@ -733,3 +734,49 @@ def get_game_over(request, gameID):
 		'position': positionsList,
 		'game_mode': gameMode
 	}, status=200)
+
+def get_ranking_points(request, sortedBy):
+	if not request.user.is_authenticated:
+		return JsonResponse({'success': False}, status=401)
+	
+	#Get all players
+	User = get_user_model()
+	users = User.objects.all()
+	index = 0
+
+	if (sortedBy == 'solo'):
+		sorted_users = users = sorted(users, key=lambda x: x.player.soloPoints[-1], reverse=True)
+	elif (sortedBy == 'death'):
+		sorted_users = sorted(users, key=lambda x: x.player.deathPoints[-1], reverse=True)
+	elif (sortedBy == 'tournament'):
+		sorted_users = sorted(users, key=lambda x: x.player.tournamentPoints[-1], reverse=True)
+	else:
+		sorted_users = sorted(users, key=lambda x: x.player.totalPoints[-1], reverse=True)
+	users_dict = {}
+	for user in sorted_users:
+		if user.id == 0:
+			continue
+
+		player_dict = {
+			'currentGameID': user.player.currentGameID,
+			'isReady': user.player.isReady,
+			'soloPoints': user.player.soloPoints,
+			'deathPoints': user.player.deathPoints,
+			'tournamentPoints': user.player.tournamentPoints,
+			'totalPoints': user.player.totalPoints,
+			'gamePlayed': user.player.score_set.count(),
+		}
+
+		print(user.id)
+
+		users_dict[index] = {
+			'id': user.id,
+			'username': user.username,
+			'photo_url': user.photo.url,
+			'status': user.status,
+			'followed': user.id in request.user.follows,
+			'blocked': user.id in request.user.blockedUsers,
+			'player': player_dict,
+		}
+		index += 1
+	return JsonResponse({'success': True, 'users': users_dict}, status=200)
