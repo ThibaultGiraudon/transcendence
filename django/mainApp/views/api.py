@@ -657,7 +657,8 @@ def create_finals_game(game, player, isFinal):
 		game.finalGame = newGame.id
 	else:
 		game.thirdPlaceGame = newGame.id
-	game.save()	
+	game.save()
+	return (newGame)
 
 def redirect_to_finals_game(subGame, player):
 	game = Game.objects.get(id=subGame.parentGame)
@@ -670,17 +671,22 @@ def redirect_to_finals_game(subGame, player):
 			finalGame.playerList.append(player.id)
 			finalGame.save()
 		else:
-			create_finals_game(game, player, True)
+			finalGame = create_finals_game(game, player, True)
 	elif (position == 2):
 		if (game.thirdPlaceGame):
-			thirdPlaceGame = Game.objects.get(id=game.thirdPlaceGame)
-			thirdPlaceGame.playerList.append(player.id)
-			thirdPlaceGame.save()
+			finalGame = Game.objects.get(id=game.thirdPlaceGame)
+			finalGame.playerList.append(player.id)
+			finalGame.save()
 		else:
-			create_finals_game(game, player, False)
+			finalGame = create_finals_game(game, player, False)
+
+	player.currentGameID = finalGame.id
+	player.isReady = False
+	player.save()
 
 	return JsonResponse({
 		'success': True,
+		'redirectGameMode': finalGame.gameMode,
 		'score': '1',
 		'position': '2',
 		'game_mode': game.gameMode
