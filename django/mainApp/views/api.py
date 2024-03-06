@@ -3,8 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model, logout
 from django.middleware.csrf import get_token
 from django.utils import timezone
-from datetime import datetime
-import uuid
+import uuid, datetime
 
 from ..models import Notification, Channel, Game
 
@@ -638,8 +637,31 @@ def	join_tournament(request):
 	channel.save()
 	return JsonResponse({'success': True, "message": "Create tournament"}, status=200)
 
-def redirect_to_finals_game(request, game, player):
-	scores = game.scores.filter(player__id=player.id)
+def create_finals_game(game, player, isFinal):
+	if (isFinal):
+		gameMode = game.gameMode + "_final_game"
+	else:
+		gameMode = game.gameMode + "_third_place_game"
+	
+	newGame = Game.objects.create(
+		date=datetime.date.today(),
+		hour=datetime.datetime.now().time(),
+		duration=0,
+		gameMode=gameMode,
+		playerList=[player.id],
+		parentGame=game.id,
+	)
+	newGame.save()
+
+	if (isFinal):
+		game.finalGame = newGame.id
+	else:
+		game.thirdPlaceGame = newGame.id
+	game.save()	
+
+def redirect_to_finals_game(subGame, player):
+	game = Game.objects.get(id=subGame.parentGame)
+	scores = subGame.scores.filter(player__id=player.id)
 	position = scores.first().position
 
 	if (position == 1):
@@ -648,32 +670,15 @@ def redirect_to_finals_game(request, game, player):
 			finalGame.playerList.append(player.id)
 			finalGame.save()
 		else:
-			newGame = Game(
-				date=game.date, 
-				hour=game.hour, 
-				duration=game.duration, 
-				gameMode=game.gameMode, 
-				parentGame=game.id
-			)
-			newGame.save()
-			game.finalGame = newGame.id
-			game.save()
+			create_finals_game(game, player, True)
 	elif (position == 2):
 		if (game.thirdPlaceGame):
 			thirdPlaceGame = Game.objects.get(id=game.thirdPlaceGame)
 			thirdPlaceGame.playerList.append(player.id)
 			thirdPlaceGame.save()
 		else:
-			newGame = Game(
-				date=game.date, 
-				hour=game.hour, 
-				duration=game.duration, 
-				gameMode=game.gameMode, 
-				parentGame=game.id
-			)
-			newGame.save()
-			game.thirdPlaceGame = newGame.id
-			game.save()
+			create_finals_game(game, player, False)
+
 	return JsonResponse({
 		'success': True,
 		'score': '1',
@@ -721,8 +726,8 @@ def get_game_over(request, gameID):
 		player.deathPoints.append(positionsScore[position] + (player.deathPoints[-1] if len(player.deathPoints) > 0 else 0))
 		player.totalPoints.append(positionsScore[position] + (player.totalPoints[-1] if len(player.totalPoints) > 0 else 0))
 		player.save()
-	elif (gameMode == "init_tournament_game"):
-		# return redirect_to_finals_game(request, game, player)
+	elif (gameMode == "init_tournament_game_sub_game"):
+		return redirect_to_finals_game(game, player)
 		player.tournamentPoints.append(positionsScore[position] + (player.tournamentPoints[-1] if len(player.tournamentPoints) > 0 else 0))
 		player.totalPoints.append(positionsScore[position] + (player.totalPoints[-1] if len(player.totalPoints) > 0 else 0))
 		player.save()
