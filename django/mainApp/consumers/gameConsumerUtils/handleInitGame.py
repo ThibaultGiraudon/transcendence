@@ -63,7 +63,11 @@ async def handleInitGame(consumer, gameID, gameMode, playerID):
 	player.isReady = True
 	await savePlayer(player)
 
-	if (gameMode in ['init_local_game', 'init_ai_game', 'init_wall_game']):
+	if (gameMode in [
+		'init_local_game',
+		'init_ai_game',
+		'init_wall_game'
+	]):
 		await launchAnyGame(consumer, gameID, gameMode, True)
 		return (True)
 
@@ -77,6 +81,12 @@ async def handleInitGame(consumer, gameID, gameMode, playerID):
 			await sendReloadPage(consumer, gameID)
 			return (False)
 
-	if (gameMode in ['init_ranked_solo_game', 'init_death_game', 'init_tournament_game']):
+	if (gameMode in [
+		'init_ranked_solo_game', 
+		'init_death_game', 
+		'init_tournament_game', 
+		'init_tournament_game_final_game', 
+		'init_tournament_game_third_place_game'
+	]):
 		await launchAnyGame(consumer, gameID, gameMode, False)
 	return (True)

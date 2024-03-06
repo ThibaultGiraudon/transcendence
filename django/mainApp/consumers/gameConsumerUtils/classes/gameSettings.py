@@ -15,7 +15,13 @@ class GameSettings:
         self.gameMode = gameMode
         print('GameSettings init')
 
-        if (gameMode in ['init_ranked_solo_game', 'init_tournament_game', 'init_local_game']):
+        if (gameMode in [
+            'init_ranked_solo_game',
+            'init_tournament_game',
+            'init_tournament_game_final_game',
+            'init_tournament_game_third_place_game',
+            'init_local_game',
+        ]):
             self.nbPaddles = 2
             self.isAIGame = False
         elif (gameMode in ['init_death_game']):
