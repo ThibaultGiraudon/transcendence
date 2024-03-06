@@ -17,8 +17,11 @@
 		<link rel="stylesheet" href="{% static 'pong/css/style.css' %}">
 		<link rel="stylesheet" href="{% static 'users/css/style.css' %}">
 		<link rel="stylesheet" href="{% static 'users/css/checkbox.css' %}">
+		<link rel="stylesheet" href="{% static 'stats/css/style.css' %}">
 
 		<!-- TODO move scripts in foot -->
+		<script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+
 		<!-- Scripts -->
 		<script src="{% static 'chat/js/chat_socket.js' %}"></script>
 		<script src="{% static 'notifications/js/notification_socket.js' %}"></script>
@@ -52,6 +55,8 @@
 		<script src="{% static 'chat/pages/room.js' %}"></script>
 
 		<script src="{% static 'notifications/pages/notifications.js' %}"></script>
+
+		<script src="{% static 'stats/pages/stats.js' %}"></script>
 
 		<!-- Errors handling -->
 		<script src="{% static 'errors/404.js' %}"></script>

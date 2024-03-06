@@ -93,8 +93,6 @@ function send_tournament_message(room_id) {
 		shouldClose: false
 	};
 
-	console.log(tmpSocket);
-
 	tmpSocket.socket.onopen = function(event) {
 		console.log('Sending message');
 		tmpSocket.socket.send(JSON.stringify({
