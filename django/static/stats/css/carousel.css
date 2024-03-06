@@ -1,0 +1,63 @@
+/* CAROUSEL */
+
+.carousel-container {
+	width: 50vw;
+	height: 25vw;
+	border-radius: var(--border-radius);
+	display: block;
+	box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+	position: relative;
+	margin: 2em;
+}
+
+.carousel-container canvas {
+	width: 100%;
+	z-index: -2;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border-radius: var(--border-radius);
+	padding: 2em;
+}
+
+.carousel-button {
+	width: 3em;
+	height: 3em;
+	border: none;
+	outline: none;
+	border-radius: var(--input-border-radius);
+	background: rgba(0, 0, 0, 0.5);
+	cursor: pointer;
+	display: flex;
+}
+
+.carousel-img {
+	width: 2em;
+	height: 2em;
+	padding: 0.5em;
+}
+
+#carousel-right-btn {
+	z-index: 0;
+	position: absolute;
+	top: 50%;
+	right: 0;
+	transform: translate(100%, -50%);
+}
+
+#carousel-right-btn .carousel-arrow {
+	transform: rotate(-45deg);
+}
+
+#carousel-left-btn {
+	z-index: 0;
+	position: absolute;
+	top: 50%;
+	left: 0;
+	transform: translate(-50%, -50%);
+}
+
+#carousel-left-btn .carousel-arrow {
+	transform: rotate(135deg);
+}
