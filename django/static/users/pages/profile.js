@@ -92,7 +92,7 @@ function renderFollowButton(currentUser, user) {
 	} else {
 		return `
 			<button class="profile-button follow" data-user-id="${user.id}">
-				Follow
+				Send a friend request
 			</button>
 		`;
 	}

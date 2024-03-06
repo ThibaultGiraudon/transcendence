@@ -257,17 +257,25 @@ def follow(request, id):
 	try:
 		userTo = User.objects.get(id=id)
 		if id in request.user.follows:
-			return JsonResponse({'success': False, "message": "User already blocked"}, status=401)
+			return JsonResponse({'success': False, "message": "User already followed"}, status=401)
 	except User.DoesNotExist:
 		return JsonResponse({'success': False, "message": "User does not exist"}, status=401)
 	
-	notification = Notification(user=userTo, message=f"{request.user.username} is now following you.")
-	notification.save()
- 
-	request.user.follows.append(id)
-	request.user.save()
+	if (request.user.id in userTo.friendRequests):
+		userTo.friendRequests.remove(request.user.id)
+		userTo.follows.append(request.user.id)
+		userTo.save()
+		request.user.follows.append(id)
+		request.user.save()
+		notification = Notification(user=request.user, message=f"{userTo.username} accepted your friend request.")
+		return JsonResponse({'success': True, "message": "Successful follow"}, status=200)
 	
-	return JsonResponse({'success': True, "message": "Successful follow"}, status=200)
+	request.user.friendRequests.append(id)
+	request.user.save()
+
+	notification = Notification(user=userTo, message=f"{request.user.username} send you a friend request.")
+	notification.save()
+	return JsonResponse({'success': True, "message": "Successful send friend request"}, status=200)
 
 
 def unfollow(request, id):
