@@ -25,7 +25,7 @@ function renderLineGraph(id, player) {
 
 		case "deathPoint-canvas":
 			ctx = document.getElementById("deathPoint-canvas").getContext("2d");
-			title = "Death Points";
+			title = "Deathmatch Points";
 			color = "#2FD661";
 			data = player.deathPoints;
 			break;
@@ -43,11 +43,17 @@ function renderLineGraph(id, player) {
 		chart.destroy();
 	}
 
+	//Fill lables with the number of games played
+	let labels = [];
+	for (let i = 0; i < data.length + 9; i++) {
+		labels.push(i);
+	}
+
 	// Create chart
 	chart = new Chart(ctx, {
 	type: "line",
 	data: {
-		labels: [1,2,3,4,5,6,7,8,9],
+		labels: labels,
 		datasets: [
 			{
 			label: title,
@@ -89,9 +95,9 @@ function renderPieGraph(id, player) {
 		ctx = document.getElementById("pie-chart-games").getContext("2d");
 		title = "Games Played";
 		data = [
-			player.soloPoints.length,
-			player.deathPoints.length,
-			player.tournamentPoints.length,
+			player.soloPoints.length - 1,
+			player.deathPoints.length - 1,
+			player.tournamentPoints.length - 1,
 		];
 	}
 	else if (id === "pie-chart-points") {
@@ -108,7 +114,7 @@ function renderPieGraph(id, player) {
 		data: {
 			labels: [
 				"1v1 Games",
-				"Death Games",
+				"Deathmatch Games",
 				"Tournament Games"
 			],
 			datasets: [{
@@ -261,11 +267,11 @@ function renderPongStats(user) {
 		<div class="stats-container">
 			<div class="carousel-container">
 				<button data-ignore-click class="carousel-button" id="carousel-left-btn">
-					<img class="carousel-img" src="/static/stats/img/left.png" alt="left">
+					<img class="carousel-img" src="/static/users/img/left.png" alt="left">
 				</button>
 				<canvas class="carousel-content" id=""></canvas>
 				<button data-ignore-click class="carousel-button" id="carousel-right-btn">
-					<img class="carousel-img" src="/static/stats/img/right.png" alt="right">
+					<img class="carousel-img" src="/static/users/img/right.png" alt="right">
 				</button>
 			</div>
 			<div class="pie-stats-container">
@@ -357,7 +363,6 @@ function renderProfilePage(username) {
 						const fieldsHtml = fields.map(renderField).join('');
 						const profileHtml = renderOurProfile(user);
 						const formHtml = renderForm(fieldsHtml, user);
-						// const pongStats = renderPongStats(user);
 
 						document.getElementById('app').innerHTML = `
 							${profileHtml}
@@ -519,7 +524,6 @@ function renderProfilePage(username) {
 									</div>
 								`;
 							}
-
 							renderPongStats(user);
 							// Add an event listener on the send a chat button (for new chat only)
 							const sendChatButton = document.querySelector('.profile-button.chat');

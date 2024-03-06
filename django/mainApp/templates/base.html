@@ -17,8 +17,8 @@
 		<link rel="stylesheet" href="{% static 'pong/css/style.css' %}">
 		<link rel="stylesheet" href="{% static 'users/css/style.css' %}">
 		<link rel="stylesheet" href="{% static 'users/css/checkbox.css' %}">
-		<link rel="stylesheet" href="{% static 'stats/css/style.css' %}">
-		<link rel="stylesheet" href="{% static 'stats/css/carousel.css' %}">
+		<link rel="stylesheet" href="{% static 'ranking/css/style.css' %}">
+		<link rel="stylesheet" href="{% static 'users/css/carousel.css' %}">
 
 		<!-- TODO move scripts in foot -->
 		<script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
@@ -57,7 +57,7 @@
 
 		<script src="{% static 'notifications/pages/notifications.js' %}"></script>
 
-		<script src="{% static 'stats/pages/stats.js' %}"></script>
+		<script src="{% static 'ranking/pages/ranking.js' %}"></script>
 
 		<!-- Errors handling -->
 		<script src="{% static 'errors/404.js' %}"></script>
@@ -77,7 +77,7 @@
 			<nav class="header-menu">
 				<div class="menu-windows auth">
 					<button class="menu-link" data-route="/pong/"><img class="menu-img" src="{% static 'main/img/pong.png' %}"><p class="menu-text">Pong</p></button>
-					<button class="menu-link" data-route="/stats/"><img class="menu-img" src="{% static 'main/img/stats.png' %}"><p class="menu-text">Stats</p></button>
+					<button class="menu-link" data-route="/ranking/total"><img class="menu-img" src="{% static 'main/img/stats.png' %}"><p class="menu-text">Ranking</p></button>
 					<button class="menu-link" data-route="/chat/"><img class="menu-img" src="{% static 'main/img/chats.png' %}"><p class="menu-text">Chats</p></button>
 					<button class="menu-link" data-route="/users/"><img class="menu-img" src="{% static 'main/img/users.png' %}"><p class="menu-text">Users</p></button>
 				</div>

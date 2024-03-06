@@ -10,13 +10,18 @@ from django.utils import timezone
 class Player(models.Model):
 	currentGameID = models.IntegerField(default=None, null=True)
 	isReady = models.BooleanField(default=False)	
-	# soloPoints = models.IntegerField(default=0)
-	# deathPoints = models.IntegerField(default=0)
-	# tournamentPoints = models.IntegerField(default=0)
 	soloPoints = ArrayField(models.IntegerField(), default=list)
 	deathPoints = ArrayField(models.IntegerField(), default=list)
 	tournamentPoints = ArrayField(models.IntegerField(), default=list)
 	totalPoints = ArrayField(models.IntegerField(), default=list)
+
+	def save(self, *args, **kwargs):
+		if not self.soloPoints:
+			self.soloPoints.append(0)
+			self.deathPoints.append(0)
+			self.tournamentPoints.append(0)
+			self.totalPoints.append(0)
+		super().save(*args, **kwargs)
 
 	def join_game(self):
 		self.isReady = True

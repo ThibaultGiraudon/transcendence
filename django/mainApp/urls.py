@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import pongView, mainView, usersView, chatView, statsView, waitPlayersView, api
+from .views import pongView, mainView, rankingView, usersView, chatView, waitPlayersView, api
 
 urlpatterns = [
 	# Main
@@ -15,7 +15,7 @@ urlpatterns = [
 	path('profile/<str:username>', usersView.profile, name='profile'),
 	path('users/', usersView.users, name='users'),
 	path('notifications/', usersView.notifications, name='notifications'),
-	path('stats/', statsView.stats, name='stats'),
+	path('ranking/<str:sortedBy>', rankingView.ranking, name='ranking'),
 
 	path('pong/', pongView.pong, name='pong'),
 	path('pong/ranked/', pongView.ranked, name='ranked'),
@@ -65,6 +65,7 @@ urlpatterns = [
 	path('api/get_game_info', api.get_game_info, name='get_game_info'),
 
 	path('api/get_game_over/<int:gameID>', api.get_game_over, name='get_game_over'),
+	path('api/get_ranking_points/<str:sortedBy>', api.get_ranking_points, name='get_ranking_points'),
 
 	# Errors handling for 42 API
 	path('token42/', mainView.token42, name='token42'),
