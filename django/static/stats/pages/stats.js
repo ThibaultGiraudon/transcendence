@@ -106,7 +106,12 @@ function renderStatsPage() {
 								</button>
 							</div>
 							<div class="pie-stats-container">
-								<canvas class="pie-chart" id="pie-chart"></canvas>
+								<div class="pie-stats-games">
+									<canvas class="pie-chart-games" id="pie-chart-games"></canvas>
+								</div>
+								<div class="pie-stats-points">
+									<canvas class="pie-chart-points" id="pie-chart-points"></canvas>
+								</div>
 							</div>
 						</div>
 						`;
@@ -153,9 +158,38 @@ function renderStatsPage() {
 					rightBtn.addEventListener("click", moveRight);
 					leftBtn.addEventListener("click", moveLeft);
 
-					let ctx = document.getElementById("pie-chart");
+					let ctx = document.getElementById("pie-chart-games").getContext("2d");
 
 					let mychart = new Chart(ctx, {
+						type: "pie",
+						data: {
+							labels: [
+								"1v1 Games",
+								"Death Games",
+								"Tournament Games"
+							],
+							datasets: [{
+								label: 'Games Played',
+								backgroundColor: ["#1598E9", "#2FD661", "#F19705", ],
+								data: [player.soloPoints.length, player.deathPoints.length, player.tournamentPoints.length,],
+							}],
+						},
+						options: {
+							plugins: {
+								title: {
+									display: true,
+									text: 'Games Played',
+									font: {
+										size: 25
+									}
+								}
+							}
+						}
+					});
+
+					ctx = document.getElementById("pie-chart-points").getContext("2d");
+
+					mychartgames = new Chart(ctx, {
 						type: "pie",
 						data: {
 							labels: [
@@ -164,12 +198,27 @@ function renderStatsPage() {
 								"Tournament Points"
 							],
 							datasets: [{
-								label: 'Game played a voir',
+								label: 'Points',
 								backgroundColor: ["#1598E9", "#2FD661", "#F19705", ],
-								data: [player.soloPoints.length, player.deathPoints.length, player.tournamentPoints.length,],
+								data: [
+									player.soloPoints[player.soloPoints.length - 1], 
+									player.deathPoints[player.deathPoints.length - 1], 
+									player.tournamentPoints[player.tournamentPoints.length - 1],
+								],
 							}],
 						},
-						});
+						options: {
+							plugins: {
+								title: {
+									display: true,
+									text: 'Points Distribution',
+									font: {
+										size: 25
+									}
+								}
+							}
+						}
+					});
 				} else {
 					router.navigate('/pong/');
 				}
