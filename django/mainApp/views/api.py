@@ -730,14 +730,24 @@ def get_game_over(request, gameID):
 		player.totalPoints.append(score + (player.totalPoints[-1] if len(player.totalPoints) > 0 else 0))
 		player.save()
 	elif (gameMode == "init_death_game"):
-		player.deathPoints.append(positionsScore[position] + (player.deathPoints[-1] if len(player.deathPoints) > 0 else 0))
-		player.totalPoints.append(positionsScore[position] + (player.totalPoints[-1] if len(player.totalPoints) > 0 else 0))
+		player.deathPoints.append(positionsScore[position - 1] + (player.deathPoints[-1] if len(player.deathPoints) > 0 else 0))
+		player.totalPoints.append(positionsScore[position - 1] + (player.totalPoints[-1] if len(player.totalPoints) > 0 else 0))
 		player.save()
 	elif (gameMode == "init_tournament_game_sub_game"):
 		return redirect_to_finals_game(game, player)
-		player.tournamentPoints.append(positionsScore[position] + (player.tournamentPoints[-1] if len(player.tournamentPoints) > 0 else 0))
-		player.totalPoints.append(positionsScore[position] + (player.totalPoints[-1] if len(player.totalPoints) > 0 else 0))
+	elif (gameMode in "init_tournament_game_final_game"):
+		tournamentPositionsScore = [20, 15]
+		player.tournamentPoints.append(tournamentPositionsScore[position - 1] + (player.tournamentPoints[-1] if len(player.tournamentPoints) > 0 else 0))
+		player.totalPoints.append(tournamentPositionsScore[position - 1] + (player.totalPoints[-1] if len(player.totalPoints) > 0 else 0))
+		scoresList[0] = tournamentPositionsScore[position - 1]
 		player.save()
+	elif (gameMode == "init_tournament_game_third_place_game"):
+		tournamentPositionsScore = [7, 0]
+		player.tournamentPoints.append(tournamentPositionsScore[position - 1] + (player.tournamentPoints[-1] if len(player.tournamentPoints) > 0 else 0))
+		player.totalPoints.append(tournamentPositionsScore[position - 1] + (player.totalPoints[-1] if len(player.totalPoints) > 0 else 0))
+		player.save()
+		scoresList[0] = tournamentPositionsScore[position - 1]
+		positionsList[0] += 2
 
 	return JsonResponse({
 		'success': True,
