@@ -124,7 +124,6 @@ function renderBlockedButton(user) {
 	`;
 }
 
-
 function renderGlobalStats(user) {
 	return `
 		<p class="profile-stats-divider">Globals</p>
@@ -231,7 +230,8 @@ function renderProfilePage(username) {
 						const profileHtml = renderOurProfile(user);
 						const formHtml = renderForm(fieldsHtml, user);
 						const signOutButtonHtml = renderSignOutButton();
-						const pongStats = renderPongStats(user);
+						// const pongStats = renderPongStats(user);
+						const pongStats = '';
 
 						document.getElementById('app').innerHTML = `
 							${profileHtml}

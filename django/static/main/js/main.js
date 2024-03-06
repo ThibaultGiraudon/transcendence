@@ -36,6 +36,9 @@ const router = {
 		// Notifications
 		'/notifications/': renderNotificationsPage,
 
+		// Stats
+		'/stats/': renderStatsPage,
+
 		// Errors handling
 		'/token42/': renderToken42Page,
 		'/down42/': renderDown42Page,

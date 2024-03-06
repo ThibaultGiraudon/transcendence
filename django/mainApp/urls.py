@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import pongView, mainView, usersView, chatView, waitPlayersView, api
+from .views import pongView, mainView, usersView, chatView, statsView, waitPlayersView, api
 
 urlpatterns = [
 	# Main
@@ -15,6 +15,7 @@ urlpatterns = [
 	path('profile/<str:username>', usersView.profile, name='profile'),
 	path('users/', usersView.users, name='users'),
 	path('notifications/', usersView.notifications, name='notifications'),
+	path('stats/', statsView.stats, name='stats'),
 
 	path('pong/', pongView.pong, name='pong'),
 	path('pong/ranked/', pongView.ranked, name='ranked'),

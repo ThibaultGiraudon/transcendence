@@ -21,8 +21,6 @@ function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
 		shouldClose: false
 	};
 
-	console.log(chatSocket);
-
 	// Go to the bottom of the chat
 	const chatLog = document.querySelector('#chat-log');
 	if (chatLog) {

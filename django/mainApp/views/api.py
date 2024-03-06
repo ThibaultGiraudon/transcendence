@@ -155,6 +155,7 @@ def get_user(request, username=None):
 			'soloPoints': request.user.player.soloPoints,
 			'deathPoints': request.user.player.deathPoints,
 			'tournamentPoints': request.user.player.tournamentPoints,
+			'totalPoints': request.user.player.totalPoints,
 			'gamePlayed': user.player.score_set.count(),
 			'gameVictory': 'toDefineInAPI',
 			'gameDefeat': 'toDefineInAPI',
@@ -713,14 +714,17 @@ def get_game_over(request, gameID):
 
 	positionsScore = [10, 7, 3, 0]
 	if (gameMode == "init_ranked_solo_game"):
-		player.soloPoints += score
+		player.soloPoints.append(score + (player.soloPoints[-1] if len(player.soloPoints) > 0 else 0))
+		player.totalPoints.append(score + (player.totalPoints[-1] if len(player.totalPoints) > 0 else 0))
 		player.save()
 	elif (gameMode == "init_death_game"):
-		player.deathPoints += positionsScore[position]
+		player.deathPoints.append(positionsScore[position] + (player.deathPoints[-1] if len(player.deathPoints) > 0 else 0))
+		player.totalPoints.append(positionsScore[position] + (player.totalPoints[-1] if len(player.totalPoints) > 0 else 0))
 		player.save()
 	elif (gameMode == "init_tournament_game"):
 		# return redirect_to_finals_game(request, game, player)
-		player.tournamentPoints += positionsScore[position]
+		player.tournamentPoints.append(positionsScore[position] + (player.tournamentPoints[-1] if len(player.tournamentPoints) > 0 else 0))
+		player.totalPoints.append(positionsScore[position] + (player.totalPoints[-1] if len(player.totalPoints) > 0 else 0))
 		player.save()
 
 	return JsonResponse({
