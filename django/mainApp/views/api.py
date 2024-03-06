@@ -663,6 +663,7 @@ def create_finals_game(game, player, isFinal):
 def redirect_to_finals_game(subGame, player):
 	game = Game.objects.get(id=subGame.parentGame)
 	scores = subGame.scores.filter(player__id=player.id)
+	score = scores.first().score
 	position = scores.first().position
 
 	if (position == 1):
@@ -687,8 +688,8 @@ def redirect_to_finals_game(subGame, player):
 	return JsonResponse({
 		'success': True,
 		'redirectGameMode': finalGame.gameMode,
-		'score': '1',
-		'position': '2',
+		'score': score,
+		'position': position,
 		'game_mode': game.gameMode
 	}, status=200)
 

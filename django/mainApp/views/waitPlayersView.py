@@ -4,9 +4,17 @@ from	django.shortcuts import render
 import	datetime, json
 
 def getNbPlayersToWait(gameMode):
-	if gameMode in ['init_local_game', 'init_ai_game', 'init_wall_game']:
+	if gameMode in [
+		'init_local_game',
+		'init_ai_game',
+		'init_wall_game'
+	]:
 		return (1)
-	if (gameMode == 'init_ranked_solo_game'):
+	if (gameMode in [
+		'init_ranked_solo_game', 
+		'init_tournament_game_final_game', 
+		'init_tournament_game_third_place_game'
+	]):
 		return (2)
 	return (4)
 
