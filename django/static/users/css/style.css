@@ -77,7 +77,8 @@
 }
 
 .sign-form input[type="submit"] {
-	margin: 20px 0;
+	margin: 0;
+	font-size: 1em;
 	padding: calc(var(--input-padding) + 2px);
 	border-style: none;
 	width: 100%;
@@ -478,13 +479,13 @@
 
 .profile-sign-out-button {
 	font-size: 1em;
-	padding: 0.5em;
-	margin-top: 2em;
-	margin-bottom: 2em;
+	padding: calc(var(--input-padding) + 2px);
+	width: 100%;
+	margin-bottom: 40px;
 	font-family: var(--font-text-bold);
 	color: white;
 	border-radius: var(--input-border-radius);
-	background: var(--color-dark);
+	background: #cb0a0a;
 	text-align: center;
 	vertical-align: middle;
 }
