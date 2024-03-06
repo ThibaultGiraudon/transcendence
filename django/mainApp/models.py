@@ -72,6 +72,7 @@ class CustomUser(AbstractUser):
 	isOfficial = models.BooleanField(default=False)
 	photo = models.ImageField(upload_to='', default='default.jpg')
 	follows = ArrayField(models.IntegerField(), default=list)
+	friendRequests = ArrayField(models.IntegerField(), default=list)
 	status = models.CharField(max_length=150, default="online")
 	nbNewNotifications = models.IntegerField(default=0)
 	blockedUsers = ArrayField(models.IntegerField(), default=list)
