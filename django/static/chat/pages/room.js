@@ -30,14 +30,14 @@ function renderRoomPage(room_id) {
 
 		// Check if the channel is private and the other user is blocked
 		if (room.private && Object.keys(room.users).length == 2) {
-			const userIds = Object.keys(room.users);
-			if (userIds[0] == user.id) {
-				if (userIds[1] in user.blockedUsers) {
+			const users = Object.values(room.users);
+			if (users[0].id == user.id) {
+				if (users[1].blocked) {
 					router.navigate('/chat/');
 					return;
 				}
 			} else {
-				if (userIds[0] in user.blockedUsers) {
+				if (users[0].blocked) {
 					router.navigate('/chat/');
 					return;
 				}

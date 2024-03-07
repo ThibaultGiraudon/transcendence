@@ -7,9 +7,17 @@ from django.utils import timezone
 
 class ChatConsumer(AsyncWebsocketConsumer):
 	@database_sync_to_async
-	def create_notification(self, user, message):
+	def create_notification(self, channel, user):
 		from mainApp.models import Notification
-		notification = Notification(user=user, message=message)
+
+		if channel.private:
+			for userToSend in channel.users.all():
+				if userToSend.id != user.id:
+					message = f"You have a new message from {userToSend.username}"
+					notification = Notification(user=user, type='message', imageType='user', imageUser=userToSend.photo.url, title="New message", message=message, redirect=f"/chat/{self.room_id}")
+		else:
+			message = f"You have a new message from {channel.name}"
+			notification = Notification(user=user, type='message', imageType='message', title="New message", message=message, redirect=f"/chat/{self.room_id}")
 		notification.save()
 
 
@@ -87,7 +95,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			for userToSend in usersToSend:
 				if userToSend.status != f"chat:{self.room_id}":
 					if self.scope['user'].id not in userToSend.blockedUsers:
-						await self.create_notification(userToSend, f"You have a new message from {channel.name}")
+						await self.create_notification(channel, userToSend)
 		
 		await self.update_last_interaction(self.room_id)
 

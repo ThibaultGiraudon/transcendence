@@ -270,14 +270,20 @@ def follow(request, id):
 		userTo.save()
 		request.user.follows.append(id)
 		request.user.save()
-		notification = Notification(user=request.user, message=f"{userTo.username} accepted your friend request.")
+
+		notification = Notification(user=userTo, type='accept-friend', imageType='user', imageUser=request.user.photo.url, title="New friend", message=f"{request.user.username} accepted your friend request.", redirect=f"/profile/{request.user.username}")
+		notification.save()
+		
 		return JsonResponse({'success': True, "message": "Successful follow"}, status=200)
 	
 	request.user.friendRequests.append(id)
 	request.user.save()
 
-	notification = Notification(user=userTo, message=f"{request.user.username} send you a friend request.")
-	notification.save()
+	# Don't send the notification if the receiver blocked the sender
+	if request.user.id not in userTo.blockedUsers:
+		notification = Notification(user=userTo, type='request-friend', imageType='user', imageUser=request.user.photo.url, title="New friend request", message=f"{request.user.username} send you a friend request.", redirect=f"/profile/{request.user.username}")
+		notification.save()
+	
 	return JsonResponse({'success': True, "message": "Successful send friend request"}, status=200)
 
 
@@ -306,6 +312,9 @@ def unfollow(request, id):
 	request.user.follows.remove(id)
 	request.user.save()
 
+	userTo.follows.remove(request.user.id)
+	userTo.save()
+
 	return JsonResponse({'success': True, "message": "Successful unfollow"}, status=200)
 
 
@@ -323,13 +332,8 @@ def block(request, id):
 		return JsonResponse({'success': False, "message": "You cannot interact with the system user"}, status=401)
 
 	# Check if the user exist and if he is not already blocked
-	User = get_user_model()
-	try:
-		userTo = User.objects.get(id=id)
-		if id in request.user.blockedUsers:
-			return JsonResponse({'success': False, "message": "User already blocked"}, status=401)
-	except User.DoesNotExist:
-		return JsonResponse({'success': False, "message": "User does not exist"}, status=401)
+	if id in request.user.blockedUsers:
+		return JsonResponse({'success': False, "message": "User already blocked"}, status=401)
 	
 	# Unfollow the user if he is in the follows list
 	if id in request.user.follows:
@@ -356,13 +360,8 @@ def unblock(request, id):
 		return JsonResponse({'success': False, "message": "Invalid id"}, status=401)
 	
 	# Check if the user exist and if he is blocked
-	User = get_user_model()
-	try:
-		userTo = User.objects.get(id=id)
-		if id not in request.user.blockedUsers:
-			return JsonResponse({'success': False, "message": "User already blocked"}, status=401)
-	except User.DoesNotExist:
-		return JsonResponse({'success': False, "message": "User does not exist"}, status=401)
+	if id not in request.user.blockedUsers:
+		return JsonResponse({'success': False, "message": "User not blocked"}, status=401)
 
 	# Unblock the user
 	request.user.blockedUsers.remove(id)
@@ -384,9 +383,14 @@ def get_notifications(request):
 	for notification in notifications:
 		notifications_dict[notification.id] = {
 			'id': notification.id,
+			'title': notification.title,
 			'message': notification.message,
 			'date': timezone.localtime(notification.date).strftime("%d-%m-%Y %H:%M"),
+			'redirect': notification.redirect,
 			'read': notification.read,
+			'type': notification.type,
+			'imageType': notification.imageType,
+			'imageUser': notification.imageUser,
 		}
 	
 	# Mark all notifications as read
