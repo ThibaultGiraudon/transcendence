@@ -45,14 +45,11 @@ function renderUsersPage() {
 		// Get the users
 		fetchAPI('/api/users').then(dataUsers => {
 			// Define categories
-			let users = {};
 			let followed = {};
 
 			for (const user of Object.values(dataUsers.users)) {
 				if (user.followed) {
 					followed[user.id] = user;
-				} else {
-					users[user.id] = user;
 				}
 			}
 
@@ -60,8 +57,7 @@ function renderUsersPage() {
 			document.getElementById('app').innerHTML = `
 				<div class="all-screen">
 					<div id="status-log" class="status-log">
-						${renderUsersSection('Users', users)}
-						${renderUsersSection('Follows', followed)}
+						${renderUsersSection('Friends', followed)}
 					</div>
 				</div>
 			`;

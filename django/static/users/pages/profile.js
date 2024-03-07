@@ -1,3 +1,142 @@
+// Initialize the chart to display the player's statistics
+let chart;
+
+function renderLineGraph(id, player) {
+	let ctx = null;
+	let title = '';
+	let color = '';
+	let data = {};
+
+	// Assign new chart
+	switch (id) {
+		case "totalPoint-canvas":
+			ctx = document.getElementById("totalPoint-canvas").getContext("2d");
+			title = "Total Points";
+			color = "#E21E59";
+			data = player.totalPoints;
+			break;
+
+		case "soloPoint-canvas":
+			ctx = document.getElementById("soloPoint-canvas").getContext("2d");
+			title = "1v1 Points";
+			color = "#1598E9";
+			data = player.soloPoints;
+			break;
+
+		case "deathPoint-canvas":
+			ctx = document.getElementById("deathPoint-canvas").getContext("2d");
+			title = "Deathmatch Points";
+			color = "#2FD661";
+			data = player.deathPoints;
+			break;
+
+		case "tournamentPoint-canvas":
+			ctx = document.getElementById("tournamentPoint-canvas").getContext("2d");
+			title = "Tournament Points";
+			color = "#F19705";
+			data = player.tournamentPoints;
+			break;
+	}
+
+	// Destroy the previous chart
+	if (chart) {
+		chart.destroy();
+	}
+
+	//Fill lables with the number of games played
+	let labels = [];
+	for (let i = 0; i < data.length + 9; i++) {
+		labels.push(i);
+	}
+
+	// Create chart
+	chart = new Chart(ctx, {
+	type: "line",
+	data: {
+		labels: labels,
+		datasets: [
+			{
+			label: title,
+			backgroundColor: color,
+			borderColor: color,
+			data: data,
+			}
+		]
+	},
+	options: {
+		scales: {
+			y: {
+			title: {
+				display: true,
+				text: 'Points'
+			}
+			},
+			x: {
+			title: {
+				display: true,
+				text: 'Games Played'
+			}
+			}
+		},
+		plugins: {
+			legend: {
+			display: true,
+			},
+		}
+		}
+	});
+}
+
+function renderPieGraph(id, player) {
+	let ctx = null;
+	let title = '';
+	let data = {};
+	if (id === "pie-chart-games") {
+		ctx = document.getElementById("pie-chart-games").getContext("2d");
+		title = "Games Played";
+		data = [
+			player.soloPoints.length - 1,
+			player.deathPoints.length - 1,
+			player.tournamentPoints.length - 1,
+		];
+	}
+	else if (id === "pie-chart-points") {
+		ctx = document.getElementById("pie-chart-points").getContext("2d");
+		title = "Points Distribution";
+		data = [
+			player.soloPoints[player.soloPoints.length - 1], 
+			player.deathPoints[player.deathPoints.length - 1], 
+			player.tournamentPoints[player.tournamentPoints.length - 1],
+		];
+	}
+	return (new Chart(ctx, {
+		type: "pie",
+		data: {
+			labels: [
+				"1v1 Games",
+				"Deathmatch Games",
+				"Tournament Games"
+			],
+			datasets: [{
+				label: title,
+				backgroundColor: ["#1598E9", "#2FD661", "#F19705", ],
+				data: data,
+			}],
+		},
+		options: {
+			plugins: {
+				title: {
+					display: true,
+					text: title,
+					font: {
+						size: 25
+					}
+				}
+			}
+		}}));
+}
+
+
 function renderOurProfile(user) {
 	const officialImageHTML = user.isOfficial
 		? `
@@ -71,14 +210,10 @@ function renderForm(fieldsHtml, user) {
 
 				<p class="error-message" id="error-message"></p>
 				<input type="submit" value="Accept modifications"/>
-			</form>
+				<button class="profile-sign-out-button" id="sign-out">Sign out</button>
+				</form>
 		</div>
 	`;
-}
-
-
-function renderSignOutButton() {
-	return `<button class="profile-sign-out-button" id="sign-out">Sign out</button>`;
 }
 
 
@@ -90,6 +225,19 @@ function renderFollowButton(currentUser, user) {
 			</button>
 		`;
 	} else {
+		if (user.friendRequests.includes(currentUser.id))
+			return `
+				<button class="profile-button follow" data-user-id="${user.id}">
+					Accept friend request
+				</button>
+			`;
+		else if (currentUser.friendRequests.includes(user.id))
+			return `
+				<p class="profile-button-pending">
+					Pending...
+				</p>
+			`;
+		else
 		return `
 			<button class="profile-button follow" data-user-id="${user.id}">
 				Send a friend request
@@ -124,77 +272,76 @@ function renderBlockedButton(user) {
 	`;
 }
 
-function renderGlobalStats(user) {
-	return `
-		<p class="profile-stats-divider">Globals</p>
-		<div id="carousel-global">
-			<div class="profile-stats-card-global">
-				<p class="profile-stats-category">• Game played</p>
-				<p class="profile-stats-text">📊 ${user.player.gamePlayed}</p>
-			</div>
-
-			<div class="profile-stats-card-global">
-				<p class="profile-stats-category">• Victories</p>
-				<p class="profile-stats-text">🏆 ${user.player.gameVictory}</p>
-			</div>
-
-			<div class="profile-stats-card-global">
-				<p class="profile-stats-category">• Defeats</p>
-				<p class="profile-stats-text">☠️ ${user.player.gameDefeat}</p>
-			</div>
-
-			<div class="profile-stats-buttons">
-				<button class="profile-stats-button" id="prev-global" data-ignore-click>
-					<img class="profile-stats-buttons-img" src="/static/users/img/left-arrow.png" alt="Previous">
-				</button>
-				<button class="profile-stats-button" id="next-global" data-ignore-click>
-					<img class="profile-stats-buttons-img" src="/static/users/img/right-arrow.png" alt="Next">
-				</button>
-			</div>
-		</div>
-	`;
-}
-
-
-function renderModesStats(user) {
-	return `
-		<p class="profile-stats-divider">Game modes</p>
-		<div id="carousel-modes">
-			<div class="profile-stats-card-modes">
-				<p class="profile-stats-category">• 1 vs 1</p>
-				<p class="profile-stats-text">📈 ${user.player.soloPoints} points</p>
-			</div>
-
-			<div class="profile-stats-card-modes">
-				<p class="profile-stats-category">• Death Game</p>
-				<p class="profile-stats-text">📈 ${user.player.deathPoints} points</p>
-			</div>
-
-			<div class="profile-stats-card-modes">
-				<p class="profile-stats-category">• Tournament</p>
-				<p class="profile-stats-text">📈 ${user.player.tournamentPoints} points</p>
-			</div>
-
-			<div class="profile-stats-buttons">
-				<button class="profile-stats-button" id="prev-modes" data-ignore-click>
-					<img class="profile-stats-buttons-img" src="/static/users/img/left-arrow.png" alt="Previous">
-				</button>
-				<button class="profile-stats-button" id="next-modes" data-ignore-click>
-					<img class="profile-stats-buttons-img" src="/static/users/img/right-arrow.png" alt="Next">
-				</button>
-			</div>
-		</div>
-	`;
-}
-
-
 function renderPongStats(user) {
-	return `
-		<p class="profile-stats-title">Pong statistics</p>
-		<p class="profile-stats-disclaimer">Statistics count only the games played on ranked mode.</p>
-		${renderGlobalStats(user)}
-		${renderModesStats(user)}
-	`;
+	const player = user.player;
+
+	document.getElementById('app').innerHTML += `
+		<h2>Statistics</h2>
+		<div class="stats-container">
+			<div class="carousel-container">
+				<button data-ignore-click class="carousel-button" id="carousel-left-btn">
+					<img class="carousel-img" src="/static/users/img/left.png" alt="left">
+				</button>
+				<canvas class="carousel-content" id=""></canvas>
+				<button data-ignore-click class="carousel-button" id="carousel-right-btn">
+					<img class="carousel-img" src="/static/users/img/right.png" alt="right">
+				</button>
+			</div>
+			<div class="pie-stats-container">
+				<div class="pie-stats-games">
+					<canvas class="pie-chart-games" id="pie-chart-games"></canvas>
+				</div>
+				<div class="pie-stats-points">
+					<canvas class="pie-chart-points" id="pie-chart-points"></canvas>
+				</div>
+			</div>
+		</div>
+		`;
+
+	const graph = document.querySelector('.carousel-content');
+	const rightBtn = document.getElementById('carousel-right-btn');
+	const leftBtn = document.getElementById('carousel-left-btn');
+
+	const graphs = [
+		"totalPoint-canvas",
+		"soloPoint-canvas",
+		"deathPoint-canvas",
+		"tournamentPoint-canvas"
+	];
+
+	graph.id = graphs[0];
+	renderLineGraph(graph.id, player);
+	let position = 0;
+
+	const moveRight = () => {
+		if (position >= graphs.length - 1) {
+			position = 0
+			graph.id = graphs[position];
+			renderLineGraph(graph.id, player);
+			return;
+		}
+		graph.id = graphs[position + 1];
+		renderLineGraph(graph.id, player);
+		position++;
+	}
+
+	const moveLeft = () => {
+		if (position < 1) {
+			position = graphs.length - 1;
+			graph.id = graphs[position];
+			renderLineGraph(graph.id, player);
+			return;
+		}
+		graph.id = graphs[position - 1];
+		renderLineGraph(graph.id, player);
+		position--;
+	}
+
+	rightBtn.addEventListener("click", moveRight);
+	leftBtn.addEventListener("click", moveLeft);
+
+	let pieChartGames = renderPieGraph("pie-chart-games", player);
+	let pieChartPoints = renderPieGraph("pie-chart-points", player);
 }
 
 
@@ -229,50 +376,13 @@ function renderProfilePage(username) {
 						const fieldsHtml = fields.map(renderField).join('');
 						const profileHtml = renderOurProfile(user);
 						const formHtml = renderForm(fieldsHtml, user);
-						const signOutButtonHtml = renderSignOutButton();
-						// const pongStats = renderPongStats(user);
-						const pongStats = '';
 
 						document.getElementById('app').innerHTML = `
 							${profileHtml}
 							${formHtml}
-							${pongStats}
-							${signOutButtonHtml}
 						`;
 
-
-						// Add a carousel for the pong globals stats
-						let cardsGlobal = document.querySelectorAll('#carousel-global .profile-stats-card-global');
-						let currentCardGlobal = 0;
-
-						document.getElementById('prev-global').addEventListener('click', function() {
-							cardsGlobal[currentCardGlobal].style.display = 'none';
-							currentCardGlobal = (currentCardGlobal - 1 + cardsGlobal.length) % cardsGlobal.length;
-							cardsGlobal[currentCardGlobal].style.display = 'block';
-						});
-
-						document.getElementById('next-global').addEventListener('click', function() {
-							cardsGlobal[currentCardGlobal].style.display = 'none';
-							currentCardGlobal = (currentCardGlobal + 1) % cardsGlobal.length;
-							cardsGlobal[currentCardGlobal].style.display = 'block';
-						});
-
-						// Add a carousel for the pong modes stats
-						let cardsModes = document.querySelectorAll('#carousel-modes .profile-stats-card-modes');
-						let currentCardModes = 0;
-
-						document.getElementById('prev-modes').addEventListener('click', function() {
-							cardsModes[currentCardModes].style.display = 'none';
-							currentCardModes = (currentCardModes - 1 + cardsModes.length) % cardsModes.length;
-							cardsModes[currentCardModes].style.display = 'block';
-						});
-
-						document.getElementById('next-modes').addEventListener('click', function() {
-							cardsModes[currentCardModes].style.display = 'none';
-							currentCardModes = (currentCardModes + 1) % cardsModes.length;
-							cardsModes[currentCardModes].style.display = 'block';
-						});
-
+						renderPongStats(user);
 
 						// Add an event listener on the sign-in form
 						document.querySelector('.sign-form').addEventListener('submit', async function(event) {
@@ -362,6 +472,7 @@ function renderProfilePage(username) {
 							}
 						});
 
+
 						// Add an event listener on the sign-out button
 						document.getElementById('sign-out').addEventListener('click', async function(event) {
 
@@ -426,43 +537,7 @@ function renderProfilePage(username) {
 									</div>
 								`;
 							}
-
-							// Add the Pong stats
-							document.getElementById('app').innerHTML += renderPongStats(user);
-
-
-							// Add a carousel for the pong globals stats
-							let cardsGlobal = document.querySelectorAll('#carousel-global .profile-stats-card-global');
-							let currentCardGlobal = 0;
-
-							document.getElementById('prev-global').addEventListener('click', function() {
-								cardsGlobal[currentCardGlobal].style.display = 'none';
-								currentCardGlobal = (currentCardGlobal - 1 + cardsGlobal.length) % cardsGlobal.length;
-								cardsGlobal[currentCardGlobal].style.display = 'block';
-							});
-
-							document.getElementById('next-global').addEventListener('click', function() {
-								cardsGlobal[currentCardGlobal].style.display = 'none';
-								currentCardGlobal = (currentCardGlobal + 1) % cardsGlobal.length;
-								cardsGlobal[currentCardGlobal].style.display = 'block';
-							});
-
-							// Add a carousel for the pong modes stats
-							let cardsModes = document.querySelectorAll('#carousel-modes .profile-stats-card-modes');
-							let currentCardModes = 0;
-
-							document.getElementById('prev-modes').addEventListener('click', function() {
-								cardsModes[currentCardModes].style.display = 'none';
-								currentCardModes = (currentCardModes - 1 + cardsModes.length) % cardsModes.length;
-								cardsModes[currentCardModes].style.display = 'block';
-							});
-
-							document.getElementById('next-modes').addEventListener('click', function() {
-								cardsModes[currentCardModes].style.display = 'none';
-								currentCardModes = (currentCardModes + 1) % cardsModes.length;
-								cardsModes[currentCardModes].style.display = 'block';
-							});
-
+							renderPongStats(user);
 							// Add an event listener on the send a chat button (for new chat only)
 							const sendChatButton = document.querySelector('.profile-button.chat');
 							if (sendChatButton) {

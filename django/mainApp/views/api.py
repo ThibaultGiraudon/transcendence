@@ -173,6 +173,7 @@ def get_user(request, username=None):
 			'nbNewNotifications': request.user.nbNewNotifications,
 			'channels': channels_dict,
 			'follows': request.user.follows,
+			'friendRequests': request.user.friendRequests,
 			'blockedUsers': request.user.blockedUsers,
 			'favoritesChannels': request.user.favoritesChannels,
 			'player': player_info,
@@ -195,6 +196,7 @@ def get_user(request, username=None):
 			'soloPoints': user.player.soloPoints,
 			'deathPoints': user.player.deathPoints,
 			'tournamentPoints': user.player.tournamentPoints,
+			'totalPoints': user.player.totalPoints,
 			'gamePlayed': user.player.score_set.count(),
 			'gameVictory': 'toDefineInAPI',
 			'gameDefeat': 'toDefineInAPI',
@@ -208,6 +210,7 @@ def get_user(request, username=None):
 			'status': user.status,
 			'followed': user.id in request.user.follows,
 			'blocked': user.id in request.user.blockedUsers,
+			'friendRequests': user.friendRequests,
 			'player': player_info,
 		}
 		return JsonResponse({'user': user_dict, 'isCurrentUser': False}, status=200)
@@ -523,7 +526,7 @@ def get_game_info(request):
 		players_photo.append(user.photo.url)
 
 
-	return JsonResponse({'success': True, 'game_id': gameID, 'player_id': request.user.player.id, 'players_username': players_username, 'players_photo': players_photo}, status=200)
+	return JsonResponse({'success': True, 'game_id': gameID, 'user_id': request.user.id, 'player_id': request.user.player.id, 'players_username': players_username, 'players_photo': players_photo}, status=200)
 
 
 def add_user_to_room(request, room_id, user_id):
@@ -755,3 +758,75 @@ def get_game_over(request, gameID):
 		'position': positionsList,
 		'game_mode': gameMode
 	}, status=200)
+
+def get_ranking_points(request, sortedBy):
+	if not request.user.is_authenticated:
+		return JsonResponse({'success': False}, status=401)
+	
+	#Get all players
+	User = get_user_model()
+	users = User.objects.all()
+	index = 0
+	rank = 1
+	order = None
+
+	#split sortedBy on _ to get the sorting method and the order
+	if (len(sortedBy.split('_')) == 2):
+		order = sortedBy.split('_')[1]
+		sortedBy = sortedBy.split('_')[0]
+
+	#set average on users
+	for user in users:
+		if (len(user.player.totalPoints) > 1):
+			user.player.averagePoints = user.player.totalPoints[-1] / (len(user.player.totalPoints) - 1)
+		else:
+			user.player.averagePoints = 0
+		user.save()
+
+	if (sortedBy == 'solo'):
+		sorted_users = users = sorted(users, key=lambda x: x.player.soloPoints[-1], reverse=True)
+	elif (sortedBy == 'death'):
+		sorted_users = sorted(users, key=lambda x: x.player.deathPoints[-1], reverse=True)
+	elif (sortedBy == 'tournament'):
+		sorted_users = sorted(users, key=lambda x: x.player.tournamentPoints[-1], reverse=True)
+	elif (sortedBy == 'total'):
+		sorted_users = sorted(users, key=lambda x: x.player.totalPoints[-1], reverse=True)
+	elif (sortedBy == 'game'):
+		sorted_users = sorted(users, key=lambda x: len(x.player.totalPoints), reverse=True)
+	#CPT
+	elif (sortedBy == 'average'):
+		sorted_users = sorted(users, key=lambda x: x.player.averagePoints, reverse=True)
+	users_dict = {}
+	if (order):
+		rank = len(sorted_users) - 1
+		sorted_users.reverse()
+	for user in sorted_users:
+		if user.id == 0:
+			continue
+
+		player_dict = {
+			'currentGameID': user.player.currentGameID,
+			'isReady': user.player.isReady,
+			'soloPoints': user.player.soloPoints,
+			'deathPoints': user.player.deathPoints,
+			'tournamentPoints': user.player.tournamentPoints,
+			'totalPoints': user.player.totalPoints,
+			'gamePlayed': user.player.score_set.count(),
+		}
+
+		users_dict[index] = {
+			'id': user.id,
+			'username': user.username,
+			'photo_url': user.photo.url,
+			'status': user.status,
+			'followed': user.id in request.user.follows,
+			'blocked': user.id in request.user.blockedUsers,
+			'player': player_dict,
+			'rank': rank,
+		}
+		index += 1
+		if (order):
+			rank -= 1
+		else:
+			rank += 1
+	return JsonResponse({'success': True, 'users': users_dict}, status=200)

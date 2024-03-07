@@ -166,12 +166,14 @@
 *{
 	margin: 0px;
 	padding: 0px;
+	user-select: none;
 }
 
 h1 {
 	font-family: var(--font-text-bold);
 	font-size: var(--h1-size);
 	color: var(--color-dark);
+	margin-top: 0.2em;
 }
 
 h2 {
