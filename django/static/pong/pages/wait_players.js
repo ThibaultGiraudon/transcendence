@@ -6,6 +6,7 @@ function renderWaitPlayers(gameMode) {
 				if (data.success) {
 					gameID = data.game_id;
 					playerID = data.player_id;
+					changeStatus(data.user_id, 'waiting for game')
 
 					let html = `
 						<div class="all-screen">

@@ -8,32 +8,47 @@ function renderRankingPage(sortedBy) {
 					fetchAPI('/api/get_user').then(ndata => {
 						if (ndata.user) {
 							const users = data.users;
-							console.log(users);
-							let i = 0;
+							split = sortedBy.includes('_');
 							let html = `
-								<h1>Ranking</h1>
-								<table class="ranking-table">
+								<div class="ranking-title">
+									<h1>Ranking</h1>
+									<button class="ranking-title-info">
+										<img class="ranking-title-info-img" src="/static/chat/img/info.png" alt="Info">
+									</button>
+								</div>
+
+								<table class="ranking-table" id="ranking-table">
 									<tr>
-										<th>Position</th>
-										<th>User</th>
 										<th>
+											<button class="rank-sort" data-route="/ranking/${sortedBy.includes('_') == false ? sortedBy + "_inversed" : sortedBy.split('_')[0]}">Position  ${sortedBy.includes('_') ? "▲": "▼"}</button>
+										</th>
+										<th><input class="ranking-search" id="userSearch" type="text" placeholder="User"></th>
+										<th class="${sortedBy.split('_')[0] == "solo" ? "selected-row" : "ranking-row"}">
 											<button class="rank-sort" data-route="/ranking/solo">Solo Points</button>
 										</th>
-										<th>
+										<th class="${sortedBy.split('_')[0] == "death" ? "selected-row" : "ranking-row"}">
 											<button class="rank-sort" data-route="/ranking/death">Deathmatch Points</button>
 										</th>
-										<th>
+										<th class="${sortedBy.split('_')[0] == "tournament" ? "selected-row" : "ranking-row"}">
 											<button class="rank-sort" data-route="/ranking/tournament">Tournament Points</button>
 										</th>
-										<th>
+										<th class="${sortedBy.split('_')[0] == "total" ? "selected-row" : "ranking-row"}">
 											<button class="rank-sort" data-route="/ranking/total">Total Points</button>
+										</th>
+										<th class="${sortedBy.split('_')[0] == "game" ? "selected-row" : "ranking-row"}">
+											<button class="rank-sort" data-route="/ranking/game">Games played</button>
+										</th>
+										<th class="${sortedBy.split('_')[0] == "average" ? "selected-row" : "ranking-row"}">
+											<button class="rank-sort" data-route="/ranking/average">Average Points</button>
 										</th>
 									</tr>
 							`;
 
 							for (const user of Object.values(users)) {
+								let average = user.player.totalPoints[user.player.totalPoints.length - 1] / (user.player.totalPoints.length - 1);
+								if (user.player.totalPoints.length == 1)
+									average = 0;
 								if (user.username == ndata.user.username) {
-									console.log(user.username);
 									html += `
 										<tr class="rank-user">
 									`;
@@ -44,17 +59,19 @@ function renderRankingPage(sortedBy) {
 									`;
 								}
 								html += `
-										<td class="rank-position">${++i}</td>
+										<td class="rank-position">${user.rank}</td>
 										<td>
 											<button class="rank-user-info" data-route="/profile/${user.username}">
 												<img class="rank-image" src="${user.photo_url}" alt="photo">
 												${user.username}
 											</button>
 										</td>
-										<td>${user.player.soloPoints[user.player.soloPoints.length - 1]}</td>
-										<td>${user.player.deathPoints[user.player.deathPoints.length - 1]}</td>
-										<td>${user.player.tournamentPoints[user.player.tournamentPoints.length - 1]}</td>
-										<td class="rank-total">${user.player.totalPoints[user.player.totalPoints.length - 1]}</td>
+										<td class="${sortedBy.split('_')[0] == "solo" ? "selected-row" : "ranking-row"}">${user.player.soloPoints[user.player.soloPoints.length - 1]}</td>
+										<td class="${sortedBy.split('_')[0] == "death" ? "selected-row" : "ranking-row"}">${user.player.deathPoints[user.player.deathPoints.length - 1]}</td>
+										<td class="${sortedBy.split('_')[0] == "tournament" ? "selected-row" : "ranking-row"}">${user.player.tournamentPoints[user.player.tournamentPoints.length - 1]}</td>
+										<td class="${sortedBy.split('_')[0] == "total" ? "selected-row" : "ranking-row"}">${user.player.totalPoints[user.player.totalPoints.length - 1]}</td>
+										<td class="${sortedBy.split('_')[0] == "game" ? "selected-row" : "ranking-row"}">${user.player.totalPoints.length - 1}</td>
+										<td class="${sortedBy.split('_')[0] == "average" ? "selected-row" : "ranking-row"}">${average}</td>
 									</tr>
 								`;
 							}
@@ -64,8 +81,73 @@ function renderRankingPage(sortedBy) {
 							`;
 
 							document.getElementById('app').innerHTML = html;
-						}			
-					});
+
+							document.getElementById('userSearch').addEventListener('input', function(e) {
+								var input = e.target.value.toUpperCase();
+								var table = document.getElementById('ranking-table');
+								var trs = table.getElementsByTagName('tr');
+							
+								for (var i = 0; i < trs.length; i++) {
+									var tds = trs[i].getElementsByTagName('td');
+									if (tds.length > 0) {
+										var txtValue = tds[1].textContent || tds[1].innerText; // Changez l'index si le nom d'utilisateur n'est pas dans la première colonne
+										if (txtValue.toUpperCase().indexOf(input) > -1) {
+											trs[i].style.display = "";
+										} else {
+											trs[i].style.display = "none";
+										}
+									}
+								}
+							});
+
+
+							// Handle the informations of ranking system
+							document.querySelector('.ranking-title-info').addEventListener('click', () => {
+								// Create the popup background
+								let popupBackgroundHTML = '<div class="popup-background" id="popup-background"></div>';
+
+								// Create the popup
+								let popupHTML = `
+									<div class="popup">
+										<h3 class="title-popup">Ranking system</h3>
+										<p class="popup-info-title">Solo games:</p>
+										<p class="popup-info">The points won after a game represent the number of points scored during that game.</p>
+								
+										<p class="popup-info-title">DeathMatch games:</p>
+										<p class="popup-info">
+											10 points for the winner.</br>
+											7 points for the second.</br>
+											3 points for the third.</br>
+											0 point for the last one.
+										</p>
+
+										<p class="popup-info-title">Tournament games:</p>
+										<p class="popup-info">
+											20 points for the winner.</br>
+											15 points for the second.</br>
+											7 points for the third.</br>
+											0 point for the last one.
+										</p>
+									</div>
+								`;
+
+								// Create the popup background and the popup
+								let popupBackground = document.createElement('div');
+								popupBackground.innerHTML = popupBackgroundHTML;
+								document.body.appendChild(popupBackground);
+
+								let popup = document.createElement('div');
+								popup.innerHTML = popupHTML;
+								document.body.appendChild(popup);
+
+								// Handle the click on the close button
+								document.getElementById('popup-background').addEventListener('click', () => {
+									popup.remove();
+									popupBackground.remove();
+								});
+							});
+
+						}});
 				} else {
 					router.navigate('/pong/');
 				}

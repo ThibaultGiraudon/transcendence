@@ -58,6 +58,19 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 
+# Enable a secure refresh limit
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '5/second',
+        'user': '5/second'
+    }
+}
+
+
 # Application definition
 INSTALLED_APPS = [
 	'django.contrib.admin',

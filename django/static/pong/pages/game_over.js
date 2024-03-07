@@ -5,6 +5,7 @@ function renderGameOverPage(gameID) {
 				if (data.success) {	
 					score = data.score;
 					position = data.position;
+
 					if (position == 1) {
 						position = '1st';
 					} else if (position == 2) {

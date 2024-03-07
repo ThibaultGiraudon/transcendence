@@ -18,9 +18,12 @@ def practice(request):
 
 def game(request, gameMode):
 	if request.method == 'GET':
+		request.user.set_status("in game")
 		return render(request, 'base.html')
 
 
 def gameOver(request, gameMode):
-	if request.method == 'GET':
-		return render(request, 'base.html')
+	# if request.method == 'GET':
+	# 	request.user.set_status("online")
+	# 	return render(request, 'base.html')
+	pass

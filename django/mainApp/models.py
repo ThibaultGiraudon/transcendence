@@ -14,6 +14,7 @@ class Player(models.Model):
 	deathPoints = ArrayField(models.IntegerField(), default=list)
 	tournamentPoints = ArrayField(models.IntegerField(), default=list)
 	totalPoints = ArrayField(models.IntegerField(), default=list)
+	averagePoints = models.FloatField(default=0)
 
 	def save(self, *args, **kwargs):
 		if not self.soloPoints:

@@ -77,7 +77,7 @@
 }
 
 .sign-form input[type="submit"] {
-	margin: 0;
+	margin-bottom: 10px;
 	font-size: 1em;
 	padding: calc(var(--input-padding) + 2px);
 	border-style: none;
@@ -231,7 +231,7 @@
 	height: 3em;
 }
 
-.users, .follows {
+.users, .friends {
 	width: 100%;
 	height: calc(100vh - var(--header-height) - var(--footer-height));
 	display: flex;
@@ -351,13 +351,15 @@
 }
 
 .profile-actions {
+	width: 100%;
 	display: flex;
-	align-items: left;
-	justify-content: left;
-	flex-direction: flex-start;
+	align-items: center;
+	justify-content: center;
+	flex-direction: row;
 }
 
 .profile-button {
+	width: auto;
 	font-size: 1em;
 	padding: 0.5em;
 	margin-right: 0.5em;
@@ -368,6 +370,23 @@
 	border: 1px solid var(--color-dark);
 	border-radius: var(--input-border-radius);
 	background: var(--color-dark);
+	text-align: center;
+	vertical-align: middle;
+}
+
+.profile-button-pending {
+	width: auto;
+	font-size: 1em;
+	padding: 0.5em;
+	margin-right: 0.5em;
+	margin-top: 2em;
+	margin-bottom: 2em;
+	font-family: var(--font-text-bold);
+	color: white;
+	border: 1px solid var(--color-dark);
+	border-radius: var(--input-border-radius);
+	background: var(--color-dark);
+	opacity: 0.6;
 	text-align: center;
 	vertical-align: middle;
 }
