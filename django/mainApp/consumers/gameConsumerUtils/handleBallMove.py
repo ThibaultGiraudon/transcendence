@@ -24,6 +24,9 @@ async def sendGameOver(consumer, gameSettings, paddle):
 		playerID = gameSettings.playerIDList[paddle.id]
 	await addStatToPlayer(playerID, paddle)
 	await consumer.channel_layer.group_send(
+		# TODO pour demain l'erreur vient de la 
+		# en gros on envoie un gameOver a tout le monde mais on devrait 
+		# ajouter le player ID qui est mort pour envoyer que a lui
 		f'game_{gameSettings.gameID}',
 		{
 			'type': 'game_over',
