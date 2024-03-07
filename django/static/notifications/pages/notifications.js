@@ -1,3 +1,48 @@
+function renderNotification(notification, index) {
+	let image;
+	if (notification.imageType === 'message') {
+		image = '/static/notifications/img/message.png';
+
+	} else if (notification.imageType === 'user') {
+		image = notification.imageUser;
+
+	} else {
+		image = '/static/notifications/img/empty.png';
+	}
+
+	return `
+		<div data-ignore-click data-route="${notification.redirect}" class="notification" data-index="${index}">
+			<div class="notification-containers">
+				
+				<div class="notification-theme">
+					<img class="notification-theme-img" src="${image}">
+				</div>
+
+				<div class="notification-content">
+
+					<span class="notification-title" data-index="${index}">${notification.title}</span>
+					<span class="notification-message" data-index="${index}">${notification.message}</span>
+					<span class="notification-date" data-index="${index}">${notification.date}</span>
+
+					<div class="notification-buttons">
+
+						${notification.type === 'request-friend' ? `
+						<a data-ignore-click data-notification-id=${notification.id}>
+							<p class="notification-button-text">Accept</p>
+						</a>
+						` : ''}	
+					
+						<a data-ignore-click class="notification-delete" data-notification-id=${notification.id}>
+							<img class="notification-delete-img" src="/static/notifications/img/delete.png" alt="Delete">
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	`;
+}
+
+
 function renderNotificationsPage() {
 
 	// If the user is not connected
@@ -8,7 +53,7 @@ function renderNotificationsPage() {
 		}
 	});
 
-	// Update the header
+	// Update the header to clear notifs count
 	renderHeader();
 
 	// Get the notifications
@@ -21,9 +66,26 @@ function renderNotificationsPage() {
 		document.getElementById('app').innerHTML = `
 			<h1>Notifications</h1>
 
-			<a class="notification-delete-all">
-				Delete All
-			</a>
+			<div class="notifications-actions">
+				
+				<div class="notifications-filters">
+
+					<p class="notification-filter-title">Filters:</p>
+					<a data-ignore-click class="notification-filter" data-filter="all">
+						All
+					</a>
+					<p class="notification-filter-divider">|</p>
+					<a data-ignore-click class="notification-filter" data-filter="messages">
+						Messages
+					</a>
+					<p class="notification-filter-divider">|</p>
+					<a data-ignore-click class="notification-filter" data-filter="requests">
+						Friends requests
+					</a>
+				</div>
+
+				<a class="notification-delete-all">Delete All</a>
+			</div>
 		`;
 
 		if (reversedNotifications.length === 0) {
@@ -32,29 +94,23 @@ function renderNotificationsPage() {
 			`;
 
 		} else {
+			let index = 0;
 			for (notification of reversedNotifications) {
-				
-				let html = `
-					<div class="notification">
-				`;
+				document.getElementById('app').innerHTML += renderNotification(notification, index);
 			
+				// Change the background color of the notification if it's not read
 				if (!notification.read) {
-					html += `
-						<span class="notification-new">New</span>
-					`;
+					document.querySelector(`.notification[data-index="${index}"]`).style.backgroundColor = '#F3F2ED';
+		
+					document.querySelector(`.notification-title[data-index="${index}"]`).style.color = 'black';
+		
+					document.querySelector(`.notification-message[data-index="${index}"]`).style.fontWeight = 'bold';
+					document.querySelector(`.notification-message[data-index="${index}"]`).style.color = 'black';
+		
+					document.querySelector(`.notification-date[data-index="${index}"]`).style.fontWeight = 'bold';
+					document.querySelector(`.notification-date[data-index="${index}"]`).style.color = 'black';
 				}
-			
-				html += `
-						<span class="notification-date">${notification.date}</span>
-						<span class="notification-message">${notification.message}</span>
-			
-						<a class="notification-delete" data-notification-id=${notification.id}>
-							Delete
-						</a>
-					</div>
-				`;
-			
-				document.getElementById('app').innerHTML += html;
+				index++;
 			}
 		};
 
@@ -78,6 +134,21 @@ function renderNotificationsPage() {
 			fetchAPI('/api/delete_all_notifications').then(data => {
 				router.navigate('/notifications/');
 				return ;
+			});
+		});
+
+		// Add a listener to redirect when clicking on a notification
+		document.querySelectorAll('.notification').forEach(notification => {
+			notification.addEventListener('click', function(event) {
+				event.preventDefault();
+
+				// If the user clicked on the delete button, don't redirect
+				if (event.target.classList.contains('notification-delete')) {
+					return ;
+				}
+
+				const url = notification.getAttribute('data-route');
+				router.navigate(url);
 			});
 		});
 	});

@@ -67,6 +67,13 @@ function renderChatPage() {
 					${dataUser.user.favoritesChannels.length == 1 ? '<h3 class="chat-section">• Favorite</h3>' : '<h3 class="chat-section">• Favorites</h3>'}
 					<div class="chat-scrollable">
 						${Object.values(dataUser.user.channels).map(channel => {
+							// Check if the channel is a DM with a blocked user
+							if (channel.private) {
+								for (let user of Object.values(channel.users)) {
+									if (user.blocked) { return ; }
+								}
+							}
+
 							if (dataUser.user.favoritesChannels.includes(channel.room_id)) {
 								return renderChannel(channel);
 							}
@@ -81,6 +88,13 @@ function renderChatPage() {
 					${Object.keys(dataUser.user.channels).length - Object.keys(dataUser.user.favoritesChannels).length == 1 ? '<h3 class="chat-section">• Channel</h3>' : '<h3 class="chat-section">• Channels</h3>'}
 					<div class="chat-scrollable">
 						${Object.values(dataUser.user.channels).map(channel => {
+							// Check if the channel is a DM with a blocked user
+							if (channel.private) {
+								for (let user of Object.values(channel.users)) {
+									if (user.blocked) { return ; }
+								}
+							}
+							
 							if (!dataUser.user.favoritesChannels.includes(channel.room_id)) {
 								return renderChannel(channel);
 							}

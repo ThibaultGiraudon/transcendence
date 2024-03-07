@@ -111,9 +111,14 @@ class CustomUser(AbstractUser):
 
 class Notification(models.Model):
 	user = models.ForeignKey(CustomUser, related_name='notifications', on_delete=models.CASCADE)
+	title = models.CharField(max_length=150, default='')
 	message = models.TextField()
 	date = models.DateTimeField(default=timezone.now)
+	redirect = models.CharField(max_length=150, default='')
 	read = models.BooleanField(default=False)
+	type = models.CharField(max_length=150, default='')
+	imageType = models.CharField(max_length=150, default='')
+	imageUser = models.CharField(max_length=150, default='')
 
 	def save(self, *args, **kwargs):
 		super(Notification, self).save(*args, **kwargs)
