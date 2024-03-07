@@ -16,7 +16,7 @@ function renderRankedPage() {
 
 					<button class="ranked-btn" id="init_death_game">
 						<img class="choose-img" src="/static/pong/img/death.png" class="choose-img">
-						<p class="choose-btn-title">Death Game</p>
+						<p class="choose-btn-title">Deathmatch Game</p>
 						<p class="choose-btn-text">
 							4 players play on the same board.
 							The last one standing wins the game.

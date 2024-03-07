@@ -84,6 +84,7 @@ def waitPlayers(request, gameMode):
 	if (request.method == 'GET'):
 		return render(request, 'base.html')
 	elif (request.method == 'POST'):
+		request.user.set_status("waiting for game")
 		data = json.loads(request.body)
 		gameMode = data.get('gameMode')
 		player = request.user.player
