@@ -225,6 +225,19 @@ function renderFollowButton(currentUser, user) {
 			</button>
 		`;
 	} else {
+		if (user.friendRequests.includes(currentUser.id))
+			return `
+				<button class="profile-button follow" data-user-id="${user.id}">
+					Accept friend request
+				</button>
+			`;
+		else if (currentUser.friendRequests.includes(user.id))
+			return `
+				<p class="profile-button-pending">
+					Pending...
+				</p>
+			`;
+		else
 		return `
 			<button class="profile-button follow" data-user-id="${user.id}">
 				Send a friend request

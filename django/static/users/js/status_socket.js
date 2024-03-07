@@ -87,3 +87,11 @@ function SignInProcess(id) {
 		}).catch(function(error) {});
 	}
 }
+
+function changeStatus(id, status) {
+	// Change the status of the user
+	statusSocket.socket.send(JSON.stringify({
+		'id': id,
+		'status': status
+	}));
+}
