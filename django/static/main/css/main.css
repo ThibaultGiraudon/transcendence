@@ -318,6 +318,24 @@ footer {
 	margin-bottom: 0.1em;
 }
 
+/* Reorganize footer on mobile */
+@media (max-width: 1000px) {
+	.footer-category {
+		margin-left: 0.5em;
+		margin-right: 0;
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+
+	.footer-title {
+		text-align: left;
+	}
+
+	.footer-link {
+		justify-content: left;
+	}
+}
+
 
 /* HEADER */
 .menu-windows.auth, .menu-windows.guest {
@@ -359,22 +377,6 @@ header .header-menu {
 	padding: 0.5em 0.5em;
 	position: relative;
 }
-
-/* hide text menu link on mobile */
-@media (max-width: 1000px) {
-	.menu-link {
-		padding-right: 0;
-	}
-
-	.menu-text {
-		display: none !important;
-	}
-
-	.menu-username {
-		display: none !important;
-	}
-}
-
 
 .menu-link:after {    
 	background: none repeat scroll 0 0 transparent;
@@ -493,6 +495,41 @@ button:hover {
 	margin-right: 2em;
 }
 
+/* Reorganize header on mobile */
+@media (max-width: 1000px) {
+	.menu-link {
+		padding-left: 0.25em;
+		padding-right: 0;
+		margin-right: 0;
+	}
+
+	.menu-text {
+		display: none !important;
+	}
+
+	.menu-username {
+		display: none !important;
+	}
+
+	.menu-profile {
+		margin: 0;
+		padding-right: 1em;
+	}
+
+	.menu-img-user {
+		margin: 0;
+		padding: 0;
+		padding: 0;
+		width: 3.5em;
+		height: 3.5em;
+	}
+
+	.menu-img-notifs {
+		width: 3.5em;
+		height: 3.5em;
+	}
+}
+
 
 /* container */
 
@@ -575,4 +612,24 @@ img {
 
 .ken-link:hover {
 	opacity: 0.3;
+}
+
+
+/* Reorganize main CSS on mobile */
+@media (max-width: 1000px) {
+	h1 {
+		font-size: 3em;
+	}
+
+	h2 {
+		font-size: 2em;
+	}
+
+	h3 {
+		font-size: 1.5em;
+	}
+
+	h4 {
+		font-size: 1em;
+	}
 }

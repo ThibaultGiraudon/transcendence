@@ -197,3 +197,23 @@
 	text-align: center;
 	justify-content: center;
 }
+
+/* Reorganize notifications CSS on mobile */
+@media (max-width: 1000px) {
+	.notification {
+		width: 85%;
+		padding: 0.5em;
+	}
+
+	.notification-buttons {
+		margin-top: 0.75em;
+	}
+
+	.notifications-actions {
+		flex-direction: column;
+	}
+
+	.notification-delete-all {
+		margin-top: 1em;
+	}
+}

@@ -490,3 +490,68 @@
 	margin-bottom: 0.5vh;
 	color: var(--color-dark);
 }
+
+/* Reorganize chat CSS on mobile */
+@media (max-width: 1000px) {
+	.a-chat {
+		width: 90%;
+	}
+
+	.chat-container {
+		width: 100%;
+		padding: 0.5em;
+	}
+}
+
+/* Reorganize room CSS on mobile */
+@media (max-width: 1000px) {
+	.popup {
+		width: 80%;
+	}
+
+	.list-participants, .participants, .chat-info-private {
+		display: none;
+	}
+
+	.chat-category {
+		font-size: 2em;
+		margin-top: 0.2em;
+		margin-bottom: 0.5em;
+	}
+
+	.chat-window {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin: 0;
+		padding: 0;
+	}
+
+	.chat {
+		width: 100%;
+		height: 100%;
+		margin: 1em;
+		margin: 1em;
+	}
+
+	.chat-log {
+		margin: 0;
+		padding: 0;
+		height: 75%;
+	}
+
+	.chat-private-img {
+		margin-top: 0.5em;
+		margin-bottom: 0.5em;
+		width: 3em;
+		height: 3em;
+	}
+
+	.chat-category-pp {
+		font-size: 2em;
+	}
+
+	.invite-game-button {
+		display: none;
+	}
+}
