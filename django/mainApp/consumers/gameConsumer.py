@@ -23,12 +23,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 		await self.accept()
 
 	async def disconnect(self, close_code):
-		# TODO inutile car si on quitte la page ca delete la ball (a reverifier quand meme)
-		# gameID = self.scope['url_route']['kwargs']['game_id']
-		# if (gameID in self.gameSettingsInstances):
-		# 	GameSettings = self.gameSettingsInstances[gameID]
-		# 	if (GameSettings.ball.task):
-		#		GameSettings.ball.task.cancel()
 		await self.channel_layer.group_discard(
 			self.game_group_name,
 			self.channel_name
