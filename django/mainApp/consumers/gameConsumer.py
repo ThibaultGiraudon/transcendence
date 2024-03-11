@@ -32,15 +32,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		gameID = self.scope['url_route']['kwargs']['game_id']
 		message = json.loads(text_data)
 
-		# TODO ici changer par tout ce qui commence par init_
-		if (message['type'] == 'init_ranked_solo_game' or \
-			message['type'] == 'init_death_game' or \
-			message['type'] == 'init_tournament_game' or \
-			message['type'] == 'init_tournament_game_final_game' or \
-			message['type'] == 'init_tournament_game_third_place_game' or \
-			message['type'] == 'init_local_game' or \
-			message['type'] == 'init_ai_game' or \
-			message['type'] == 'init_wall_game'):
+		if (message['type'].startswith('init_')):
 			await handleInitGame(self, gameID, message['type'], message['playerID'])
 
 		if (message['type'] == 'paddle_move'):
