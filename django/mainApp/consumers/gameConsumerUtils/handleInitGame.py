@@ -2,6 +2,7 @@ from 	channels.db import database_sync_to_async
 from 	.classes.gameSettings import GameSettings
 from	.senders.sendInitPaddlePosition import sendInitPaddlePosition
 from	.senders.sendUpdateScore import sendUpdateScore
+from	.senders.sendReloadPage import sendReloadPage	
 from 	.handleBallMove import handleBallMove
 
 @database_sync_to_async
@@ -34,15 +35,6 @@ def sendTournamentReload(consumer):
 	if (game.gameMode == 'init_tournament_game_sub_game'):
 		parentGame = Game.objects.get(id=game.parentGame)
 		return (parentGame.subGames)
-
-# TODO a deplacer dans un send
-async def sendReloadPage(consumer, gameID):
-	await consumer.channel_layer.group_send(
-		f'game_{gameID}',
-		{
-			'type': 'reload_page',
-		}
-	)
 
 async def launchAnyGame(consumer, gameID, gameMode, isLocalGame):
 	if gameID not in consumer.gameSettingsInstances:

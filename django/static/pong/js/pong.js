@@ -86,8 +86,9 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 		}
 
         if (message.type === 'game_over') {
-            console.log(message);
-            gameOver(message);
+            if (message.playerID === playerID) {
+                gameOver(message);
+            }
         }
     };
 
