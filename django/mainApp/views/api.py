@@ -281,7 +281,7 @@ def follow(request, id):
 
 	# Don't send the notification if the receiver blocked the sender
 	if request.user.id not in userTo.blockedUsers:
-		notification = Notification(user=userTo, type='request-friend', imageType='user', imageUser=request.user.photo.url, title="New friend request", message=f"{request.user.username} send you a friend request.", redirect=f"/profile/{request.user.username}")
+		notification = Notification(user=userTo, type='request-friend', imageType='user', userID=request.user.id, imageUser=request.user.photo.url, title="New friend request", message=f"{request.user.username} send you a friend request.", redirect=f"/profile/{request.user.username}")
 		notification.save()
 	
 	return JsonResponse({'success': True, "message": "Successful send friend request"}, status=200)
@@ -387,16 +387,34 @@ def get_notifications(request):
 			'message': notification.message,
 			'date': timezone.localtime(notification.date).strftime("%d-%m-%Y %H:%M"),
 			'redirect': notification.redirect,
+			'interacted': notification.interacted,
 			'read': notification.read,
 			'type': notification.type,
 			'imageType': notification.imageType,
 			'imageUser': notification.imageUser,
+			'userID': notification.userID,
 		}
 	
 	# Mark all notifications as read
 	request.user.notifications.all().update(read=True)
 	
 	return JsonResponse({'notifications': notifications_dict}, status=200)
+
+
+def interacted_notification(request, id):
+	if not request.user.is_authenticated:
+		return JsonResponse({'success': False, "message": "The user is not authenticated"}, status=401)
+
+	# Get notification
+	try:
+		notification = request.user.notifications.get(id=id)
+	except ObjectDoesNotExist:
+		return JsonResponse({'success': False, "message": "Notification does not exist"}, status=401)
+
+	# Mark the notification as interacted
+	notification.interact()
+
+	return JsonResponse({'success': True, "message": "Notification mark as interacted"}, status=200)
 
 
 def delete_notification(request, id):
@@ -407,7 +425,7 @@ def delete_notification(request, id):
 	try:
 		notification = request.user.notifications.get(id=id)
 	except ObjectDoesNotExist:
-		return JsonResponse({'success': False, "message": "Notification does not exist"}, status=401)
+		return JsonResponse({'success': False, "message": "Notification does not exist"}, status=200)
 
 	# Delete notification
 	notification.delete()

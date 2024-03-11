@@ -115,16 +115,22 @@ class Notification(models.Model):
 	message = models.TextField()
 	date = models.DateTimeField(default=timezone.now)
 	redirect = models.CharField(max_length=150, default='')
+	interacted = models.BooleanField(default=False)
 	read = models.BooleanField(default=False)
 	type = models.CharField(max_length=150, default='')
 	imageType = models.CharField(max_length=150, default='')
 	imageUser = models.CharField(max_length=150, default='')
+	userID = models.IntegerField(default=0)
 
 	def save(self, *args, **kwargs):
 		super(Notification, self).save(*args, **kwargs)
 		self.user.nbNewNotifications += 1
 		self.user.save()
 		self.send_notification()
+
+	def interact(self):
+		Notification.objects.filter(id=self.id).update(interacted=True)
+		self.user.save()
 	
 	def send_notification(self):		
 		channel_layer = get_channel_layer()

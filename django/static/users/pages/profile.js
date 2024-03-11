@@ -467,7 +467,7 @@ function renderProfilePage(username) {
 								if (response.status == 413) {
 									document.getElementById('error-message').textContent = "The photo size is too large.";
 								} else {
-									document.getElementById('error-message').textContent = "The server did not return a JSON response.";
+									document.getElementById('error-message').textContent = "The server encountered an unexpected error.";
 								}
 							}
 						});
@@ -538,6 +538,8 @@ function renderProfilePage(username) {
 								`;
 							}
 							renderPongStats(user);
+
+							
 							// Add an event listener on the send a chat button (for new chat only)
 							const sendChatButton = document.querySelector('.profile-button.chat');
 							if (sendChatButton) {

@@ -13,10 +13,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		if channel.private:
 			for userToSend in channel.users.all():
 				if userToSend.id != user.id:
-					message = f"You have a new message from {userToSend.username}"
+					message = userToSend.username
 					notification = Notification(user=user, type='message', imageType='user', imageUser=userToSend.photo.url, title="New message", message=message, redirect=f"/chat/{self.room_id}")
 		else:
-			message = f"You have a new message from {channel.name}"
+			message = channel.name
 			notification = Notification(user=user, type='message', imageType='message', title="New message", message=message, redirect=f"/chat/{self.room_id}")
 		notification.save()
 

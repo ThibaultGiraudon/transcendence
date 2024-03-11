@@ -260,6 +260,10 @@ body {
 	min-height: calc(100vh - var(--header-height));
 	width: 100%;
 	height: 100%;
+	margin: 0;
+	padding: 0;
+	overflow-x: hidden;
+	overflow-y: hidden;
 }
 
 #app {
@@ -354,6 +358,13 @@ header .header-menu {
 	display: inline-block;
 	padding: 0.5em 0.5em;
 	position: relative;
+}
+
+/* hide text menu link on mobile */
+@media (max-width: 1000px) {
+	.menu-link menu-text {
+		background-color: red;
+	}
 }
 
 .menu-link:after {    
