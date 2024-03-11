@@ -54,9 +54,11 @@ async def updateScore(consumer, gameSettings, paddleID):
 			gameSettings.paddles[paddleID].position = nbAlives + 1
 			await sendGameOver(consumer, gameSettings, gameSettings.paddles[paddleID])
 			if (nbAlives == 1):
-				print("\n\n\nnbAlives == 1")
 				for paddle in gameSettings.paddles:
 					if (paddle.isAlive):
+						paddle.isAlive = False
+						paddle.position = 1
+						paddle.score = 10
 						await sendGameOver(consumer, gameSettings, paddle)
 
 async def startBall(consumer, gameSettings):

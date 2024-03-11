@@ -711,6 +711,8 @@ def get_game_over(request, gameID):
 	gameMode = game.gameMode
 
 	scores = game.scores.filter(player__id=player.id)
+	if (scores == None):
+		return JsonResponse({'success': False}, status=200)
 	score = scores.first().score
 	position = scores.first().position
 
