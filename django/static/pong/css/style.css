@@ -163,3 +163,18 @@ canvas {
 .bottom {
 	color: #F19705;
 }
+
+/* Reorganize choose game modes on mobile */
+@media (max-width: 1000px) {	
+	.choose-buttons {
+		flex-direction: column;
+		align-items: center;
+		margin-top: 2em;
+	}
+	.choose-btn, .practice-btn, .ranked-btn {
+		width: 80%;
+		margin: 0;
+		margin-bottom: 2em;
+		padding: 1em;
+	}
+}
