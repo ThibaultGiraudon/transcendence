@@ -18,56 +18,60 @@ def getNbPlayersToWait(gameMode):
 		return (2)
 	return (4)
 
-# TODO ajouter ca dans un function pour que ca soit plus clair (la partie de tournamemnt)
-def createOrJoinGame(waitingGamesList, player, gameMode):
-	if (waitingGamesList.exists()):
-		game = waitingGamesList.first()
-		if (game.gameMode == 'init_tournament_game'):
-			subGame = Game.objects.get(id=game.subGames[0])
-			if (subGame.playerList.__len__() == 2):
-				if (game.subGames.__len__() == 1):
-					newSubGame = Game.objects.create(
-						date=datetime.date.today(),
-						hour=datetime.datetime.now().time(),
-						duration=0,
-						gameMode=gameMode + '_sub_game',
-						playerList=[],
-						parentGame=game.id,
-					)
-					game.subGames.append(newSubGame.id)
-					game.save()
-
-				subGame = Game.objects.get(id=game.subGames[1])
-
-			subGame.playerList.append(player.id)
-			subGame.save()
-
-		game.playerList.append(player.id)
-		game.save()
-		return (game.id)
-	else:
-		newSubGameID = None
-		if (gameMode == 'init_tournament_game'):
+def joinTournamentGame(game, player, gameMode):
+	subGame = Game.objects.get(id=game.subGames[0])
+	if (subGame.playerList.__len__() == 2):
+		if (game.subGames.__len__() == 1):
 			newSubGame = Game.objects.create(
 				date=datetime.date.today(),
 				hour=datetime.datetime.now().time(),
 				duration=0,
 				gameMode=gameMode + '_sub_game',
-				playerList=[player.id],
+				playerList=[],
+				parentGame=game.id,
 			)
-			newSubGameID = newSubGame.id
-		newGame = Game.objects.create(
+			game.subGames.append(newSubGame.id)
+			game.save()
+
+		subGame = Game.objects.get(id=game.subGames[1])
+
+	subGame.playerList.append(player.id)
+	subGame.save()
+
+def createGame(player, gameMode):
+	newSubGameID = None
+	if (gameMode == 'init_tournament_game'):
+		newSubGame = Game.objects.create(
 			date=datetime.date.today(),
 			hour=datetime.datetime.now().time(),
 			duration=0,
-			gameMode=gameMode,
+			gameMode=gameMode + '_sub_game',
 			playerList=[player.id],
-			subGames=[newSubGameID],
 		)
-		if (gameMode == 'init_tournament_game'):
-			newSubGame.parentGame = newGame.id
-			newSubGame.save()
-		return (newGame.id)
+		newSubGameID = newSubGame.id
+	newGame = Game.objects.create(
+		date=datetime.date.today(),
+		hour=datetime.datetime.now().time(),
+		duration=0,
+		gameMode=gameMode,
+		playerList=[player.id],
+		subGames=[newSubGameID],
+	)
+	if (gameMode == 'init_tournament_game'):
+		newSubGame.parentGame = newGame.id
+		newSubGame.save()
+	return (newGame.id)
+
+def createOrJoinGame(waitingGamesList, player, gameMode):
+	if (waitingGamesList.exists()):
+		game = waitingGamesList.first()
+		if (game.gameMode == 'init_tournament_game'):
+			joinTournamentGame(game, player, gameMode)
+
+		game.playerList.append(player.id)
+		game.save()
+		return (game.id)
+	return (createGame(player, gameMode))
 
 def returnJsonResponse(game, nbPlayersToWait, gameMode, playerID):
 	gameID = game.id
