@@ -139,11 +139,21 @@
 }
 
 
-/* USERS */
+/* FRIENDS */
+
+.friends-screen {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
 
 .status-log {
 	width: 100%;
 	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .users-img {
@@ -151,9 +161,8 @@
 	height: 3em;
 }
 
-.users, .friends {
-	width: 100%;
-	height: calc(100vh - var(--header-height) - var(--footer-height));
+.friends {
+	width: 60%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -172,7 +181,7 @@
 
 .list {
 	width: 80%;
-	height: calc(80vh - var(--header-height) - var(--footer-height));
+	height: 45em;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
@@ -184,6 +193,31 @@
 	padding: 5%;
 	margin-left: 10%;
 	margin-right: 10%;
+}
+
+.list-empty {
+	width: 80%;
+	height: 45em;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	overflow-y: auto;
+	background-color: var(--color-light-hover);
+	border-radius: var(--border-radius);
+	margin-top: 2em;
+	margin-bottom: 2em;
+	padding: 5%;
+	margin-left: 10%;
+	margin-right: 10%;
+}
+
+.no-users-img {
+	width: 15%;
+	height: auto;
+	margin-bottom: 0.5em;
+	border-radius: 0;
+	opacity: 0.7;
 }
 
 .users-user {

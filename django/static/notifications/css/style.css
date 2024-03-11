@@ -31,6 +31,8 @@
 	border-radius: var(--border-radius);
 	box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
 	transition: ease-in-out 0.1s;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .notification:hover:not(.notification-delete) {
@@ -159,12 +161,15 @@
 .notification-filter {
 	display: flex;
 	align-items: center;
-	justify-content: left;
+	justify-content: center;
 	flex-direction: row;
 	margin: 0.5em;
 	font-family: var(--font-text-regular);
 	color: var(--color-dark-hover);
 	font-size: 1em;
+	transition: none;
+	border-radius: 5px;
+	padding: 2px 10px;
 }
 
 .notification-filter-divider {

@@ -16,7 +16,8 @@ function renderUsersSection(title, users) {
 		return `
 			<div class="${title.toLowerCase()}">
 				<h1>${title}</h1>
-				<div class="list">
+				<div class="list-empty">
+					<img class="no-users-img" src="/static/users/img/empty.png">
 					<h4 class="no-users">No ${title.toLowerCase()}</h4>
 				</div>
 			</div>
@@ -55,7 +56,7 @@ function renderUsersPage() {
 
 			// Display the HTML
 			document.getElementById('app').innerHTML = `
-				<div class="all-screen">
+				<div class="friends-screen">
 					<div id="status-log" class="status-log">
 						${renderUsersSection('Friends', followed)}
 					</div>

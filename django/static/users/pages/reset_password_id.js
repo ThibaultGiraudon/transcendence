@@ -100,7 +100,7 @@ function renderResetPasswordIDPage() {
 					}
 
 				} else {
-					document.getElementById('error-message').textContent = "The server did not return a JSON response.";
+					document.getElementById('error-message').textContent = "The server encountered an unexpected error.";
 				}
 			});
 		}

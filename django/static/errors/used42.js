@@ -3,7 +3,7 @@ function renderUsed42Page() {
 		<div class="error-container">
 			<p class="error-code">403</p>
 			<p class="error-title">Failed to connect</p>
-			<p class="error-infos">Your 42 email is already used, please log manually.</p>
+			<p class="error-infos">Your 42 email or username is already used, please log manually.</p>
 		</div>
 	`;
 }

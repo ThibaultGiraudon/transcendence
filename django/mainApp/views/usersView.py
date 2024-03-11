@@ -209,7 +209,7 @@ def reset_password(request):
 			</p>
 			
 			<p>
-			<a href="https://10.14.9.5:8443/reset_password_id/{user.resetPasswordID}">Reset your password</a>
+			<a href="https://localhost:8443/reset_password_id/{user.resetPasswordID}">Reset your password</a>
 			</p>
 			
 			<p>
@@ -458,7 +458,7 @@ def	check_authorize(request):
 
 
 def	connect_42_user(request, response_data):
-	user = authenticate_42_user(email=response_data['email'])
+	user = authenticate_42_user(email=response_data['email'], username=response_data['login'])
 	
 	if user:
 		if not user.is42:
@@ -523,7 +523,7 @@ def	connect_42_user(request, response_data):
 		)
 		user.photo.save(f"{response_data['email']}.jpg", ContentFile(img_io.getvalue()), save=True)
 		user.save()
-		user = authenticate_42_user(email=response_data['email'])
+		user = authenticate_42_user(email=response_data['email'], username=response_data['login'])
 		if user:
 			login(request, user)
 		
@@ -618,11 +618,17 @@ def authenticate_custom_user(email, password):
 		return 'emailError'
 
 
-def authenticate_42_user(email):
+def authenticate_42_user(email, username):
 	User = get_user_model()
 
 	try:
 		user = User.objects.get(email=email)
+		return user
+	except User.DoesNotExist:
+		pass
+
+	try:
+		user = User.objects.get(username=username)
 		return user
 	except User.DoesNotExist:
 		return None

@@ -49,6 +49,7 @@ urlpatterns = [
 	path('api/unblock/<str:id>', api.unblock, name='unblock'),
 	
 	path('api/get_notifications', api.get_notifications, name='get_notifications'),
+	path('api/interacted_notification/<int:id>', api.interacted_notification, name='interacted_notification'),
 	path('api/delete_notification/<int:id>', api.delete_notification, name='delete_notification'),
 	path('api/delete_all_notifications', api.delete_all_notifications, name='delete_all_notifications'),
 
