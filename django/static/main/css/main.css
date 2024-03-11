@@ -362,10 +362,19 @@ header .header-menu {
 
 /* hide text menu link on mobile */
 @media (max-width: 1000px) {
-	.menu-link menu-text {
-		background-color: red;
+	.menu-link {
+		padding-right: 0;
+	}
+
+	.menu-text {
+		display: none !important;
+	}
+
+	.menu-username {
+		display: none !important;
 	}
 }
+
 
 .menu-link:after {    
 	background: none repeat scroll 0 0 transparent;
