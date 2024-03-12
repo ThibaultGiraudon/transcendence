@@ -19,7 +19,7 @@ def get_username(request, id):
 		return JsonResponse({'username': None}, status=401)
 
 	if id == 0:
-		return JsonResponse({'success': False, "message": "You cannot interact with the system user"}, status=401)
+		return JsonResponse({'success': False, "message": "You cannot interact with the system user"}, status=200)
 
 	# Check if the user exist
 	User = get_user_model()
@@ -261,6 +261,10 @@ def follow(request, id):
 		userTo = User.objects.get(id=id)
 		if id in request.user.follows:
 			return JsonResponse({'success': False, "message": "User already followed"}, status=401)
+		if id in request.user.blockedUsers:
+			return JsonResponse({'success': False, "message": "User is blocked"}, status=401)
+		if request.user.id in userTo.blockedUsers:
+			return JsonResponse({'success': False, "message": "You are blocked by this user"}, status=401)
 	except User.DoesNotExist:
 		return JsonResponse({'success': False, "message": "User does not exist"}, status=401)
 	
@@ -305,13 +309,12 @@ def unfollow(request, id):
 	try:
 		userTo = User.objects.get(id=id)
 		if id not in request.user.follows:
-			return JsonResponse({'success': False, "message": "User already blocked"}, status=401)
+			return JsonResponse({'success': False, "message": "User is not followed"}, status=401)
 	except User.DoesNotExist:
 		return JsonResponse({'success': False, "message": "User does not exist"}, status=401)
 
 	request.user.follows.remove(id)
 	request.user.save()
-
 	userTo.follows.remove(request.user.id)
 	userTo.save()
 
@@ -338,6 +341,17 @@ def block(request, id):
 	# Unfollow the user if he is in the follows list
 	if id in request.user.follows:
 		request.user.follows.remove(id)
+
+		User = get_user_model()
+		try:
+			userTo = User.objects.get(id=id)
+			userTo.follows.remove(request.user.id)
+			userTo.save()
+		except User.DoesNotExist:
+			pass
+	
+	if id in request.user.friendRequests:
+		request.user.friendRequests.remove(id)
  
 	# Block the user
 	request.user.blockedUsers.append(id)
@@ -852,3 +866,4 @@ def get_ranking_points(request, sortedBy):
 		else:
 			rank += 1
 	return JsonResponse({'success': True, 'users': users_dict}, status=200)
+
