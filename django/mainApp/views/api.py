@@ -5,7 +5,7 @@ from django.middleware.csrf import get_token
 from django.utils import timezone
 import uuid, datetime
 
-from ..models import Notification, Channel, Game
+from ..models import Notification, Channel, Game, Score
 
 
 def get_username(request, id):
@@ -72,6 +72,7 @@ def get_user(request, username=None):
 	# Get informations about the current user
 	if not username or username == request.user.username or username == "me":
 		channels_dict = {}
+		allGames_dict = {}
 		channels = list(request.user.channels.all())
 
 		# Order by last interaction
@@ -147,6 +148,56 @@ def get_user(request, username=None):
 				'description': channel.description if channel.description else 'No description available',
 			}
 
+		index = 1
+
+		# Get all games
+		game_ids = request.user.player.allGames
+		games = Game.objects.filter(id__in=game_ids).order_by('-date')
+		for game in games:
+			players_info_dict = {}
+			for player in game.playerList:
+				User = get_user_model()
+				user = User.objects.get(player__id=player)
+				players_info_dict[user.id] = {
+					'id': user.id,
+					'username': user.username,
+					'photo_url': user.photo.url,
+				}
+			
+			if (len(game.scores.all()) > 2):
+				scores = game.scores.filter(player__id=request.user.player.id)
+				if (scores.position == 1):
+					result = "1st"
+				elif (scores.position == 2):
+					result = "2nd"
+				elif (scores.position == 3):
+					result = "3rd"
+				elif (scores.position == 4):
+					result = "4th"
+			else:
+				scores = game.scores.filter(player__id=request.user.player.id)
+				result = str(scores.first().score) + "-"
+				for player_id in game.playerList:
+					if (player_id != request.user.player.id):
+						scores = game.scores.filter(player__id=player_id)
+						result += str(scores.first().score)
+
+			game_mode = ['init_ranked_solo_game', 'init_tournament_game', 'init_death_game']
+			game_title = ['Solo Game', 'Tournament Game', 'Deathmatch Game']
+			
+			if (game.gameMode in game_mode):
+				gameMode = game_title[game_mode.index(game.gameMode)]
+			allGames_dict[index] = {
+				'id': game.id,
+				'date': timezone.localtime(game.date).strftime("%d-%m-%Y %H:%M"),
+				'duration': game.duration,
+				'playersList': players_info_dict,
+				'gameMode': gameMode,
+				'result': result,
+			}
+			index += 1
+
+
 		# Get player informations
 		player_info = {
 			'currentGameID': request.user.player.currentGameID,
@@ -156,8 +207,7 @@ def get_user(request, username=None):
 			'tournamentPoints': request.user.player.tournamentPoints,
 			'totalPoints': request.user.player.totalPoints,
 			'gamePlayed': user.player.score_set.count(),
-			'gameVictory': 'toDefineInAPI',
-			'gameDefeat': 'toDefineInAPI',
+			'allGames':	allGames_dict,
 		}
 
 		# Get informations about the user
@@ -690,8 +740,6 @@ def create_finals_game(game, player, isFinal):
 		gameMode = game.gameMode + "_third_place_game"
 	
 	newGame = Game.objects.create(
-		date=datetime.date.today(),
-		hour=datetime.datetime.now().time(),
 		duration=0,
 		gameMode=gameMode,
 		playerList=[player.id],

@@ -9,6 +9,7 @@ from django.utils import timezone
 
 class Player(models.Model):
 	currentGameID = models.IntegerField(default=None, null=True)
+	allGames = ArrayField(models.IntegerField(), default=list)
 	isReady = models.BooleanField(default=False)	
 	soloPoints = ArrayField(models.IntegerField(), default=list)
 	deathPoints = ArrayField(models.IntegerField(), default=list)
@@ -29,8 +30,7 @@ class Player(models.Model):
 		self.save()
 
 class Game(models.Model):
-	date = models.DateField()
-	hour = models.TimeField()
+	date = models.DateTimeField(default=timezone.now)
 	duration = models.IntegerField()
 	playerList = ArrayField(models.IntegerField())
 	gameMode = models.CharField(max_length=50)
