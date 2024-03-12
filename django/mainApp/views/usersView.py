@@ -27,7 +27,7 @@ from mainApp.models import Player
 API_USER = 'https://api.intra.42.fr/v2/me'
 CLIENT_ID = os.environ.get('CLIENT_ID')
 CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
-
+HOST = os.environ.get('HOST')
 
 # Views
 @ensure_csrf_cookie
@@ -209,7 +209,7 @@ def reset_password(request):
 			</p>
 			
 			<p>
-			<a href="https://localhost:8443/reset_password_id/{user.resetPasswordID}">Reset your password</a>
+			<a href="https://{HOST}:8443/reset_password_id/{user.resetPasswordID}">Reset your password</a>
 			</p>
 			
 			<p>

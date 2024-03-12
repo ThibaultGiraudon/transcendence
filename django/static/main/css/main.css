@@ -166,6 +166,7 @@
 	margin: 0px;
 	padding: 0px;
 	user-select: none;
+	box-sizing: border-box;
 }
 
 h1 {
@@ -230,17 +231,15 @@ label {
 	color: var(--color-dark-hover);
 }
 
-
 .all-screen {
 	width: 100vw;
-	height: calc(100vh - var(--header-height) - var(--footer-height));
+	min-height: calc(100vh - var(--header-height) - var(--footer-height));
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	overflow-x: hidden;
-	overflow-y: hidden;
-	overflow: hidden;
+	overflow-y: auto;
 }
 
 
@@ -257,12 +256,11 @@ body {
 	display: flex;
 	flex-direction: column;
 	min-height: calc(100vh - var(--header-height));
-	width: 100%;
+	width: 100vw;
 	height: 100%;
 	margin: 0;
 	padding: 0;
-	overflow-x: hidden;
-	overflow-y: hidden;
+	overflow: hidden;
 }
 
 #app {
@@ -271,6 +269,7 @@ body {
 	overflow: auto;
 	flex-direction: column;
 	align-items: center;
+	max-width: 100vw;
 }
 
 
@@ -281,7 +280,7 @@ footer {
 	align-items: center;
 	justify-content: center;
 	height: var(--footer-height);
-	width: 100%;
+	width: 100vw;
 }
 
 .footer-category {
@@ -319,6 +318,11 @@ footer {
 
 /* Reorganize footer on mobile */
 @media (max-width: 1000px) {
+	:root {
+		--header-height: 5em;
+		--footer-height: 5em;
+	}
+
 	.footer-category {
 		margin-left: 0.5em;
 		margin-right: 0;
@@ -328,10 +332,12 @@ footer {
 
 	.footer-title {
 		text-align: left;
+		font-size: 0.7em;
 	}
 
 	.footer-link {
 		justify-content: left;
+		font-size: 0.6em;
 	}
 }
 
@@ -519,13 +525,17 @@ button:hover {
 		margin: 0;
 		padding: 0;
 		padding: 0;
-		width: 3.5em;
-		height: 3.5em;
+		width: 3em;
+		height: 3em;
 	}
 
 	.menu-img-notifs {
-		width: 3.5em;
-		height: 3.5em;
+		width: 3em;
+		height: 3em;
+	}
+
+	.notification-count {
+		font-size: 0.8em;
 	}
 }
 

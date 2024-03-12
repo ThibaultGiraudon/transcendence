@@ -67,6 +67,7 @@ urlpatterns = [
 
 	path('api/get_game_over/<int:gameID>', api.get_game_over, name='get_game_over'),
 	path('api/get_ranking_points/<str:sortedBy>', api.get_ranking_points, name='get_ranking_points'),
+	path('api/quit_game', api.quit_game, name='quit_game'),
 
 	# Errors handling for 42 API
 	path('token42/', mainView.token42, name='token42'),
