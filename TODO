@@ -18,3 +18,9 @@ Ajouter le canvas en responsive avec une regle transform css
 
 Les messages du system info s'envoie autant de fois \
 	que le nombre de pelo dans le groupe de discution si j'ajoute qlq
+
+Status offline when close page
+
+[LEON - TIBO]
+
+Historique de parties sur le profil d'un user (mode de jeu, date, contre qui, winner...)
