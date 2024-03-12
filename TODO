@@ -9,8 +9,6 @@ Reload start game socket closed or on close
 Ajouter le invite to game qui est dans le chat prive \
 	pour inviter un joueur a jouer
 
-Fix le pb quand on ctrl+r sur la page GameOver
-
 Ajouter le canvas en responsive avec une regle transform css
 
 
