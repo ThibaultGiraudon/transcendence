@@ -54,6 +54,7 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 			return;
 		}
         if (socket.readyState === WebSocket.OPEN) {
+            socket.socket.close();
             return;
         }
 		const message = {
@@ -62,14 +63,23 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 			action: 'newPlayer'
 		};
 		socket.socket.send(JSON.stringify(message));
-        console.log('Message envoyé :', message);
+
+        console.log("connected OKKK");
     };
 
     socket.socket.onmessage = function(event) {
         const message = JSON.parse(event.data);
 
 		if (message.type === 'reload_page') {
-			router.navigate('/pong/game/' + gameMode);
+            console.log(message);
+            console.log(playerID);
+            if (message.playerID == playerID) {
+                
+                // if (isWaitingPage) {
+                router.navigate('/pong/game/' + gameMode);
+                // }
+            }
+            // socket.socket.close();
 		}
 
 		if (message.type === 'init_paddle_position') {
@@ -95,8 +105,9 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
         }
     };
 
+    // TODO supprimer si ca casse rien 
     socket.socket.onclose = function(event) {
-        console.log('Connexion WebSocket fermée', event);
+        console.log("CLOSED OKK");
     };
 
     document.addEventListener('keydown', function(event) {
