@@ -31,6 +31,8 @@ function renderGameOverPage(gameID) {
 						${positionText}
 					`
 					document.getElementById('app').innerHTML = html
+				} else {
+					router.navigate('/')
 				}
 			})
 		// If the user is not connected

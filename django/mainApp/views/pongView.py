@@ -22,8 +22,6 @@ def game(request, gameMode):
 		return render(request, 'base.html')
 
 
-def gameOver(request, gameMode):
-	# if request.method == 'GET':
-	# 	request.user.set_status("online")
-	# 	return render(request, 'base.html')
-	pass
+def gameOver(request, gameID):
+	if request.method == 'GET':
+		return render(request, 'base.html')
