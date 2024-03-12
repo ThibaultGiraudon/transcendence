@@ -5,9 +5,6 @@ Erreur quand on est sur une autre page (chat) et que le j2 \
 	WebSocket ce qui est pas clean
 
 Reload start game socket closed or on close
-	
-Les messages du system info s'envoie autant de fois \
-	que le nombre de pelo dans le groupe de discution si j'ajoute qlq
 
 Ajouter le invite to game qui est dans le chat prive \
 	pour inviter un joueur a jouer
@@ -16,4 +13,8 @@ Fix le pb quand on ctrl+r sur la page GameOver
 
 Ajouter le canvas en responsive avec une regle transform css
 
-Secur ranking/wfhwefygfw
+
+[TIBO]
+
+Les messages du system info s'envoie autant de fois \
+	que le nombre de pelo dans le groupe de discution si j'ajoute qlq

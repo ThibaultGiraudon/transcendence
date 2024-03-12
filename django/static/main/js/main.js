@@ -18,7 +18,7 @@ const router = {
 		'/reset_password/': renderResetPasswordPage,
 		'/reset_password_id/:resetPasswordID': renderResetPasswordIDPage,
 		'/profile/:username': renderProfilePage,
-		'/users/': renderUsersPage,
+		'/friends/': renderFriendsPage,
 
 		// Pong
 		'/pong/': renderChooseModePage,

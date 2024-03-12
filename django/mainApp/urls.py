@@ -13,7 +13,7 @@ urlpatterns = [
 	path('reset_password/', usersView.reset_password, name='reset_password'),
 	path('reset_password_id/<str:resetPasswordID>', usersView.reset_password_id, name='reset_password_id'),
 	path('profile/<str:username>', usersView.profile, name='profile'),
-	path('users/', usersView.users, name='users'),
+	path('friends/', usersView.friends, name='friends'),
 	path('notifications/', usersView.notifications, name='notifications'),
 	path('ranking/<str:sortedBy>', rankingView.ranking, name='ranking'),
 

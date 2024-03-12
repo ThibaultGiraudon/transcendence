@@ -128,7 +128,6 @@ MIDDLEWARE = [
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
-	'mainApp.middleware.SessionTimeoutMiddleware.SessionTimeoutMiddleware',
 ]
 
 ROOT_URLCONF = 'mainProject.urls'
