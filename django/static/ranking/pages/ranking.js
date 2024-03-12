@@ -2,13 +2,26 @@
 function renderRankingPage(sortedBy) {
 	
 	fetchAPI('/api/isAuthenticated').then(data => {
+		
 		if (data.isAuthenticated) {
+			
+			// Check if the argument is valid
+			const validValues = ['solo', 'death', 'tournament', 'total', 'game', 'average', 'solo_inversed', 'death_inversed', 'tournament_inversed', 'total_inversed', 'game_inversed', 'average_inversed'];
+			if (!validValues.includes(sortedBy)) {
+				router.navigate('/ranking/total');
+				return;
+			}
+
 			fetchAPI('/api/get_ranking_points/' + sortedBy).then(data => {
+				
 				if (data.success) {
 					fetchAPI('/api/get_user').then(ndata => {
+						
 						if (ndata.user) {
+
 							const users = data.users;
 							split = sortedBy.includes('_');
+
 							let html = `
 								<div class="ranking-title">
 									<h1>Ranking</h1>
@@ -46,18 +59,22 @@ function renderRankingPage(sortedBy) {
 
 							for (const user of Object.values(users)) {
 								let average = user.player.totalPoints[user.player.totalPoints.length - 1] / (user.player.totalPoints.length - 1);
+								
 								if (user.player.totalPoints.length == 1)
 									average = 0;
-								if (user.username == ndata.user.username) {
+								
+									if (user.username == ndata.user.username) {
 									html += `
 										<tr class="rank-user">
 									`;
 								}
+								
 								else {
 									html += `
 										<tr>
 									`;
 								}
+
 								html += `
 										<td class="rank-position">${user.rank}</td>
 										<td>
@@ -90,7 +107,7 @@ function renderRankingPage(sortedBy) {
 								for (var i = 0; i < trs.length; i++) {
 									var tds = trs[i].getElementsByTagName('td');
 									if (tds.length > 0) {
-										var txtValue = tds[1].textContent || tds[1].innerText; // Changez l'index si le nom d'utilisateur n'est pas dans la première colonne
+										var txtValue = tds[1].textContent || tds[1].innerText;
 										if (txtValue.toUpperCase().indexOf(input) > -1) {
 											trs[i].style.display = "";
 										} else {

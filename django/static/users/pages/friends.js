@@ -35,7 +35,7 @@ function renderUsersSection(title, users) {
 }
 
 
-function renderUsersPage() {
+function renderFriendsPage() {
 	// Check if the user is authenticated
 	fetchAPI('/api/isAuthenticated').then(data => {
 		if (!data.isAuthenticated) {

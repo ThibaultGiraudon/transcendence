@@ -604,7 +604,7 @@ function renderProfilePage(username) {
 
 				// If the user does not exist
 				} else {
-					router.navigate('/users/');
+					router.navigate('/friends/');
 					return ;
 				}
 			})
