@@ -37,58 +37,60 @@ function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
 			let username = '[UserNotfound]';
 
 			// Get the username of the sender
-			fetch('/api/get_username/' + data.sender)
-			.then(response => response.json())
-			.then(data_username => {
-				if (!data_username)
-					username = '[UserNotfound]';
-				else
-					username = data_username.username;
-				
-				// Create the message container
-				const messageContainer = document.createElement('p');
-				messageContainer.setAttribute('data-sender', data.sender);
-				messageContainer.textContent = data.message;
-				
-				// Create the username container
-				const usernameContainer = document.createElement('p');
-				usernameContainer.textContent = username;
-				usernameContainer.className = 'other-username';
+			if (data.sender !== 0) {
+				fetch('/api/get_username/' + data.sender)
+				.then(response => response.json())
+				.then(data_username => {
+					if (!data_username)
+						username = '[UserNotfound]';
+					else
+						username = data_username.username;
+					
+					// Create the message container
+					const messageContainer = document.createElement('p');
+					messageContainer.setAttribute('data-sender', data.sender);
+					messageContainer.textContent = data.message;
+					
+					// Create the username container
+					const usernameContainer = document.createElement('p');
+					usernameContainer.textContent = username;
+					usernameContainer.className = 'other-username';
 
-				// Check if the message is from the current user
-				if (blockedUsers.includes(parseInt(data.sender, 10))) {
-					messageContainer.className = 'blocked-message';
-					messageContainer.textContent = 'This user is blocked';
-				} else {
-					// messageContainer.className = data.sender === sender ? 'my-message' : 'other-message';
-					if (data.sender === sender) {
-						messageContainer.className = 'my-message';
-					}
-					else if (data.sender == 0) {
-						messageContainer.className = 'system-message';
-					}
-					else {
-						messageContainer.className = 'other-message';
-					}
-				}
-
-				// Display the message
-				const chatLog = document.querySelector('#chat-log');
-				if (chatLog) {
-					// Display the username of the sender
-					if (data.sender !== sender && !isPrivate) {
-						if (chatLog.lastElementChild && Number(chatLog.lastElementChild.dataset.sender) !== Number(data.sender)) {
-							chatLog.appendChild(usernameContainer);
+					// Check if the message is from the current user
+					if (blockedUsers.includes(parseInt(data.sender, 10))) {
+						messageContainer.className = 'blocked-message';
+						messageContainer.textContent = 'This user is blocked';
+					} else {
+						if (data.sender === sender) {
+							messageContainer.className = 'my-message';
+						}
+						else if (data.sender == 0) {
+							messageContainer.className = 'system-message';
+						}
+						else {
+							messageContainer.className = 'other-message';
 						}
 					}
+					console.log("Message received")
 
 					// Display the message
-					chatLog.appendChild(messageContainer);
+					const chatLog = document.querySelector('#chat-log');
+					if (chatLog) {
+						// Display the username of the sender
+						if (data.sender !== sender && !isPrivate) {
+							if (chatLog.lastElementChild && Number(chatLog.lastElementChild.dataset.sender) !== Number(data.sender)) {
+								chatLog.appendChild(usernameContainer);
+							}
+						}
 
-					// Got to the bottom of the chat
-					chatLog.scrollTop = chatLog.scrollHeight;
-				}
-			});
+						// Display the message
+						chatLog.appendChild(messageContainer);
+
+						// Got to the bottom of the chat
+						chatLog.scrollTop = chatLog.scrollHeight;
+					}
+				});
+			}
 		}
 	};
 
