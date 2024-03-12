@@ -52,11 +52,12 @@ DEBUG = os.environ.get("DEBUG") == "True"
 # CRSF verification
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
-CSRF_TRUSTED_ORIGINS = [
-	'http://localhost:8000',
-	'https://localhost:8443',
-]
+HOST = os.environ.get("HOST")
 
+CSRF_TRUSTED_ORIGINS = [
+	'http://' + HOST + ':8000',
+	'https://' + HOST + ':8443',
+]
 
 # Enable a secure refresh limit
 REST_FRAMEWORK = {

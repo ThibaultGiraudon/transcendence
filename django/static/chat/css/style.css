@@ -501,6 +501,22 @@
 		width: 100%;
 		padding: 0.5em;
 	}
+
+	.chat-badge {
+		font-size: 1em;
+	}
+
+	.chat-name {
+		font-size: 1.5em;
+	}
+
+	.chat-last-message-timestamp {
+		font-size: 0.8em;
+	}
+
+	.chat-last-message-sender, .chat-last-message {
+		font-size: 1em;
+	}
 }
 
 /* Reorganize room CSS on mobile */
