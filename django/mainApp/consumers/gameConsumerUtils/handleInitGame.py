@@ -69,8 +69,8 @@ async def handleInitGame(consumer, gameID, gameMode, playerID):
 			if (gameMode == 'init_tournament_game'):
 				subGamesList = await sendTournamentReload(consumer)
 				for subGameID in subGamesList:
-					await sendReloadPage(consumer, subGameID)
-			await sendReloadPage(consumer, gameID)
+					await sendReloadPage(consumer, subGameID, playerID)
+			await sendReloadPage(consumer, gameID, playerID)
 			return (False)
 
 	if (gameMode in [
