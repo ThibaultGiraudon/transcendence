@@ -539,6 +539,7 @@ def generate_csrf_token(request):
 def get_game_info(request):
 	if not request.user.is_authenticated:
 		return JsonResponse({'success': False, 'game_id': None, 'player_id': None}, status=401)
+	
 
 	gameID = request.user.player.currentGameID
 	game = Game.objects.get(id=gameID)
@@ -561,8 +562,14 @@ def get_game_info(request):
 		players_username.append(user.username)
 		players_photo.append(user.photo.url)
 
+	local_game = ['init_local_game', 'init_ai_game', 'init_wall_game']
+	type_game = 'online'
 
-	return JsonResponse({'success': True, 'game_id': gameID, 'user_id': request.user.id, 'player_id': request.user.player.id, 'players_username': players_username, 'players_photo': players_photo}, status=200)
+	if (game.gameMode in local_game):
+		type_game = 'local'
+
+
+	return JsonResponse({'success': True, 'game_id': gameID, 'user_id': request.user.id, 'player_id': request.user.player.id, 'players_username': players_username, 'players_photo': players_photo, 'type_game': type_game}, status=200)
 
 
 def add_user_to_room(request, room_id, user_id):
@@ -867,3 +874,17 @@ def get_ranking_points(request, sortedBy):
 			rank += 1
 	return JsonResponse({'success': True, 'users': users_dict}, status=200)
 
+
+def	quit_game(request):
+	if not request.user.is_authenticated:
+		return JsonResponse({'success': False}, status=401)
+	
+	player = request.user.player
+	if (player.currentGameID != None):
+		game = Game.objects.get(id=player.currentGameID)
+		game.isOver = True
+		game.save()
+	player.currentGameID = None
+	player.isReady = False
+	player.save()
+	return JsonResponse({'success': True}, status=200)

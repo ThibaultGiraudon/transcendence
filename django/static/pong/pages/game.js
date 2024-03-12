@@ -47,10 +47,27 @@ function renderGamePage(gameMode) {
 						<div class="fill_pong_space"></div>
 
 					`;
+					console.log(data);
+
+					if (data.type_game == "local") {
+						html += `
+							<div class="game-buttons">
+								<button class="game-button" id="quit">Quit</button>
+							</div>
+						`;
+					}
 		
 					document.getElementById('app').innerHTML = html;
 		
 					gameProcess(false, gameMode, gameID, playerID)
+
+					document.getElementById('quit').addEventListener('click', () => {
+						fetchAPI('/api/quit_game').then(data => {
+							if (data.success) {
+								router.navigate('/pong/');
+							}
+						});
+					});
 				} else {
 					router.navigate('/pong/');
 				}
