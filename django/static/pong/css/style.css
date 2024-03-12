@@ -109,7 +109,7 @@ canvas {
 }
 
 .fill_pong_space {
-	height: 900px;
+	height: 1000px;
 	width: 100%;
 	display: block;
 }
@@ -176,5 +176,20 @@ canvas {
 		margin: 0;
 		margin-bottom: 2em;
 		padding: 1em;
+	}
+
+	.score_bar {
+		left: 10%;
+		width: 80%;
+	}
+
+	canvas {
+		left: 10%;
+		width: 80%;
+		height: auto;
+	}
+
+	.fill_pong_space {
+		height: calc(100vw + 100px);
 	}
 }
