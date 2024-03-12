@@ -18,5 +18,3 @@ __pycache__/
 venv/
 env/
 game_env/
-
-.env
