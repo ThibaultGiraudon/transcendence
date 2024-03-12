@@ -40,6 +40,8 @@ function createGameCanvas() {
 	return (gameCanvas, gameContext)
 }
 
+
+// TODO create waitProcess pour demain (elias)
 function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 	if (!isWaitingPage) {
 		gameCanvas, gameContext = createGameCanvas();
@@ -111,6 +113,7 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
     };
 
     document.addEventListener('keydown', function(event) {
+        // TODO log ici pour voir si quand in est sur un wait on a quand meme un event qui sactive
         if (!keyState[event.key] && keyState.hasOwnProperty(event.key)) {
             keyState[event.key] = true;
             const message = {

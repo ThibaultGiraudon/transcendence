@@ -23,8 +23,6 @@ def joinTournamentGame(game, player, gameMode):
 	if (subGame.playerList.__len__() == 2):
 		if (game.subGames.__len__() == 1):
 			newSubGame = Game.objects.create(
-				date=datetime.date.today(),
-				hour=datetime.datetime.now().time(),
 				duration=0,
 				gameMode=gameMode + '_sub_game',
 				playerList=[],
@@ -42,16 +40,12 @@ def createGame(player, gameMode):
 	newSubGameID = None
 	if (gameMode == 'init_tournament_game'):
 		newSubGame = Game.objects.create(
-			date=datetime.date.today(),
-			hour=datetime.datetime.now().time(),
 			duration=0,
 			gameMode=gameMode + '_sub_game',
 			playerList=[player.id],
 		)
 		newSubGameID = newSubGame.id
 	newGame = Game.objects.create(
-		date=datetime.date.today(),
-		hour=datetime.datetime.now().time(),
 		duration=0,
 		gameMode=gameMode,
 		playerList=[player.id],
@@ -109,6 +103,7 @@ def waitPlayers(request, gameMode):
 
 		gameID = createOrJoinGame(waitingGamesList, player, gameMode)
 		player.currentGameID = gameID
+		player.allGames.append(gameID)
 		player.save()
 		game = Game.objects.get(id=gameID)
 		return returnJsonResponse(game, nbPlayersToWait, gameMode, request.user.player.id)

@@ -298,6 +298,8 @@ function renderPongStats(user) {
 		</div>
 		`;
 
+	document.getElementById('app').innerHTML += renderHistory(user);
+
 	const graph = document.querySelector('.carousel-content');
 	const rightBtn = document.getElementById('carousel-right-btn');
 	const leftBtn = document.getElementById('carousel-left-btn');
@@ -345,6 +347,49 @@ function renderPongStats(user) {
 }
 
 
+function renderHistory(user) {
+	let html = `
+		<h2>History</h2>
+		<table class="profile-history">
+			<tr>
+				<th>Date</th>
+				<th>Players</th>
+				<th>Game mode</th>
+				<th>Result</th>
+			</tr>
+	`;
+
+	for (let game of Object.values(user.player.allGames)) {
+		html += `
+			<tr>
+				<td>${game.date}</td>
+				<td>
+		`;
+		for (let player of Object.values(game.playersList)) {
+			html += `
+			<button class="rank-user-info" data-route="/profile/${player.username}">
+				<img class="rank-image" src="${player.photo_url}" alt="photo">
+				${player.username}
+			</button>
+			`;
+		}
+		html += `
+				</td>
+				<td>${game.gameMode}</td>
+				<td>${game.result}</td>
+			</tr>
+		`;
+
+	}
+
+	html += `
+		</table>
+	`;
+
+	return html;
+}
+
+
 function renderProfilePage(username) {
 
 	fetchAPI('/api/isAuthenticated').then(data => {
@@ -376,12 +421,12 @@ function renderProfilePage(username) {
 						const fieldsHtml = fields.map(renderField).join('');
 						const profileHtml = renderOurProfile(user);
 						const formHtml = renderForm(fieldsHtml, user);
-
+						
 						document.getElementById('app').innerHTML = `
 							${profileHtml}
 							${formHtml}
 						`;
-
+						
 						renderPongStats(user);
 
 						// Add an event listener on the sign-in form
@@ -538,6 +583,7 @@ function renderProfilePage(username) {
 								`;
 							}
 							renderPongStats(user);
+							renderHistory(user);
 
 							
 							// Add an event listener on the send a chat button (for new chat only)

@@ -59,14 +59,16 @@ function renderGamePage(gameMode) {
 					document.getElementById('app').innerHTML = html;
 		
 					gameProcess(false, gameMode, gameID, playerID)
-
-					document.getElementById('quit').addEventListener('click', () => {
-						fetchAPI('/api/quit_game').then(data => {
-							if (data.success) {
-								router.navigate('/pong/');
-							}
+					quitButton = document.getElementById('quit')
+					if (quitButton) {
+						document.getElementById('quit').addEventListener('click', () => {
+							fetchAPI('/api/quit_game').then(data => {
+								if (data.success) {
+									router.navigate('/pong/');
+								}
+							});
 						});
-					});
+					}
 				} else {
 					router.navigate('/pong/');
 				}
