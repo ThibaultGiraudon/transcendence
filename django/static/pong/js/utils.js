@@ -17,19 +17,4 @@ function getSocket(gameID) {
 		shouldClose: false
 	};
 	return (socket)
-
-	// let socketUrl;
-	// if (window.location.protocol === 'https:') {
-	// 	socketUrl = 'wss://localhost:8443/wss/game/';
-	// } else {
-	// 	socketUrl = 'ws://localhost:8000/ws/game/';
-	// }
-	// socketUrl += gameID + '/';
-
-	// socket = {
-	// 	socket: new WebSocket(socketUrl),
-	// 	url: socketUrl,
-	// 	shouldClose: false
-	// };
-	return (socket)
 }
