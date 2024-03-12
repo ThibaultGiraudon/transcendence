@@ -53,6 +53,9 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 		if (isWaitingPage) {
 			return;
 		}
+        if (socket.readyState === WebSocket.OPEN) {
+            return;
+        }
 		const message = {
 			type: gameMode,
 			playerID: playerID,
