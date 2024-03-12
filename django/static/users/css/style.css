@@ -222,7 +222,7 @@
 
 .no-users-img {
 	width: 15%;
-	height: auto;
+	height: 15%;
 	margin-bottom: 0.5em;
 	border-radius: 0;
 	opacity: 0.7;
@@ -254,6 +254,23 @@
 
 	.list, .list-empty {
 		height: 28em;
+	}
+
+	.users-img {
+		width: 2em;
+		height: 2em;
+	}
+
+	.users-user {
+		font-size: 1em;
+	}
+
+	.status {
+		font-size: 0.8em;
+	}
+
+	.no-users {
+		font-size: 1em;
 	}
 }
 
