@@ -18,7 +18,8 @@ def practice(request):
 
 def game(request, gameMode):
 	if request.method == 'GET':
-		request.user.set_status("in game")
+		if (request.user.is_authenticated):
+			request.user.set_status("in game")
 		return render(request, 'base.html')
 
 
