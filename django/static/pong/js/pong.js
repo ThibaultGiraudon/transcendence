@@ -103,38 +103,42 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
         }
     };
 
+    if (!isWaitingPage) {
+        document.addEventListener('keydown', function(event) {
+            if (!keyState[event.key] && keyState.hasOwnProperty(event.key)) {
+                keyState[event.key] = true;
+                const message = {
+                    type: 'paddle_move',
+                    key: 'keydown',
+                    direction: getPaddleDirection(event.key),
+                    playerID: playerID,
+                    paddleKey: event.key,
+                };
+                if (pongSocket && pongSocket.socket.readyState === WebSocket.OPEN) {
+                    pongSocket.socket.send(JSON.stringify(message));
+                }
+            }
 
-    document.addEventListener('keydown', function(event) {
-        // TODO log ici pour voir si quand in est sur un wait on a quand meme un event qui sactive
-        if (!keyState[event.key] && keyState.hasOwnProperty(event.key)) {
-            keyState[event.key] = true;
-            const message = {
-                type: 'paddle_move',
-                key: 'keydown',
-                direction: getPaddleDirection(event.key),
-				playerID: playerID,
-                paddleKey: event.key,
-            };
-            pongSocket.socket.send(JSON.stringify(message));
-        }
+            if (event.key === "ArrowUp" || event.key === "ArrowDown" || 
+                event.key === "ArrowLeft" || event.key === "ArrowRight") {
+                event.preventDefault();
+            }
+        });
 
-        if (event.key === "ArrowUp" || event.key === "ArrowDown" || 
-            event.key === "ArrowLeft" || event.key === "ArrowRight") {
-            event.preventDefault();
-        }
-    });
-
-    document.addEventListener('keyup', function(event) {
-        if (keyState.hasOwnProperty(event.key)) {
-            keyState[event.key] = false;
-            const message = {
-                type: 'paddle_move',
-                key: 'keyup',
-                direction: getPaddleDirection(event.key),
-				playerID: playerID,
-                paddleKey: event.key,
-            };
-            pongSocket.socket.send(JSON.stringify(message));
-        }
-    });
+        document.addEventListener('keyup', function(event) {
+            if (keyState.hasOwnProperty(event.key)) {
+                keyState[event.key] = false;
+                const message = {
+                    type: 'paddle_move',
+                    key: 'keyup',
+                    direction: getPaddleDirection(event.key),
+                    playerID: playerID,
+                    paddleKey: event.key,
+                };
+                if (pongSocket && pongSocket.socket.readyState === WebSocket.OPEN) {
+                    pongSocket.socket.send(JSON.stringify(message));
+                }
+            }
+        });
+    }
 }
