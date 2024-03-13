@@ -71,7 +71,6 @@ function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
 							messageContainer.className = 'other-message';
 						}
 					}
-					console.log("Message received")
 
 					// Display the message
 					const chatLog = document.querySelector('#chat-log');
