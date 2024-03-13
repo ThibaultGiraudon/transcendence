@@ -12,10 +12,6 @@ Status offline when close page
 
 [LEON - TIBO]
 
-getElement by id quit secure if not exist
-
-Historique de parties sur le profil d'un user (mode de jeu, date, contre qui, winner...)
-
 round le average point 2 apres la virgule 
 
 et calculer le average point avec la moyenne du tournoi
