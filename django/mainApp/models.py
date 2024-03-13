@@ -37,7 +37,6 @@ class Game(models.Model):
 	isOver = models.BooleanField(default=False)
 	scores = models.ManyToManyField('Score', related_name='scores')
 	subGames = ArrayField(models.IntegerField(), default=list)
-	# TODO a remplacer par un ForeignKey
 	finalGame = models.IntegerField(default=None, null=True)
 	thirdPlaceGame = models.IntegerField(default=None, null=True)
 	parentGame = models.IntegerField(default=None, null=True)
