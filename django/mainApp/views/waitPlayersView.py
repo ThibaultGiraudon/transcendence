@@ -82,7 +82,6 @@ def waitPlayers(request, gameMode):
 	if (request.method == 'GET'):
 		return render(request, 'base.html')
 	elif (request.method == 'POST'):
-		request.user.set_status("waiting for game")
 		data = json.loads(request.body)
 		gameMode = data.get('gameMode')
 		player = request.user.player
@@ -103,7 +102,12 @@ def waitPlayers(request, gameMode):
 
 		gameID = createOrJoinGame(waitingGamesList, player, gameMode)
 		player.currentGameID = gameID
-		player.allGames.append(gameID)
+		if (gameMode not in [
+			'init_local_game',
+			'init_ai_game',
+			'init_wall_game'
+		]):
+			player.allGames.append(gameID)
 		player.save()
 		game = Game.objects.get(id=gameID)
 		return returnJsonResponse(game, nbPlayersToWait, gameMode, request.user.player.id)

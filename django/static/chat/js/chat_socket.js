@@ -1,9 +1,8 @@
 // Global variables
-// let chatSocket = null;
+let chatSocket = null;
 
 // Check changes on the chat page
 function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
-	let chatSocket = null;
 
 	if (chatSocket !== null) {
 		chatSocket.shouldClose = true;
