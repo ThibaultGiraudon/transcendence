@@ -47,9 +47,6 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 		gameCanvas, gameContext = createGameCanvas();
 	}
 
-    console.log(pongSocket);
-    if (pongSocket)
-        console.log(pongSocket.socket.readyState);
     if (pongSocket == null || pongSocket.socket.readyState === WebSocket.CLOSED || pongSocket.socket.readyState === WebSocket.CLOSING)
         pongSocket = getSocket(gameID);
 
@@ -71,8 +68,6 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
         }
     }
 
-    console.log(pongSocket);
-
     pongSocket.socket.onopen = function() {
     };
 
@@ -80,8 +75,7 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
         const message = JSON.parse(event.data);
 
 		if (message.type === 'reload_page' && isWaitingPage === true) {
-                console.log("reload page");
-                router.navigate('/pong/game/' + gameMode);
+            router.navigate('/pong/game/' + gameMode);
 		}
 
 		else if (message.type === 'init_paddle_position') {

@@ -39,7 +39,6 @@ function renderPracticePage() {
 			document.querySelectorAll('.practice-btn').forEach(button => {
 				button.addEventListener('click', async function(event) {
 					const gameMode = event.target.id;
-					console.log(gameMode);
 
 					// Send data to the server
 					const response = await fetch('/pong/wait_players/' + gameMode, {
