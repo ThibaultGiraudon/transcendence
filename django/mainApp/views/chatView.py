@@ -52,4 +52,9 @@ def new(request):
 
 def room(request, room_id):
 	if request.method == 'GET':
+
+		# Update the user status
+		if request.user.is_authenticated:
+			request.user.set_status('chat:' + room_id)
+
 		return render(request, 'base.html')

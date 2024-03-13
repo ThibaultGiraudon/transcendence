@@ -68,6 +68,7 @@ table {
 	font-family: arial, sans-serif;
 	border-collapse: collapse;
 	width: 100%;
+	border-radius: var(--border-radius);
 }
 
 td, th {
@@ -83,6 +84,7 @@ tr.rank-user {
 
 tr:nth-child(even) {
 	background-color: var(--color-light-hover);
+	overflow: hidden;
 }
 
 .ranking-table {

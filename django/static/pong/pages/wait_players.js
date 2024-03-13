@@ -4,6 +4,7 @@ function renderWaitPlayers(gameMode) {
 			fetchGamePage(gameMode)
 			fetchAPI('/api/get_game_info').then(data => {
 				if (data.success) {
+					fetchAPI('/api/change_status/waiting-game').then(data => {});
 					gameID = data.game_id;
 					playerID = data.player_id;
 					changeStatus(data.user_id, 'waiting for game')

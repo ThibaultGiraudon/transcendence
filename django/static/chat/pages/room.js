@@ -46,6 +46,7 @@ function renderRoomPage(room_id) {
 
 		// Get the messages
 		fetchAPI(`/api/get_messages/${room_id}`).then(dataMessages => {
+			fetchAPI('/api/change_status/chat:' + room_id).then(data => {});
 
 			const messages = dataMessages.messages;
 			if (!messages) {

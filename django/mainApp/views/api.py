@@ -67,6 +67,8 @@ def header(request):
 def get_user(request, username=None):
 	if not request.user.is_authenticated:
 		return JsonResponse({'user': None, 'isCurrentUser': False, 'isAuthenticated': False}, status=401)
+	
+	index = 1
 
 	# Get informations about the current user
 	if not username or username == request.user.username or username == "me":
@@ -146,8 +148,6 @@ def get_user(request, username=None):
 				'creator_username': creator_username,
 				'description': channel.description if channel.description else 'No description available',
 			}
-
-		index = 1
 
 		# Get all games
 		game_ids = request.user.player.allGames
@@ -235,11 +235,62 @@ def get_user(request, username=None):
 	
 	# Get informations about the user with the username
 	else:
+		allGames_dict = {}
 		User = get_user_model()
 		try:
 			user = User.objects.get(username=username)
 		except User.DoesNotExist:
 			return JsonResponse({'user': None})
+		
+		game_ids = user.player.allGames
+		games = Game.objects.filter(id__in=game_ids).order_by('-date')
+		for game in games:
+			players_info_dict = {}
+			for player in game.playerList:
+				User = get_user_model()
+				user = User.objects.get(player__id=player)
+				players_info_dict[user.id] = {
+					'id': user.id,
+					'username': user.username,
+					'photo_url': user.photo.url,
+				}
+			
+			if (len(game.scores.all()) > 2):
+				scores = game.scores.filter(player__id=user.player.id)
+				if (scores.position == 1):
+					result = "1st"
+				elif (scores.position == 2):
+					result = "2nd"
+				elif (scores.position == 3):
+					result = "3rd"
+				elif (scores.position == 4):
+					result = "4th"
+			else:
+				try:
+					scores = game.scores.filter(player__id=user.player.id)
+					result = str(scores.first().score) + "-"
+					for player_id in game.playerList:
+						if (player_id != user.player.id):
+							scores = game.scores.filter(player__id=player_id)
+							result += str(scores.first().score)
+				except:
+					result = "No result"
+
+			game_mode = ['init_ranked_solo_game', 'init_tournament_game', 'init_death_game']
+			game_title = ['Solo Game', 'Tournament Game', 'Deathmatch Game']
+			
+			if (game.gameMode in game_mode):
+				gameMode = game_title[game_mode.index(game.gameMode)]
+
+			allGames_dict[index] = {
+				'id': game.id,
+				'date': timezone.localtime(game.date).strftime("%d-%m-%Y %H:%M"),
+				'duration': game.duration,
+				'playersList': players_info_dict,
+				'gameMode': gameMode,
+				'result': result,
+			}
+			index += 1
 	
 		# Get player informations
 		player_info = {
@@ -250,8 +301,7 @@ def get_user(request, username=None):
 			'tournamentPoints': user.player.tournamentPoints,
 			'totalPoints': user.player.totalPoints,
 			'gamePlayed': user.player.score_set.count(),
-			'gameVictory': 'toDefineInAPI',
-			'gameDefeat': 'toDefineInAPI',
+			'allGames':	allGames_dict,
 		}
 		
 		user_dict = {
@@ -939,3 +989,17 @@ def	quit_game(request):
 	player.isReady = False
 	player.save()
 	return JsonResponse({'success': True}, status=200)
+
+
+def change_status(request, status):
+	if not request.user.is_authenticated:
+		return JsonResponse({'success': False, "message": "The user is not authenticated"}, status=200)
+	
+	if (request.user.player.isReady):
+		request.user.set_status('in-game')
+		return JsonResponse({'success': False, "message": "You cannot change your status while you are ready"}, status=200)
+	if (request.user.player.currentGameID):
+		request.user.set_status('waiting-game')
+		return JsonResponse({'success': False, "message": "You cannot change your status while you are in a game"}, status=200)
+	request.user.set_status(status)
+	return JsonResponse({'success': True, "message": "Status changed"}, status=200)

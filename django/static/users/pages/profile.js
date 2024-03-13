@@ -91,6 +91,9 @@ function renderPieGraph(id, player) {
 	let ctx = null;
 	let title = '';
 	let data = {};
+	let labels = [];
+	let backgroundColor = ["#1598E9", "#2FD661", "#F19705"];
+
 	if (id === "pie-chart-games") {
 		ctx = document.getElementById("pie-chart-games").getContext("2d");
 		title = "Games Played";
@@ -99,6 +102,7 @@ function renderPieGraph(id, player) {
 			player.deathPoints.length - 1,
 			player.tournamentPoints.length - 1,
 		];
+		labels = ["1v1 Games", "Deathmatch Games", "Tournament Games"];
 	}
 	else if (id === "pie-chart-points") {
 		ctx = document.getElementById("pie-chart-points").getContext("2d");
@@ -108,18 +112,23 @@ function renderPieGraph(id, player) {
 			player.deathPoints[player.deathPoints.length - 1], 
 			player.tournamentPoints[player.tournamentPoints.length - 1],
 		];
+		labels = ["1v1 Points", "Deathmatch Points", "Tournament Points"];
 	}
+
+	// If there is no data, display a message
+	if (data.every(value => value === 0)) {
+		data = [1];
+		labels = ["No data available"];
+		backgroundColor = ["#D5D3CD"];
+	}
+
 	return (new Chart(ctx, {
 		type: "pie",
 		data: {
-			labels: [
-				"1v1 Games",
-				"Deathmatch Games",
-				"Tournament Games"
-			],
+			labels: labels,
 			datasets: [{
 				label: title,
-				backgroundColor: ["#1598E9", "#2FD661", "#F19705", ],
+				backgroundColor: backgroundColor,
 				data: data,
 			}],
 		},
@@ -348,45 +357,43 @@ function renderPongStats(user) {
 
 
 function renderHistory(user) {
-	let html = `
-		<h2>History</h2>
-		<table class="profile-history">
-			<tr>
-				<th>Date</th>
-				<th>Players</th>
-				<th>Game mode</th>
-				<th>Result</th>
-			</tr>
-	`;
+	const gamesHtml = Object.values(user.player.allGames).map(game => {
 
-	for (let game of Object.values(user.player.allGames)) {
-		html += `
-			<tr>
-				<td>${game.date}</td>
-				<td>
-		`;
-		for (let player of Object.values(game.playersList)) {
-			html += `
+		const playersHtml = Object.values(game.playersList).map(player => `
 			<button class="rank-user-info" data-route="/profile/${player.username}">
 				<img class="rank-image" src="${player.photo_url}" alt="photo">
 				${player.username}
 			</button>
-			`;
-		}
-		html += `
+		`).join('');
+
+		return `
+			<tr>
+				<td>${game.date}</td>
+				<td>
+					<div class="history-players-container">	
+						${playersHtml}
+					</div>
 				</td>
 				<td>${game.gameMode}</td>
 				<td>${game.result}</td>
 			</tr>
 		`;
+	}).join('');
 
-	}
-
-	html += `
-		</table>
+	return `
+		<h2>History</h2>
+		<div class="profile-history-container">
+			<table class="profile-history">
+				<tr>
+					<th>Date</th>
+					<th>Players</th>
+					<th>Game mode</th>
+					<th>Result</th>
+				</tr>
+				${gamesHtml}
+			</table>
+		</div>
 	`;
-
-	return html;
 }
 
 
@@ -583,7 +590,6 @@ function renderProfilePage(username) {
 								`;
 							}
 							renderPongStats(user);
-							renderHistory(user);
 
 							
 							// Add an event listener on the send a chat button (for new chat only)
