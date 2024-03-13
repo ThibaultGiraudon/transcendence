@@ -443,6 +443,8 @@ def ft_api(request):
 def	check_authorize(request):
 	if request.method == 'GET' and 'code' in request.GET:
 		code = request.GET['code']
+	else :
+		return redirect('auth42')
 	
 	response_token = handle_42_callback(request, code)
 	if response_token is None:

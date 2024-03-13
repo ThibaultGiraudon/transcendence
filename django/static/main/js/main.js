@@ -43,6 +43,7 @@ const router = {
 		'/token42/': renderToken42Page,
 		'/down42/': renderDown42Page,
 		'/used42/': renderUsed42Page,
+		'/auth42/': renderAuth42Page,
 	},
 
 	navigate: function(route) {
