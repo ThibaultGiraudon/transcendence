@@ -797,8 +797,6 @@ def get_game_over(request, gameID):
 		return JsonResponse({'success': False}, status=401)
 	
 	player = request.user.player
-	if (player.currentGameID != gameID):
-		return JsonResponse({'success': False}, status=200)
 	player.currentGameID = None
 	player.isReady = False
 	player.save()
