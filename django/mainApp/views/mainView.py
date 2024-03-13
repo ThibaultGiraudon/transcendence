@@ -39,3 +39,7 @@ def down42(request):
 
 def used42(request):
 	return render(request, 'base.html', status=403)
+
+
+def auth42(request):
+	return render(request, 'base.html', status=403)

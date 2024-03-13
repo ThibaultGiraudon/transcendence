@@ -74,6 +74,7 @@ urlpatterns = [
 	path('token42/', mainView.token42, name='token42'),
 	path('down42/', mainView.down42, name='down42'),
 	path('used42/', mainView.used42, name='used42'),
+	path('auth42/', mainView.auth42, name='auth42'),
 
 	# To define
 	path('pong/game_over/<str:player>', pongView.gameOver, name='game_over'),
