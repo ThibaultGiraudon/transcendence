@@ -2,3 +2,57 @@
 
 Ajouter le invite to game qui est dans le chat prive \
 	pour inviter un joueur a jouer
+
+voir main.js ->practice.js:44 POST https://10.14.9.5:8443/pong/wait_players/ 404 (Not Found)
+
+
+[TIBO]
+
+ Internal Server Error: /api/get_user
+transcendence-web-1       | Traceback (most recent call last):
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/asgiref/sync.py", line 534, in thread_handler
+transcendence-web-1       |     raise exc_info[1]
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/django/core/handlers/exception.py", line 42, in inner
+transcendence-web-1       |     response = await get_response(request)
+transcendence-web-1       |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/asgiref/sync.py", line 534, in thread_handler
+transcendence-web-1       |     raise exc_info[1]
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/django/core/handlers/base.py", line 253, in _get_response_async
+transcendence-web-1       |     response = await wrapped_callback(
+transcendence-web-1       |                ^^^^^^^^^^^^^^^^^^^^^^^
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/asgiref/sync.py", line 479, in __call__
+transcendence-web-1       |     ret: _R = await loop.run_in_executor(
+transcendence-web-1       |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+transcendence-web-1       |   File "/usr/local/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+transcendence-web-1       |     result = self.fn(*self.args, **self.kwargs)
+transcendence-web-1       |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/asgiref/sync.py", line 538, in thread_handler
+transcendence-web-1       |     return func(*args, **kwargs)
+transcendence-web-1       |            ^^^^^^^^^^^^^^^^^^^^^
+transcendence-web-1       |   File "/home/app/web/mainApp/views/api.py", line 196, in get_user
+transcendence-web-1       |     'playersList': players_info_dict,
+transcendence-web-1       |                    ^^^^^^^^^^^^^^^^^
+transcendence-web-1       | UnboundLocalError: cannot access local variable 'gameMode' where it is not associated with a value
+transcendence-web-1       | Internal Server Error: /api/get_user
+transcendence-web-1       | Traceback (most recent call last):
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/asgiref/sync.py", line 534, in thread_handler
+transcendence-web-1       |     raise exc_info[1]
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/django/core/handlers/exception.py", line 42, in inner
+transcendence-web-1       |     response = await get_response(request)
+transcendence-web-1       |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/asgiref/sync.py", line 534, in thread_handler
+transcendence-web-1       |     raise exc_info[1]
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/django/core/handlers/base.py", line 253, in _get_response_async
+transcendence-web-1       |     response = await wrapped_callback(
+transcendence-web-1       |                ^^^^^^^^^^^^^^^^^^^^^^^
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/asgiref/sync.py", line 479, in __call__
+transcendence-web-1       |     ret: _R = await loop.run_in_executor(
+transcendence-web-1       |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+transcendence-web-1       |   File "/usr/local/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+transcendence-web-1       |     result = self.fn(*self.args, **self.kwargs)
+transcendence-web-1       |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/asgiref/sync.py", line 538, in thread_handler
+transcendence-web-1       |     return func(*args, **kwargs)
+transcendence-web-1       |            ^^^^^^^^^^^^^^^^^^^^^
+transcendence-web-1       |   File "/home/app/web/mainApp/views/api.py", line 196, in get_user
+transcendence-web-1       |     'playersList': players_info_dict,

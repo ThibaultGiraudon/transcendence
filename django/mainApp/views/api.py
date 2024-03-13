@@ -184,6 +184,7 @@ def get_user(request, username=None):
 				except:
 					result = "No result"
 
+			gameMode = game.gameMode
 			game_mode = ['init_ranked_solo_game', 'init_tournament_game', 'init_death_game']
 			game_title = ['Solo Game', 'Tournament Game', 'Deathmatch Game']
 			
@@ -896,7 +897,8 @@ def get_game_over(request, gameID):
 		'success': True,
 		'score': scoresList,
 		'position': positionsList,
-		'game_mode': gameMode
+		'game_mode': gameMode,
+		'user_id': request.user.id,
 	}, status=200)
 
 def get_ranking_points(request, sortedBy):
@@ -995,7 +997,7 @@ def change_status(request, status):
 	if not request.user.is_authenticated:
 		return JsonResponse({'success': False, "message": "The user is not authenticated"}, status=200)
 	
-	if (request.user.player.isReady):
+	if (request.user.player.isReady == True):
 		request.user.set_status('in-game')
 		return JsonResponse({'success': False, "message": "You cannot change your status while you are ready"}, status=200)
 	if (request.user.player.currentGameID):
