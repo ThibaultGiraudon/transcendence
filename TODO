@@ -1,10 +1,6 @@
 [ELIAS]
 
-Erreur quand on est sur une autre page (chat) et que le j2 \
-	lance la game ca me redirige en ouvrant plusieurs fois le \
-	WebSocket ce qui est pas clean
-
-Reload start game socket closed or on close
+ajouter une secu si on vchange de page ca continue de addevent listner les arrow etc
 
 Ajouter le invite to game qui est dans le chat prive \
 	pour inviter un joueur a jouer
@@ -21,3 +17,7 @@ Status offline when close page
 getElement by id quit secure if not exist
 
 Historique de parties sur le profil d'un user (mode de jeu, date, contre qui, winner...)
+
+round le average point 2 apres la virgule 
+
+et calculer le average point avec la moyenne du tournoi

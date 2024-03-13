@@ -42,7 +42,7 @@ function createGameCanvas() {
 
 let pongSocket = null;
 
-// TODO create waitProcess pour demain (elias)
+// TODO supprimer le playersID
 function gameProcess(isWaitingPage, gameMode, gameID, playerID, playersID) {
 	if (!isWaitingPage) {
 		gameCanvas, gameContext = createGameCanvas();
@@ -51,28 +51,10 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID, playersID) {
     console.log(pongSocket);
     if (pongSocket)
         console.log(pongSocket.socket.readyState);
-    if (pongSocket == null || pongSocket.socket.readyState === WebSocket.CLOSED || pongSocket.socket.readyState === WebSocket.CLOSING) {
+    if (pongSocket == null || pongSocket.socket.readyState === WebSocket.CLOSED || pongSocket.socket.readyState === WebSocket.CLOSING)
         pongSocket = getSocket(gameID);
-    }
 
     if (!isWaitingPage) {
-        for(let i = 0; i < playersID.length; i++) {
-            if (pongSocket.socket.readyState === WebSocket.OPEN) {
-                const message = {
-                    type: 'reload_page',
-                    playerID: playersID[i],
-                };
-                pongSocket.socket.send(JSON.stringify(message));
-            } else {
-                pongSocket.socket.addEventListener('open', function (event) {
-                    const message = {
-                        type: 'reload_page',
-                        playerID: playersID[i],
-                    };
-                    pongSocket.socket.send(JSON.stringify(message));
-                });
-            }
-        }
         if (pongSocket.socket.readyState === WebSocket.OPEN) {
             const init_game_message = {
                 type: gameMode,
@@ -128,12 +110,6 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID, playersID) {
         }
     };
 
-    // TODO supprimer si ca casse rien 
-    pongSocket.socket.onclose = function(event) {
-        console.log("closed");
-        pongSocket = getSocket(gameID);
-        console.log("reopened");
-    };
 
     document.addEventListener('keydown', function(event) {
         // TODO log ici pour voir si quand in est sur un wait on a quand meme un event qui sactive
