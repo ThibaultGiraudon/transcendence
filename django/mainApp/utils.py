@@ -4,7 +4,6 @@ def set_all_users_offline():
 	try:
 		User = get_user_model()
 		for user in User.objects.all():
-			user.status = "offline"
-			user.save()
+			user.set_status("offline")
 	except:
 		pass
