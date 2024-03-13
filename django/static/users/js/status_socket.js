@@ -89,9 +89,18 @@ function SignInProcess(id) {
 }
 
 function changeStatus(id, status) {
-	// Change the status of the user
-	statusSocket.socket.send(JSON.stringify({
-		'id': id,
-		'status': status
-	}));
+    // Change the status of the user
+    if (statusSocket.socket.readyState === WebSocket.OPEN) {
+        statusSocket.socket.send(JSON.stringify({
+            'id': id,
+            'status': status
+        }));
+    } else {
+        statusSocket.socket.addEventListener('open', function (event) {
+            statusSocket.socket.send(JSON.stringify({
+                'id': id,
+                'status': status
+            }));
+        });
+    }
 }

@@ -32,7 +32,7 @@ function renderWaitPlayers(gameMode) {
 						dots++;
 					}, 500);
 		
-					gameProcess(true, gameMode, gameID, playerID)
+					gameProcess(true, gameMode, gameID, playerID, null)
 				} else {
 					router.navigate('/pong/');
 				}

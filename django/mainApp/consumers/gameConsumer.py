@@ -39,6 +39,15 @@ class GameConsumer(AsyncWebsocketConsumer):
 			gameSettings = self.gameSettingsInstances[gameID]
 			await handlePaddleMove(self, message, gameSettings, message['playerID'])
 
+		if (message['type'] == 'reload_page'):
+			await self.channel_layer.group_send(
+				self.game_group_name,
+				{
+					'type': 'reload_page',
+					'playerID': message['playerID']
+				}
+			)
+
 	# Called by the server when a message is received from the group
 	async def reload_page(self, event):
 		message = json.dumps(event)
