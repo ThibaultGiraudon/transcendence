@@ -3,10 +3,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model, logout
 from django.middleware.csrf import get_token
 from django.utils import timezone
-import uuid, datetime
+import uuid
 
-from ..models import Notification, Channel, Game, Score
-
+from ..models import Notification, Channel, Game
 
 def get_username(request, id):
 	if not request.user.is_authenticated:
@@ -869,7 +868,11 @@ def get_ranking_points(request, sortedBy):
 	#set average on users
 	for user in users:
 		if (len(user.player.totalPoints) > 1):
-			user.player.averagePoints = user.player.totalPoints[-1] / (len(user.player.totalPoints) - 1)
+			soloPoints = user.player.soloPoints[-1]
+			deathPoints = user.player.deathPoints[-1]
+			tournamentPoints = user.player.tournamentPoints[-1] / 2
+			totalPoints = soloPoints + deathPoints + tournamentPoints
+			user.player.averagePoints = round((totalPoints / (len(user.player.totalPoints) - 1)) * 100) / 100;
 		else:
 			user.player.averagePoints = 0
 		user.save()
@@ -884,7 +887,6 @@ def get_ranking_points(request, sortedBy):
 		sorted_users = sorted(users, key=lambda x: x.player.totalPoints[-1], reverse=True)
 	elif (sortedBy == 'game'):
 		sorted_users = sorted(users, key=lambda x: len(x.player.totalPoints), reverse=True)
-	#CPT
 	elif (sortedBy == 'average'):
 		sorted_users = sorted(users, key=lambda x: x.player.averagePoints, reverse=True)
 	users_dict = {}
@@ -902,6 +904,7 @@ def get_ranking_points(request, sortedBy):
 			'deathPoints': user.player.deathPoints,
 			'tournamentPoints': user.player.tournamentPoints,
 			'totalPoints': user.player.totalPoints,
+			'averagePoints': user.player.averagePoints,
 			'gamePlayed': user.player.score_set.count(),
 		}
 
