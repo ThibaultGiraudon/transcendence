@@ -11,7 +11,7 @@ function getSocket(gameID) {
 	let websocketPort = window.location.protocol === 'https:' ? ':8443' : ':8000';
 	const socketUrl = websocketProtocol + '//' + window.location.hostname + websocketPort + '/ws/game/' + gameID + "/";
 
-	socket = {
+	let socket = {
 		socket: new WebSocket(socketUrl),
 		url: socketUrl,
 		shouldClose: false

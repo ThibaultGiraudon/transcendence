@@ -40,76 +40,99 @@ function createGameCanvas() {
 	return (gameCanvas, gameContext)
 }
 
+let pongSocket = null;
 
 // TODO create waitProcess pour demain (elias)
-function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
+function gameProcess(isWaitingPage, gameMode, gameID, playerID, playersID) {
 	if (!isWaitingPage) {
 		gameCanvas, gameContext = createGameCanvas();
 	}
 
-	const socket = getSocket(gameID);
+    console.log(pongSocket);
+    if (pongSocket)
+        console.log(pongSocket.socket.readyState);
+    if (pongSocket == null || pongSocket.socket.readyState === WebSocket.CLOSED || pongSocket.socket.readyState === WebSocket.CLOSING) {
+        pongSocket = getSocket(gameID);
+    }
 
-    console.log(socket);
-
-    socket.socket.onopen = function() {
-		if (isWaitingPage) {
-			return;
-		}
-        if (socket.readyState === WebSocket.OPEN) {
-            socket.socket.close();
-            return;
+    if (!isWaitingPage) {
+        for(let i = 0; i < playersID.length; i++) {
+            if (pongSocket.socket.readyState === WebSocket.OPEN) {
+                const message = {
+                    type: 'reload_page',
+                    playerID: playersID[i],
+                };
+                pongSocket.socket.send(JSON.stringify(message));
+            } else {
+                pongSocket.socket.addEventListener('open', function (event) {
+                    const message = {
+                        type: 'reload_page',
+                        playerID: playersID[i],
+                    };
+                    pongSocket.socket.send(JSON.stringify(message));
+                });
+            }
         }
-		const message = {
-			type: gameMode,
-			playerID: playerID,
-			action: 'newPlayer'
-		};
-		socket.socket.send(JSON.stringify(message));
+        if (pongSocket.socket.readyState === WebSocket.OPEN) {
+            const init_game_message = {
+                type: gameMode,
+                playerID: playerID,
+            };
+            pongSocket.socket.send(JSON.stringify(init_game_message));
+        } else {
+            pongSocket.socket.addEventListener('open', function (event) {
+                const init_game_message = {
+                    type: gameMode,
+                    playerID: playerID,
+                };
+                pongSocket.socket.send(JSON.stringify(init_game_message));
+            });
+        }
+    }
 
-        console.log("connected OKKK");
+    console.log(pongSocket);
+
+    pongSocket.socket.onopen = function() {
     };
 
-    socket.socket.onmessage = function(event) {
+    pongSocket.socket.onmessage = function(event) {
         const message = JSON.parse(event.data);
 
-		if (message.type === 'reload_page') {
-            console.log(message);
-            console.log(playerID);
-            if (message.playerID == playerID) {
-                
-                // if (isWaitingPage) {
+		if (message.type === 'reload_page' && isWaitingPage === true) {
+                console.log("reload page");
                 router.navigate('/pong/game/' + gameMode);
-                // }
-            }
-            // socket.socket.close();
 		}
 
-		if (message.type === 'init_paddle_position') {
+		else if (message.type === 'init_paddle_position') {
 			initPaddlePosition(message.id, message.position);
 		}
 
-		if (message.type === 'update_score') {
+		else if (message.type === 'update_score') {
 			updateScore(message);
 		}
 
-		if (message.type === 'update_paddle_position') {
+		else if (message.type === 'update_paddle_position') {
 			updatePaddlePosition(message.id, message.position);
 		}
 
-		if (message.type === 'update_ball_position') {
+		else if (message.type === 'update_ball_position') {
 			updateBallPosition(message.x, message.y, message.color, message.radius);
 		}
 
-        if (message.type === 'game_over') {
+        else if (message.type === 'game_over') {
             if (message.playerID === playerID) {
+                pongSocket.socket.close();
+                pongSocket = null;
                 gameOver(message);
             }
         }
     };
 
     // TODO supprimer si ca casse rien 
-    socket.socket.onclose = function(event) {
-        console.log("CLOSED OKK");
+    pongSocket.socket.onclose = function(event) {
+        console.log("closed");
+        pongSocket = getSocket(gameID);
+        console.log("reopened");
     };
 
     document.addEventListener('keydown', function(event) {
@@ -123,7 +146,7 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 				playerID: playerID,
                 paddleKey: event.key,
             };
-            socket.socket.send(JSON.stringify(message));
+            pongSocket.socket.send(JSON.stringify(message));
         }
 
         if (event.key === "ArrowUp" || event.key === "ArrowDown" || 
@@ -142,7 +165,7 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 				playerID: playerID,
                 paddleKey: event.key,
             };
-            socket.socket.send(JSON.stringify(message));
+            pongSocket.socket.send(JSON.stringify(message));
         }
     });
 }
