@@ -1,8 +1,10 @@
 // Global variables
-let chatSocket = null;
+// let chatSocket = null;
 
 // Check changes on the chat page
 function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
+	let chatSocket = null;
+
 	if (chatSocket !== null) {
 		chatSocket.shouldClose = true;
 		if (chatSocket.socket.readyState !== WebSocket.CLOSED) {
@@ -108,6 +110,8 @@ function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
 	chatSocket.socket.onclose = function(e) {
 		if (!this.shouldClose && chatSocket.socket.readyState === WebSocket.CLOSED) {
 			chatSocket.socket = new WebSocket(chatSocket.url);
+		} else {
+			console.log('Chat socket closed');
 		}
 	};
 

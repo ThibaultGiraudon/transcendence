@@ -3,6 +3,7 @@ function renderGamePage(gameMode) {
 		if (data.isAuthenticated) {
 			fetchAPI('/api/get_game_info').then(data => {
 				if (data.success) {
+					fetchAPI('/api/change_status/in-game').then(data => {});
 					gameID = data.game_id;
 					playerID = data.player_id;
 					players_username = data.players_username;

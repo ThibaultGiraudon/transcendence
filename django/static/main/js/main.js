@@ -46,34 +46,36 @@ const router = {
 	},
 
 	navigate: function(route) {
-		// Check if the route is a string
-		if (typeof route !== 'string') {
-			return;
-		}
-
-		// Find the matching route
-		const matchingRoute = Object.keys(this.routes).find(r => {
-			const regex = new RegExp(`^${r.replace(/:[^\s/]+/g, '([\\w-]+)')}$`);
-			return regex.test(route);
-		});
-	
-		if (matchingRoute) {
-			// Extract the parameters
-			const params = route.match(new RegExp(matchingRoute.replace(/:[^\s/]+/g, '([\\w-]+)'))).slice(1);
-	
-			// Call the corresponding function with the parameters
-			this.routes[matchingRoute](...params);
-			
-			// Add the new route to the history
-			if (!isPopStateEvent) {
-				history.pushState({ route: route }, '', route);
+		fetchAPI('/api/change_status/online').then(data => {
+			// Check if the route is a string
+			if (typeof route !== 'string') {
+				return;
 			}
-			isPopStateEvent = false;
+
+			// Find the matching route
+			const matchingRoute = Object.keys(this.routes).find(r => {
+				const regex = new RegExp(`^${r.replace(/:[^\s/]+/g, '([\\w-]+)')}$`);
+				return regex.test(route);
+			});
 		
-		} else {
-			// If no route is found, render the 404 page
-			render404Page();
-		}
+			if (matchingRoute) {
+				// Extract the parameters
+				const params = route.match(new RegExp(matchingRoute.replace(/:[^\s/]+/g, '([\\w-]+)'))).slice(1);
+		
+				// Call the corresponding function with the parameters
+				this.routes[matchingRoute](...params);
+				
+				// Add the new route to the history
+				if (!isPopStateEvent) {
+					history.pushState({ route: route }, '', route);
+				}
+				isPopStateEvent = false;
+			
+			} else {
+				// If no route is found, render the 404 page
+				render404Page();
+			}
+		});
 	}
 };
 
@@ -137,6 +139,8 @@ window.addEventListener('popstate', function(event) {
         router.navigate(event.state.route);
     }
 });
+
+fetchAPI('/api/change_status/online').then(data => {});
 
 
 // --------------------------------------------------------------------------------

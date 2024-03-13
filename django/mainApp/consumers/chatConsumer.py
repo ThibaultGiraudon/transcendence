@@ -25,8 +25,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 	def change_status_to_online(self):
 		User = get_user_model()
 		user = User.objects.get(id=self.scope['user'].id)
-		user.status = 'online'
-		user.save()
+		user.set_status('online')
 		
 
 	@database_sync_to_async

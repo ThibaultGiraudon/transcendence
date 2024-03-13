@@ -365,7 +365,6 @@ def profile(request, username):
 		else:
 			# Change the status to offline
 			request.user.set_status("offline")
-			request.user.save()
 
 			request.user.email = new_email
 			request.user.save()
@@ -376,7 +375,6 @@ def profile(request, username):
 		else:
 			# Change the status to offline
 			request.user.set_status("offline")
-			request.user.save()
 
 			request.user.set_password(new_password)
 			request.user.save()
