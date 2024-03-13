@@ -609,13 +609,11 @@ def get_game_info(request):
 	players = game.playerList
 	players_username = []
 	players_photo = []
-	players_id = []
 	for player in players:
 		User = get_user_model()
 		user = User.objects.get(player__id=player)
 		players_username.append(user.username)
 		players_photo.append(user.photo.url)
-		players_id.append(user.player.id)
 
 	local_game = ['init_local_game', 'init_ai_game', 'init_wall_game']
 	type_game = 'online'
@@ -623,8 +621,7 @@ def get_game_info(request):
 	if (game.gameMode in local_game):
 		type_game = 'local'
 
-
-	return JsonResponse({'success': True, 'game_id': gameID, 'user_id': request.user.id, 'player_id': request.user.player.id, 'players_id': players_id, 'players_username': players_username, 'players_photo': players_photo, 'type_game': type_game}, status=200)
+	return JsonResponse({'success': True, 'game_id': gameID, 'user_id': request.user.id, 'player_id': request.user.player.id, 'players_username': players_username, 'players_photo': players_photo, 'type_game': type_game}, status=200)
 
 
 def add_user_to_room(request, room_id, user_id):

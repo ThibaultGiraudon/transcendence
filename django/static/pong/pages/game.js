@@ -7,7 +7,6 @@ function renderGamePage(gameMode) {
 					playerID = data.player_id;
 					players_username = data.players_username;
 					players_photo = data.players_photo;
-					playersID = data.players_id;
 					changeStatus(data.user_id, 'in game')
 					
 					let html = `
@@ -58,7 +57,7 @@ function renderGamePage(gameMode) {
 					}
 					
 					document.getElementById('app').innerHTML = html;
-					gameProcess(false, gameMode, gameID, playerID, playersID)
+					gameProcess(false, gameMode, gameID, playerID)
 					
 					quitButton = document.getElementById('quit')
 					if (quitButton) {

@@ -42,8 +42,7 @@ function createGameCanvas() {
 
 let pongSocket = null;
 
-// TODO supprimer le playersID
-function gameProcess(isWaitingPage, gameMode, gameID, playerID, playersID) {
+function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 	if (!isWaitingPage) {
 		gameCanvas, gameContext = createGameCanvas();
 	}
