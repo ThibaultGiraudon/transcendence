@@ -58,18 +58,11 @@ function renderRankingPage(sortedBy) {
 							`;
 
 							for (const user of Object.values(users)) {
-								let average = user.player.totalPoints[user.player.totalPoints.length - 1] / (user.player.totalPoints.length - 1);
-								
-								if (user.player.totalPoints.length == 1)
-									average = 0;
-								
-									if (user.username == ndata.user.username) {
+								if (user.username == ndata.user.username) {
 									html += `
 										<tr class="rank-user">
 									`;
-								}
-								
-								else {
+								} else {
 									html += `
 										<tr>
 									`;
@@ -88,7 +81,7 @@ function renderRankingPage(sortedBy) {
 										<td class="${sortedBy.split('_')[0] == "tournament" ? "selected-row" : "ranking-row"}">${user.player.tournamentPoints[user.player.tournamentPoints.length - 1]}</td>
 										<td class="${sortedBy.split('_')[0] == "total" ? "selected-row" : "ranking-row"}">${user.player.totalPoints[user.player.totalPoints.length - 1]}</td>
 										<td class="${sortedBy.split('_')[0] == "game" ? "selected-row" : "ranking-row"}">${user.player.totalPoints.length - 1}</td>
-										<td class="${sortedBy.split('_')[0] == "average" ? "selected-row" : "ranking-row"}">${average}</td>
+										<td class="${sortedBy.split('_')[0] == "average" ? "selected-row" : "ranking-row"}">${user.player.averagePoints}</td>
 									</tr>
 								`;
 							}
