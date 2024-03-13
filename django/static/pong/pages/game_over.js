@@ -32,8 +32,6 @@ function renderGameOverPage(gameID) {
 					`
 					document.getElementById('app').innerHTML = html
 				} else {
-					// TODO regler le pb quand on a plusieurs fois le game over qui est appele \
-					// et donc que ca redirige direct sans monter la page gameOver
 					router.navigate('/')
 				}
 			})
