@@ -8,7 +8,7 @@ function renderGameOverPage(gameID) {
 						router.navigate('/pong/wait_players/' + finalGameMode)
 					}
 					fetchAPI('/api/change_status/online').then(data => {});
-					changeStatus(data.user_id, 'online')
+					changeStatus(data.user_id, 'online');
 
 					score = data.score
 					position = data.position

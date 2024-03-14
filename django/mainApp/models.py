@@ -137,7 +137,7 @@ class Notification(models.Model):
 		Notification.objects.filter(id=self.id).update(interacted=True)
 		self.user.save()
 	
-	def send_notification(self):		
+	def send_notification(self):
 		channel_layer = get_channel_layer()
 		async_to_sync(channel_layer.group_send)(
 			f"notifications_{self.user.id}",

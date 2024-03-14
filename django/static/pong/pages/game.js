@@ -8,7 +8,7 @@ function renderGamePage(gameMode) {
 					playerID = data.player_id;
 					players_username = data.players_username;
 					players_photo = data.players_photo;
-					changeStatus(data.user_id, 'in-game')
+					changeStatus(data.user_id, 'in-game');
 					
 					let html = `
 						<h1>Pong game</h1>
