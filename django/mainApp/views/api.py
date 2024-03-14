@@ -176,11 +176,17 @@ def get_user(request, username=None):
 			else:
 				try:
 					scores = game.scores.filter(player__id=request.user.player.id)
-					result = str(scores.first().score) + "-"
-					for player_id in game.playerList:
-						if (player_id != request.user.player.id):
-							scores = game.scores.filter(player__id=player_id)
-							result += str(scores.first().score)
+					if (scores == None):
+						result = "No result"
+					else:
+						result = str(scores.first().score) + "-"
+						for player_id in game.playerList:
+							if (player_id != request.user.player.id):
+								scores = game.scores.filter(player__id=player_id)
+								if (scores == None):
+									result = "No result"
+								else:
+									result += str(scores.first().score)
 				except:
 					result = "No result"
 
@@ -269,11 +275,17 @@ def get_user(request, username=None):
 			else:
 				try:
 					scores = game.scores.filter(player__id=user.player.id)
-					result = str(scores.first().score) + "-"
-					for player_id in game.playerList:
-						if (player_id != user.player.id):
-							scores = game.scores.filter(player__id=player_id)
-							result += str(scores.first().score)
+					if (scores == None):
+						result = "No result"
+					else:
+						result = str(scores.first().score) + "-"
+						for player_id in game.playerList:
+							if (player_id != user.player.id):
+								scores = game.scores.filter(player__id=player_id)
+								if (scores == None):
+									result = "No result"
+								else:
+									result += str(scores.first().score)
 				except:
 					result = "No result"
 
@@ -705,38 +717,40 @@ def add_to_favorite(request, room_id):
 	if not request.user.is_authenticated:
 		return JsonResponse({'success': False, "message": "The user is not authenticated"}, status=401)
 
-	# Check if the channel exist and if he is not already in favorite
+	# Check if the channel exist
 	try:
-		channel = request.user.channels.get(room_id=room_id)
+		request.user.channels.get(room_id=room_id)
 	except ObjectDoesNotExist:
 		return JsonResponse({'success': False, "message": "Channel does not exist"}, status=401)
 	
-	if channel in request.user.favoritesChannels:
+	# Check if the channel is not already in favorite
+	if room_id in request.user.favoritesChannels:
 		return JsonResponse({'success': False, "message": "Channel already in favorite"}, status=401)
-	else:
-		request.user.favoritesChannels.append(room_id)
-		request.user.save()
 	
-	return JsonResponse({'success': True, "message": "Successful add to favorite"}, status=200)
+	request.user.favoritesChannels.append(room_id)
+	request.user.save()
+	
+	return JsonResponse({'success': True, "message": "Successful add to favorite", "list": request.user.favoritesChannels}, status=200)
 
 
 def remove_from_favorite(request, room_id):
 	if not request.user.is_authenticated:
 		return JsonResponse({'success': False, "message": "The user is not authenticated"}, status=401)
 
-	# Check if the channel exist and if he is not already in favorite
+	# Check if the channel exist
 	try:
-		channel = request.user.channels.get(room_id=room_id)
+		request.user.channels.get(room_id=room_id)
 	except ObjectDoesNotExist:
 		return JsonResponse({'success': False, "message": "Channel does not exist"}, status=401)
 	
-	if room_id in request.user.favoritesChannels:
-		request.user.favoritesChannels.remove(room_id)
-		request.user.save()
-	else:
+	# Check if he is not already in favorite
+	if not room_id in request.user.favoritesChannels:
 		return JsonResponse({'success': False, "message": "Channel is not in favorite"}, status=401)
 	
-	return JsonResponse({'success': True, "message": "Successful remove from favorite"}, status=200)
+	request.user.favoritesChannels.remove(room_id)
+	request.user.save()
+	
+	return JsonResponse({'success': True, "message": "Successful remove from favorite", "list": request.user.favoritesChannels}, status=200)
 
 
 def leave_channel(request, room_id):
@@ -924,7 +938,7 @@ def get_ranking_points(request, sortedBy):
 			deathPoints = user.player.deathPoints[-1]
 			tournamentPoints = user.player.tournamentPoints[-1] / 2
 			totalPoints = soloPoints + deathPoints + tournamentPoints
-			user.player.averagePoints = round((totalPoints / (len(user.player.totalPoints) - 1)) * 100) / 100;
+			user.player.averagePoints = round((totalPoints / (len(user.player.totalPoints) - 1)) * 100) / 100
 		else:
 			user.player.averagePoints = 0
 		user.save()

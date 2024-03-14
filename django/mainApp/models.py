@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
 
+
 class Player(models.Model):
 	currentGameID = models.IntegerField(default=None, null=True)
 	allGames = ArrayField(models.IntegerField(), default=list)
@@ -29,6 +30,7 @@ class Player(models.Model):
 		self.isReady = True
 		self.save()
 
+
 class Game(models.Model):
 	date = models.DateTimeField(default=timezone.now)
 	duration = models.IntegerField()
@@ -44,10 +46,12 @@ class Game(models.Model):
 	def save(self, *args, **kwargs):
 		super(Game, self).save(*args, **kwargs)
 
+
 class Score(models.Model):
 	player = models.ForeignKey(Player, on_delete=models.CASCADE)
 	position = models.IntegerField()
 	score = models.IntegerField()
+
 
 class CustomUserManager(BaseUserManager):
 	def create_user(self, email, username, password=None, photo=None, **extra_fields):
@@ -74,6 +78,7 @@ class CustomUserManager(BaseUserManager):
 		extra_fields.setdefault('is_superuser', True)
 
 		return self.create_user(email, username, password=password, **extra_fields)
+
 
 class CustomUser(AbstractUser):
 	email = models.EmailField(unique=True)
@@ -108,6 +113,7 @@ class CustomUser(AbstractUser):
 		self.status = status
 		self.save()
 
+
 class Notification(models.Model):
 	user = models.ForeignKey(CustomUser, related_name='notifications', on_delete=models.CASCADE)
 	title = models.CharField(max_length=150, default='')
@@ -140,6 +146,7 @@ class Notification(models.Model):
 			}
 		)
 
+
 class Channel(models.Model):
 	private = models.BooleanField(default=False)
 	tournament = models.BooleanField(default=False)
@@ -155,6 +162,7 @@ class Channel(models.Model):
 	
 	def save(self, *args, **kwargs):
 		super(Channel, self).save(*args, **kwargs)
+
 
 class Message(models.Model):
 	sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

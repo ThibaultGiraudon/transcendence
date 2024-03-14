@@ -55,9 +55,11 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 HOST = os.environ.get("HOST")
 
 CSRF_TRUSTED_ORIGINS = [
-	'http://' + HOST + ':8000',
-	'https://' + HOST + ':8443',
+	f'http://{host}:8000' for host in ALLOWED_HOSTS
+] + [
+	f'https://{host}:8443' for host in ALLOWED_HOSTS
 ]
+
 
 # Enable a secure refresh limit
 REST_FRAMEWORK = {

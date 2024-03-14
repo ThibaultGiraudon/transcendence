@@ -1,4 +1,22 @@
 // --------------------------------------------------------------------------------
+// ------------------------------------- API --------------------------------------
+// --------------------------------------------------------------------------------
+
+
+function fetchAPI(url) {
+	return fetch(url, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	})
+	.then(response => response.json());
+}
+
+fetchAPI('/api/change_status/online').then(data => {});
+
+
+// --------------------------------------------------------------------------------
 // ---------------------------------- Router --------------------------------------
 // --------------------------------------------------------------------------------
 
@@ -47,36 +65,34 @@ const router = {
 	},
 
 	navigate: function(route) {
-		fetchAPI('/api/change_status/online').then(data => {
-			// Check if the route is a string
-			if (typeof route !== 'string') {
-				return;
-			}
+		// Check if the route is a string
+		if (typeof route !== 'string') {
+			return;
+		}
 
-			// Find the matching route
-			const matchingRoute = Object.keys(this.routes).find(r => {
-				const regex = new RegExp(`^${r.replace(/:[^\s/]+/g, '([\\w-]+)')}$`);
-				return regex.test(route);
-			});
-		
-			if (matchingRoute) {
-				// Extract the parameters
-				const params = route.match(new RegExp(matchingRoute.replace(/:[^\s/]+/g, '([\\w-]+)'))).slice(1);
-		
-				// Call the corresponding function with the parameters
-				this.routes[matchingRoute](...params);
-				
-				// Add the new route to the history
-				if (!isPopStateEvent) {
-					history.pushState({ route: route }, '', route);
-				}
-				isPopStateEvent = false;
-			
-			} else {
-				// If no route is found, render the 404 page
-				render404Page();
-			}
+		// Find the matching route
+		const matchingRoute = Object.keys(this.routes).find(r => {
+			const regex = new RegExp(`^${r.replace(/:[^\s/]+/g, '([\\w-]+)')}$`);
+			return regex.test(route);
 		});
+	
+		if (matchingRoute) {
+			// Extract the parameters
+			const params = route.match(new RegExp(matchingRoute.replace(/:[^\s/]+/g, '([\\w-]+)'))).slice(1);
+	
+			// Call the corresponding function with the parameters
+			this.routes[matchingRoute](...params);
+			
+			// Add the new route to the history
+			if (!isPopStateEvent) {
+				history.pushState({ route: route }, '', route);
+			}
+			isPopStateEvent = false;
+		
+		} else {
+			// If no route is found, render the 404 page
+			render404Page();
+		}
 	}
 };
 
@@ -141,8 +157,6 @@ window.addEventListener('popstate', function(event) {
     }
 });
 
-fetchAPI('/api/change_status/online').then(data => {});
-
 
 // --------------------------------------------------------------------------------
 // ------------------------------------ Utils -------------------------------------
@@ -155,17 +169,6 @@ function renderField(field) {
 		<input type="${field.type}" id="${field.name}" name="${field.name}" autocomplete="on" value="${field.value || ''}" accept="${field.accept || ''}" ${field.disabled ? 'disabled' : ''}/>
 		<p class="error-alert" id="error-${field.name}"></p>
 	`;
-}
-
-
-function fetchAPI(url) {
-	return fetch(url, {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-	})
-	.then(response => response.json());
 }
 
 
