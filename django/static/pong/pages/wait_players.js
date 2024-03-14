@@ -7,7 +7,7 @@ function renderWaitPlayers(gameMode) {
 					fetchAPI('/api/change_status/waiting-game').then(data => {});
 					gameID = data.game_id;
 					playerID = data.player_id;
-					changeStatus(data.user_id, 'waiting-game')
+					changeStatus(data.user_id, 'waiting-game');
 
 					let html = `
 						<div class="all-screen">

@@ -1009,13 +1009,16 @@ def	quit_game(request):
 
 def change_status(request, status):
 	if not request.user.is_authenticated:
-		return JsonResponse({'success': False, "message": "The user is not authenticated"}, status=200)
+		return JsonResponse({'success': False, "message": "The user is not authenticated", "user_id":None}, status=200)
 	
 	if (request.user.player.isReady == True):
 		request.user.set_status('in-game')
-		return JsonResponse({'success': False, "message": "You cannot change your status while you are ready"}, status=200)
+		return JsonResponse({'success': False, "message": "You cannot change your status while you are ready", "user_id":None}, status=200)
+	
 	if (request.user.player.currentGameID):
 		request.user.set_status('waiting-game')
-		return JsonResponse({'success': False, "message": "You cannot change your status while you are in a game"}, status=200)
+		return JsonResponse({'success': False, "message": "You cannot change your status while you are in a game", "user_id":None}, status=200)
+	
 	request.user.set_status(status)
-	return JsonResponse({'success': True, "message": "Status changed"}, status=200)
+	
+	return JsonResponse({'success': True, "message": "Status changed", "user_id":request.user.id}, status=200)

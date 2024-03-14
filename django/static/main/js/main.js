@@ -13,11 +13,51 @@ function fetchAPI(url) {
 	.then(response => response.json());
 }
 
+
+// --------------------------------------------------------------------------------
+// ----------------------------------- Status -------------------------------------
+// --------------------------------------------------------------------------------
+
+
 fetchAPI('/api/change_status/online').then(data => {});
 
 
+function sendDisconnectSignal() {
+	fetchAPI('/api/change_status/offline').then(data => {
+		console.log(data);
+		if (!data.user_id) {
+			changeStatus(data.user_id, 'offline');
+		}
+	});
+}
+
+window.addEventListener("beforeunload", function(event) {
+	sendDisconnectSignal();
+});
+
+window.addEventListener("unload", function(event) {
+	sendDisconnectSignal();
+});
+
+
+function handleVisibilityChange() {
+	if (document.hidden) {
+		sendDisconnectSignal();
+	} else {
+		fetchAPI('/api/change_status/online').then(data => {
+			console.log(data);
+			if (!data.user_id) {
+				changeStatus(data.user_id, 'online');
+			}
+		});
+	}
+}
+
+document.addEventListener("visibilitychange", handleVisibilityChange, false);
+
+
 // --------------------------------------------------------------------------------
-// ---------------------------------- Router --------------------------------------
+// ----------------------------------- Router -------------------------------------
 // --------------------------------------------------------------------------------
 
 let isPopStateEvent = false;
