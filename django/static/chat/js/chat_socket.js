@@ -108,8 +108,6 @@ function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
 	chatSocket.socket.onclose = function(e) {
 		if (!this.shouldClose && chatSocket.socket.readyState === WebSocket.CLOSED) {
 			chatSocket.socket = new WebSocket(chatSocket.url);
-		} else {
-			console.log('Chat socket closed');
 		}
 	};
 

@@ -197,10 +197,13 @@ function renderChatPage() {
 				// Add to favorite
 				if (document.getElementById('favorite-chat')) {
 					document.getElementById('favorite-chat').addEventListener('click', () => {
+						popup.remove();
+						popupBackground.remove();
+						console.log('add to favorite' + channel.room_id);
 						fetchAPI(`/api/add_to_favorite/${channel.room_id}`).then(data => {
+							console.log(data)
 							if (data.success) {
-								popup.remove();
-								popupBackground.remove();
+								console.log('success add to favorite');
 								router.navigate('/chat/');
 								return ;
 							}
@@ -211,10 +214,13 @@ function renderChatPage() {
 				// Remove from favorite
 				if (document.getElementById('global-chat')) {
 					document.getElementById('global-chat').addEventListener('click', () => {
+						popup.remove();
+						popupBackground.remove();
+						console.log('remove from favorite' + channel.room_id);
 						fetchAPI(`/api/remove_from_favorite/${channel.room_id}`).then(data => {
+							console.log(data)
 							if (data.success) {
-								popup.remove();
-								popupBackground.remove();
+								console.log('success remove from favorite');
 								router.navigate('/chat/');
 								return ;
 							}
