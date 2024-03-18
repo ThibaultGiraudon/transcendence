@@ -702,12 +702,26 @@ def create_invite_game(request, room_id):
 	players = []
 	for user in channel.users.all():
 		players.append(user.player)
-
 	player1 = players[0]
 	player2 = players[1]
 
-	# if (player1.currentGameID != None or player2.currentGameID != None):
-		# return JsonResponse({'success': False, 'message': 'One of the players is already in a game'}, status=401)
+	if (request.user.player.currentGameID != None):
+		return JsonResponse({'success': False, 'message': 'One of the players is already in a game'}, status=401)
+
+	if (request.user.player.id == player1.id):
+		player2.isInvited = True
+		player2.save()
+		oppenent = player2
+	else:
+		player1.isInvited = True
+		player1.save()
+		oppenent = player1
+
+	if (request.user.player.isInvited):
+		gameID = oppenent.currentGameID
+		request.user.player.currentGameID = gameID
+		request.user.player.save()
+		return JsonResponse({'success': True}, status=200)
 
 	newGame = Game.objects.create(
 		duration=0,
@@ -718,12 +732,6 @@ def create_invite_game(request, room_id):
 
 	request.user.player.currentGameID = newGame.id
 	request.user.player.save()
-
-	# player1.currentGameID = newGame.id
-	# player1.save()
-	# player2.currentGameID = newGame.id
-	# player2.save()
-
 	return JsonResponse({'success': True}, status=200)
 
 def add_user_to_room(request, room_id, user_id):

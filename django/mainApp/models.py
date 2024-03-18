@@ -17,6 +17,7 @@ class Player(models.Model):
 	tournamentPoints = ArrayField(models.IntegerField(), default=list)
 	totalPoints = ArrayField(models.IntegerField(), default=list)
 	averagePoints = models.FloatField(default=0)
+	isInvited = models.BooleanField(default=False)
 
 	def save(self, *args, **kwargs):
 		if not self.soloPoints:
