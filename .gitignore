@@ -17,4 +17,5 @@ __pycache__/
 # Ignore les fichiers spécifiques à l'environnement virtuel
 venv/
 env/
+.env
 game_env/
