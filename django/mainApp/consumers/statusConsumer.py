@@ -2,6 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
+from asgiref.sync import async_to_sync
 
 class StatusConsumer(AsyncWebsocketConsumer):
 	async def connect(self):
@@ -20,6 +21,9 @@ class StatusConsumer(AsyncWebsocketConsumer):
 			self.room_group_name,
 			self.channel_name
 		)
+
+		# Set user offline
+		await self.set_user_offline(self.scope["user"].id)
 
 
 	async def receive(self, text_data):
@@ -45,3 +49,20 @@ class StatusConsumer(AsyncWebsocketConsumer):
 			'id': id,
 			'status': status,
 		}))
+	
+
+	@database_sync_to_async
+	def set_user_offline(self, user_id):
+		User = get_user_model()
+		user = User.objects.get(id=user_id)
+		user.status = 'offline'
+		user.save()
+
+		async_to_sync(self.channel_layer.group_send)(
+			self.room_group_name,
+			{
+				'type': 'status_update',
+				'status': 'offline',
+				'id': user_id,
+			}
+		)

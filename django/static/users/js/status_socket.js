@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		shouldClose: false
 	};
 
+
 	statusSocket.socket.onmessage = function(e) {
 		const data = JSON.parse(e.data);
 		const id = data.id;
