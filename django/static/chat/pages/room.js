@@ -311,4 +311,14 @@ function send_message(room_id, sender, message) {
 			'username': 'System Info',
 		}));
 	};
+
+	fetchAPI(`/api/create_invite_game/${room_id}`).then(data => {
+		if (data.success) {
+			console.log("dans fetch API create_invite_game");
+			console.log(data);
+			router.navigate('/pong/wait_players/init_ranked_solo_game');
+		} else {
+			
+		}
+	})
 }

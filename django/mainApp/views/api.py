@@ -654,7 +654,6 @@ def generate_csrf_token(request):
 def get_game_info(request):
 	if not request.user.is_authenticated:
 		return JsonResponse({'success': False, 'game_id': None, 'player_id': None}, status=401)
-	
 
 	gameID = request.user.player.currentGameID
 	game = Game.objects.get(id=gameID)
@@ -685,6 +684,47 @@ def get_game_info(request):
 
 	return JsonResponse({'success': True, 'game_id': gameID, 'user_id': request.user.id, 'player_id': request.user.player.id, 'players_username': players_username, 'players_photo': players_photo, 'type_game': type_game}, status=200)
 
+def create_invite_game(request, room_id):
+	if not request.user.is_authenticated:
+		return JsonResponse({'success': False, 'message': 'User not authenticated'}, status=401)
+
+	try:
+		channel = request.user.channels.get(room_id=room_id)
+	except ObjectDoesNotExist:
+		return JsonResponse({'success': False, 'message': 'Channel does not exist'}, status=401)
+
+	if (len(channel.users.all()) != 2):
+		return JsonResponse({'success': False, 'message': 'Not enough players in the channel'}, status=401)
+
+	if (request.user.player.id not in channel.users.all().values_list('player__id', flat=True)):
+		return JsonResponse({'success': False, 'message': 'User not in the channel'}, status=401)
+
+	players = []
+	for user in channel.users.all():
+		players.append(user.player)
+
+	player1 = players[0]
+	player2 = players[1]
+
+	# if (player1.currentGameID != None or player2.currentGameID != None):
+		# return JsonResponse({'success': False, 'message': 'One of the players is already in a game'}, status=401)
+
+	newGame = Game.objects.create(
+		duration=0,
+		gameMode='init_ranked_solo_game',
+		playerList=[player1.id, player2.id],
+	)
+	newGame.save()
+
+	request.user.player.currentGameID = newGame.id
+	request.user.player.save()
+
+	# player1.currentGameID = newGame.id
+	# player1.save()
+	# player2.currentGameID = newGame.id
+	# player2.save()
+
+	return JsonResponse({'success': True}, status=200)
 
 def add_user_to_room(request, room_id, user_id):
 	if not request.user.is_authenticated:

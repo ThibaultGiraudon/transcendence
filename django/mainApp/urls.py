@@ -61,7 +61,7 @@ urlpatterns = [
 	path('api/leave_channel/<str:room_id>', api.leave_channel, name='leave_channel'),
 	path('api/join_tournament', api.join_tournament, name='join_tournament'),
 
-
+ 	path('api/create_invite_game/<str:room_id>', api.create_invite_game, name='create_invite_game'),
 	path('api/generate_csrf_token/', api.generate_csrf_token, name='generate_csrf_token'),
 	path('api/get_game_info', api.get_game_info, name='get_game_info'),
 
