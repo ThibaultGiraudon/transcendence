@@ -11,7 +11,7 @@ def getNbPlayersToWait(gameMode):
 	]:
 		return (1)
 	if (gameMode in [
-		'init_ranked_solo_game', 
+		'init_ranked_solo_game',
 		'init_tournament_game_final_game', 
 		'init_tournament_game_third_place_game'
 	]):
