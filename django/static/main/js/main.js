@@ -24,29 +24,18 @@ fetchAPI('/api/change_status/online').then(data => {});
 
 function sendDisconnectSignal() {
 	fetchAPI('/api/change_status/offline').then(data => {
-		console.log(data);
-		if (!data.user_id) {
+		if (data.user_id) {
 			changeStatus(data.user_id, 'offline');
 		}
 	});
 }
-
-window.addEventListener("beforeunload", function(event) {
-	sendDisconnectSignal();
-});
-
-window.addEventListener("unload", function(event) {
-	sendDisconnectSignal();
-});
-
 
 function handleVisibilityChange() {
 	if (document.hidden) {
 		sendDisconnectSignal();
 	} else {
 		fetchAPI('/api/change_status/online').then(data => {
-			console.log(data);
-			if (!data.user_id) {
+			if (data.user_id) {
 				changeStatus(data.user_id, 'online');
 			}
 		});
@@ -192,9 +181,9 @@ document.addEventListener('click', function(event) {
 // Handle the navigation when the user clicks on the back or forward button
 window.addEventListener('popstate', function(event) {
 	if (event.state && event.state.route) {
-        isPopStateEvent = true;
-        router.navigate(event.state.route);
-    }
+		isPopStateEvent = true;
+		router.navigate(event.state.route);
+	}
 });
 
 
