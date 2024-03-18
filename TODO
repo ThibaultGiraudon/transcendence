@@ -1,14 +1,12 @@
 [ELIAS]
 
-Ajouter le invite to game qui est dans le chat prive \
-	pour inviter un joueur a jouer
+ajouter un button quit game
 
 voir main.js ->practice.js:44 POST https://10.14.9.5:8443/pong/wait_players/ 404 (Not Found)
 
 death game -> deconnecter user avant le lancement puis lancer = crash
 
 tournament ?
-
 
 [TIBO]
 
