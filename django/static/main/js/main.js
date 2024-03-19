@@ -199,7 +199,7 @@ function renderField(field) {
 			<input type="${field.type}" id="${field.name}" name="${field.name}" autocomplete="on" value="${field.value || ''}" accept="${field.accept || ''}" ${field.disabled ? 'disabled' : ''}/>
 			${field.type === 'password' ?
 				`<button data-ignore-click type="button" class="show-password" id="show-${field.name}">
-					<img class="img-password" src="/static/users/img/eye_close.png" alt="Show/Hide"/>
+					<img class="img-password" src="/static/users/img/eye_open.png" alt="Show/Hide"/>
 				</button>`
 			: ''}
 		</div>
@@ -214,10 +214,10 @@ document.addEventListener('click', function(event) {
 		const input = event.target.previousElementSibling;
 		if (input.type === 'password') {
 			input.type = 'text';
-			event.target.firstElementChild.src = '/static/users/img/eye_open.png';
+			event.target.firstElementChild.src = '/static/users/img/eye_close.png';
 		} else {
 			input.type = 'password';
-			event.target.firstElementChild.src = '/static/users/img/eye_close.png';
+			event.target.firstElementChild.src = '/static/users/img/eye_open.png';
 		}
 	}
 });
