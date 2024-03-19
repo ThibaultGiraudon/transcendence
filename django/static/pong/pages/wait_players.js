@@ -15,9 +15,21 @@ function renderWaitPlayers(gameMode) {
 								<h2 class="waiting-game-title"></h2>
 								<img class="waiting-game-gif" src="/static/main/img/loading.gif" alt="waiting">
 							</div>
+							<button class="choose-back-btn cancel-game-button" id="quit">↩ Quit game</button>
 						</div>
 					`;
 					document.getElementById('app').innerHTML = html;
+
+					quitButton = document.getElementById('quit')
+					if (quitButton) {
+						document.getElementById('quit').addEventListener('click', () => {
+							fetchAPI('/api/quit_game').then(data => {
+								if (data.success) {
+									router.navigate('/pong/');
+								}
+							});
+						});
+					}
 
 					// Dynamic title
 					let dots = 0;
