@@ -11,3 +11,45 @@ tournament ?
 [TIBO]
 
 System info previent quand les finals commence dans la conv tournois entre les pairs d'users
+
+
+
+transcendence-web-1       |     result = await self.app(self.scope, self.asgi_receive, self.asgi_send)
+transcendence-nginx-1     | 172.24.0.1 - - [19/Mar/2024:11:31:02 +0000] "GET /ws/status/ HTTP/1.1" 101 98 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:122.0) Gecko/20100101 Firefox/122.0" "-"
+transcendence-web-1       |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 84, in __call__
+transcendence-web-1       |     return await self.app(scope, receive, send)
+transcendence-web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/routing.py", line 62, in __call__
+transcendence-web-1       |     return await application(scope, receive, send)
+transcendence-web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/sessions.py", line 47, in __call__
+transcendence-web-1       |     return await self.inner(dict(scope, cookies=cookies), receive, send)
+transcendence-web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/sessions.py", line 263, in __call__
+transcendence-web-1       |     return await self.inner(wrapper.scope, receive, wrapper.send)
+transcendence-web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/auth.py", line 185, in __call__
+transcendence-web-1       |     return await super().__call__(scope, receive, send)
+transcendence-web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/middleware.py", line 24, in __call__
+transcendence-web-1       |     return await self.inner(scope, receive, send)
+transcendence-web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/routing.py", line 116, in __call__
+transcendence-web-1       |     return await application(
+transcendence-web-1       |            ^^^^^^^^^^^^^^^^^^
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/consumer.py", line 94, in app
+transcendence-web-1       |     return await consumer(scope, receive, send)
+transcendence-web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/consumer.py", line 58, in __call__
+transcendence-web-1       |     await await_many_dispatch(
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/utils.py", line 50, in await_many_dispatch
+transcendence-web-1       |     await dispatch(result)
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/consumer.py", line 73, in dispatch
+transcendence-web-1       |     await handler(message)
+transcendence-web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/generic/websocket.py", line 194, in websocket_receive
+transcendence-web-1       |     await self.receive(text_data=message["text"])
+transcendence-web-1       |   File "/home/app/web/mainApp/consumers/statusConsumer.py", line 32, in receive
+transcendence-web-1       |     id = text_data_json['id']
+transcendence-web-1       |          ~~~~~~~~~~~~~~^^^^^^
+transcendence-web-1       | KeyError: 'id'

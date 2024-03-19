@@ -7,8 +7,14 @@ function renderGameOverPage(gameID) {
 						finalGameMode = data.redirectGameMode
 						router.navigate('/pong/wait_players/' + finalGameMode)
 					}
-					fetchAPI('/api/change_status/online').then(data => {});
-					changeStatus(data.user_id, 'online');
+					fetchAPI('/api/change_status/online').then(data => {
+						if (data.user_id) {
+							changeStatus(data.user_id, 'online');
+						}
+					});
+					if (data.message) {
+						send_message(data.room_id, 0, data.message)
+					}
 
 					score = data.score
 					position = data.position

@@ -3,12 +3,16 @@ function renderGamePage(gameMode) {
 		if (data.isAuthenticated) {
 			fetchAPI('/api/get_game_info').then(data => {
 				if (data.success) {
-					fetchAPI('/api/change_status/in-game').then(data => {});
+					fetchAPI('/api/change_status/in-game').then(data => {
+						if (data.user_id) {
+							changeStatus(data.user_id, 'in-game');
+						}
+					});
 					gameID = data.game_id;
 					playerID = data.player_id;
 					players_username = data.players_username;
 					players_photo = data.players_photo;
-					changeStatus(data.user_id, 'in-game');
+					room_id = data.room_id;
 					
 					let html = `
 						<h1>Pong game</h1>
@@ -59,7 +63,10 @@ function renderGamePage(gameMode) {
 					
 					document.getElementById('app').innerHTML = html;
 					gameProcess(false, gameMode, gameID, playerID)
-					
+					if (data.room_id && data.gameMode == 'init_tournament_game_final_game')
+						send_message(room_id, 0, "Get ready for the final game!")
+					if (data.room_id && data.gameMode == 'init_tournament_game_third_place_game')
+						send_message(room_id, 0, "Get ready for the third place game!")
 					quitButton = document.getElementById('quit')
 					if (quitButton) {
 						document.getElementById('quit').addEventListener('click', () => {
