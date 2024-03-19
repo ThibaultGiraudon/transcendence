@@ -4,10 +4,13 @@ function renderWaitPlayers(gameMode) {
 			fetchGamePage(gameMode)
 			fetchAPI('/api/get_game_info').then(data => {
 				if (data.success) {
-					fetchAPI('/api/change_status/waiting-game').then(data => {});
+					fetchAPI('/api/change_status/waiting-game').then(data => {
+						if (data.user_id) {
+							changeStatus(data.user_id, 'waiting-game');
+						}
+					});
 					gameID = data.game_id;
 					playerID = data.player_id;
-					changeStatus(data.user_id, 'waiting-game');
 
 					let html = `
 						<div class="all-screen">

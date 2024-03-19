@@ -11,18 +11,18 @@ function renderSignInPage() {
 			`;
 
 			// Add an event listener on the sign-out button
-			document.getElementById('sign-out').addEventListener('click', async function(event) {
+			document.getElementById('sign-out').addEventListener('click', async function (event) {
 
 				// Logout the user
 				fetchAPI('/api/sign_out').then(data => {
 					renderHeader();
-					
+
 					router.navigate('/sign_in/');
-					return ;
+					return;
 				});
 			});
-		
-		// If the user is not connected
+
+			// If the user is not connected
 		} else {
 
 			// Generate the fields of the sign in form
@@ -53,7 +53,7 @@ function renderSignInPage() {
 			`;
 
 			// Add an event listener on the sign-in form
-			document.querySelector('.sign-form').addEventListener('submit', async function(event) {
+			document.querySelector('.sign-form').addEventListener('submit', async function (event) {
 				event.preventDefault();
 
 				// Clear errors messages
@@ -94,8 +94,8 @@ function renderSignInPage() {
 
 						// Redirect the user
 						router.navigate('/pong/');
-						return ;
-					
+						return;
+
 					} else {
 						document.getElementById('error-email').textContent = responseData.email;
 						document.getElementById('error-password').textContent = responseData.password;

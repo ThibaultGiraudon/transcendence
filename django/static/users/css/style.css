@@ -36,6 +36,7 @@
 .form-div {
 	margin: 50px 0;
 	padding: 0 40px;
+	padding-bottom: 10px;
 	width: 30em;
 	height: auto;
 	background-color: var(--color-light-hover);
@@ -70,8 +71,9 @@
 	color: var(--color-dark-hover);
 	padding: var(--input-padding);
 	width: calc(100% - var(--input-padding) * 2 - 2px);
-	border: 1px solid var(--color-dark);
 	border-radius: var(--input-border-radius);
+	border: none;
+	outline: none;
 	color: var(--color-dark-hover);
 	background: transparent;
 }
@@ -114,7 +116,12 @@
 }
 
 .sign-42-button input {
-	margin-bottom: 20px;
+	font-family: var(--font-text-bold);
+	border: 1px solid var(--color-dark);
+	border-radius: var(--input-border-radius);
+	background: transparent;
+	margin-bottom: 10px;
+	font-size: 1em;
 	padding: calc(var(--input-padding) + 2px);
 	border-style: none;
 	border-radius: var(--input-border-radius);
@@ -136,6 +143,32 @@
 	font-family: var(--font-text-regular);
 	font-size: var(--h4-size);
 	color: var(--color-dark);
+}
+
+.input-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: row;
+	margin-bottom: 10px;
+	border: 1px solid var(--color-dark);
+	border-radius: var(--input-border-radius);
+	background: transparent;
+}
+
+.input-container input {
+	flex-grow: 1;
+}
+
+.img-password {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: row;
+	height: 100%;
+	border-radius: 0;
+	width: 1.8em;
+	height: 1.8em;
 }
 
 
@@ -330,7 +363,7 @@
 }
 
 .profile-official-container:hover .profile-official-text {
-    display: block;
+	display: block;
 }
 
 .profile-email {

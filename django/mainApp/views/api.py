@@ -656,6 +656,8 @@ def get_game_info(request):
 		return JsonResponse({'success': False, 'game_id': None, 'player_id': None}, status=401)
 
 	gameID = request.user.player.currentGameID
+	if (gameID == None):
+		return JsonResponse({'success': False, 'game_id': None, 'player_id': None}, status=200)
 	game = Game.objects.get(id=gameID)
 	if (game.gameMode == 'init_tournament_game'):
 		subGame = Game.objects.get(id=game.subGames[0])
@@ -682,7 +684,7 @@ def get_game_info(request):
 	if (game.gameMode in local_game):
 		type_game = 'local'
 
-	return JsonResponse({'success': True, 'game_id': gameID, 'user_id': request.user.id, 'player_id': request.user.player.id, 'players_username': players_username, 'players_photo': players_photo, 'type_game': type_game}, status=200)
+	return JsonResponse({'success': True, 'game_id': gameID, 'user_id': request.user.id, 'player_id': request.user.player.id, 'players_username': players_username, 'players_photo': players_photo, 'type_game': type_game, 'room_id': request.user.player.currentRoomID, 'gameMode': game.gameMode}, status=200)
 
 def create_invite_game(request, room_id):
 	if not request.user.is_authenticated:
@@ -731,6 +733,7 @@ def create_invite_game(request, room_id):
 	newGame.save()
 
 	request.user.player.currentGameID = newGame.id
+	request.user.player.allGames.append(newGame.id)
 	request.user.player.save()
 	return JsonResponse({'success': True}, status=200)
 
@@ -836,11 +839,15 @@ def	join_tournament(request):
 		if len(channel.users.all()) < 4 :
 			channel.users.add(request.user)
 			channel.save()
+			request.user.player.currentRoomID = channel.room_id
+			request.user.player.save()
 			if len(channel.users.all()) == 4 :
 				return JsonResponse({'success': True, "message": "Tournament is full", "room_id": channel.room_id}, status=200)
 			return JsonResponse({'success': True, "message": "User joined the tournament"}, status=200)
 	
 	room_id = str(uuid.uuid1())
+	request.user.player.currentRoomID = room_id
+	request.user.player.save()
 
 	channel = Channel.objects.create(tournament=True, room_id=room_id, name='Tournament')
 	channel.users.add(request.user)
@@ -873,6 +880,9 @@ def redirect_to_finals_game(subGame, player):
 	scores = subGame.scores.filter(player__id=player.id)
 	score = scores.first().score
 	position = scores.first().position
+	User = get_user_model()
+	user = User.objects.get(player=player)
+	message = None
 
 	if (position == 1):
 		if (game.finalGame):
@@ -881,6 +891,7 @@ def redirect_to_finals_game(subGame, player):
 			finalGame.save()
 		else:
 			finalGame = create_finals_game(game, player, True)
+			message = user.username + ": Get ready for the final game"
 	elif (position == 2):
 		if (game.thirdPlaceGame):
 			finalGame = Game.objects.get(id=game.thirdPlaceGame)
@@ -888,6 +899,7 @@ def redirect_to_finals_game(subGame, player):
 			finalGame.save()
 		else:
 			finalGame = create_finals_game(game, player, False)
+			message = user.username + ": Get ready for the third place game"
 
 	player.currentGameID = finalGame.id
 	player.isReady = False
@@ -898,7 +910,9 @@ def redirect_to_finals_game(subGame, player):
 		'redirectGameMode': finalGame.gameMode,
 		'score': score,
 		'position': position,
-		'game_mode': game.gameMode
+		'game_mode': game.gameMode,
+		'room_id': player.currentRoomID,
+		'message': message
 	}, status=200)
 
 def get_game_over(request, gameID):

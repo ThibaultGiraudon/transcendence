@@ -10,6 +10,7 @@ from django.utils import timezone
 
 class Player(models.Model):
 	currentGameID = models.IntegerField(default=None, null=True)
+	currentRoomID = models.CharField(max_length=150)
 	allGames = ArrayField(models.IntegerField(), default=list)
 	isReady = models.BooleanField(default=False)	
 	soloPoints = ArrayField(models.IntegerField(), default=list)

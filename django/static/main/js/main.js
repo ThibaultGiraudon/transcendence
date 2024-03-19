@@ -195,10 +195,32 @@ window.addEventListener('popstate', function(event) {
 function renderField(field) {
 	return `
 		<label for="${field.name}">${field.label}</label>
-		<input type="${field.type}" id="${field.name}" name="${field.name}" autocomplete="on" value="${field.value || ''}" accept="${field.accept || ''}" ${field.disabled ? 'disabled' : ''}/>
+		<div class="input-container">
+			<input type="${field.type}" id="${field.name}" name="${field.name}" autocomplete="on" value="${field.value || ''}" accept="${field.accept || ''}" ${field.disabled ? 'disabled' : ''}/>
+			${field.type === 'password' ?
+				`<button data-ignore-click type="button" class="show-password" id="show-${field.name}">
+					<img class="img-password" src="/static/users/img/eye_close.png" alt="Show/Hide"/>
+				</button>`
+			: ''}
+		</div>
 		<p class="error-alert" id="error-${field.name}"></p>
 	`;
 }
+
+
+/* change the visibility of a password field */
+document.addEventListener('click', function(event) {
+	if (event.target.classList.contains('show-password')) {
+		const input = event.target.previousElementSibling;
+		if (input.type === 'password') {
+			input.type = 'text';
+			event.target.firstElementChild.src = '/static/users/img/eye_open.png';
+		} else {
+			input.type = 'password';
+			event.target.firstElementChild.src = '/static/users/img/eye_close.png';
+		}
+	}
+});
 
 
 // --------------------------------------------------------------------------------
