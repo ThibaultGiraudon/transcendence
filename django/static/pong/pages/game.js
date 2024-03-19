@@ -52,7 +52,7 @@ function renderGamePage(gameMode) {
 							if (data.type_game == "local") {
 						html += `
 							<div class="game-buttons">
-								<button class="game-button" id="quit">Quit</button>
+								<button class="choose-back-btn game-button" id="quit">↩ Quit game</button>
 							</div>
 						`;
 					}
