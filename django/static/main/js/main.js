@@ -18,6 +18,7 @@ function fetchAPI(url) {
 // ----------------------------------- Status -------------------------------------
 // --------------------------------------------------------------------------------
 
+
 fetchAPI('/api/get_game_info').then(data => {
 	if (data.success) {
 		gameMode = data.gameMode;

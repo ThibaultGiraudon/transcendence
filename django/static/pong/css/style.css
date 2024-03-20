@@ -70,6 +70,10 @@ canvas {
 	margin-bottom: 5em;
 }
 
+.choose-img, .choose-btn-title, .choose-btn-text {
+    pointer-events: none;
+}
+
 .choose-btn:hover {
 	background-color: var(--color-light);
 	opacity: 1;

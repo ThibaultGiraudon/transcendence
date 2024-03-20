@@ -6,27 +6,27 @@ function renderRankedPage() {
 				<h3>Choose a game mode</h3>
 			
 				<div class="choose-buttons">
-					<button class="ranked-btn" id="init_ranked_solo_game">
-						<img class="choose-img" src="/static/pong/img/global.png" class="choose-img">
-						<p class="choose-btn-title">1 vs 1</p>
-						<p class="choose-btn-text">
+					<button data-ignore-click class="ranked-btn" id="init_ranked_solo_game">
+						<img class="choose-img" id="init_ranked_solo_game" src="/static/pong/img/global.png" class="choose-img">
+						<p class="choose-btn-title" id="init_ranked_solo_game">1 vs 1</p>
+						<p class="choose-btn-text" id="init_ranked_solo_game">
 							Solo play against a random opponent from around the world.
 						</p>
 					</button>
 
-					<button class="ranked-btn" id="init_death_game">
-						<img class="choose-img" src="/static/pong/img/death.png" class="choose-img">
-						<p class="choose-btn-title">Deathmatch Game</p>
-						<p class="choose-btn-text">
+					<button data-ignore-click class="ranked-btn" id="init_death_game">
+						<img class="choose-img" id="init_death_game" src="/static/pong/img/death.png" class="choose-img">
+						<p class="choose-btn-title" id="init_death_game">Deathmatch Game</p>
+						<p class="choose-btn-text" id="init_death_game">
 							4 players play on the same board.
 							The last one standing wins the game.
 						</p>
 					</button>
 
-					<button class="ranked-btn" id="init_tournament_game">
-						<img class="choose-img" src="/static/pong/img/tournament.png" class="choose-img">
-						<p class="choose-btn-title">Tournament</p>
-						<p class="choose-btn-text">
+					<button data-ignore-click class="ranked-btn" id="init_tournament_game">
+						<img class="choose-img" id="init_tournament_game" src="/static/pong/img/tournament.png" class="choose-img">
+						<p class="choose-btn-title" id="init_tournament_game">Tournament</p>
+						<p class="choose-btn-text" id="init_tournament_game">
 							4 players play on 2 boards in 1v1.
 							The 2 winners play against each other.
 							The last one standing wins the tournament.
@@ -41,7 +41,7 @@ function renderRankedPage() {
 
 			document.querySelectorAll('.ranked-btn').forEach(button => {
 				button.addEventListener('click', async function(event) {
-					const gameMode = event.target.id;
+					const gameMode = event.currentTarget.id;
 
 					// Send data to the server
 					const response = await fetch('/pong/wait_players/' + gameMode, {
