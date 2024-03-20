@@ -23,8 +23,6 @@ function renderGamePage(gameMode) {
 						let position = ["left", "right", "top", "bottom"];
 						if (players_username.length > 1) {
 							let i = 0;
-							if (players_username.length == 4 && gameMode == "init_tournament_game") 
-								i = 2;
 							for (; i < players_username.length; i++) {
 								html += `
 								<div class="game-participant">

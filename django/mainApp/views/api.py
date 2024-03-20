@@ -1143,6 +1143,7 @@ def get_game_info(request):
 		player.currentGameID = subGame.id
 		player.save()
 		gameID = subGame.id
+		game = subGame
 
 	#Get all usernames from playerList
 	players = game.playerList
