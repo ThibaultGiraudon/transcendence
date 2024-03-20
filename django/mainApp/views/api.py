@@ -3,9 +3,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model, logout
 from django.middleware.csrf import get_token
 from django.utils import timezone
+from datetime import datetime
 import uuid
 
-from ..models import Notification, Channel, Game
+from ..models import Notification, Channel, Game, Score
 
 def get_username(request, id):
 	if not request.user.is_authenticated:
@@ -163,15 +164,17 @@ def get_user(request, username=None):
 					'photo_url': user.photo.url,
 				}
 			
-			if (len(game.scores.all()) > 2):
+			if (game.scores.count() > 2):
 				scores = game.scores.filter(player__id=request.user.player.id)
-				if (scores.position == 1):
+				if (scores == None):
+					result = "No result"
+				if (scores.first().position == 1):
 					result = "1st"
-				elif (scores.position == 2):
+				elif (scores.first().position == 2):
 					result = "2nd"
-				elif (scores.position == 3):
+				elif (scores.first().position == 3):
 					result = "3rd"
-				elif (scores.position == 4):
+				elif (scores.first().position == 4):
 					result = "4th"
 			else:
 				try:
@@ -242,6 +245,7 @@ def get_user(request, username=None):
 	
 	# Get informations about the user with the username
 	else:
+
 		allGames_dict = {}
 		User = get_user_model()
 		try:
@@ -249,28 +253,31 @@ def get_user(request, username=None):
 		except User.DoesNotExist:
 			return JsonResponse({'user': None})
 		
+		
 		game_ids = user.player.allGames
 		games = Game.objects.filter(id__in=game_ids).order_by('-date')
 		for game in games:
 			players_info_dict = {}
 			for player in game.playerList:
 				User = get_user_model()
-				user = User.objects.get(player__id=player)
-				players_info_dict[user.id] = {
-					'id': user.id,
-					'username': user.username,
-					'photo_url': user.photo.url,
+				n_user = User.objects.get(player__id=player)
+				players_info_dict[n_user.id] = {
+					'id': n_user.id,
+					'username': n_user.username,
+					'photo_url': n_user.photo.url,
 				}
-			
-			if (len(game.scores.all()) > 2):
+
+			if (game.scores.count() > 2):
 				scores = game.scores.filter(player__id=user.player.id)
-				if (scores.position == 1):
+				if (scores == None):
+					result = "No result"
+				if (scores.first().position == 1):
 					result = "1st"
-				elif (scores.position == 2):
+				elif (scores.first().position == 2):
 					result = "2nd"
-				elif (scores.position == 3):
+				elif (scores.first().position == 3):
 					result = "3rd"
-				elif (scores.position == 4):
+				elif (scores.first().position == 4):
 					result = "4th"
 			else:
 				try:
@@ -328,6 +335,7 @@ def get_user(request, username=None):
 			'friendRequests': user.friendRequests,
 			'player': player_info,
 		}
+
 		return JsonResponse({'user': user_dict, 'isCurrentUser': False}, status=200)
 
 
@@ -830,10 +838,12 @@ def	join_tournament(request):
 	if not request.user.is_authenticated:
 		return JsonResponse({'success': False, "message": "The user is not authenticated"}, status=401)
 	
-	# Get all tournament channels
+	# Get all tournament channels 
 	channels = Channel.objects.filter(tournament=True)
 
 	for channel in channels:
+		if (channel.users.count() == 4):
+			continue
 		if request.user in channel.users.all():
 			return JsonResponse({'success': False, "message": "User already in tournament"}, status=401)
 		if len(channel.users.all()) < 4 :
@@ -849,7 +859,7 @@ def	join_tournament(request):
 	request.user.player.currentRoomID = room_id
 	request.user.player.save()
 
-	channel = Channel.objects.create(tournament=True, room_id=room_id, name='Tournament')
+	channel = Channel.objects.create(tournament=True, room_id=room_id, name='Tournament ' + datetime.now().strftime("%d-%m %H:%M"))
 	channel.users.add(request.user)
 	channel.save()
 	return JsonResponse({'success': True, "message": "Create tournament"}, status=200)
@@ -940,9 +950,9 @@ def get_game_over(request, gameID):
 		positionsList.append(scoreElement.position)
 
 	if gameMode in ['init_local_game', 'init_ai_game', 'init_wall_game']:
-		game = Game.objects.get(id=gameID)
 		game.isOver = True
 		game.save()
+
 
 	positionsScore = [10, 7, 3, 0]
 	if (gameMode == "init_ranked_solo_game"):
@@ -955,17 +965,27 @@ def get_game_over(request, gameID):
 		player.save()
 	elif (gameMode == "init_tournament_game_sub_game"):
 		return redirect_to_finals_game(game, player)
-	elif (gameMode in "init_tournament_game_final_game"):
+	elif (gameMode == "init_tournament_game_final_game"):
 		tournamentPositionsScore = [20, 15]
 		player.tournamentPoints.append(tournamentPositionsScore[position - 1] + (player.tournamentPoints[-1] if len(player.tournamentPoints) > 0 else 0))
 		player.totalPoints.append(tournamentPositionsScore[position - 1] + (player.totalPoints[-1] if len(player.totalPoints) > 0 else 0))
-		scoresList[0] = tournamentPositionsScore[position - 1]
 		player.save()
+		scoresList[0] = tournamentPositionsScore[position - 1]
+		score = Score(player=player, position=position, score=tournamentPositionsScore[position - 1])
+		score.save()
+		game = Game.objects.get(id=player.allGames[-1])
+		game.scores.add(score)
+		game.save()
 	elif (gameMode == "init_tournament_game_third_place_game"):
 		tournamentPositionsScore = [7, 0]
 		player.tournamentPoints.append(tournamentPositionsScore[position - 1] + (player.tournamentPoints[-1] if len(player.tournamentPoints) > 0 else 0))
 		player.totalPoints.append(tournamentPositionsScore[position - 1] + (player.totalPoints[-1] if len(player.totalPoints) > 0 else 0))
 		player.save()
+		score = Score(player=player, position=position + 2, score=tournamentPositionsScore[position - 1])
+		score.save()
+		game = Game.objects.get(id=player.allGames[-1])
+		game.scores.add(score)
+		game.save()
 		scoresList[0] = tournamentPositionsScore[position - 1]
 		positionsList[0] += 2
 

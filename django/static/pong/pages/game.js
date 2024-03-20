@@ -25,8 +25,8 @@ function renderGamePage(gameMode) {
 							for (let i = 0; i < players_username.length; i++) {
 								html += `
 								<div class="game-participant">
-								<img class="game-participants-img" src="${players_photo[i]}" alt="photo">
-								<h3 class="game-participants-name ${position[i]}">${players_username[i]}</h3>
+									<img class="game-participants-img" src="${players_photo[i]}" alt="photo">
+									<h3 class="game-participants-name ${position[i]}">${players_username[i]}</h3>
 								</div>
 								
 								`;
@@ -63,10 +63,6 @@ function renderGamePage(gameMode) {
 					
 					document.getElementById('app').innerHTML = html;
 					gameProcess(false, gameMode, gameID, playerID)
-					if (data.room_id && data.gameMode == 'init_tournament_game_final_game')
-						send_message(room_id, 0, "Get ready for the final game!")
-					if (data.room_id && data.gameMode == 'init_tournament_game_third_place_game')
-						send_message(room_id, 0, "Get ready for the third place game!")
 					quitButton = document.getElementById('quit')
 					if (quitButton) {
 						document.getElementById('quit').addEventListener('click', () => {

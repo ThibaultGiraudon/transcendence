@@ -199,11 +199,8 @@ function renderChatPage() {
 					document.getElementById('favorite-chat').addEventListener('click', () => {
 						popup.remove();
 						popupBackground.remove();
-						console.log('add to favorite' + channel.room_id);
 						fetchAPI(`/api/add_to_favorite/${channel.room_id}`).then(data => {
-							console.log(data)
 							if (data.success) {
-								console.log('success add to favorite');
 								router.navigate('/chat/');
 								return ;
 							}
@@ -216,11 +213,8 @@ function renderChatPage() {
 					document.getElementById('global-chat').addEventListener('click', () => {
 						popup.remove();
 						popupBackground.remove();
-						console.log('remove from favorite' + channel.room_id);
 						fetchAPI(`/api/remove_from_favorite/${channel.room_id}`).then(data => {
-							console.log(data)
 							if (data.success) {
-								console.log('success remove from favorite');
 								router.navigate('/chat/');
 								return ;
 							}
