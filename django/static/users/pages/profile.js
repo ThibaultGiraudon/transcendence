@@ -45,7 +45,7 @@ function renderLineGraph(id, player) {
 
 	//Fill lables with the number of games played
 	let labels = [];
-	for (let i = 0; i < data.length + 9; i++) {
+	for (let i = 0; i < data.length + 4; i++) {
 		labels.push(i);
 	}
 

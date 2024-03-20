@@ -22,7 +22,10 @@ function renderGamePage(gameMode) {
 					
 						let position = ["left", "right", "top", "bottom"];
 						if (players_username.length > 1) {
-							for (let i = 0; i < players_username.length; i++) {
+							let i = 0;
+							if (players_username.length == 4 && gameMode == "init_tournament_game") 
+								i = 2;
+							for (; i < players_username.length; i++) {
 								html += `
 								<div class="game-participant">
 									<img class="game-participants-img" src="${players_photo[i]}" alt="photo">
