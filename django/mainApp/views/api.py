@@ -1124,7 +1124,7 @@ def get_game_info(request):
 			'success': False,
 			'game_id': None,
 			'player_id': None
-		}, status=401)
+		}, status=200)
 
 	gameID = request.user.player.currentGameID
 	if (gameID == None):

@@ -18,9 +18,17 @@ function fetchAPI(url) {
 // ----------------------------------- Status -------------------------------------
 // --------------------------------------------------------------------------------
 
+fetchAPI('/api/get_game_info').then(data => {
+	if (data.success) {
+		gameMode = data.gameMode;
+		gameID = data.game_id;
+		playerID = data.player_id;
+		if (gameID && playerID)
+			gameProcess(true, gameMode, gameID, playerID)
+	}
+})
 
 fetchAPI('/api/change_status/online').then(data => {});
-
 
 function sendDisconnectSignal() {
 	fetchAPI('/api/change_status/offline').then(data => {
