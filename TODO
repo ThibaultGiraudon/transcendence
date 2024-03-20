@@ -2,10 +2,7 @@
 
 voir main.js ->practice.js:44 POST https://10.14.9.5:8443/pong/wait_players/ 404 (Not Found)
 
-si on sort du tournoi l'url change et on peut plus rejoindre 
-pong/game/init_tournament_game -> pong/wait_players/init_tournament_game_sub_game
-
 [TIBO]
 
 Regler le pb quand on arrive en dernier 
-	dans un tournament ca met 4 joeurs au lieu de 2
+	dans un tournament ca met 4 joeurs au lieu de 2 regler la couleur

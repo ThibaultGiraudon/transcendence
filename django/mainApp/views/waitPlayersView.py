@@ -97,6 +97,8 @@ def waitPlayers(request, gameMode):
 		if (player.currentGameID):
 			game = Game.objects.get(id=player.currentGameID)
 			if (game.isOver == False):
+				if (game.parentGame != None and gameMode == 'init_tournament_game_sub_game'):
+					game = Game.objects.get(id=game.parentGame)
 				gameMode = game.gameMode
 				return returnJsonResponse(game, nbPlayersToWait, gameMode, request.user.player.id)
 
