@@ -624,6 +624,32 @@ img {
 }
 
 
+/* DISCLAIMER PAGE */
+
+
+.disclaimer {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+
+.diclaimer-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.disclaimer-img {
+	width: 12em;
+	height: 12em;
+	border-radius: 0;
+	padding: 0;
+	margin: 0;
+}
+
+
 /* Reorganize main CSS on mobile */
 @media (max-width: 1000px) {
 	h1 {
@@ -640,5 +666,10 @@ img {
 
 	h4 {
 		font-size: 1em;
+	}
+
+	.disclaimer {
+		flex-direction: column;
+		margin: 70px;
 	}
 }

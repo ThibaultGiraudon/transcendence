@@ -93,7 +93,7 @@ function renderSignInPage() {
 						renderHeader();
 
 						// Redirect the user
-						router.navigate('/pong/');
+						router.navigate('/disclaimer/'); // TODO change to /pong/ when the test is over
 						return;
 
 					} else {
