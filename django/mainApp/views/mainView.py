@@ -13,6 +13,10 @@ def ken(request):
 		return render(request, 'base.html')
 
 
+def disclaimer(request):
+	return render(request, 'base.html')
+
+
 def custom403(request, exception):
 	return render(request, 'base.html', status=403)
 

@@ -562,7 +562,7 @@ def	connect_42_user(request, response_data):
 				fail_silently=True,
 			)
 	
-	return redirect('pong')
+	return redirect('disclaimer') # TODO change to 'pong' when test is over
 
 
 def make_api_request_with_token(api_url, token):

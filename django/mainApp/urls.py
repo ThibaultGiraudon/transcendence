@@ -5,7 +5,7 @@ urlpatterns = [
 	# Main
 	path('', mainView.base, name='base'),
 	path('ken/', mainView.ken, name='ken'),
-
+	path('disclaimer/', mainView.disclaimer, name='disclaimer'),
 
 	# Pages
 	path('sign_in/', usersView.sign_in, name='sign_in'),

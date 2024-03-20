@@ -58,6 +58,7 @@ const router = {
 		// Main
 		'/': renderChooseModePage,
 		'/ken/': renderKenPage,
+		'/disclaimer/': renderDisclaimerPage,
 
 		// User
 		'/sign_in/': renderSignInPage,
