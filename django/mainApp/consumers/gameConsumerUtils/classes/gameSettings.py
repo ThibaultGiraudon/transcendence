@@ -13,7 +13,6 @@ class GameSettings:
     def __init__(self, gameID, gameMode):
         self.gameID = gameID
         self.gameMode = gameMode
-        print('GameSettings init')
 
         if (gameMode in [
             'init_ranked_solo_game',
