@@ -243,10 +243,14 @@ def get_user(request, username=None):
 			}
 			index += 1
 
+		if (request.user.player.currentGameID):
+			game = Game.objects.get(id=request.user.player.currentGameID)
 
 		# Get player informations
 		player_info = {
 			'currentGameID': request.user.player.currentGameID,
+			'gameMode': game.gameMode if request.user.player.currentGameID else None,
+			'isReady': request.user.player.isReady,
 			'isReady': request.user.player.isReady,
 			'soloPoints': request.user.player.soloPoints,
 			'deathPoints': request.user.player.deathPoints,
