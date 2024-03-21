@@ -5,7 +5,7 @@
 	height: 25vw;
 	border-radius: var(--border-radius);
 	display: block;
-	box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+	box-shadow: 0 0 10px 0 var(--color-box-shadow);
 	position: relative;
 	margin: 2em;
 }

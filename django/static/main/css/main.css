@@ -21,6 +21,7 @@
 	--color-dark: #0B132B;
 	--color-light-hover: #EBE8E0;
 	--color-dark-hover: #474747;
+	--color-box-shadow: #BDBDBD;
 
 	/* Text size */
 	--h1-size: 5em;
@@ -45,7 +46,6 @@
 ::-webkit-scrollbar {
 	display: none;
 }
-
 
 /* BACKGROUND */
 .circles{

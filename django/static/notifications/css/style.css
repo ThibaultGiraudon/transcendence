@@ -29,14 +29,14 @@
 	margin-bottom: 1em;
 	background-color: var(--color-light-hover);
 	border-radius: var(--border-radius);
-	box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+	box-shadow: 0 0 10px 0 var(--color-box-shadow);
 	transition: ease-in-out 0.1s;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
 .notification:hover:not(.notification-delete) {
-	box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+	box-shadow: 0 0 10px 0 var(--color-box-shadow);
     cursor: pointer;
 }
 

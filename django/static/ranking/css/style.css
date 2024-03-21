@@ -1,3 +1,9 @@
+.rank-sort {
+	color: var(--color-dark);
+	font-family: var(--font-text-bold);
+	font-size: var(--h4-size);
+}
+
 .ranking-title {
 	display: flex;
 	align-items: center;
@@ -75,6 +81,7 @@ td, th {
 	border: 1px solid #dddddd;
 	text-align: center;
 	padding: 8px;
+	color: var(--color-dark);
 }
 
 tr.rank-user {
@@ -96,6 +103,7 @@ tr:nth-child(even) {
 	align-items: center;
 	justify-content: center;
 	flex-direction: row;
+	color: var(--color-dark);
 }
 
 .rank-image {

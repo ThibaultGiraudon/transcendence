@@ -202,6 +202,7 @@ window.addEventListener('popstate', function(event) {
 // --------------------------------------------------------------------------------
 
 
+/* Render a form field */
 function renderField(field) {
 	return `
 		<label for="${field.name}">${field.label}</label>
@@ -218,7 +219,7 @@ function renderField(field) {
 }
 
 
-/* change the visibility of a password field */
+/* Change the visibility of a password field */
 document.addEventListener('click', function(event) {
 	if (event.target.classList.contains('show-password')) {
 		const input = event.target.previousElementSibling;
