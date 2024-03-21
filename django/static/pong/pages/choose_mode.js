@@ -57,7 +57,7 @@ function renderChooseModePage() {
 						</button>
 					`;
 				
-				if ((dataUser.user.player.gameMode in ['init_wall_game', 'init_ai_game', 'init_local_game']) || dataUser.user.player.isReady == false) {
+				if ((['init_wall_game', 'init_ai_game', 'init_local_game'].includes(dataUser.user.player.gameMode)) || dataUser.user.player.isReady == false) {
 					html += `
 							<button class="choose-btn" id="quit-game">
 								<img class="choose-img" src="/static/pong/img/quit.png" class="choose-img">
