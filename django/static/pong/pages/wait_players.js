@@ -1,6 +1,7 @@
 function renderWaitPlayers(gameMode) {
 	fetchAPI('/api/isAuthenticated').then(data => {
 		if (data.isAuthenticated) {
+			console.log('gameMode:', gameMode);
 			fetchGamePage(gameMode)
 			fetchAPI('/api/get_game_info').then(data => {
 				if (data.success) {
@@ -78,8 +79,15 @@ async function fetchGamePage(gameMode) {
 	if (response.headers.get('content-type').includes('application/json')) {
 		const responseData = await response.json();
 
+		console.log(responseData);
+
 		if (responseData.success && responseData.redirect == '/pong/game/') {
 			router.navigate(responseData.redirect + responseData.gameMode);
+			return ;
+		}
+		if (responseData.success && responseData.gameMode != gameMode) {
+			router.navigate(responseData.redirect + responseData.gameMode);
+			return ;
 		}
 	}
 }

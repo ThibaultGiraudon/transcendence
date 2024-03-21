@@ -88,12 +88,6 @@ def waitPlayers(request, gameMode):
 		player = request.user.player
 
 		nbPlayersToWait = getNbPlayersToWait(gameMode)
-		waitingGamesList = Game.objects\
-			.filter(playerList__len__lt=nbPlayersToWait)\
-			.exclude(playerList__contains=[player.id])\
-			.exclude(isOver=True)\
-			.exclude(isPrivate=True)\
-			.filter(gameMode=gameMode)
 
 		# If the player is already in a game and the game is not over, we redirect him to the game
 		if (player.currentGameID):
@@ -101,9 +95,15 @@ def waitPlayers(request, gameMode):
 			if (game.isOver == False):
 				if (game.parentGame != None and gameMode == 'init_tournament_game_sub_game'):
 					game = Game.objects.get(id=game.parentGame)
-				gameMode = game.gameMode
-				return returnJsonResponse(game, nbPlayersToWait, gameMode, request.user.player.id)
+				return returnJsonResponse(game, getNbPlayersToWait(game.gameMode), game.gameMode, request.user.player.id)
 
+		waitingGamesList = Game.objects\
+			.filter(playerList__len__lt=nbPlayersToWait)\
+			.exclude(playerList__contains=[player.id])\
+			.exclude(isOver=True)\
+			.exclude(isPrivate=True)\
+			.filter(gameMode=gameMode)
+		
 		gameID = createOrJoinGame(waitingGamesList, player, gameMode)
 		player.currentGameID = gameID
 		if (gameMode not in [

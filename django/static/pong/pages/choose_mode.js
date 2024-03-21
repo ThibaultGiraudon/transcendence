@@ -57,7 +57,6 @@ function renderChooseModePage() {
 						</button>
 					`;
 				
-				console.log(dataUser.user.player.gameMode);
 				if ((dataUser.user.player.gameMode in ['init_wall_game', 'init_ai_game', 'init_local_game']) || dataUser.user.player.isReady == false) {
 					html += `
 							<button class="choose-btn" id="quit-game">
