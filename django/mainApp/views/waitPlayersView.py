@@ -92,6 +92,7 @@ def waitPlayers(request, gameMode):
 			.filter(playerList__len__lt=nbPlayersToWait)\
 			.exclude(playerList__contains=[player.id])\
 			.exclude(isOver=True)\
+			.exclude(isPrivate=True)\
 			.filter(gameMode=gameMode)
 
 		# If the player is already in a game and the game is not over, we redirect him to the game

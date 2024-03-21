@@ -69,11 +69,8 @@ function renderGamePage(gameMode) {
 						document.getElementById('quit').addEventListener('click', () => {
 							fetchAPI('/api/quit_game').then(data => {
 								if (data.success) {
-									console.log('quit game');
 									pongSocket.socket.close();
 									pongSocket = null;
-									console.log('pongSocket closed');
-									console.log(pongSocket)
 									router.navigate('/pong/');
 								}
 							});

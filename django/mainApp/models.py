@@ -44,6 +44,7 @@ class Game(models.Model):
 	finalGame = models.IntegerField(default=None, null=True)
 	thirdPlaceGame = models.IntegerField(default=None, null=True)
 	parentGame = models.IntegerField(default=None, null=True)
+	isPrivate = models.BooleanField(default=False)
 
 	def save(self, *args, **kwargs):
 		super(Game, self).save(*args, **kwargs)
@@ -158,6 +159,7 @@ class Channel(models.Model):
 	creator = models.IntegerField(default=0)
 	description = models.TextField(default='')
 	last_interaction = models.DateTimeField(default=timezone.now)
+	player_list = ArrayField(models.IntegerField(), default=list)
 
 	def __str__(self):
 		return self.name

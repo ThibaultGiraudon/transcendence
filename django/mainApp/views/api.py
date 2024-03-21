@@ -1122,37 +1122,38 @@ def create_invite_game(request, room_id):
 			'message': 'User not in the channel'
 		}, status=401)
 
-	players = []
-	for user in channel.users.all():
-		players.append(user.player)
-	player1 = players[0]
-	player2 = players[1]
-
 	if (request.user.player.currentGameID != None):
 		return JsonResponse({
 			'success': False,
 			'message': 'One of the players is already in a game'
 		}, status=401)
 
-	if (request.user.player.id == player1.id):
-		player2.isInvited = True
-		player2.save()
-		oppenent = player2
-	else:
-		player1.isInvited = True
-		player1.save()
-		oppenent = player1
+	channel.player_list.append(request.user.player.id)
+	channel.save()
 
-	if (request.user.player.isInvited):
-		gameID = oppenent.currentGameID
-		request.user.player.currentGameID = gameID
+	if (len(channel.player_list) == 2):
+		# Get the other player
+		other_player = channel.users.exclude(id=request.user.id).first()
+		request.user.player.currentGameID = other_player.player.currentGameID
+		request.user.player.allGames.append(other_player.player.currentGameID)
 		request.user.player.save()
-		return JsonResponse({'success': True}, status=200)
+		# Get the game
+		game = Game.objects.get(id=other_player.player.currentGameID)
+		game.playerList.append(request.user.player.id)
+		game.save()
+		# Clear the player list
+		channel.player_list = []
+		channel.save()
+		return JsonResponse({
+			'success': True,
+			'message': 'Game created'
+		}, status=200)
 
 	newGame = Game.objects.create(
 		duration=0,
 		gameMode='init_ranked_solo_game',
-		playerList=[player1.id, player2.id],
+		playerList=[request.user.player.id],
+		isPrivate=True,
 	)
 	newGame.save()
 

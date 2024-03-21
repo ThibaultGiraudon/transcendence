@@ -28,6 +28,8 @@ function renderWaitPlayers(gameMode) {
 						document.getElementById('quit').addEventListener('click', () => {
 							fetchAPI('/api/quit_game').then(data => {
 								if (data.success) {
+									pongSocket.socket.close();
+									pongSocket = null;
 									router.navigate('/pong/');
 								}
 							});
