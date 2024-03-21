@@ -40,17 +40,18 @@ def createGame(player, gameMode):
 	newSubGameID = None
 	if (gameMode == 'init_tournament_game'):
 		newSubGame = Game.objects.create(
-			duration=0,
-			gameMode=gameMode + '_sub_game',
-			playerList=[player.id],
-		)
+									duration=0,
+									gameMode=gameMode + '_sub_game',
+									playerList=[player.id],
+								)
 		newSubGameID = newSubGame.id
+
 	newGame = Game.objects.create(
-		duration=0,
-		gameMode=gameMode,
-		playerList=[player.id],
-		subGames=[newSubGameID],
-	)
+								duration=0,
+								gameMode=gameMode,
+								playerList=[player.id],
+								subGames=[newSubGameID],
+							)
 	if (gameMode == 'init_tournament_game'):
 		newSubGame.parentGame = newGame.id
 		newSubGame.save()

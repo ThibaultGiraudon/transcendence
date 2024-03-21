@@ -180,14 +180,23 @@ def get_user(request, username=None):
 		games = Game.objects.filter(id__in=game_ids).order_by('-date')
 		for game in games:
 			players_info_dict = {}
+			id = 1
+			players_info_dict[0] = {
+				'id': request.user.id,
+				'username': request.user.username,
+				'photo_url': request.user.photo.url,
+			}
 			for player in game.playerList:
 				User = get_user_model()
 				user = User.objects.get(player__id=player)
-				players_info_dict[user.id] = {
+				if (user.id == request.user.id):
+					continue
+				players_info_dict[id] = {
 					'id': user.id,
 					'username': user.username,
 					'photo_url': user.photo.url,
 				}
+				id += 1
 			
 			if (game.scores.count() > 2):
 				scores = game.scores.filter(player__id=request.user.player.id)
@@ -286,15 +295,24 @@ def get_user(request, username=None):
 		game_ids = user.player.allGames
 		games = Game.objects.filter(id__in=game_ids).order_by('-date')
 		for game in games:
+			id = 1
 			players_info_dict = {}
+			players_info_dict[0] = {
+				'id': user.id,
+				'username': user.username,
+				'photo_url': user.photo.url,
+			}
 			for player in game.playerList:
 				User = get_user_model()
 				n_user = User.objects.get(player__id=player)
-				players_info_dict[n_user.id] = {
+				if (n_user.id == user.id):
+					continue
+				players_info_dict[id] = {
 					'id': n_user.id,
 					'username': n_user.username,
 					'photo_url': n_user.photo.url,
 				}
+				id += 1
 
 			if (game.scores.count() > 2):
 				scores = game.scores.filter(player__id=user.player.id)
@@ -461,6 +479,12 @@ def follow(request, id):
 			'success': False,
 			'message': "You cannot interact with the system user"
 		}, status=401)
+	
+	if id == request.user.id:
+		return JsonResponse({
+			'success': False,
+			'message': "You cannot follow yourself"
+		}, status=401)
 
 	# Check if the user exist and if he is not already followed
 	User = get_user_model()
@@ -541,6 +565,12 @@ def unfollow(request, id):
 			'message': "You cannot interact with the system user"
 		}, status=401)
 	
+	if id == request.user.id:
+		return JsonResponse({
+			'success': False,
+			'message': "You cannot unfollow yourself"
+		}, status=401)
+	
 	# Check if the user exist and if he is followed
 	User = get_user_model()
 	try:
@@ -589,6 +619,12 @@ def block(request, id):
 			'success': False,
 			'message': "You cannot interact with the system user"
 		}, status=401)
+	
+	if id == request.user.id:
+		return JsonResponse({
+			'success': False,
+			'message': "You cannot block yourself"
+		}, status=401)
 
 	# Check if the user exist and if he is not already blocked
 	if id in request.user.blockedUsers:
@@ -633,6 +669,12 @@ def unblock(request, id):
 		return JsonResponse({
 			'success': False,
 			'message': "You cannot interact with the system user"
+		}, status=401)
+	
+	if id == request.user.id:
+		return JsonResponse({
+			'success': False,
+			'message': "You cannot unblock yourself"
 		}, status=401)
 	
 	# Convert ID
@@ -1370,6 +1412,7 @@ def	quit_game(request):
 		}, status=401)
 	
 	player = request.user.player
+	
 	if (player.currentGameID != None):
 		try:
 			game = Game.objects.get(id=player.currentGameID)
@@ -1377,6 +1420,11 @@ def	quit_game(request):
 			return JsonResponse({
 				'success': False,
 				'message': "Game does not exist"
+			}, status=401)
+		if (game.gameMode in ['init_tournament_game', 'init_ranked_solo_game', 'init_death_game'] and player.isReady == True):
+			return JsonResponse({
+				'success': False,
+				'message': "You cannot quit this game"
 			}, status=401)
 		game.isOver = True
 		game.save()
@@ -1386,6 +1434,9 @@ def	quit_game(request):
 			'message': "User is not in a game"
 		}, status=401)
 
+	# a verifier
+	if (game.gameMode in ['init_tournament_game', 'init_ranked_solo_game', 'init_death_game']):
+		player.allGames.pop()
 	player.currentGameID = None
 	player.isReady = False
 	player.save()

@@ -26,7 +26,7 @@ function renderPracticePage() {
 						<img class="choose-img" src="/static/pong/img/wall.png" class="choose-img">
 						<p class="choose-btn-title">Wall game</p>
 						<p class="choose-btn-text">
-							Provide description here...
+							Play alone against a wall.
 						</p>
 					</button>
 				</div>
