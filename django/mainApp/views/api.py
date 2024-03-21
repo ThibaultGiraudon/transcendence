@@ -1121,6 +1121,12 @@ def create_invite_game(request, room_id):
 			'success': False,
 			'message': 'User not in the channel'
 		}, status=401)
+	
+	if (request.user.player.id in channel.player_list):
+		return JsonResponse({
+			'success': False,
+			'message': 'User already in the game'
+		}, status=401)
 
 	if (request.user.player.currentGameID != None):
 		return JsonResponse({
@@ -1146,7 +1152,7 @@ def create_invite_game(request, room_id):
 		channel.save()
 		return JsonResponse({
 			'success': True,
-			'message': 'Game created'
+			'message': 'Game joined'
 		}, status=200)
 
 	newGame = Game.objects.create(
@@ -1154,6 +1160,7 @@ def create_invite_game(request, room_id):
 		gameMode='init_ranked_solo_game',
 		playerList=[request.user.player.id],
 		isPrivate=True,
+		room_id=room_id,
 	)
 	newGame.save()
 
@@ -1162,7 +1169,8 @@ def create_invite_game(request, room_id):
 	request.user.player.save()
 
 	return JsonResponse({
-		'success': True
+		'success': True,
+		'message': 'Game created'
 	}, status=200)
 
 
@@ -1435,12 +1443,29 @@ def	quit_game(request):
 			'message': "User is not in a game"
 		}, status=401)
 
-	# a verifier
 	if (game.gameMode in ['init_tournament_game', 'init_ranked_solo_game', 'init_death_game']):
 		player.allGames.pop()
 	player.currentGameID = None
 	player.isReady = False
 	player.save()
+
+
+	if (game.isPrivate):
+		# Remove the player from the channel player list
+		try:
+			channel = Channel.objects.get(room_id=game.room_id)
+			channel.player_list.remove(player.id)
+			channel.save()
+		except Channel.DoesNotExist:
+			return JsonResponse({
+				'success': False,
+				'message': "Channel does not exist"
+			}, status=401)
+		return JsonResponse({
+			'success': True,
+			'message': "send-quit",
+			'room_id': game.room_id
+		}, status=200)
 
 	return JsonResponse({
 		'success': True

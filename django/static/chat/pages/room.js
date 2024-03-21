@@ -281,7 +281,17 @@ function renderRoomPage(room_id) {
 
 			if (inviteGameButton) {
 				inviteGameButton.addEventListener('click', () => {
-					send_message(room_id, 0, `${dataUser.user.username} invited you to play a game`);
+
+					fetchAPI(`/api/create_invite_game/${room_id}`).then(data => {
+						if (data.success) {
+							if (data.message == "Game created") {
+								send_message(room_id, 0, `${dataUser.user.username} invited you to play a game`);
+							}
+							router.navigate('/pong/wait_players/init_ranked_solo_game');
+						} else {
+							
+						}
+					})
 				});
 			}
 
@@ -311,12 +321,4 @@ function send_message(room_id, sender, message) {
 			'username': 'System Info',
 		}));
 	};
-
-	fetchAPI(`/api/create_invite_game/${room_id}`).then(data => {
-		if (data.success) {
-			router.navigate('/pong/wait_players/init_ranked_solo_game');
-		} else {
-			
-		}
-	})
 }

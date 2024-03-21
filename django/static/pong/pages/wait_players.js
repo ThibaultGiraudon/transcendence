@@ -28,6 +28,9 @@ function renderWaitPlayers(gameMode) {
 						document.getElementById('quit').addEventListener('click', () => {
 							fetchAPI('/api/quit_game').then(data => {
 								if (data.success) {
+									if (data.message == 'send-quit') {
+										send_message(data.room_id, 0, 'Invitation canceled')
+									}
 									pongSocket.socket.close();
 									pongSocket = null;
 									router.navigate('/pong/');
