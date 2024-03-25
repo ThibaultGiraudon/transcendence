@@ -99,6 +99,7 @@ An advanced notification system is available on the website to keep you up to da
 
 - **Database**: PostgreSQL <img height=20 src="https://github.com/devicons/devicon/blob/master/icons/postgresql/postgresql-original.svg">
 
+
 ## Credits
 
-
+This project was entirely developed by *Leon Pupier*, *Elias Zanotti* and *Thibault Giraudon* for the final comon core project called **ft_transcendence**.
