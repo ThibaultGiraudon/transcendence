@@ -95,7 +95,7 @@ An advanced notification system is available on the website to keep you up to da
 
 - **Front End**: HTML <img height=20 src="https://github.com/devicons/devicon/blob/master/icons/html5/html5-original.svg"> / CSS <img height=20 src="https://github.com/devicons/devicon/blob/master/icons/css3/css3-original.svg"> / JavaScript <img height=20 src="https://github.com/devicons/devicon/blob/master/icons/javascript/javascript-original.svg">
 
-- **Back End**: Django <img height=20 src="https://github.com/devicons/devicon/blob/master/icons/django/django-plain.svg">
+- **Back End**: Python <img height=20 src="https://github.com/devicons/devicon/blob/master/icons/python/python-original.svg"> / Django <img height=20 src="https://github.com/devicons/devicon/blob/master/icons/django/django-plain.svg">
 
 - **Database**: PostgreSQL <img height=20 src="https://github.com/devicons/devicon/blob/master/icons/postgresql/postgresql-original.svg">
 
