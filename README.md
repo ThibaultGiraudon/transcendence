@@ -102,4 +102,4 @@ An advanced notification system is available on the website to keep you up to da
 
 ## Credits
 
-This project was entirely developed by *Leon Pupier*, *Elias Zanotti* and *Thibault Giraudon* for the final comon core project called **ft_transcendence**.
+This project was entirely developed by *Leon Pupier*, *Elias Zanotti* and *Thibault Giraudon* for the final comon core project of 42 called **ft_transcendence**.
