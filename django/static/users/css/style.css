@@ -378,6 +378,16 @@
 	color: var(--color-dark-hover);
 }
 
+.profile-description {
+	font-family: var(--font-text-regular);
+	font-size: var(--h4-size);
+	color: var(--color-dark-hover);
+	width: 30vw;
+	overflow-wrap: break-word;
+	text-align: center;
+	margin-top: 15px;
+}
+
 .profile-actions {
 	width: 100%;
 	display: flex;
@@ -574,5 +584,9 @@
 	.rank-image {
 		width: 2em;
 		height: 2em;
+	}
+
+	.profile-description {
+		width: 50vw;
 	}
 }

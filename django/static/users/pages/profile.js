@@ -154,6 +154,8 @@ function renderOurProfile(user) {
 		`
 		: '';
 
+	const description = user.description ? user.description : 'No description available';
+
 	return `
 		<div class="profile">
 			<img class="profile-img" src="${user.photo_url}" alt="profile picture">
@@ -166,6 +168,7 @@ function renderOurProfile(user) {
 				</div>
 				<p class="profile-email">${user.email}</p>
 			</div>
+			<p class="profile-description">${description}</p>
 		</div>
 	`;
 }
@@ -177,6 +180,8 @@ function renderOtherProfile(user) {
 			<span class="profile-official-text">Developper</span>
 		`
 		: '';
+	
+	const description = user.description ? user.description : 'No description available';
 
 	return `
 		<div class="profile">
@@ -189,6 +194,7 @@ function renderOtherProfile(user) {
 					${officialImageHTML}
 				</div>
 			</div>
+			<p class="profile-description">${description}</p>
 		</div>
 	`;
 }
@@ -412,14 +418,16 @@ function renderProfilePage(username) {
 					if (user.is42) {
 						fields = [
 							{ name: 'input-username', label: 'Username', type: 'text', value: user.username },
+							{ name: 'input-description', label: 'Description', type: 'text', value: user.description},
 							{ name: 'input-photo', label: 'Profile picture', type: 'file', accept: 'image/*' },
 						];
 					} else {
 						fields = [
 							{ name: 'input-username', label: 'Username', type: 'text', value: user.username },
+							{ name: 'input-description', label: 'Description', type: 'text', value: user.description},
 							{ name: 'input-photo', label: 'Profile picture', type: 'file', accept: 'image/*' },
 							{ name: 'input-email', label: 'Email', type: 'email', value: user.email },
-							{ name: 'input-password', label: 'Password', type: 'password' }
+							{ name: 'input-password', label: 'Password', type: 'password' },
 						];
 					}
 
@@ -442,6 +450,7 @@ function renderProfilePage(username) {
 
 							// Clear errors messages
 							document.getElementById('error-input-username').textContent = '';
+							document.getElementById('error-input-description').textContent = '';
 							document.getElementById('error-input-photo').textContent = '';
 							if (!user.is42) {
 								document.getElementById('error-input-email').textContent = '';
@@ -450,6 +459,7 @@ function renderProfilePage(username) {
 
 							// Get data from the form
 							const new_username = document.getElementById('input-username').value;
+							const new_description = document.getElementById('input-description').value;
 							const photo = document.getElementById('input-photo').files[0];
 							let new_email, new_password;
 							if (!user.is42) {
@@ -493,7 +503,7 @@ function renderProfilePage(username) {
 									'X-Requested-With': 'XMLHttpRequest',
 									'X-CSRFToken': getCookie('csrftoken'),
 								},
-								body: JSON.stringify({ new_username, photo: photoBase64, new_email, new_password, emailAlerts })
+								body: JSON.stringify({ new_username, new_description, photo: photoBase64, new_email, new_password, emailAlerts })
 							});
 
 							if (response.headers.get('content-type').includes('application/json')) {
@@ -507,6 +517,7 @@ function renderProfilePage(username) {
 								} else {
 									// If the connection failed, display the error message
 									document.getElementById('error-input-username').textContent = responseData.username;
+									document.getElementById('error-input-description').textContent = responseData.description;
 									document.getElementById('error-input-photo').textContent = responseData.photo;
 									if (!user.is42) {
 										document.getElementById('error-input-email').textContent = responseData.email;

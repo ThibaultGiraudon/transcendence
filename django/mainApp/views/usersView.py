@@ -297,6 +297,7 @@ def profile(request, username):
 		# Get the data
 		data = json.loads(request.body)
 		new_username = data.get('new_username')
+		new_description = data.get('new_description')
 		photo = data.get('photo')
 		new_email = data.get('new_email')
 		new_password = data.get('new_password')
@@ -325,6 +326,17 @@ def profile(request, username):
 			return JsonResponse({"success": False, "username": "This username is already taken"}, status=401)
 		else:
 			request.user.username = new_username
+			request.user.save()
+
+		# Check if the description is valid
+		if new_description:
+			if len(new_description) > 150:
+				return JsonResponse({"success": False, "description": "Description too long (150 characters max)"}, status=401)
+			else:
+				request.user.description = new_description
+				request.user.save()
+		else:
+			request.user.description = ''
 			request.user.save()
 		
 		# Check if the photo is valid
