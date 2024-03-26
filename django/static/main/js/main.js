@@ -234,6 +234,44 @@ document.addEventListener('click', function(event) {
 });
 
 
+/* Check if the message contains a bad word and replace the word with */
+let listFR = [];
+let listEN = [];
+
+let requestFR = new XMLHttpRequest();
+let requestEN = new XMLHttpRequest();
+
+requestFR.open('GET', '/static/badwords/fr.json', false);
+requestEN.open('GET', '/static/badwords/en.json', false);
+requestFR.send(null);
+requestEN.send(null);
+
+if (requestFR.status === 200) {
+	listFR = JSON.parse(requestFR.responseText).words;
+}
+if (requestEN.status === 200) {
+	listEN = JSON.parse(requestEN.responseText).words;
+}
+
+function filterMessage(message) {
+	message = message.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+	for (let word of listFR) {
+		let normalizedWord = word.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+		
+		message = message.replace(new RegExp(normalizedWord, 'gi'), '*'.repeat(word.length));
+	}
+
+	for (let word of listEN) {
+		let normalizedWord = word.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+		
+		message = message.replace(new RegExp(normalizedWord, 'gi'), '*'.repeat(word.length));
+	}
+
+	return message;
+}
+
+
 // --------------------------------------------------------------------------------
 // ---------------------------------- Observer ------------------------------------
 // --------------------------------------------------------------------------------

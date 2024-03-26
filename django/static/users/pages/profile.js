@@ -154,7 +154,7 @@ function renderOurProfile(user) {
 		`
 		: '';
 
-	const description = user.description ? user.description : 'No description available';
+	const description = user.description ? filterMessage(user.description) : 'No description available';
 
 	return `
 		<div class="profile">
@@ -181,7 +181,7 @@ function renderOtherProfile(user) {
 		`
 		: '';
 	
-	const description = user.description ? user.description : 'No description available';
+	const description = user.description ? filterMessage(user.description) : 'No description available';
 
 	return `
 		<div class="profile">

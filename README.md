@@ -45,6 +45,10 @@ docker-compose up --build
 > *See [this page](https://docs.docker.com/desktop/) to understand how to install Docker.*
 
 
+### Open the website
+Open your favorite internet browser and go to http://localhost:8000 to visit the website in the insecure way. To have an HTTPS connexion, go to https://localhost:8443.
+
+
 ## Pong game
 
 ### Practice modes

@@ -50,8 +50,8 @@ function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
 					// Create the message container
 					const messageContainer = document.createElement('p');
 					messageContainer.setAttribute('data-sender', data.sender);
-					messageContainer.textContent = data.message;
-					
+					messageContainer.textContent = filterMessage(data.message);
+
 					// Create the username container
 					const usernameContainer = document.createElement('p');
 					usernameContainer.textContent = username;

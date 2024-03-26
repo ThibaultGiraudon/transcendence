@@ -21,6 +21,7 @@ import urllib.request, json, base64, uuid
 from datetime import datetime
 
 from mainApp.models import Player
+from mainApp.utils import containBadwords
 
 
 # 42 API
@@ -117,6 +118,8 @@ def sign_up(request):
 			return JsonResponse({"success": False, "username": "Your username is too short (4 characters minimum)"}, status=401)
 		elif len(username) > 20:
 			return JsonResponse({"success": False, "username": "Your username is too long (20 characters maximum)"}, status=401)
+		elif containBadwords(username):
+			return JsonResponse({"success": False, "username": "This username contains inappropriate words"}, status=401)
 
 		# Create the user
 		user = CustomUser.objects.create_user(
@@ -318,6 +321,8 @@ def profile(request, username):
 			return JsonResponse({"success": False, "username": "This username is too short (4 characters minimum)"}, status=401)
 		elif len(new_username) > 20:
 			return JsonResponse({"success": False, "username": "This username is too long (20 characters maximum)"}, status=401)
+		elif containBadwords(new_username):
+			return JsonResponse({"success": False, "username": "This username contains inappropriate words"}, status=401)
 		elif ' ' in new_username:
 			return JsonResponse({"success": False, "username": "This username cannot contain space"}, status=401)
 		elif not re.match('^[a-zA-Z0-9-]*$', new_username):
@@ -332,6 +337,8 @@ def profile(request, username):
 		if new_description:
 			if len(new_description) > 150:
 				return JsonResponse({"success": False, "description": "Description too long (150 characters max)"}, status=401)
+			elif containBadwords(new_description):
+				return JsonResponse({"success": False, "description": "This description contains inappropriate words"}, status=401)
 			else:
 				request.user.description = new_description
 				request.user.save()

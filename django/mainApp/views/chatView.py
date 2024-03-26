@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 
 from mainApp.models import Channel
+from mainApp.utils import containBadwords
 
 
 def chat(request):
@@ -30,12 +31,16 @@ def new(request):
 			return JsonResponse({'success': False, 'name': 'The name is too long'}, status=401)
 		elif name.isspace():
 			return JsonResponse({'success': False, 'name': 'The name cannot be only white spaces'}, status=401)
-		
+		elif containBadwords(name):
+			return JsonResponse({'success': False, 'name': 'The name contains bad words'}, status=401)
+
 		# Check description
 		if not description:
 			description = ''
 		elif len(description) > 150:
 			return JsonResponse({'success': False, 'description': 'The description is too long'}, status=401)
+		elif containBadwords(description):
+			return JsonResponse({'success': False, 'description': 'The description contains bad words'}, status=401)
 
 		# Channel informations
 		room_id = str(uuid.uuid1())

@@ -27,7 +27,7 @@ function renderChannel(channel) {
 					<p class="chat-last-message-timestamp">${channel.last_message.timestamp}</p>
 					<div class="chat-last-message-container">
 						<p class="chat-last-message-sender">${sender}: </p>
-						<p class="chat-last-message">${channel.last_message.message.substring(0, 50)}${channel.last_message.message.length > 50 ? '...' : ''}</p>
+						<p class="chat-last-message">${filterMessage(channel.last_message.message.substring(0, 50))}${channel.last_message.message.length > 50 ? '...' : ''}</p>
 					</div>
 				`
 				:

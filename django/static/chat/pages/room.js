@@ -156,10 +156,8 @@ function renderRoomPage(room_id) {
 						messageHTML += `
 							<p class="other-message" data-sender="${message.sender}">`;
 					}
-					messageHTML += `
-						${message.message}
-						</p>
-					`;
+					messageHTML += filterMessage(message.message);
+					messageHTML += '</p>';
 				}
 				previousMessageSender = message.sender;
 				html += messageHTML;
