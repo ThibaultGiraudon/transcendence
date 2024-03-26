@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/LeonPupier/Mensible">
-    <img src="django/static/main/img/loading.gif" alt="Logo" width="100" height="100">
+    <img src="django/static/main/img/loading.gif" alt="Logo" width="150" height="150">
   </a>
   <h3 align="center">Transcendence</h3>
   
