@@ -8,7 +8,7 @@
   
   [![HitCount](https://img.shields.io/endpoint?url=https%3A%2F%2Fhits.dwyl.com%2FThib1708%2Ftranscendence.json%3Fcolor%3Dgreen)](https://github.com/Thib1708/transcendence/)
   ![](https://sloc.xyz/github/Thib1708/transcendence)
-  [![Last commit](https://img.shields.io/github/last-commit/Thib1708/transcendence)](https://github.com/Thib1708/transcendence/)
+  [![Last commit](https://img.shields.io/github/last-commit/Thib1708/transcendence.svg)](https://github.com/Thib1708/transcendence/)
 </div>
 
 > [!WARNING]
