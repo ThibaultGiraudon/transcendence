@@ -108,29 +108,29 @@ The project includes an **email support** to inform registered users of actions 
 
 To set up the server and website, you'll need a file containing environment variables. This file should be named `.env` and located at the root of the main folder. Here's an implementation model of this famous file:
 
-```javascript
+```python
 # Django
-HOST=/* Put your local IP here */
-SECRET_KEY=/* Django secret key */
+HOST=# Put your local IP here
+SECRET_KEY= # Django secret key
 DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 ${HOST} [::1]
 OFFICIAL_EMAILS=lpupier@student.42lyon.fr,tgiraudo@student.42lyon.fr,ezanotti@student.42lyon.fr
 
 # DataBase identification
 DATABASE_ENGINE=django.db.backends.postgresql
 DATABASE_NAME=postgres
-DATABASE_USER=/* Database username */
-DATABASE_PASSWORD=/* Database password */
+DATABASE_USER= # Database username
+DATABASE_PASSWORD= # Database password
 DATABASE_HOST=postgres
 DATABASE_PORT=5432
 
 # API identification
-CLIENT_ID=/* 42 client API ID */
-CLIENT_SECRET=s/* 42 client secret */
-OTHER_CLIENT_SECRET=/* 42 next client secret - optionnal */
+CLIENT_ID= # 42 client API ID
+CLIENT_SECRET= # 42 client secret
+OTHER_CLIENT_SECRET= # 42 next client secret - optionnal
 
 # Email gestion
-EMAIL_HOST_USER=/* Email */
-EMAIL_HOST_PASSWORD=/* API password */
+EMAIL_HOST_USER= # Email
+EMAIL_HOST_PASSWORD= # API password
 ```
 
 Modify the informations with your own credentials and then launch the `docker-compose` of your choice.
