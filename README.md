@@ -16,6 +16,7 @@
 - [Profile](#profile)
 - [Notifications](#notifications)
 - [Email support](#email-support)
+- [How to create the env file](#how-to-create-the-env-file)
 - [Technical details](#technical-details)
 - [Credits](#credits)
 
@@ -35,6 +36,9 @@ Use the following command to clone the repository to your local machine:
 git clone https://github.com/tgiraudo/transcendence.git
 ```
 
+### Create the env file
+See [How to create the env file](#how-to-create-the-env-file) to create this important file and to be abble to continue the installation.
+
 ### Launch the server
 Use the following commands to launch the docker-compose file to up the website:
 ```shell
@@ -44,7 +48,6 @@ docker-compose up --build
 
 > [!NOTE]
 > *See [this page](https://docs.docker.com/desktop/) to understand how to install Docker.*
-
 
 ### Open the website
 Open your favorite internet browser and go to http://localhost:8000 to visit the website in the insecure way. To have an HTTPS connexion, go to https://localhost:8443.
@@ -99,6 +102,38 @@ An advanced notification system is available on the website to keep you up to da
 ## Email support
 
 The project includes an **email support** to inform registered users of actions taken on their accounts and securely track their modifications. This can be disabled if required on the user's profile page.
+
+
+## How to create the env file
+
+To set up the server and website, you'll need a file containing environment variables. This file should be named `.env` and located at the root of the main folder. Here's an implementation model of this famous file:
+
+```javascript
+# Django
+HOST=/* Put your local IP here */
+SECRET_KEY=/* Django secret key */
+DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 ${HOST} [::1]
+OFFICIAL_EMAILS=lpupier@student.42lyon.fr,tgiraudo@student.42lyon.fr,ezanotti@student.42lyon.fr
+
+# DataBase identification
+DATABASE_ENGINE=django.db.backends.postgresql
+DATABASE_NAME=postgres
+DATABASE_USER=/* Database username */
+DATABASE_PASSWORD=/* Database password */
+DATABASE_HOST=postgres
+DATABASE_PORT=5432
+
+# API identification
+CLIENT_ID=/* 42 client API ID */
+CLIENT_SECRET=s/* 42 client secret */
+OTHER_CLIENT_SECRET=/* 42 next client secret - optionnal */
+
+# Email gestion
+EMAIL_HOST_USER=/* Email */
+EMAIL_HOST_PASSWORD=/* API password */
+```
+
+Modify the informations with your own credentials and then launch the `docker-compose` of your choice.
 
 
 ## Technical details
