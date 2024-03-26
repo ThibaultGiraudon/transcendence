@@ -15,6 +15,7 @@
 - [Friends](#friends)
 - [Profile](#profile)
 - [Notifications](#notifications)
+- [Email support](#email-support)
 - [Technical details](#technical-details)
 - [Credits](#credits)
 
@@ -95,6 +96,11 @@ Each user has a profile. Public information includes your **profile photo** (*a 
 An advanced notification system is available on the website to keep you up to date. A **live animation** will alert you to incoming news, along with a **pending message counter**. Once on the notifications page, you'll be able to see **unread messages**, **new ones received**... All notifications are **clickable** and will redirect you to the desired location, and some contain **action buttons** to facilitate your reaction.
 
 
+## Email support
+
+The project includes an **email support** to inform registered users of actions taken on their accounts and securely track their modifications. This can be disabled if required on the user's profile page.
+
+
 ## Technical details
 
 - **Front End**: HTML <img height=20 src="https://github.com/devicons/devicon/blob/master/icons/html5/html5-original.svg"> / CSS <img height=20 src="https://github.com/devicons/devicon/blob/master/icons/css3/css3-original.svg"> / JavaScript <img height=20 src="https://github.com/devicons/devicon/blob/master/icons/javascript/javascript-original.svg">
@@ -102,6 +108,9 @@ An advanced notification system is available on the website to keep you up to da
 - **Back End**: Python <img height=20 src="https://github.com/devicons/devicon/blob/master/icons/python/python-original.svg"> / Django <img height=20 src="https://github.com/devicons/devicon/blob/master/icons/django/django-plain.svg">
 
 - **Database**: PostgreSQL <img height=20 src="https://github.com/devicons/devicon/blob/master/icons/postgresql/postgresql-original.svg">
+
+
+The entire website has been developed in compliance with the single page application ([SPA](https://en.wikipedia.org/wiki/Single-page_application)) for increased user comfort and speed of use.
 
 
 ## Credits
