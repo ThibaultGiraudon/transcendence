@@ -1,4 +1,15 @@
-# Transcendence
+<div align="center">
+  <a href="https://github.com/LeonPupier/Mensible">
+    <img src="django/static/main/img/favicon.ico" alt="Logo" width="80" height="80">
+  </a>
+  <h3 align="center">Transcendence</h3>
+  
+  Final common core project of 42 school
+  
+  [![HitCount](https://img.shields.io/endpoint?url=https%3A%2F%2Fhits.dwyl.com%2FThib1708%2Ftranscendence.json%3Fcolor%3Dgreen)](https://github.com/Thib1708/transcendence/)
+  ![](https://sloc.xyz/github/Thib1708/transcendence)
+  [![Last commit](https://img.shields.io/github/last-commit/Thib1708/transcendence)](https://github.com/Thib1708/transcendence/)
+</div>
 
 > [!WARNING]
 > This project is still under development.
