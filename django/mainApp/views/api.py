@@ -1080,16 +1080,17 @@ def leave_channel(request, room_id):
 			'success': False,
 			'message': 'Channel does not exist'
 		}, status=401)
+
+	if request.user not in channel.users.all():
+		return JsonResponse({
+			'success': False,
+			'message': 'User not in the channel'
+		}, status=401)
 	
 	# Remove the channel from the favorites
 	if room_id in request.user.favoritesChannels:
 		request.user.favoritesChannels.remove(room_id)
 		request.user.save()
-	else:
-		return JsonResponse({
-			'success': False,
-			'message': 'User is not in the channel'
-		}, status=401)
 
 	# Remove the user from the channel
 	channel.users.remove(request.user)

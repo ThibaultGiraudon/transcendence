@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 import json
 
+
 def set_all_users_offline():
 	try:
 		User = get_user_model()
@@ -35,6 +36,7 @@ def containBadwords(message):
 		"benladen",
 		"daesh",
 		"alqaeda",
+		"zemmour"
 	]
 
 	# Convert the message to lowercase
