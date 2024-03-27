@@ -20,12 +20,24 @@ function renderGameOverPage(gameID) {
 					position = data.position
 					if (position == 1) {
 						position = '1st'
+						if (data.gameMode == 'init_death_game') {
+							score = 10
+						}
 					} else if (position == 2) {
 						position = '2nd'
+						if (data.gameMode == 'init_death_game') {
+							score = 7
+						}
 					} else if (position == 3) {
 						position = '3rd'
+						if (data.gameMode == 'init_death_game') {
+							score = 3
+						}
 					} else {
 						position = position + 'th'
+						if (data.gameMode == 'init_death_game') {
+							score = 0
+						}
 					}
 
 					positionText = '<h3>You finished ' + position + '</h3>'
