@@ -77,6 +77,8 @@ def returnJsonResponse(game, nbPlayersToWait, gameMode, playerID):
 				subGame = Game.objects.get(id=game.subGames[1])
 			gameID = subGame.id
 		return JsonResponse({'success': True, 'redirect': '/pong/game/', 'gameMode': gameMode, 'gameID': gameID})
+	if (gameMode == 'init_tournament_game_sub_game'):
+		gameMode = 'init_tournament_game'
 	return JsonResponse({'success': True, 'redirect': '/pong/wait_players/', 'gameMode': gameMode, 'gameID': gameID})
 
 def waitPlayers(request, gameMode):
