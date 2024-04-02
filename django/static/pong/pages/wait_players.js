@@ -18,7 +18,15 @@ function renderWaitPlayers(gameMode) {
 								<h2 class="waiting-game-title"></h2>
 								<img class="waiting-game-gif" src="/static/main/img/loading.gif" alt="waiting">
 							</div>
-							<button class="choose-back-btn cancel-game-button" id="quit">↩ Quit game</button>
+					`;
+
+					if (!(['init_tournament_game', 'init_tournament_game_third_place_game', 'init_tournament_game_final_game'].includes(gameMode))) {
+						html += `
+							<button id="quit" class="quit-button">Quit</button>
+						`;
+					}
+
+					html += `
 						</div>
 					`;
 					document.getElementById('app').innerHTML = html;

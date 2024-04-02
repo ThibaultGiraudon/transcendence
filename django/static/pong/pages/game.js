@@ -16,7 +16,6 @@ function renderGamePage(gameMode) {
 					
 					let html = `
 						<h1>Pong game</h1>
-						<h3>${gameMode}</h3>
 						<div class="game-participant-list">
 						`;
 					
