@@ -1442,7 +1442,8 @@ def	quit_game(request):
 				'success': False,
 				'message': "You cannot quit this game"
 			}, status=401)
-		game.isOver = True
+		# game.isOver = True
+		game.playerList.remove(player.id)
 		game.save()
 	else:
 		return JsonResponse({
