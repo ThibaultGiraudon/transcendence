@@ -1254,10 +1254,13 @@ def get_game_over(request, gameID):
 			'success': False
 		}, status=401)
 	
+	if (request.user.player.currentGameID != gameID):
+		return JsonResponse({
+			'success': False,
+			'message': 'The user is not in the game'
+		}, status=200)
+	
 	player = request.user.player
-	player.currentGameID = None
-	player.isReady = False
-	player.save()
 
 	try:
 		game = Game.objects.get(id=gameID)
@@ -1324,11 +1327,15 @@ def get_game_over(request, gameID):
 		scoresList[0] = tournamentPositionsScore[position - 1]
 		positionsList[0] += 2
 
+	player.currentGameID = None
+	player.isReady = False
+	player.save()
+
 	return JsonResponse({
 		'success': True,
 		'score': scoresList,
 		'position': positionsList,
-		'game_mode': gameMode,
+		'gameMode': gameMode,
 		'user_id': request.user.id,
 	}, status=200)
 

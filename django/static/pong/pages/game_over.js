@@ -26,6 +26,7 @@ function renderGameOverPage(gameID) {
 					} else if (position == 2) {
 						position = '2nd';
 						if (data.gameMode == 'init_death_game') {
+							console.log("2");
 							score = 7;
 						}
 					} else if (position == 3) {
