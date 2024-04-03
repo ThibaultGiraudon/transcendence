@@ -54,7 +54,7 @@ function chatProcess(roomID, blockedUsers, isPrivate, sender, username) {
 
 					// Create the username container
 					const usernameContainer = document.createElement('p');
-					usernameContainer.textContent = username;
+					usernameContainer.textContent = safeText(username);
 					usernameContainer.className = 'other-username';
 
 					// Check if the message is from the current user
