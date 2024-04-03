@@ -1271,26 +1271,29 @@ def get_game_over(request, gameID):
 		}, status=200)
 	gameMode = game.gameMode
 
-	scores = game.scores.filter(player__id=player.id)
+	if gameMode in ['init_local_game', 'init_ai_game', 'init_wall_game']:
+		game.isOver = True
+		game.save()
+
+		player.currentGameID = None
+		player.isReady = False
+		player.save()
+
+		return JsonResponse({
+			'success': True,
+			'gameMode': gameMode,
+			'user_id': request.user.id,
+		}, status=200)
+
+	scores = game.scores.filter(player__id=player.id).first()
 	if (scores == None):
 		return JsonResponse({
 			'success': False,
 			'message': 'No score found'
 		}, status=200)
 	
-	score = scores.first().score
-	position = scores.first().position
-
-	scoresList = []
-	positionsList = []
-	for scoreElement in scores:
-		scoresList.append(scoreElement.score)
-		positionsList.append(scoreElement.position)
-
-	if gameMode in ['init_local_game', 'init_ai_game', 'init_wall_game']:
-		game.isOver = True
-		game.save()
-
+	score = scores.score
+	position = scores.position
 
 	positionsScore = [10, 7, 3, 0]
 	if (gameMode == "init_ranked_solo_game"):
@@ -1308,7 +1311,7 @@ def get_game_over(request, gameID):
 		player.tournamentPoints.append(tournamentPositionsScore[position - 1] + (player.tournamentPoints[-1] if len(player.tournamentPoints) > 0 else 0))
 		player.totalPoints.append(tournamentPositionsScore[position - 1] + (player.totalPoints[-1] if len(player.totalPoints) > 0 else 0))
 		player.save()
-		scoresList[0] = tournamentPositionsScore[position - 1]
+		score = tournamentPositionsScore[position - 1]
 		score = Score(player=player, position=position, score=tournamentPositionsScore[position - 1])
 		score.save()
 		game = Game.objects.get(id=player.allGames[-1])
@@ -1324,8 +1327,8 @@ def get_game_over(request, gameID):
 		game = Game.objects.get(id=player.allGames[-1])
 		game.scores.add(score)
 		game.save()
-		scoresList[0] = tournamentPositionsScore[position - 1]
-		positionsList[0] += 2
+		score = tournamentPositionsScore[position - 1]
+		position += 2
 
 	player.currentGameID = None
 	player.isReady = False
@@ -1333,8 +1336,8 @@ def get_game_over(request, gameID):
 
 	return JsonResponse({
 		'success': True,
-		'score': scoresList,
-		'position': positionsList,
+		'score': score,
+		'position': position,
 		'gameMode': gameMode,
 		'user_id': request.user.id,
 	}, status=200)
@@ -1449,8 +1452,9 @@ def	quit_game(request):
 				'success': False,
 				'message': "You cannot quit this game"
 			}, status=401)
-		# game.isOver = True
 		game.playerList.remove(player.id)
+		if (len(game.playerList) == 0):
+			game.isOver = True
 		game.save()
 	else:
 		return JsonResponse({
