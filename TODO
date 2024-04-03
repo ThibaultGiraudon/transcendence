@@ -83,3 +83,85 @@ Traceback (most recent call last):
     if not len(new_password):
            ^^^^^^^^^^^^^^^^^
 TypeError: object of type 'NoneType' has no len()
+
+web-1       | ERROR:    Exception in ASGI application
+web-1       | Traceback (most recent call last):
+web-1       |   File "/usr/local/lib/python3.11/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 255, in run_asgi
+web-1       |     result = await self.app(self.scope, self.asgi_receive, self.asgi_send)
+web-1       |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+web-1       |   File "/usr/local/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 84, in __call__
+web-1       |     return await self.app(scope, receive, send)
+web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+nginx-1     | 172.26.0.1 - - [03/Apr/2024:12:04:53 +0000] "GET /ws/chat// HTTP/1.1" 500 21 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36" "-"
+web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/routing.py", line 62, in __call__
+web-1       |     return await application(scope, receive, send)
+web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/sessions.py", line 47, in __call__
+web-1       |     return await self.inner(dict(scope, cookies=cookies), receive, send)
+web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/sessions.py", line 263, in __call__
+web-1       |     return await self.inner(wrapper.scope, receive, wrapper.send)
+web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/auth.py", line 185, in __call__
+web-1       |     return await super().__call__(scope, receive, send)
+web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/middleware.py", line 24, in __call__
+web-1       |     return await self.inner(scope, receive, send)
+web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/routing.py", line 134, in __call__
+web-1       |     raise ValueError("No route found for path %r." % path)
+web-1       | ValueError: No route found for path 'ws/chat//'.
+
+>>>>>>>>>> 1st to join
+
+
+
+web-1       | ERROR:    Exception in ASGI application
+web-1       | Traceback (most recent call last):
+web-1       |   File "/usr/local/lib/python3.11/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 255, in run_asgi
+web-1       |     result = await self.app(self.scope, self.asgi_receive, self.asgi_send)
+web-1       |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+web-1       |   File "/usr/local/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 84, in __call__
+web-1       |     return await self.app(scope, receive, send)
+web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/routing.py", line 62, in __call__
+web-1       |     return await application(scope, receive, send)
+web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/sessions.py", line 47, in __call__
+web-1       |     return await self.inner(dict(scope, cookies=cookies), receive, send)
+web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/sessions.py", line 263, in __call__
+web-1       |     return await self.inner(wrapper.scope, receive, wrapper.send)
+web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/auth.py", line 185, in __call__
+web-1       |     return await super().__call__(scope, receive, send)
+web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/middleware.py", line 24, in __call__
+web-1       |     return await self.inner(scope, receive, send)
+web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/routing.py", line 116, in __call__
+web-1       |     return await application(
+web-1       |            ^^^^^^^^^^^^^^^^^^
+web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/consumer.py", line 94, in app
+web-1       |     return await consumer(scope, receive, send)
+web-1       |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/consumer.py", line 58, in __call__
+web-1       |     await await_many_dispatch(
+web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/utils.py", line 50, in await_many_dispatch
+web-1       |     await dispatch(result)
+web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/consumer.py", line 73, in dispatch
+web-1       |     await handler(message)
+web-1       |   File "/usr/local/lib/python3.11/site-packages/channels/generic/websocket.py", line 194, in websocket_receive
+web-1       |     await self.receive(text_data=message["text"])
+web-1       |   File "/home/app/web/mainApp/consumers/gameConsumer.py", line 39, in receive
+web-1       |     gameSettings = self.gameSettingsInstances[gameID]
+web-1       |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+web-1       | KeyError: '13'
+web-1       | INFO:     connection closed
+web-1       | INFO:     172.27.0.5:52152 - "GET /api/get_game_info HTTP/1.0" 200 OK
+
+
+>>>>>>>>>>>>> start moving before canva load
+
+
+3 in tournament -> ai game the tournament 

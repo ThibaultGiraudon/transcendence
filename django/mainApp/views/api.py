@@ -5,6 +5,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model, logout
 from django.middleware.csrf import get_token
 from django.utils import timezone
+from django.db import transaction
+
 
 from ..models import Notification, Channel, Game, Score
 
@@ -1311,21 +1313,21 @@ def get_game_over(request, gameID):
 		player.tournamentPoints.append(tournamentPositionsScore[position - 1] + (player.tournamentPoints[-1] if len(player.tournamentPoints) > 0 else 0))
 		player.totalPoints.append(tournamentPositionsScore[position - 1] + (player.totalPoints[-1] if len(player.totalPoints) > 0 else 0))
 		player.save()
+		score_obj = Score(player=player, position=position, score=tournamentPositionsScore[position - 1])
+		score_obj.save()
 		score = tournamentPositionsScore[position - 1]
-		score = Score(player=player, position=position, score=tournamentPositionsScore[position - 1])
-		score.save()
 		game = Game.objects.get(id=player.allGames[-1])
-		game.scores.add(score)
+		game.scores.add(score_obj)
 		game.save()
 	elif (gameMode == "init_tournament_game_third_place_game"):
 		tournamentPositionsScore = [7, 0]
 		player.tournamentPoints.append(tournamentPositionsScore[position - 1] + (player.tournamentPoints[-1] if len(player.tournamentPoints) > 0 else 0))
 		player.totalPoints.append(tournamentPositionsScore[position - 1] + (player.totalPoints[-1] if len(player.totalPoints) > 0 else 0))
 		player.save()
-		score = Score(player=player, position=position + 2, score=tournamentPositionsScore[position - 1])
-		score.save()
+		score_obj = Score(player=player, position=position + 2, score=tournamentPositionsScore[position - 1])
+		score_obj.save()
 		game = Game.objects.get(id=player.allGames[-1])
-		game.scores.add(score)
+		game.scores.add(score_obj)
 		game.save()
 		score = tournamentPositionsScore[position - 1]
 		position += 2
@@ -1531,17 +1533,11 @@ def	join_tournament(request):
 				'message': "User already in tournament"
 			}, status=401)
 		
-		if len(channel.users.all()) < 4 :
+		if len(channel.users.all()) < 4:
 			channel.users.add(request.user)
 			channel.save()
 			request.user.player.currentRoomID = channel.room_id
 			request.user.player.save()
-			if len(channel.users.all()) == 4 :
-				return JsonResponse({
-					'success': True,
-					'message': "Tournament is full",
-					'room_id': channel.room_id
-				}, status=200)
 			
 			return JsonResponse({
 				'success': True,
@@ -1585,46 +1581,47 @@ def create_finals_game(game, player, isFinal):
 
 
 def redirect_to_finals_game(subGame, player):
-	try:
-		game = Game.objects.get(id=subGame.parentGame)
-		scores = subGame.scores.filter(player__id=player.id)
-		score = scores.first().score
-		position = scores.first().position
-		User = get_user_model()
-		user = User.objects.get(player=player)
-	except :
-		return JsonResponse({
-			'success': False
-		}, status=401)
-	message = None
+    with transaction.atomic():
+        try:
+            game = Game.objects.select_for_update().get(id=subGame.parentGame)
+            scores = subGame.scores.filter(player__id=player.id)
+            score = scores.first().score
+            position = scores.first().position
+            User = get_user_model()
+            user = User.objects.get(player=player)
+        except :
+            return JsonResponse({
+                'success': False
+            }, status=401)
+        message = None
 
-	if (position == 1):
-		if (game.finalGame):
-			finalGame = Game.objects.get(id=game.finalGame)
-			finalGame.playerList.append(player.id)
-			finalGame.save()
-		else:
-			finalGame = create_finals_game(game, player, True)
-			message = user.username + ": Get ready for the final game"
-	elif (position == 2):
-		if (game.thirdPlaceGame):
-			finalGame = Game.objects.get(id=game.thirdPlaceGame)
-			finalGame.playerList.append(player.id)
-			finalGame.save()
-		else:
-			finalGame = create_finals_game(game, player, False)
-			message = user.username + ": Get ready for the third place game"
+        if (position == 1):
+            if (game.finalGame):
+                finalGame = Game.objects.get(id=game.finalGame)
+                finalGame.playerList.append(player.id)
+                finalGame.save()
+            else:
+                finalGame = create_finals_game(game, player, True)
+                message = user.username + ": Get ready for the final game"
+        elif (position == 2):
+            if (game.thirdPlaceGame):
+                finalGame = Game.objects.get(id=game.thirdPlaceGame)
+                finalGame.playerList.append(player.id)
+                finalGame.save()
+            else:
+                finalGame = create_finals_game(game, player, False)
+                message = user.username + ": Get ready for the third place game"
 
-	player.currentGameID = finalGame.id
-	player.isReady = False
-	player.save()
+        player.currentGameID = finalGame.id
+        player.isReady = False
+        player.save()
 
-	return JsonResponse({
-		'success': True,
-		'redirectGameMode': finalGame.gameMode,
-		'score': score,
-		'position': position,
-		'game_mode': game.gameMode,
-		'room_id': player.currentRoomID,
-		'message': message
-	}, status=200)
+    return JsonResponse({
+        'success': True,
+        'redirectGameMode': finalGame.gameMode,
+        'score': score,
+        'position': position,
+        'game_mode': game.gameMode,
+        'room_id': player.currentRoomID,
+        'message': message
+    }, status=200)

@@ -5,7 +5,7 @@ def addStatToPlayer(playerID, paddle):
 	from mainApp.models import Player, Score, Game
 	player = Player.objects.get(id=playerID)
 
-	score = Score(player=player, position=paddle.position, score=paddle.score)
+	score = Score(player=player, position=paddle.rankPosition, score=paddle.score)
 	score.save()
 
 	gameID = player.currentGameID
