@@ -3,8 +3,8 @@ function renderUser(user) {
 		<button class="menu-users-link" data-route="/profile/${user.username}">
 			<div class="container" data-user-id="${user.id}">
 				<img class="users-img" src="${user.photo_url}" alt="profile picture">
-				<p class="users-user">${user.username}</p>
-				<p class="status">${user.status.includes("chat") ? "online" : user.status}</p>
+				<p class="users-user">${safeText(user.username)}</p>
+				<p class="status">${user.status.includes("chat") ? "online" : safeText(user.status)}</p>
 			</div>
 		</button>
 	`;
@@ -15,7 +15,7 @@ function renderUsersSection(title, users) {
 	if (Object.keys(users).length === 0) {
 		return `
 			<div class="${title.toLowerCase()}">
-				<h1>${title}</h1>
+				<h1>${safeText(title)}</h1>
 				<div class="list-empty">
 					<img class="no-users-img" src="/static/users/img/empty.png">
 					<h4 class="no-users">No ${title.toLowerCase()}</h4>
@@ -25,7 +25,7 @@ function renderUsersSection(title, users) {
 	} else {
 		return `
 			<div class="${title.toLowerCase()}">
-				<h1>${title}</h1>
+				<h1>${safeText(title)}</h1>
 				<div class="list">
 					${Object.values(users).map(renderUser).join('')}
 				</div>

@@ -73,7 +73,7 @@ function renderRankingPage(sortedBy) {
 										<td>
 											<button class="rank-user-info" data-route="/profile/${user.username}">
 												<img class="rank-image" src="${user.photo_url}" alt="photo">
-												${user.username}
+												${safeText(user.username)}
 											</button>
 										</td>
 										<td class="${sortedBy.split('_')[0] == "solo" ? "selected-row" : "ranking-row"}">${user.player.soloPoints[user.player.soloPoints.length - 1]}</td>

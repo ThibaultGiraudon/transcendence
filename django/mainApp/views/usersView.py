@@ -7,11 +7,11 @@ from io import BytesIO
 from django.core.files import File
 from django.core.files.base import ContentFile
 from django.shortcuts import redirect
-from ..models import CustomUser
 from django.contrib.auth import login
 from django.contrib.auth import get_user_model
 from django.core.files.storage import default_storage
-from ..models import Channel
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
 from django.core.mail import send_mail
@@ -20,6 +20,7 @@ from django.http import JsonResponse
 import urllib.request, json, base64, uuid
 from datetime import datetime
 
+from ..models import CustomUser, Channel
 from mainApp.models import Player
 from mainApp.utils import containBadwords
 
@@ -105,9 +106,12 @@ def sign_up(request):
 		email = data.get('email')
 		password = data.get('password')
 
-		if not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
+		try:
+			validate_email(email)
+		except ValidationError:
 			return JsonResponse({"success": False, "email": "Invalid email format"}, status=401)
-		elif CustomUser.objects.filter(email=email).exists():
+		
+		if CustomUser.objects.filter(email=email).exists():
 			return JsonResponse({"success": False, "email": "This email is already taken"}, status=401)
 		
 		if CustomUser.objects.filter(username=username).exists():
@@ -186,11 +190,14 @@ def reset_password(request):
 		# Check if the email is valid
 		if not len(email):
 			return JsonResponse({"success": False, "email": "This email is empty"}, status=401)
-		elif not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
+		
+		try:
+			validate_email(email)
+		except ValidationError:
 			return JsonResponse({"success": False, "email": "Invalid email format"}, status=401)
 		
 		# Fake the success to avoid giving information about the registered emails
-		elif not CustomUser.objects.filter(email=email).exists():
+		if not CustomUser.objects.filter(email=email).exists():
 			return JsonResponse({"success": True, "message": "Successful email sent"}, status=200)
 
 		# Check if the user is from 42
@@ -199,7 +206,7 @@ def reset_password(request):
 			return JsonResponse({"success": False, "message": "This email is associated with a 42 account"}, status=401)
 
 		# Send an email to the user
-		resetPasswordID = str(uuid.uuid1())
+		resetPasswordID = str(uuid.uuid4())
 		user.resetPasswordID = resetPasswordID
 		user.save()
 
@@ -297,6 +304,11 @@ def profile(request, username):
 		return render(request, 'base.html')
 
 	elif request.method == 'POST':
+		if not request.user.is_authenticated:
+			return JsonResponse({"success": False, "message": "The user is not authenticated"}, status=401)
+		elif (request.user.username != username):
+			return JsonResponse({"success": False, "message": "You are not allowed to modify this profile"}, status=401)
+		
 		# Get the data
 		data = json.loads(request.body)
 		new_username = data.get('new_username')
@@ -372,23 +384,31 @@ def profile(request, username):
 			request.user.save()
 
 		# Check if the email is valid
-		old_email = request.user.email
-		if new_email == request.user.email:
-			pass
-		elif not len(new_email):
-			return JsonResponse({"success": False, "email": "This email is empty"}, status=401)
-		elif not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", new_email):
-			return JsonResponse({"success": False, "email": "Invalid email format"}, status=401)
-		elif CustomUser.objects.filter(email=new_email).exists():
-			return JsonResponse({"success": False, "email": "This email is already taken"}, status=401)
-		else:
-			# Change the status to offline
-			request.user.set_status("offline")
+		try:
+			old_email = request.user.email
+			if new_email == request.user.email:
+				pass
+			elif not new_email:
+				return JsonResponse({"success": False, "email": "This email is empty"}, status=401)
+			elif not len(new_email):
+				return JsonResponse({"success": False, "email": "This email is empty"}, status=401)
+			elif not validate_email(new_email):
+				return JsonResponse({"success": False, "email": "Invalid email format"}, status=401)
+			elif CustomUser.objects.filter(email=new_email).exists():
+				return JsonResponse({"success": False, "email": "This email is already taken"}, status=401)
+			else:
+				# Change the status to offline
+				request.user.set_status("offline")
 
-			request.user.email = new_email
-			request.user.save()
+				request.user.email = new_email
+				request.user.save()
+
+		except ValidationError:
+				return JsonResponse({"success": False, "email": "Invalid email format"}, status=401)
 		
 		# Check if the password is valid
+		if not new_password:
+			pass
 		if not len(new_password):
 			pass
 		else:

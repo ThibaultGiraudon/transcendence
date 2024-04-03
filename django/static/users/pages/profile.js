@@ -162,13 +162,13 @@ function renderOurProfile(user) {
 			<div class="profile-infos">
 				<div class="profile-official-container">
 					<p class="profile-username">
-						${user.username}
+						${safeText(user.username)}
 					</p>
 					${officialImageHTML}
 				</div>
-				<p class="profile-email">${user.email}</p>
+				<p class="profile-email">${safeText(user.email)}</p>
 			</div>
-			<p class="profile-description">${description}</p>
+			<p class="profile-description">${safeText(description)}</p>
 		</div>
 	`;
 }
@@ -189,12 +189,12 @@ function renderOtherProfile(user) {
 			<div class="profile-infos">
 				<div class="profile-official-container">
 					<p class="profile-username">
-						${user.username}
+						${safeText(user.username)}
 					</p>
 					${officialImageHTML}
 				</div>
 			</div>
-			<p class="profile-description">${description}</p>
+			<p class="profile-description">${safeText(description)}</p>
 		</div>
 	`;
 }
@@ -368,7 +368,7 @@ function renderHistory(user) {
 		const playersHtml = Object.values(game.playersList).map(player => `
 			<button class="rank-user-info" data-route="/profile/${player.username}">
 				<img class="rank-image" src="${player.photo_url}" alt="photo">
-				${player.username}
+				${safeText(player.username)}
 			</button>
 		`).join('');
 

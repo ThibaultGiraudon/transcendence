@@ -28,9 +28,9 @@ function renderNotification(notification, index) {
 
 				<div class="notification-content">
 
-					<span class="notification-title" data-index="${index}">${notification.title}</span>
-					<span class="notification-message" data-index="${index}">${notification.message}</span>
-					<span class="notification-date" data-index="${index}">${notification.date}</span>
+					<span class="notification-title" data-index="${index}">${safeText(notification.title)}</span>
+					<span class="notification-message" data-index="${index}">${safeText(notification.message)}</span>
+					<span class="notification-date" data-index="${index}">${safeText(notification.date)}</span>
 
 					<div class="notification-buttons">
 

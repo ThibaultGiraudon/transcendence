@@ -21,13 +21,13 @@ function renderChannel(channel) {
 	return `
 		<div class="a-chat">
 			<a class="chat-container" data-route="/chat/${channel.room_id}">
-				<h4 class="chat-badge">${badge}</h4>
-				<h3 class="chat-name">${channel.name}</h3>
+				<h4 class="chat-badge">${safeText(badge)}</h4>
+				<h3 class="chat-name">${safeText(channel.name)}</h3>
 				${channel.last_message ? `
-					<p class="chat-last-message-timestamp">${channel.last_message.timestamp}</p>
+					<p class="chat-last-message-timestamp">${safeText(channel.last_message.timestamp)}</p>
 					<div class="chat-last-message-container">
-						<p class="chat-last-message-sender">${sender}: </p>
-						<p class="chat-last-message">${filterMessage(channel.last_message.message.substring(0, 50))}${channel.last_message.message.length > 50 ? '...' : ''}</p>
+						<p class="chat-last-message-sender">${safeText(sender)}: </p>
+						<p class="chat-last-message">${safeText(filterMessage(channel.last_message.message.substring(0, 50)))}${safeText(channel.last_message.message.length > 50 ? '...' : '')}</p>
 					</div>
 				`
 				:
@@ -133,19 +133,19 @@ function renderChatPage() {
 				// Add informations
 				popupHTML += `
 					<p class="popup-info-title">Name:</p>
-					<p class="popup-info">${channel.name}</p>
+					<p class="popup-info">${safeText(channel.name)}</p>
 
 					<p class="popup-info-title">Description:</p>
-					<p class="popup-info">${channel.description}</p>
+					<p class="popup-info">${safeText(channel.description)}</p>
 
 					<p class="popup-info-title">Creator:</p>
-					<p class="popup-info">${channel.creator_username}</p>
+					<p class="popup-info">${safeText(channel.creator_username)}</p>
 
 					<p class="popup-info-title">Private:</p>
 					<p class="popup-info">${channel.private ? 'Yes' : 'No'}</p>
 
 					<p class="popup-info-title">Members:</p>
-					<p class="popup-info">${Object.values(dataUser.user.channels[button.id].users).map(user => user.username).join(', ')}</p>
+					<p class="popup-info">${Object.values(dataUser.user.channels[button.id].users).map(user => safeText(user.username)).join(', ')}</p>
 				`;
 
 
@@ -171,7 +171,7 @@ function renderChatPage() {
 
 				// Add informations
 				popupHTML += `
-					<p class="popup-info">Name: ${channel.name}</p>
+					<p class="popup-info">Name: ${safeText(channel.name)}</p>
 				`;
 
 				// Create the popup background and the popup
