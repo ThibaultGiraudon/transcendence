@@ -439,17 +439,18 @@ def change_status(request, status):
 	if (request.user.player.isReady == True):
 		request.user.set_status('in-game')
 		return JsonResponse({
-			'success': False,
-			'message': 'You cannot change your status while you are ready',
-			'user_id': None
+			'success': True,
+			'message': 'Your status had to be set to in-game',
+			'user_id': request.user.id
 		}, status=200)
 	
 	if (request.user.player.currentGameID):
 		request.user.set_status('waiting-game')
 		return JsonResponse({
-			'success': False,
-			'message': 'You cannot change your status while you are in a game',
-			'user_id': None
+			'success': True,
+			'message': 'Your status had to be set to waiting-game',
+			'user_id': request.user.id,
+			'status': 'waiting-game'
 		}, status=200)
 	
 	request.user.set_status(status)
