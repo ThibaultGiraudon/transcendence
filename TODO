@@ -1,48 +1,4 @@
-Module majeur : Utiliser un framework en backend. x
-Module mineur : Utiliser une base de données en backend. x
-Module majeur : Gestion utilisateur standard, authentification, utilisateurs
-en tournois. x
-Module majeur : Implémenter une authentification à distance. x
-Module majeur : Joueurs à distance x
-Module majeur : Multijoueurs (plus de 2 dans la même partie)
-Module majeur : Clavardage en direct (live chat).
-Module majeur : Implémenter un adversaire contrôlé par IA. x
-Module mineur : Panneaux d’affichage (dashboards) d’utilisateurs et statistiques des parties. x
-Module mineur : Étendre la compatibilité des navigateurs web.
 
-https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-4bc482d21834a4addd9108c8db4a5f99efb73b172f1a4cb387311ee09a26173c&redirect_uri=https%3A%2F%2F10.14.11.3%3A8443%2Fcheck_authorize%2F&response_type=code
-
-XSS dans la description du profil - check avec <img src=x onerror=alert(1)> <script>alert(1);</script>
-
-Erreur 500
-
-AttributeError: 'NoneType' object has no attribute 'position'
-User with id None does not exist
-Internal Server Error: /api/get_user/ezanotti
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.11/site-packages/asgiref/sync.py", line 518, in thread_handler
-    raise exc_info[1]
-  File "/usr/local/lib/python3.11/site-packages/django/core/handlers/exception.py", line 42, in inner
-    response = await get_response(request)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/site-packages/asgiref/sync.py", line 518, in thread_handler
-    raise exc_info[1]
-  File "/usr/local/lib/python3.11/site-packages/django/core/handlers/base.py", line 253, in _get_response_async
-    response = await wrapped_callback(
-               ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/site-packages/asgiref/sync.py", line 468, in __call__
-    ret = await asyncio.shield(exec_coro)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/concurrent/futures/thread.py", line 58, in run
-    result = self.fn(*self.args, **self.kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/site-packages/asgiref/sync.py", line 522, in thread_handler
-    return func(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^
-  File "/home/app/web/mainApp/views/api.py", line 326, in get_user
-    if (scores.first().position == 1):
-        ^^^^^^^^^^^^^^^^^^^^^^^
-AttributeError: 'NoneType' object has no attribute 'position'
 
 Utiliser uuidv4 au lieu de uuidv1
 
@@ -165,3 +121,5 @@ web-1       | INFO:     172.27.0.5:52152 - "GET /api/get_game_info HTTP/1.0" 200
 
 
 3 in tournament -> ai game the tournament 
+
+reload -> redirect gameover

@@ -1540,34 +1540,32 @@ def	join_tournament(request):
 				'success': False,
 				'message': "User already in tournament"
 			}, status=401)
-		with transaction.atomic():
-			if len(channel.users.all()) < 4:
-				channel.users.add(request.user)
-				channel.save()
-				request.user.player.currentRoomID = channel.room_id
-				request.user.player.save()
+		if len(channel.users.all()) < 4:
+			channel.users.add(request.user)
+			channel.save()
+			request.user.player.currentRoomID = channel.room_id
+			request.user.player.save()
 
-				if len(channel.users.all()) == 4 :
-					return JsonResponse({
-						'success': True,
-						'message': "Tournament is full",
-						'room_id': channel.room_id
-					}, status=200)
-				
+			if len(channel.users.all()) == 4 :
 				return JsonResponse({
 					'success': True,
-					'message': "User joined the tournament"
+					'message': "Tournament is full",
+					'room_id': channel.room_id
 				}, status=200)
+			
+			return JsonResponse({
+				'success': True,
+				'message': "User joined the tournament"
+			}, status=200)
 	
-	with transaction.atomic():
-		room_id = str(uuid.uuid1())
+	room_id = str(uuid.uuid1())
 
-		channel = Channel.objects.create(tournament=True, room_id=room_id, name='Tournament ' + datetime.now().strftime("%d-%m %H:%M"))
-		channel.users.add(request.user)
-		channel.save()
+	channel = Channel.objects.create(tournament=True, room_id=room_id, name='Tournament ' + datetime.now().strftime("%d-%m %H:%M"))
+	channel.users.add(request.user)
+	channel.save()
 
-		request.user.player.currentRoomID = room_id
-		request.user.player.save()
+	request.user.player.currentRoomID = room_id
+	request.user.player.save()
 
 	return JsonResponse({
 		'success': True,
