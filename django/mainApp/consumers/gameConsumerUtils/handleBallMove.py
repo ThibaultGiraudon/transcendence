@@ -6,11 +6,11 @@ import	asyncio
 async def updateScore(consumer, gameSettings, paddleID):
 	if (gameSettings.nbPaddles == 2):
 		gameSettings.paddles[paddleID ^ 1].score += 1
-		if (gameSettings.paddles[paddleID ^ 1].score >= 10):
+		if (gameSettings.paddles[paddleID ^ 1].score >= 2):
 			gameSettings.paddles[paddleID].isAlive = False
 			gameSettings.paddles[paddleID ^ 1].isAlive = False
-			gameSettings.paddles[paddleID].position = 2
-			gameSettings.paddles[paddleID ^ 1].position = 1
+			gameSettings.paddles[paddleID].rankPosition = 2
+			gameSettings.paddles[paddleID ^ 1].rankPosition = 1
 
 			await sendGameOver(consumer, gameSettings, gameSettings.paddles[paddleID])
 			await sendGameOver(consumer, gameSettings, gameSettings.paddles[paddleID ^ 1])
@@ -22,13 +22,13 @@ async def updateScore(consumer, gameSettings, paddleID):
 			for paddle in gameSettings.paddles:
 				if (paddle.isAlive):
 					nbAlives += 1
-			gameSettings.paddles[paddleID].position = nbAlives + 1
+			gameSettings.paddles[paddleID].rankPosition = nbAlives + 1
 			await sendGameOver(consumer, gameSettings, gameSettings.paddles[paddleID])
 			if (nbAlives == 1):
 				for paddle in gameSettings.paddles:
 					if (paddle.isAlive):
 						paddle.isAlive = False
-						paddle.position = 1
+						paddle.rankPosition = 1
 						paddle.score = 10
 						await sendGameOver(consumer, gameSettings, paddle)
 

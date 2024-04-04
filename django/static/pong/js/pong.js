@@ -43,6 +43,7 @@ function createGameCanvas() {
 let pongSocket = null;
 
 function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
+    var isReady = false;
 	if (!isWaitingPage) {
 		gameCanvas, gameContext = createGameCanvas();
 	}
@@ -80,6 +81,7 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 
 		else if (message.type === 'init_paddle_position') {
 			initPaddlePosition(message.id, message.position);
+            isReady = true;
 		}
 
 		else if (message.type === 'update_score') {
@@ -91,6 +93,7 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 		}
 
 		else if (message.type === 'update_ball_position') {
+            isReady = true;
 			updateBallPosition(message.x, message.y, message.color, message.radius);
 		}
 
@@ -98,6 +101,7 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
             if (message.playerID === playerID) {
                 pongSocket.socket.close();
                 pongSocket = null;
+                isReady = false;
                 gameOver(message);
             }
         }
@@ -105,38 +109,44 @@ function gameProcess(isWaitingPage, gameMode, gameID, playerID) {
 
     if (!isWaitingPage) {
         document.addEventListener('keydown', function(event) {
-            if (!keyState[event.key] && keyState.hasOwnProperty(event.key)) {
-                keyState[event.key] = true;
-                const message = {
-                    type: 'paddle_move',
-                    key: 'keydown',
-                    direction: getPaddleDirection(event.key),
-                    playerID: playerID,
-                    paddleKey: event.key,
-                };
-                if (pongSocket && pongSocket.socket.readyState === WebSocket.OPEN) {
-                    pongSocket.socket.send(JSON.stringify(message));
+            const gameCanvas = document.getElementById('gameCanvas');
+            if (gameCanvas && isReady) {
+                if (!keyState[event.key] && keyState.hasOwnProperty(event.key)) {
+                    keyState[event.key] = true;
+                    const message = {
+                        type: 'paddle_move',
+                        key: 'keydown',
+                        direction: getPaddleDirection(event.key),
+                        playerID: playerID,
+                        paddleKey: event.key,
+                    };
+                    if (pongSocket && pongSocket.socket.readyState === WebSocket.OPEN) {
+                        pongSocket.socket.send(JSON.stringify(message));
+                    }
                 }
-            }
 
-            if (event.key === "ArrowUp" || event.key === "ArrowDown" || 
-                event.key === "ArrowLeft" || event.key === "ArrowRight") {
-                event.preventDefault();
+                if (event.key === "ArrowUp" || event.key === "ArrowDown" || 
+                    event.key === "ArrowLeft" || event.key === "ArrowRight") {
+                    event.preventDefault();
+                }
             }
         });
 
         document.addEventListener('keyup', function(event) {
-            if (keyState.hasOwnProperty(event.key)) {
-                keyState[event.key] = false;
-                const message = {
-                    type: 'paddle_move',
-                    key: 'keyup',
-                    direction: getPaddleDirection(event.key),
-                    playerID: playerID,
-                    paddleKey: event.key,
-                };
-                if (pongSocket && pongSocket.socket.readyState === WebSocket.OPEN) {
-                    pongSocket.socket.send(JSON.stringify(message));
+            const gameCanvas = document.getElementById('gameCanvas');
+            if (gameCanvas && isReady) {
+                if (keyState.hasOwnProperty(event.key)) {
+                    keyState[event.key] = false;
+                    const message = {
+                        type: 'paddle_move',
+                        key: 'keyup',
+                        direction: getPaddleDirection(event.key),
+                        playerID: playerID,
+                        paddleKey: event.key,
+                    };
+                    if (pongSocket && pongSocket.socket.readyState === WebSocket.OPEN) {
+                        pongSocket.socket.send(JSON.stringify(message));
+                    }
                 }
             }
         });

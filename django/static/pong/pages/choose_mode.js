@@ -58,16 +58,18 @@ function renderChooseModePage() {
 					`;
 				
 				if ((['init_wall_game', 'init_ai_game', 'init_local_game'].includes(dataUser.user.player.gameMode)) || dataUser.user.player.isReady == false) {
-					html += `
-							<button class="choose-btn" id="quit-game">
-								<img class="choose-img" src="/static/pong/img/quit.png" class="choose-img">
-								<p class="choose-btn-title">Quit</p>
-								<p class="choose-btn-text">
-									Click here to quit.
-								</p>
-							</button>
-						</div>
-					`;
+					if (!['init_tournament_game', 'init_tournament_game_third_game_place', 'init_tournament_game_final_game', 'init_tournament_game_sub_game'].includes(dataUser.user.player.gameMode)) {
+						html += `
+								<button class="choose-btn" id="quit-game">
+									<img class="choose-img" src="/static/pong/img/quit.png" class="choose-img">
+									<p class="choose-btn-title">Quit</p>
+									<p class="choose-btn-text">
+										Click here to quit.
+									</p>
+								</button>
+							</div>
+						`;
+					}
 				}
 				else {
 					html += `</div>`;

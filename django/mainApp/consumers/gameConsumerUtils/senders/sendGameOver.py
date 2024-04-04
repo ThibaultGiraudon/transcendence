@@ -5,7 +5,7 @@ def addStatToPlayer(playerID, paddle):
 	from mainApp.models import Player, Score, Game
 	player = Player.objects.get(id=playerID)
 
-	score = Score(player=player, position=paddle.position, score=paddle.score)
+	score = Score(player=player, position=paddle.rankPosition, score=paddle.score)
 	score.save()
 
 	gameID = player.currentGameID
@@ -18,7 +18,8 @@ async def sendGameOver(consumer, gameSettings, paddle):
 		playerID = gameSettings.playerIDList[0]
 	else:
 		playerID = gameSettings.playerIDList[paddle.id]
-	await addStatToPlayer(playerID, paddle)
+	if (not gameSettings.isLocalGame):
+		await addStatToPlayer(playerID, paddle)
 	await consumer.channel_layer.group_send(
 		f'game_{gameSettings.gameID}',
 		{

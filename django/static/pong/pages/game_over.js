@@ -26,7 +26,6 @@ function renderGameOverPage(gameID) {
 					} else if (position == 2) {
 						position = '2nd';
 						if (data.gameMode == 'init_death_game') {
-							console.log("2");
 							score = 7;
 						}
 					} else if (position == 3) {
@@ -42,15 +41,19 @@ function renderGameOverPage(gameID) {
 					}
 
 					positionText = '<h3>You finished ' + position + '</h3>';
-					if (score.length > 1) {
+					if (typeof score !== 'undefined' && score.length > 1) {
 						positionText = '';
 					}
 
 					let html = `
 						<h1>Game Over</h1>
-						<h3>Score: ${score}</h3>
-						${positionText}
 					`;
+					if (typeof score !== 'undefined') {
+						html += `
+							<h3>Score: ${score}</h3>
+							${positionText}
+						`;
+					}
 					document.getElementById('app').innerHTML = html;
 				} else {
 					router.navigate('/');
