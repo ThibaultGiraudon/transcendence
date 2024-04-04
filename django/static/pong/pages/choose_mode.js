@@ -58,7 +58,6 @@ function renderChooseModePage() {
 					`;
 				
 				if ((['init_wall_game', 'init_ai_game', 'init_local_game'].includes(dataUser.user.player.gameMode)) || dataUser.user.player.isReady == false) {
-					console.log(dataUser.user.player.gameMode)
 					if (!['init_tournament_game', 'init_tournament_game_third_game_place', 'init_tournament_game_final_game', 'init_tournament_game_sub_game'].includes(dataUser.user.player.gameMode)) {
 						html += `
 								<button class="choose-btn" id="quit-game">
