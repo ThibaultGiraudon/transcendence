@@ -1135,13 +1135,13 @@ def create_invite_game(request, room_id):
 	if (request.user.player.id in channel.player_list):
 		return JsonResponse({
 			'success': False,
-			'message': 'User already in the game'
+			'message': 'You are already asking for a game'
 		}, status=401)
 
 	if (request.user.player.currentGameID != None):
 		return JsonResponse({
 			'success': False,
-			'message': 'One of the players is already in a game'
+			'message': 'You are already in a game or waiting for a game'
 		}, status=401)
 
 	channel.player_list.append(request.user.player.id)

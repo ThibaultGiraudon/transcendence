@@ -1,3 +1,33 @@
+function popupAlert(title, message) {
+	let popupBackgroundHTML = '<div class="popup-background" id="popup-background"></div>';
+
+	let popupHTML = `
+		<div class="popup">
+			<h3 class="title-popup">${title}</h3>
+			<p class="message-popup">${message}</p>
+			<button class="close-popup" id="close-popup">Close</button>
+		</div>
+	`;
+
+	let popupBackground = document.createElement('div');
+	popupBackground.innerHTML = popupBackgroundHTML;
+	document.body.appendChild(popupBackground);
+
+	let popup = document.createElement('div');
+	popup.innerHTML = popupHTML;
+	document.body.appendChild(popup);
+
+	document.getElementById('close-popup').addEventListener('click', () => {
+		popup.remove();
+		popupBackground.remove();
+	});
+
+	document.getElementById('popup-background').addEventListener('click', () => {
+		popup.remove();
+		popupBackground.remove();
+	});
+}
+
 function renderRoomPage(room_id) {
 
 	fetchAPI('/api/get_user').then(dataUser => {
@@ -287,7 +317,7 @@ function renderRoomPage(room_id) {
 							}
 							router.navigate('/pong/wait_players/init_ranked_solo_game');
 						} else {
-							
+							popupAlert("Error", data.message);
 						}
 					})
 				});
