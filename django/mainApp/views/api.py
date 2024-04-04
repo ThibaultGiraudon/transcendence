@@ -441,7 +441,8 @@ def change_status(request, status):
 		return JsonResponse({
 			'success': True,
 			'message': 'Your status had to be set to in-game',
-			'user_id': request.user.id
+			'user_id': request.user.id,
+			'status': 'in-game'
 		}, status=200)
 	
 	if (request.user.player.currentGameID):
