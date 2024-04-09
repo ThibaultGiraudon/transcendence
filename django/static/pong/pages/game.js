@@ -5,7 +5,7 @@ function renderGamePage(gameMode) {
 				if (data.success) {
 					fetchAPI('/api/change_status/in-game').then(data => {
 						if (data.user_id) {
-							changeStatus(data.user_id, 'in-game');
+							changeStatus(data.user_id, data.status);
 						}
 					});
 					gameID = data.game_id;

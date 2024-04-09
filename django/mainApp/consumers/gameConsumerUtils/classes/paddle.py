@@ -23,7 +23,7 @@ class Paddle:
         self.isAlive = False
         self.isAI = False
         self.aiTask = None
-        self.position = 0
+        self.rankPosition = 0
 
     def moveUp(self):
         self.position -= self.speed

@@ -7,5 +7,8 @@ from mainApp.models import Player
 def create_custom_user(sender, **kwargs):
     User = get_user_model()
     if not User.objects.filter(id=0).exists():
-        player = Player.objects.create(id=0, currentGameID=None)
-        User.objects.create(id=0, username='System Info', password='password', player=player)
+        try:
+            player = Player.objects.create(id=0, currentGameID=None)
+            User.objects.create(id=0, username='System Info', password='password', player=player)
+        except:
+            pass
