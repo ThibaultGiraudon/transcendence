@@ -1523,7 +1523,7 @@ def	join_tournament(request):
 		}, status=401)
 	
 	# Get all tournament channels 
-	channels = Channel.objects.filter(tournament=True)
+	channels = Channel.objects.filter(tournament=True, isFull=False)
 
 	for channel in channels:
 		if (channel.users.count() == 4):
@@ -1537,10 +1537,13 @@ def	join_tournament(request):
 		if len(channel.users.all()) < 4:
 			channel.users.add(request.user)
 			channel.save()
+			game.isFull = False
 			request.user.player.currentRoomID = channel.room_id
 			request.user.player.save()
 
-			if len(channel.users.all()) == 4 :
+			if len(channel.users.all()) == 4:
+				game.isFull = True
+				game.save()
 				return JsonResponse({
 					'success': True,
 					'message': "Tournament is full",

@@ -46,6 +46,7 @@ class Game(models.Model):
 	parentGame = models.IntegerField(default=None, null=True)
 	isPrivate = models.BooleanField(default=False)
 	room_id = models.CharField(max_length=150, default='')
+	isFull = models.BooleanField(default=False)
 
 	def save(self, *args, **kwargs):
 		super(Game, self).save(*args, **kwargs)
