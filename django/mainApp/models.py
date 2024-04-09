@@ -46,7 +46,6 @@ class Game(models.Model):
 	parentGame = models.IntegerField(default=None, null=True)
 	isPrivate = models.BooleanField(default=False)
 	room_id = models.CharField(max_length=150, default='')
-	isFull = models.BooleanField(default=False)
 
 	def save(self, *args, **kwargs):
 		super(Game, self).save(*args, **kwargs)
@@ -163,6 +162,7 @@ class Channel(models.Model):
 	description = models.TextField(default='')
 	last_interaction = models.DateTimeField(default=timezone.now)
 	player_list = ArrayField(models.IntegerField(), default=list)
+	isFull = models.BooleanField(default=False)
 
 	def __str__(self):
 		return self.name
