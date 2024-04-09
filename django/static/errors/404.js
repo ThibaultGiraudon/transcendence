@@ -10,7 +10,7 @@ function render404Page() {
 		<div class="error-container">
 			<p class="error-code">404</p>
 			<p class="error-title">Page not found</p>
-			<p class="error-infos">${errorInfos}</p>
+			<p class="error-infos">${safeText(errorInfos)}</p>
 		</div>
 	`;
 }

@@ -905,7 +905,7 @@ def create_channel(request):
 	channel_name = "group"
 	
 	# Channel informations
-	room_id = str(uuid.uuid1())
+	room_id = str(uuid.uuid4())
 	users = []
 
 	# Get the users
@@ -1558,7 +1558,8 @@ def	join_tournament(request):
 				'message': "User joined the tournament"
 			}, status=200)
 	
-	room_id = str(uuid.uuid1())
+
+	room_id = str(uuid.uuid4())
 
 	channel = Channel.objects.create(tournament=True, room_id=room_id, name='Tournament ' + datetime.now().strftime("%d-%m %H:%M"))
 	channel.users.add(request.user)

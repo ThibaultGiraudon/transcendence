@@ -116,7 +116,7 @@ function renderRoomPage(room_id) {
 									<div class="participants-container">
 										<img class="participants-img" src="${some_user.photo_url}" alt="profile picture">
 										<h3 class="participants-username">
-											${some_user.username}
+											${safeText(some_user.username)}
 											${some_user.id == room.creator ? '<span class="admin-text">👑</span>' : ''}
 											${some_user.id == user.id ? '<span class="you-text">(You)</span>' : ''}
 										</h3>
@@ -138,14 +138,14 @@ function renderRoomPage(room_id) {
 				html += `
 					<a class="chat-private-user" data-route="/profile/${name_channel}">
 						<img class="chat-private-img" src="${photo_channel}" alt="profile picture">
-						<h2 class="chat-category-pp">${name_channel}</h2>
+						<h2 class="chat-category-pp">${safeText(name_channel)}</h2>
 					</a>
 					<button class="invite-game-button">Play a game</button>
 					<p class="chat-info-private">Private channel</p>
 				`;
 			} else {
 				html += `
-					<h2 class="chat-category">${name_channel}</h2>
+					<h2 class="chat-category">${safeText(name_channel)}</h2>
 					<p class="chat-info-private">Group channel</p>
 				`;
 			}
@@ -165,11 +165,11 @@ function renderRoomPage(room_id) {
 						if (previousMessageSender != message.sender) {
 							if (message.sender == 0) {
 								messageHTML += `
-								<p class="system-username">${message.username}</p>`;
+								<p class="system-username">${safeText(message.username)}</p>`;
 							}
 							else {
 								messageHTML += `
-									<p class="other-username">${message.username}</p>
+									<p class="other-username">${safeText(message.username)}</p>
 								`;
 							}
 						}
@@ -186,7 +186,7 @@ function renderRoomPage(room_id) {
 						messageHTML += `
 							<p class="other-message" data-sender="${message.sender}">`;
 					}
-					messageHTML += filterMessage(message.message);
+					messageHTML += safeText(filterMessage(message.message));
 					messageHTML += '</p>';
 				}
 				previousMessageSender = message.sender;
@@ -245,7 +245,7 @@ function renderRoomPage(room_id) {
 								<button class="add-user" data-user-id="${user.id}">
 									<div class="container" data-user-id="${user.id}">
 										<img class="users-img" src="${user.photo_url}" alt="profile picture">
-										<p class="users-user">${user.username}</p>
+										<p class="users-user">${safeText(user.username)}</p>
 									</div>
 								</button>
 								`;
@@ -282,7 +282,7 @@ function renderRoomPage(room_id) {
 								// Add the user to the room
 								fetchAPI(`/api/add_user_to_room/${room_id}/${userId}`, 'POST').then(data => {
 									if (data.success) {
-										send_message(room_id, 0, `${dataUser.user.username} added ${data.username} to the channel`);
+										send_message(room_id, 0, `${safeText(dataUser.user.username)} added ${safeText(data.username)} to the channel`);
 										popup.remove();
 										popupBackground.remove();
 										renderRoomPage(room_id);
@@ -313,7 +313,7 @@ function renderRoomPage(room_id) {
 					fetchAPI(`/api/create_invite_game/${room_id}`).then(data => {
 						if (data.success) {
 							if (data.message == "Game created") {
-								send_message(room_id, 0, `${dataUser.user.username} invited you to play a game`);
+								send_message(room_id, 0, `${safeText(dataUser.user.username)} invited you to play a game`);
 							}
 							router.navigate('/pong/wait_players/init_ranked_solo_game');
 						} else {

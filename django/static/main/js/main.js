@@ -272,6 +272,14 @@ function filterMessage(message) {
 }
 
 
+/* Espace special characters to prevent XSS attacks */
+function safeText(unsafeText) {
+	let div = document.createElement('div');
+	div.innerText = unsafeText;
+	return div.innerHTML;
+}
+
+
 // --------------------------------------------------------------------------------
 // ---------------------------------- Observer ------------------------------------
 // --------------------------------------------------------------------------------

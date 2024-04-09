@@ -18,7 +18,7 @@ def new(request):
 	elif request.method == 'POST':
 		if not request.user.is_authenticated:
 			return JsonResponse({'success': False, 'message': 'The user is not authenticated'}, status=401)
-		
+
 		# Get parameters
 		data = json.loads(request.body)
 		name = data.get('name')
@@ -43,7 +43,7 @@ def new(request):
 			return JsonResponse({'success': False, 'description': 'The description contains bad words'}, status=401)
 
 		# Channel informations
-		room_id = str(uuid.uuid1())
+		room_id = str(uuid.uuid4())
 		users = [request.user.id]
 
 		# Create the chat group

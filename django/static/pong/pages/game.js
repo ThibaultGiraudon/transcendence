@@ -26,7 +26,7 @@ function renderGamePage(gameMode) {
 								html += `
 								<div class="game-participant">
 									<img class="game-participants-img" src="${players_photo[i]}" alt="photo">
-									<h3 class="game-participants-name ${position[i]}">${players_username[i]}</h3>
+									<h3 class="game-participants-name ${position[i]}">${safeText(players_username[i])}</h3>
 								</div>
 								
 								`;
