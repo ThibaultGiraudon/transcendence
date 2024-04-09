@@ -6,7 +6,7 @@ import	asyncio
 async def updateScore(consumer, gameSettings, paddleID):
 	if (gameSettings.nbPaddles == 2):
 		gameSettings.paddles[paddleID ^ 1].score += 1
-		if (gameSettings.paddles[paddleID ^ 1].score >= 2):
+		if (gameSettings.paddles[paddleID ^ 1].score >= 10):
 			gameSettings.paddles[paddleID].isAlive = False
 			gameSettings.paddles[paddleID ^ 1].isAlive = False
 			gameSettings.paddles[paddleID].rankPosition = 2

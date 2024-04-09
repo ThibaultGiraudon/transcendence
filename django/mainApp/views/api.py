@@ -1259,7 +1259,6 @@ def get_game_over(request, gameID):
 		}, status=401)
 	
 	if (request.user.player.currentGameID != gameID):
-		print("-----------\n1\n\n")
 		return JsonResponse({
 			'success': False,
 			'message': 'The user is not in the game'
@@ -1270,7 +1269,6 @@ def get_game_over(request, gameID):
 	try:
 		game = Game.objects.get(id=gameID)
 	except Game.DoesNotExist:
-		print("-----------\n2\n\n")
 		return JsonResponse({
 			'success': False,
 			'message': 'Game does not exist'
@@ -1285,7 +1283,6 @@ def get_game_over(request, gameID):
 		player.isReady = False
 		player.save()
 
-		print("-----------\n3\n\n")
 		return JsonResponse({
 			'success': True,
 			'gameMode': gameMode,
@@ -1294,7 +1291,6 @@ def get_game_over(request, gameID):
 
 	scores = game.scores.filter(player__id=player.id).first()
 	if (scores == None):
-		print("-----------\n4\n\n")
 		return JsonResponse({
 			'success': False,
 			'message': 'No score found'
@@ -1341,8 +1337,6 @@ def get_game_over(request, gameID):
 	player.currentGameID = None
 	player.isReady = False
 	player.save()
-
-	print("-----------\n5\n\n")
 
 	return JsonResponse({
 		'success': True,
