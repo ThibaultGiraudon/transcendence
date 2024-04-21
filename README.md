@@ -1,14 +1,14 @@
 <div align="center">
-  <a href="https://github.com/LeonPupier/Mensible">
+  <a href="https://github.com/ThibaultGiraudon/transcendence">
     <img src="django/static/main/img/loading.gif" alt="Logo" width="150" height="150">
   </a>
   <h3 align="center">Transcendence</h3>
   
   Final common core project of 42 school
   
-  [![HitCount](https://img.shields.io/endpoint?url=https%3A%2F%2Fhits.dwyl.com%2FThib1708%2Ftranscendence.json%3Fcolor%3Dgreen)](https://github.com/Thib1708/transcendence/)
-  ![](https://sloc.xyz/github/Thib1708/transcendence)
-  [![Last commit](https://img.shields.io/github/last-commit/Thib1708/transcendence.svg)](https://github.com/Thib1708/transcendence/)
+  [![HitCount](https://img.shields.io/endpoint?url=https%3A%2F%2Fhits.dwyl.com%2FThib1708%2Ftranscendence.json%3Fcolor%3Dgreen)](https://github.com/ThibaultGiraudon/transcendence/)
+  ![](https://sloc.xyz/github/ThibaultGiraudon/transcendence)
+  [![Last commit](https://img.shields.io/github/last-commit/ThibaultGiraudon/transcendence.svg)](https://github.com/ThibaultGiraudon/transcendence/)
 </div>
 
 ## Summary
@@ -41,7 +41,7 @@ All data is persistent and securely stored. It is not possible for developers to
 ### Clone the repository
 Use the following command to clone the repository to your local machine:
 ```shell
-git clone https://github.com/tgiraudo/transcendence.git
+git clone https://github.com/ThibaultGiraudon/transcendence.git
 ```
 
 ### Create the env file
