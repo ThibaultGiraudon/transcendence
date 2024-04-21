@@ -11,9 +11,6 @@
   [![Last commit](https://img.shields.io/github/last-commit/Thib1708/transcendence.svg)](https://github.com/Thib1708/transcendence/)
 </div>
 
-> [!WARNING]
-> This project is still under development.
-
 ## Summary
 
 - [Description](#description)
